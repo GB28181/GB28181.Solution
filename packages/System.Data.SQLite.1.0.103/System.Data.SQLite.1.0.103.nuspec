@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>System.Data.SQLite</id>
+    <version>1.0.103</version>
+    <title>System.Data.SQLite (x86/x64)</title>
+    <authors>SQLite Development Team</authors>
+    <owners>SQLite Development Team</owners>
+    <licenseUrl>https://www.sqlite.org/copyright.html</licenseUrl>
+    <projectUrl>https://system.data.sqlite.org/</projectUrl>
+    <iconUrl>https://system.data.sqlite.org/images/sqlite128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The official SQLite database engine for both x86 and x64 along with the ADO.NET provider.  This package includes support for LINQ and Entity Framework 6.</description>
+    <summary />
+    <copyright>Public Domain</copyright>
+    <language>en-US</language>
+    <tags>sqlite database ado.net provider interop</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework2.0">
+        <dependency id="System.Data.SQLite.Core" version="1.0.103" />
+        <dependency id="System.Data.SQLite.Linq" version="1.0.103" />
+      </group>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="System.Data.SQLite.Core" version="1.0.103" />
+        <dependency id="System.Data.SQLite.Linq" version="1.0.103" />
+        <dependency id="System.Data.SQLite.EF6" version="1.0.103" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="System.Data.SQLite.Core" version="1.0.103" />
+        <dependency id="System.Data.SQLite.Linq" version="1.0.103" />
+        <dependency id="System.Data.SQLite.EF6" version="1.0.103" />
+      </group>
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="System.Data.SQLite.Core" version="1.0.103" />
+        <dependency id="System.Data.SQLite.Linq" version="1.0.103" />
+        <dependency id="System.Data.SQLite.EF6" version="1.0.103" />
+      </group>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="System.Data.SQLite.Core" version="1.0.103" />
+        <dependency id="System.Data.SQLite.Linq" version="1.0.103" />
+        <dependency id="System.Data.SQLite.EF6" version="1.0.103" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
