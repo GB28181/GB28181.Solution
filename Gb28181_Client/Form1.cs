@@ -148,6 +148,8 @@ namespace Gb28181_Client
         #region 开始/停止服务
         private void btnStart_Click(object sender, System.EventArgs e)
         {
+            Initialize();
+
             //_tn = new TreeNode();
             //tvCalatog.Nodes.Add(_tn);
             //_bg = new TreeNode();
@@ -156,7 +158,6 @@ namespace Gb28181_Client
             //tvCalatog.Nodes.Add(_tn);
             _keepaliveTime = DateTime.Now;
             playerWin.Start();
-            Initialize();
 
             _cataThread.Start();
             _keepaliveThread.Start();
