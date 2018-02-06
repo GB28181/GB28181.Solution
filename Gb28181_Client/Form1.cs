@@ -5,7 +5,6 @@ using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Sys.Config;
 using SIPSorcery.GB28181.Sys.Model;
@@ -14,16 +13,12 @@ using SLW.Media;
 using SLW.MediaServer.Media.TS;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace Gb28181_Client
 {
@@ -1096,8 +1091,8 @@ namespace Gb28181_Client
             //header.GetBytes();
             //packet.Header = header;
             //packet.Payload = buffer;
-            
-           // string viaStr = via.ToString();
+
+            // string viaStr = via.ToString();
 
             Console.WriteLine("");
 
