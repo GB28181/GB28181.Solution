@@ -1,8 +1,0 @@
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\bin\Debug\SLW.MeidaNetEngine.dll
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\bin\Debug\SLW.MeidaNetEngine.pdb
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\bin\Debug\GLib.dll
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\bin\Debug\StarEye.VideoConver.dll
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\bin\Debug\Newtonsoft.Json.dll
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\obj\Debug\SLW.MeidaNetEngine.csprojResolveAssemblyReference.cache
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\obj\Debug\SLW.MeidaNetEngine.dll
-D:\VisionVera\SourceCoder\28181_platform\SLW.MeidaNetEngine\obj\Debug\SLW.MeidaNetEngine.pdb

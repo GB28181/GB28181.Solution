@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Threading;
-using System.Globalization;
 using System.Diagnostics;
-using System.Net.Sockets;
+using System.Globalization;
+using System.IO;
 using System.Net;
-using System.Collections;
+using System.Net.Sockets;
+using System.Text;
 namespace ComHelper
 {
     public class Log
