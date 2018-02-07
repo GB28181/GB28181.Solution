@@ -34,18 +34,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Xml;
-using SIPSorcery.GB28181.Sys;
 using log4net;
+using SIPSorcery.GB28181.Sys;
+using System;
 
 namespace SIPSorcery.GB28181.SIP
 {
-	public class AssemblyState
+    public class AssemblyState
 	{
 		public const string LOGGER_NAME = "sipsorcery.sip";
 
