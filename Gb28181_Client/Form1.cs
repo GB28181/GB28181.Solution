@@ -89,6 +89,7 @@ namespace Gb28181_Client
         public Form1()
         {
             InitializeComponent();
+            Initialize();
         }
 
         private void Initialize()
@@ -96,27 +97,34 @@ namespace Gb28181_Client
             _devList = new List<ListViewItem>();
             txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             txtStopTime.Text = DateTime.Now.ToString("yyyy-MM-dd 9:00:00");
-            //txtDragDrop.Text = DateTime.Now.ToString("yyyy-MM-dd 14:00:00");
 
-            Dictionary<string, string> configType = new Dictionary<string, string>();
-            configType.Add("BasicParam", "基本参数配置");
-            configType.Add("VideoParamOpt", "视频参数范围");
-            configType.Add("SVACEncodeConfig", "SVAC编码配置");
-            configType.Add("SVACDecodeConfig", "SVAC解码配置");
-            BindingSource bs = new BindingSource();
-            bs.DataSource = configType;
+            var configType = new Dictionary<string, string>
+            {
+                { "BasicParam", "基本参数配置" },
+                { "VideoParamOpt", "视频参数范围" },
+                { "SVACEncodeConfig", "SVAC编码配置" },
+                { "SVACDecodeConfig", "SVAC解码配置" }
+            };
+            BindingSource bs = new BindingSource
+            {
+                DataSource = configType
+            };
 
             cbxConfig.DataSource = bs;
             cbxConfig.DisplayMember = "Value";
             cbxConfig.ValueMember = "Key";
 
-            Dictionary<string, string> recordType = new Dictionary<string, string>();
-            recordType.Add("time", "time");
-            recordType.Add("alarm", "alarm");
-            recordType.Add("manual", "manual");
-            recordType.Add("all", "all");
-            BindingSource bsRecord = new BindingSource();
-            bsRecord.DataSource = recordType;
+            Dictionary<string, string> recordType = new Dictionary<string, string>
+            {
+                { "time", "time" },
+                { "alarm", "alarm" },
+                { "manual", "manual" },
+                { "all", "all" }
+            };
+            BindingSource bsRecord = new BindingSource
+            {
+                DataSource = recordType
+            };
 
             cbxRecordType.DataSource = bsRecord;
             cbxRecordType.DisplayMember = "Value";
@@ -146,9 +154,8 @@ namespace Gb28181_Client
         #endregion
 
         #region 开始/停止服务
-        private void btnStart_Click(object sender, System.EventArgs e)
+        private void BtnStart_Click(object sender, System.EventArgs e)
         {
-            Initialize();
 
             //_tn = new TreeNode();
             //tvCalatog.Nodes.Add(_tn);
