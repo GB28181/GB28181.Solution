@@ -41,17 +41,15 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Xml;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
 #endif
 
 namespace SIPSorcery.GB28181.SIP.App
 {
-    [Table(Name = "sipdialplans")]
+    // // [Table(Name = "sipdialplans")]
     [DataContractAttribute]
     public class SIPDialPlan : INotifyPropertyChanged, ISIPAsset
     {
@@ -69,7 +67,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public static int TimeZoneOffsetMinutes;
         
         private Guid m_id;                  // Dial plan id used by the system. This is the database primary key and is not important for XML.
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid Id
         {
@@ -78,7 +76,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_owner;                     // The username of the dialplan owner.
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Owner
         {
@@ -90,11 +88,11 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AdminMemberId { get; set; }    // If set it designates this asset as a belonging to a user with the matching adminid.
 
         private string m_dialPlanName;              // The name of the dialplan assigned by the owner, owner/name combinations must be unique
-        [Column(Name = "dialplanname", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "dialplanname", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DialPlanName {
             get { return m_dialPlanName; }
@@ -105,7 +103,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_traceEmailAddress;         // Optional email address to send dialplan traces to. if empty traces will not be used.
-        [Column(Name = "traceemailaddress", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "traceemailaddress", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string TraceEmailAddress
         {
@@ -118,7 +116,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_dialPlanScript;            // The string representing the dialplan script (or asterisk extension lines).
-        [Column(Name = "dialplanscript", DbType = "varchar(8000)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "dialplanscript", DbType = "varchar(8000)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DialPlanScript
         {
@@ -131,7 +129,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_scriptTypeDescription;     // Silverlight can't handle enum types across WCF boundaries.
-        [Column(Name = "scripttypedescription", DbType = "varchar(12)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "scripttypedescription", DbType = "varchar(12)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ScriptTypeDescription
         {
@@ -149,7 +147,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_lastUpdate;
-        [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset LastUpdate
         {
@@ -166,7 +164,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_inserted;
-        [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset Inserted {
             get { return m_inserted; }
@@ -179,7 +177,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private int m_maxExecutionCount = DEFAULT_MAXIMUM_EXECUTION_COUNT;
         [DataMember]
-        [Column(Name = "maxexecutioncount", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "maxexecutioncount", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public int MaxExecutionCount
         {
             get { return m_maxExecutionCount; }
@@ -188,7 +186,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private int m_executionCount;
         [DataMember]
-        [Column(Name = "executioncount", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "executioncount", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public int ExecutionCount
         {
             get { return m_executionCount; }
@@ -197,7 +195,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private string m_authorisedApps;     // A semi-colon delimited list of privileged apps that this dialplan is authorised to use.
         [DataMember]
-        [Column(Name = "authorisedapps", DbType = "varchar(2048)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "authorisedapps", DbType = "varchar(2048)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AuthorisedApps {
             get { return m_authorisedApps; }
             set {
@@ -207,7 +205,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_acceptNonInvite = false;
-        [Column(Name = "acceptnoninvite", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "acceptnoninvite", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool AcceptNonInvite
         {
@@ -220,7 +218,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_isReadOnly;
-        [Column(Name = "isreadonly", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "isreadonly", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool IsReadOnly
         {

@@ -39,4 +39,9 @@ namespace SIPSorcery.GB28181.SIP.App
         public decimal RatePerIncrement;
         public decimal SetupCost;
     }
+
+    public class MetaDataMember
+    {
+        //pass the build 
+    }
 }

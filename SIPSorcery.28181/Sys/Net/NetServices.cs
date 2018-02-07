@@ -20,7 +20,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Sys
 {

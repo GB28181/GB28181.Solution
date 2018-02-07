@@ -50,7 +50,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Net
 {
@@ -483,14 +483,15 @@ namespace SIPSorcery.GB28181.Net
                     type = Type & 1;
                     if (type > 3 || type > 6) throw new ArgumentException("Type numbers 2-5 are reserved and SHOULD NOT be used.  Applications on RFC 2035 should be updated to indicate the presence of restart markers with type 64 or 65 and the Restart Marker header.");
 
-                    Quality = (uint)packet.Payload[offset++];
+                    Quality = packet.Payload[offset++];
                     Width =  (uint)(packet.Payload[offset++] * 8); // This should have been 128 or > and the standard would have worked for all resolutions
                     Height = (uint)(packet.Payload[offset++] * 8);// Now in certain highres profiles you will need an OnVif extension before the RtpJpeg Header
                     //It is worth noting Rtp does not care what you send and more tags such as comments and or higher resolution pictures may be sent and these values will simply be ignored.
 
                     if(Width == 0 || Height == 0)
                     {
-                        logger.WarnFormat("ProcessMjpegFrame could not determine either the width or height of the jpeg frame (width={0}, height={1}).", Width, Height);
+                        //, Width, Height
+                        logger.Warn("ProcessMjpegFrame could not determine either the width:" + Width  + " or height: "+ Height + "of the jpeg frame");
                     }
 
                     //Restart Interval 64 - 127

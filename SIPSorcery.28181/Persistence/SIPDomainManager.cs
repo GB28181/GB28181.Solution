@@ -53,7 +53,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using SIPSorcery.GB28181.Persistence;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

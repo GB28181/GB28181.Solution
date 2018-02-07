@@ -11,7 +11,7 @@
 // 28 Mar 2008	Aaron Clauson   Added to sipwitch code base based on http://www.codeproject.com/KB/library/DNS.NET_Resolver.aspx.
 // 28 Mar 2008  Aaron Clauson   Moved timeout from being class scoped field to parameter for individual DNS requests.
 // 28 Mar 2008  Aaron Clauson   Removed deprecated System.DNS methods.
-// 28 Mar 2008  Aaron Clauson   Added log4net logging.
+// 28 Mar 2008  Aaron Clauson   Added Logger4Net logging.
 //
 // License:
 // http://www.opensource.org/licenses/gpl-license.php
@@ -24,10 +24,8 @@ using System.Net;
 using System.Text;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
-using System.Diagnostics;
-using System.Runtime.Remoting.Messaging;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 /*
  * Network Working Group                                     P. Mockapetris
@@ -858,21 +856,21 @@ namespace Heijden.DNS
         ///		An System.Net.IPHostEntry instance that contains address information about
         ///		the host. 
         ///</returns>
-        public IPHostEntry EndGetHostEntry(IAsyncResult AsyncResult)
-        {
-            AsyncResult aResult = (AsyncResult)AsyncResult;
-            if (aResult.AsyncDelegate is GetHostEntryDelegate)
-            {
-                GetHostEntryDelegate g = (GetHostEntryDelegate)aResult.AsyncDelegate;
-                return g.EndInvoke(AsyncResult);
-            }
-            if (aResult.AsyncDelegate is GetHostEntryViaIPDelegate)
-            {
-                GetHostEntryViaIPDelegate g = (GetHostEntryViaIPDelegate)aResult.AsyncDelegate;
-                return g.EndInvoke(AsyncResult);
-            }
-            return null;
-        }
+        //public IPHostEntry EndGetHostEntry(IAsyncResult AsyncResult)
+        //{
+        //    AsyncResult aResult = (AsyncResult)AsyncResult;
+        //    if (aResult.AsyncDelegate is GetHostEntryDelegate)
+        //    {
+        //        GetHostEntryDelegate g = (GetHostEntryDelegate)aResult.AsyncDelegate;
+        //        return g.EndInvoke(AsyncResult);
+        //    }
+        //    if (aResult.AsyncDelegate is GetHostEntryViaIPDelegate)
+        //    {
+        //        GetHostEntryViaIPDelegate g = (GetHostEntryViaIPDelegate)aResult.AsyncDelegate;
+        //        return g.EndInvoke(AsyncResult);
+        //    }
+        //    return null;
+        //}
 
         private IPEndPoint GetActiveDNSServer()
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -393,10 +393,10 @@ namespace SIPSorcery.GB28181.SIP
             public void Init()
             {
                 // Add a Console appender so logger messages will show up in the NUnit Console.Out tab.
-                log4net.Appender.ConsoleAppender appender = new log4net.Appender.ConsoleAppender();
-                log4net.Layout.ILayout fallbackLayout = new log4net.Layout.PatternLayout("%m%n");
+                Logger4Net.Appender.ConsoleAppender appender = new Logger4Net.Appender.ConsoleAppender();
+                Logger4Net.Layout.ILayout fallbackLayout = new Logger4Net.Layout.PatternLayout("%m%n");
                 appender.Layout = fallbackLayout;
-                log4net.Config.BasicConfigurator.Configure(appender);
+                Logger4Net.Config.BasicConfigurator.Configure(appender);
             }
 
             [TestFixtureTearDown]

@@ -44,7 +44,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

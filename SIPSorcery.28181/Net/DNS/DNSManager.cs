@@ -19,7 +19,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text.RegularExpressions;
 using Heijden.DNS;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Net
 {

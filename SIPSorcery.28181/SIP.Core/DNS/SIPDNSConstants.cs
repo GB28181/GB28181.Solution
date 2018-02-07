@@ -30,11 +30,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace SIPSorcery.GB28181.SIP
 {
     public class SIPDNSConstants

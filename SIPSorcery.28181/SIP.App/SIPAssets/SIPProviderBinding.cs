@@ -40,17 +40,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq.Mapping;
 #endif
 
 namespace SIPSorcery.GB28181.SIP.App
 {
-    [Table(Name = "sipproviderbindings")]
-    [DataContractAttribute]
+   // // [Table(Name = "sipproviderbindings")]
+    [DataContract]
     public class SIPProviderBinding : INotifyPropertyChanged, ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipproviderbindings";
@@ -66,7 +65,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public static int TimeZoneOffsetMinutes;
 
         private Guid m_id;
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid Id
         {
@@ -75,7 +74,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private Guid m_providerId;
-        [Column(Name = "providerid", DbType = "varchar(36)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerid", DbType = "varchar(36)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid ProviderId
         {
@@ -84,11 +83,11 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "providername", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providername", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string ProviderName { get; set; }
 
         private string m_owner;                             // The username of the account that owns this SIP provider configuration.
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Owner
         {
@@ -100,11 +99,11 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AdminMemberId { get; set; }    // If set it designates this asset as a belonging to a user with the matching adminid.
 
         private string m_registrationFailureMessage;         // Used to record why a registration failed if it does so.
-        [Column(Name = "registrationfailuremessage", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registrationfailuremessage", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegistrationFailureMessage
         {
@@ -117,7 +116,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset? m_lastRegisterTime = null;
-        [Column(Name = "lastregistertime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "lastregistertime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset? LastRegisterTime
         {
@@ -153,7 +152,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private DateTimeOffset? m_lastRegisterAttempt = null;
         [DataMember]
-        [Column(Name = "lastregisterattempt", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "lastregisterattempt", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset? LastRegisterAttempt
         {
             get { return m_lastRegisterAttempt; }
@@ -187,7 +186,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_nextRegistrationTime = DateTimeOffset.MaxValue;    // The time at which the next registration attempt should be sent.
-        [Column(Name = "nextregistrationtime", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "nextregistrationtime", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset NextRegistrationTime
         {
@@ -205,7 +204,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_isRegistered;
-        [Column(Name = "isregistered", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "isregistered", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool IsRegistered
         {
@@ -218,7 +217,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private int m_bindingExpiry;
-        [Column(Name = "bindingexpiry", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "bindingexpiry", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int BindingExpiry
         {
@@ -231,7 +230,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private SIPURI m_bindingURI; // When registered this holds the binding being maintained by the agent, it's derived from the RegisterContact field but can have an additional parameter added.
-        [Column(Name = "bindinguri", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "bindinguri", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string BindingURI
         {
@@ -246,14 +245,14 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "registrarsipsocket", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registrarsipsocket", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string RegistrarSIPSocket
         {
             get { return (RegistrarSIPEndPoint != null) ? RegistrarSIPEndPoint.ToString() : null; }
             set { RegistrarSIPEndPoint = (!value.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(value) : null; }
         }
 
-        [Column(Name = "cseq", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "cseq", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public int CSeq { get; set; }                               // The SIP Header CSeq used in requests to the Registrar server
 
         public List<SIPContactHeader> ContactsList;                 // List of contacts reported back from the registrar server.

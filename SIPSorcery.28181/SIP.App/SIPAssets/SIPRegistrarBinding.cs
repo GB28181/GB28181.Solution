@@ -40,12 +40,9 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using SIPSorcery.GB28181.Sys;
-using log4net;
-
-#if !SILVERLIGHT
+using Logger4Net;
 using System.Data;
-using System.Data.Linq.Mapping;
-#endif
+
 
 namespace SIPSorcery.GB28181.SIP.App
 {
@@ -64,7 +61,7 @@ namespace SIPSorcery.GB28181.SIP.App
     /// <summary>
     /// The SIPAddressBinding represents a single registered contact uri for a user. A user can have multiple registered contact uri's.
     /// </summary>
-    [Table(Name = "sipregistrarbindings")]
+    // [Table(Name = "sipregistrarbindings")]
     [DataContract]
     public class SIPRegistrarBinding : INotifyPropertyChanged, ISIPAsset
     {
@@ -83,30 +80,30 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private static Dictionary<string, int> m_userAgentExpirys = new Dictionary<string, int>();  // Result of parsing user agent expiry values from the App.Config Xml Node.
 
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid Id { get; set; }
 
-        [Column(Name = "sipaccountid", DbType = "varchar(36)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "sipaccountid", DbType = "varchar(36)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public Guid SIPAccountId { get; set; }
 
-        [Column(Name = "sipaccountname", DbType = "varchar(160)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "sipaccountname", DbType = "varchar(160)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string SIPAccountName { get; set; }          // Used for informational purposes only, no matching done against it and should not be relied on. Use SIPAccountId instead.
 
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Owner { get; set; }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AdminMemberId { get; private set; }    // If set it designates this asset as a belonging to a user with the matching adminid.
 
-        [Column(Name = "useragent", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "useragent", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string UserAgent { get; set; }
 
         private SIPURI m_contactURI;
-        [Column(Name = "contacturi", DbType = "varchar(767)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "contacturi", DbType = "varchar(767)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ContactURI
         {
@@ -121,7 +118,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private SIPURI m_mangledContactURI;
-        [Column(Name = "mangledcontacturi", DbType = "varchar(767)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "mangledcontacturi", DbType = "varchar(767)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string MangledContactURI
         {
@@ -136,7 +133,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_lastUpdate;
-        [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset LastUpdate
         {
@@ -152,7 +149,7 @@ namespace SIPSorcery.GB28181.SIP.App
         [IgnoreDataMember]
         public SIPEndPoint RemoteSIPEndPoint;     // The socket the REGISTER request the binding was received on.
 
-        [Column(Name = "remotesipsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "remotesipsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RemoteSIPSocket
         {
@@ -177,7 +174,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public int CSeq;
 
         private int m_expiry = 0;               // The expiry time in seconds for the binding.
-        [Column(Name = "expiry", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "expiry", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int Expiry
         {
@@ -191,7 +188,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "expirytime", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "expirytime", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset ExpiryTime
         {
             get
@@ -227,7 +224,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_proxySIPEndPoint = value; }
         }
 
-        [Column(Name = "proxysipsocket", DbType = "varchar(64)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "proxysipsocket", DbType = "varchar(64)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProxySIPSocket
         {
@@ -252,7 +249,7 @@ namespace SIPSorcery.GB28181.SIP.App
             get { return m_registrarSIPEndPoint; }
         }
 
-        [Column(Name = "registrarsipsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "registrarsipsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegistrarSIPSocket
         {

@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIPSorcery.28181", "SIPSorc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLW.MeidaNetEngine", "SLW.MeidaNetEngine\SLW.MeidaNetEngine.csproj", "{8332828E-DA9A-4813-9569-9DBA95DF8FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegisterService", "RegisterService\RegisterService.csproj", "{8B8C600D-69D3-4B80-8143-DAF58A251754}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegisterService", "RegisterService\RegisterService.csproj", "{8B8C600D-69D3-4B80-8143-DAF58A251754}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger4Net", "Logger4Net\Logger4Net.csproj", "{BCF4602E-348C-46A2-960C-02496F28C950}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,30 @@ Global
 		{8B8C600D-69D3-4B80-8143-DAF58A251754}.Release|x64.Build.0 = Release|Any CPU
 		{8B8C600D-69D3-4B80-8143-DAF58A251754}.Release|x86.ActiveCfg = Release|Any CPU
 		{8B8C600D-69D3-4B80-8143-DAF58A251754}.Release|x86.Build.0 = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|x64.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debug|x86.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|Any CPU.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|x64.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|x64.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|x86.ActiveCfg = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Debugx64|x86.Build.0 = Debug|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|x64.ActiveCfg = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|x64.Build.0 = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCF4602E-348C-46A2-960C-02496F28C950}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

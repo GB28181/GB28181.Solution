@@ -38,7 +38,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Xml;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Sys
 {

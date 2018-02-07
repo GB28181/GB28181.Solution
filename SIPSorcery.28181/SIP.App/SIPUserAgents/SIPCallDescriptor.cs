@@ -44,7 +44,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.SIP.App
 {

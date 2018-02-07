@@ -15,17 +15,15 @@
 ///----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Sys
 {
@@ -35,7 +33,7 @@ namespace SIPSorcery.GB28181.Sys
         public const string DEFAULT_ERRRORLOG_FILE = @"c:\temp\appstate.error.log";
         public const string ENCRYPTED_SETTING_PREFIX = "$#";
         private const string ENCRYPTED_SETTINGS_CERTIFICATE_NAME = "EncryptedSettingsCertificateName";
-        private const string APP_LOGGING_ID = "sipsorcery"; // Name of log4net identifier.
+        private const string APP_LOGGING_ID = "sipsorcery"; // Name of Logger4Net identifier.
 
         // From http://fightingforalostcause.net/misc/2006/compare-email-regex.php.
         public const string EMAIL_VALIDATION_REGEX = @"^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-zA-Z0-9]{1}[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]{1})|[a-zA-Z])\.)+[a-zA-Z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$";
@@ -55,11 +53,11 @@ namespace SIPSorcery.GB28181.Sys
                 {
                     // Initialise logging functionality from an XML node in the app.config file.
                     Console.WriteLine("Starting logging initialisation.");
-                    log4net.Config.XmlConfigurator.Configure();
+                   // Logger4Net.Config.XmlConfigurator.Configure();
                 }
                 catch
                 {
-                    // Unable to load the log4net configuration node (probably invalid XML in the config file).
+                    // Unable to load the Logger4Net configuration node (probably invalid XML in the config file).
                     Console.WriteLine("Unable to load logging configuration check that the app.config file exists and is well formed.");
 
                     try
@@ -79,7 +77,7 @@ namespace SIPSorcery.GB28181.Sys
                 {
                     try
                     {
-                        logger = log4net.LogManager.GetLogger(APP_LOGGING_ID);
+                        logger = LogManager.GetLogger(APP_LOGGING_ID);
                         logger.Debug("Logging initialised.");
                     }
                     catch (Exception excp)
@@ -105,7 +103,7 @@ namespace SIPSorcery.GB28181.Sys
 
         public static ILog GetLogger(string logName)
         {
-            return log4net.LogManager.GetLogger(logName);
+            return Logger4Net.LogManager.GetLogger(logName);
         }
 
         /// <summary>
@@ -115,12 +113,12 @@ namespace SIPSorcery.GB28181.Sys
         /// </summary>
         public static void ConfigureConsoleLogger()
         {
-            log4net.Appender.ConsoleAppender appender = new log4net.Appender.ConsoleAppender();
+            Appender.ConsoleAppender appender = new Appender.ConsoleAppender();
 
-            log4net.Layout.ILayout fallbackLayout = new log4net.Layout.PatternLayout("%m%n");
+           Layout.ILayout fallbackLayout = new Layout.PatternLayout("%m%n");
             appender.Layout = fallbackLayout;
 
-            log4net.Config.BasicConfigurator.Configure(appender);
+           // Logger4Net.Config.BasicConfigurator.Configure(appender);
         }
 
         /// <summary>

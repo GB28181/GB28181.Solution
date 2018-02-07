@@ -39,7 +39,7 @@
 using System;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 using SIPSorcery.GB28181.Persistence.XML;
 
 namespace SIPSorcery.GB28181.Persistence
@@ -66,7 +66,7 @@ namespace SIPSorcery.GB28181.Persistence
                 //}
                 else if (storageType == StorageTypes.SQLite)
                 {
-                    return new SQLAssetPersistor<T>(System.Data.SQLite.SQLiteFactory.Instance, storageConnectionStr);
+                    return new SQLAssetPersistor<T>(null, storageConnectionStr);
                 }
                 //else if (storageType == StorageTypes.SQLLinqPostgresql)
                 //{

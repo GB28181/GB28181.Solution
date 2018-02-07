@@ -11,7 +11,7 @@
 //
 // Copyright (c) 2009 Aaron Clauson (aaronc@blueface.ie), Blue Face Ltd, Dublin, Ireland (www.blueface.ie)
 // All rights reserved.
-//
+//D:\Code\UseCSharp\.net core\Gb28181_Platform2016_Test\SIPSorcery.28181\SIP.Core\DNS\SIPDNSConstants.cs
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that 
 // the following conditions are met:
 //
@@ -32,14 +32,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SIPSorcery.Sys;
 using Heijden.DNS;
-using log4net;
+using Logger4Net;
+using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.SIP.App;
 
 namespace SIPSorcery.SIP.App
 {
+
+    public class SIPDNSConstants
+    {
+        public const string NAPTR_SIP_UDP_SERVICE = "SIP+D2U";
+        public const string NAPTR_SIP_TCP_SERVICE = "SIP+D2T";
+        public const string NAPTR_SIPS_TCP_SERVICE = "SIPS+D2T";
+
+        public const string SRV_SIP_TCP_QUERY_PREFIX = "_sip._tcp.";
+        public const string SRV_SIP_UDP_QUERY_PREFIX = "_sip._udp.";
+        public const string SRV_SIP_TLS_QUERY_PREFIX = "_sip._tls.";
+        public const string SRV_SIPS_TCP_QUERY_PREFIX = "_sips._tcp.";
+    }
     /// <summary>
     /// A list of the different combinations of SIP schemes and transports. 
     /// </summary>
@@ -137,15 +148,15 @@ namespace SIPSorcery.SIP.App
 
             SIPServicesEnum sipServicesEnum = SIPServicesEnum.none;
 
-            if (naptrRecord.Service == SIPDNSManager.NAPTR_SIP_UDP_SERVICE)
+            if (naptrRecord.Service == SIPDNSConstants.NAPTR_SIP_UDP_SERVICE)
             {
                 sipServicesEnum = SIPServicesEnum.sipudp;
             }
-            else if (naptrRecord.Service == SIPDNSManager.NAPTR_SIP_TCP_SERVICE)
+            else if (naptrRecord.Service == SIPDNSConstants.NAPTR_SIP_TCP_SERVICE)
             {
                 sipServicesEnum = SIPServicesEnum.siptcp;
             }
-            else if (naptrRecord.Service == SIPDNSManager.NAPTR_SIPS_TCP_SERVICE)
+            else if (naptrRecord.Service == SIPDNSConstants.NAPTR_SIPS_TCP_SERVICE)
             {
                 sipServicesEnum = SIPServicesEnum.sipstcp;
             }

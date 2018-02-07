@@ -36,7 +36,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;

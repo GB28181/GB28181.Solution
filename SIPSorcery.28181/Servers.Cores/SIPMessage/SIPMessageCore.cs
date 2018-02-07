@@ -1,11 +1,10 @@
-﻿using log4net;
+﻿using Logger4Net;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using SIPSorcery.GB28181.Sys.Config;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
@@ -15,12 +14,8 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {

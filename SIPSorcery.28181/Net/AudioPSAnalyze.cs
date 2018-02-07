@@ -1,5 +1,4 @@
-﻿using GLib.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -248,40 +247,21 @@ namespace SIPSorcery.GB28181.Net
         {
             try
             {
-                BitStream bitsBuffer = new BitStream(RTP_HDR_LEN);
-                if (pData == null)
-                    return -1;
-                bitsBuffer.Write(2, 0, 2); /* rtp version   版本2	*/
-                bitsBuffer.Write(0, 0, 1);  /* rtp padding 	*/
-                bitsBuffer.Write(0, 0, 1); /* rtp extension 	*/
-                bitsBuffer.Write(0, 0, 4);        /* rtp CSRC count */
-                bitsBuffer.Write(marker_flag, 0, 1);/* rtp marker  	*/
-                bitsBuffer.Write(8, 0, 7);         /* rtp payload type*/
-                bitsBuffer.Write(cseq, 0, 16);            /* rtp sequence 	 */
-                bitsBuffer.Write(_timestamp, 0, 32);      /* rtp timestamp 	 */
-                bitsBuffer.Write(ssrc, 0, 32);        /* rtp SSRC	 	 */
-                Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, RTP_HDR_LEN);
+                //BitStream bitsBuffer = new BitStream(RTP_HDR_LEN);
+                //if (pData == null)
+                //    return -1;
+                //bitsBuffer.Write(2, 0, 2); /* rtp version   版本2	*/
+                //bitsBuffer.Write(0, 0, 1);  /* rtp padding 	*/
+                //bitsBuffer.Write(0, 0, 1); /* rtp extension 	*/
+                //bitsBuffer.Write(0, 0, 4);        /* rtp CSRC count */
+                //bitsBuffer.Write(marker_flag, 0, 1);/* rtp marker  	*/
+                //bitsBuffer.Write(8, 0, 7);         /* rtp payload type*/
+                //bitsBuffer.Write(cseq, 0, 16);            /* rtp sequence 	 */
+                //bitsBuffer.Write(_timestamp, 0, 32);      /* rtp timestamp 	 */
+                //bitsBuffer.Write(ssrc, 0, 32);        /* rtp SSRC	 	 */
+               // Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, RTP_HDR_LEN);
 
                 _timestamp += 320;
-                //RFC6184Media.RFC6184Frame frame = new RFC6184Media.RFC6184Frame(96);
-                //frame.Packetize(pData, 1400);
-                //foreach (var item in frame)
-                //{
-                //    byte[] bytes = new byte[item.Length];
-                //    item.Header.Timestamp = timestamp;
-                //    item.Header.SequenceNumber = seqNo;
-                //    item.Header.SynchronizationSourceIdentifier = 0xb2b8;
-                //    System.Buffer.BlockCopy(item.Header.ToArray(), 0, bytes, 0, 11);
-                //    System.Buffer.BlockCopy(item.Payload.Array, 0, bytes, 12, item.Payload.Array.Length);
-                //    SendDataBuff(bytes, 0, bytes.Length, pPacker);//ZXB： 发送数据 为什么加databuff参数需不需要加上index
-                //    Console.WriteLine(item.SequenceNumber + "\r\t" + item.Length);
-                //    seqNo++;
-                //}
-                //timestamp += 3600;
-
-
-                //RtpHeader aa= new RtpHeader(2, false, false, (marker_flag==0?false:true), 96, 0, (int)ssrc, (int)cseq, (int)curpts);
-                //Array.Copy(aa.ToArray<byte>(), 0, pData, startIndex, RTP_HDR_LEN);
             }
             catch (Exception ex)
             {
@@ -312,23 +292,23 @@ namespace SIPSorcery.GB28181.Net
                 //bitsBuffer.i_mask = 0x80; // 二进制：10000000 这里是为了后面对一个字节的每一位进行操作，避免大小端夸字节字序错乱  
                 //bitsBuffer.p_data = (unsigned char*)(pData);
                 //memset(bitsBuffer.p_data, 0, PS_HDR_LEN);
-                BitStream bitsBuffer = new BitStream(PS_HDR_LEN);
-                bitsBuffer.Write(0x000001BA, 0, 32);//bits_write(&bitsBuffer, 32, 0x000001BA);            /*start codes*/
-                bitsBuffer.Write(1, 0, 2);//bits_write(&bitsBuffer, 2, 1);                     /*marker bits '01b'*/
-                bitsBuffer.Write((s64Scr >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, (s64Scr >> 30) & 0x07);     /*System clock [32..30]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
-                bitsBuffer.Write((s64Scr >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (s64Scr >> 15) & 0x7FFF);   /*System clock [29..15]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
-                bitsBuffer.Write(s64Scr & 0x7fff, 0, 15);//bits_write(&bitsBuffer, 15, s64Scr & 0x7fff);         /*System clock [29..15]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
-                bitsBuffer.Write(lScrExt & 0x01ff, 0, 9);//bits_write(&bitsBuffer, 9, lScrExt & 0x01ff);        /*System clock [14..0]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
-                bitsBuffer.Write((255) & 0x3fffff, 0, 22);//bits_write(&bitsBuffer, 22, (255) & 0x3fffff);        /*bit rate(n units of 50 bytes per second.)*/
-                bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);                     /*marker bits '11'*/
-                bitsBuffer.Write(0x1f, 0, 5);//bits_write(&bitsBuffer, 5, 0x1f);                  /*reserved(reserved for future use)*/
-                bitsBuffer.Write(0, 0, 3);//bits_write(&bitsBuffer, 3, 0);                     /*stuffing length*/
+                //BitStream bitsBuffer = new BitStream(PS_HDR_LEN);
+                //bitsBuffer.Write(0x000001BA, 0, 32);//bits_write(&bitsBuffer, 32, 0x000001BA);            /*start codes*/
+                //bitsBuffer.Write(1, 0, 2);//bits_write(&bitsBuffer, 2, 1);                     /*marker bits '01b'*/
+                //bitsBuffer.Write((s64Scr >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, (s64Scr >> 30) & 0x07);     /*System clock [32..30]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
+                //bitsBuffer.Write((s64Scr >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (s64Scr >> 15) & 0x7FFF);   /*System clock [29..15]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
+                //bitsBuffer.Write(s64Scr & 0x7fff, 0, 15);//bits_write(&bitsBuffer, 15, s64Scr & 0x7fff);         /*System clock [29..15]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
+                //bitsBuffer.Write(lScrExt & 0x01ff, 0, 9);//bits_write(&bitsBuffer, 9, lScrExt & 0x01ff);        /*System clock [14..0]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);                     /*marker bit*/
+                //bitsBuffer.Write((255) & 0x3fffff, 0, 22);//bits_write(&bitsBuffer, 22, (255) & 0x3fffff);        /*bit rate(n units of 50 bytes per second.)*/
+                //bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);                     /*marker bits '11'*/
+                //bitsBuffer.Write(0x1f, 0, 5);//bits_write(&bitsBuffer, 5, 0x1f);                  /*reserved(reserved for future use)*/
+                //bitsBuffer.Write(0, 0, 3);//bits_write(&bitsBuffer, 3, 0);                     /*stuffing length*/
 
-                Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PS_HDR_LEN);
+                //Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PS_HDR_LEN);
             }
             catch (Exception ex)
             {
@@ -354,33 +334,33 @@ namespace SIPSorcery.GB28181.Net
                 //bitsBuffer.p_data = (unsigned char*)(pData);
                 //memset(bitsBuffer.p_data, 0, SYS_HDR_LEN);
                 /*system header*/
-                BitStream bitsBuffer = new BitStream(SYS_HDR_LEN);
-                bitsBuffer.Write(0x000001BB, 0, 32);//bits_write(&bitsBuffer, 32, 0x000001BB);   /*start code*/
-                bitsBuffer.Write(SYS_HDR_LEN - 6, 0, 16);//bits_write(&bitsBuffer, 16, SYS_HDR_LEN - 6);/*header_length 表示次字节后面的长度，后面的相关头也是次意思*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
-                bitsBuffer.Write(50000, 0, 22);//bits_write(&bitsBuffer, 22, 50000);        /*rate_bound*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
-                bitsBuffer.Write(1, 0, 6);//bits_write(&bitsBuffer, 6, 1);            /*audio_bound*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*fixed_flag */
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*CSPS_flag */
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*system_audio_lock_flag*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*system_video_lock_flag*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
-                bitsBuffer.Write(1, 0, 5);//bits_write(&bitsBuffer, 5, 1);            /*video_bound*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*dif from mpeg1*/
-                bitsBuffer.Write(0x7F, 0, 7);//bits_write(&bitsBuffer, 7, 0x7F);         /*reserver*/
-                                             /*audio stream bound*/
-                bitsBuffer.Write(0xC0, 0, 8);//bits_write(&bitsBuffer, 8, 0xC0);         /*stream_id*/
-                bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);            /*marker_bit */
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*PSTD_buffer_bound_scale*/
-                bitsBuffer.Write(512, 0, 13);//bits_write(&bitsBuffer, 13, 512);          /*PSTD_buffer_size_bound*/
-                                             /*video stream bound*/
-                bitsBuffer.Write(0xE0, 0, 8);//bits_write(&bitsBuffer, 8, 0xE0);         /*stream_id*/
-                bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);            /*marker_bit */
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*PSTD_buffer_bound_scale*/
-                bitsBuffer.Write(2048, 0, 13);//bits_write(&bitsBuffer, 13, 2048);         /*PSTD_buffer_size_bound*/
+                //BitStream bitsBuffer = new BitStream(SYS_HDR_LEN);
+                //bitsBuffer.Write(0x000001BB, 0, 32);//bits_write(&bitsBuffer, 32, 0x000001BB);   /*start code*/
+                //bitsBuffer.Write(SYS_HDR_LEN - 6, 0, 16);//bits_write(&bitsBuffer, 16, SYS_HDR_LEN - 6);/*header_length 表示次字节后面的长度，后面的相关头也是次意思*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
+                //bitsBuffer.Write(50000, 0, 22);//bits_write(&bitsBuffer, 22, 50000);        /*rate_bound*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
+                //bitsBuffer.Write(1, 0, 6);//bits_write(&bitsBuffer, 6, 1);            /*audio_bound*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*fixed_flag */
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*CSPS_flag */
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*system_audio_lock_flag*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*system_video_lock_flag*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*marker_bit*/
+                //bitsBuffer.Write(1, 0, 5);//bits_write(&bitsBuffer, 5, 1);            /*video_bound*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*dif from mpeg1*/
+                //bitsBuffer.Write(0x7F, 0, 7);//bits_write(&bitsBuffer, 7, 0x7F);         /*reserver*/
+                //                             /*audio stream bound*/
+                //bitsBuffer.Write(0xC0, 0, 8);//bits_write(&bitsBuffer, 8, 0xC0);         /*stream_id*/
+                //bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);            /*marker_bit */
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);            /*PSTD_buffer_bound_scale*/
+                //bitsBuffer.Write(512, 0, 13);//bits_write(&bitsBuffer, 13, 512);          /*PSTD_buffer_size_bound*/
+                //                             /*video stream bound*/
+                //bitsBuffer.Write(0xE0, 0, 8);//bits_write(&bitsBuffer, 8, 0xE0);         /*stream_id*/
+                //bitsBuffer.Write(3, 0, 2);//bits_write(&bitsBuffer, 2, 3);            /*marker_bit */
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);            /*PSTD_buffer_bound_scale*/
+                //bitsBuffer.Write(2048, 0, 13);//bits_write(&bitsBuffer, 13, 2048);         /*PSTD_buffer_size_bound*/
 
-                Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, SYS_HDR_LEN);
+                //Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, SYS_HDR_LEN);
 
             }
             catch (Exception ex)
@@ -400,41 +380,41 @@ namespace SIPSorcery.GB28181.Net
         {
             try
             {
-                BitStream bitsBuffer = new BitStream(PSM_HDR_LEN);
+                //BitStream bitsBuffer = new BitStream(PSM_HDR_LEN);
 
-                //bitsBuffer.i_size = PSM_HDR_LEN;
-                //bitsBuffer.i_data = 0;
-                //bitsBuffer.i_mask = 0x80;
-                //bitsBuffer.p_data = (unsigned char*)(pData);
-                // memset(bitsBuffer.p_data, 0, PS_SYS_MAP_SIZE);
-                bitsBuffer.Write(0x000001, 0, 24);  /*start code*/
-                bitsBuffer.Write(0xBC, 0, 8);       /*map stream id*/
-                bitsBuffer.Write(18, 0, 16);        /*program stream map length*/
-                bitsBuffer.Write(1, 0, 1);          /*current next indicator */
-                bitsBuffer.Write(3, 0, 2);          /*reserved*/
-                bitsBuffer.Write(0, 0, 5);          /*program stream map version*/
-                bitsBuffer.Write(0x7F, 0, 7);       /*reserved */
-                bitsBuffer.Write(1, 0, 1);          /*marker bit */
-                bitsBuffer.Write(0, 0, 16);          /*programe stream info length*/
-                bitsBuffer.Write(8, 0, 16);         /*elementary stream map length	is*/
+                ////bitsBuffer.i_size = PSM_HDR_LEN;
+                ////bitsBuffer.i_data = 0;
+                ////bitsBuffer.i_mask = 0x80;
+                ////bitsBuffer.p_data = (unsigned char*)(pData);
+                //// memset(bitsBuffer.p_data, 0, PS_SYS_MAP_SIZE);
+                //bitsBuffer.Write(0x000001, 0, 24);  /*start code*/
+                //bitsBuffer.Write(0xBC, 0, 8);       /*map stream id*/
+                //bitsBuffer.Write(18, 0, 16);        /*program stream map length*/
+                //bitsBuffer.Write(1, 0, 1);          /*current next indicator */
+                //bitsBuffer.Write(3, 0, 2);          /*reserved*/
+                //bitsBuffer.Write(0, 0, 5);          /*program stream map version*/
+                //bitsBuffer.Write(0x7F, 0, 7);       /*reserved */
+                //bitsBuffer.Write(1, 0, 1);          /*marker bit */
+                //bitsBuffer.Write(0, 0, 16);          /*programe stream info length*/
+                //bitsBuffer.Write(8, 0, 16);         /*elementary stream map length	is*/
 
-                /*video*/
-                bitsBuffer.Write(0x1B, 0, 8);       /*stream_type*/
-                bitsBuffer.Write(0xE0, 0, 8);       /*elementary_stream_id*/
-                bitsBuffer.Write(0, 0, 16);         /*elementary_stream_info_length */
+                ///*video*/
+                //bitsBuffer.Write(0x1B, 0, 8);       /*stream_type*/
+                //bitsBuffer.Write(0xE0, 0, 8);       /*elementary_stream_id*/
+                //bitsBuffer.Write(0, 0, 16);         /*elementary_stream_info_length */
 
-                /*audio*/
-                bitsBuffer.Write(0x90, 0, 8);       /*stream_type*/
-                bitsBuffer.Write(0xC0, 0, 8);       /*elementary_stream_id*/
-                bitsBuffer.Write(0, 0, 16);         /*elementary_stream_info_length is*/
+                ///*audio*/
+                //bitsBuffer.Write(0x90, 0, 8);       /*stream_type*/
+                //bitsBuffer.Write(0xC0, 0, 8);       /*elementary_stream_id*/
+                //bitsBuffer.Write(0, 0, 16);         /*elementary_stream_info_length is*/
 
-                /*crc (2e b9 0f 3d)*/
-                bitsBuffer.Write(0x8C, 0, 8);       /*crc (24~31) bits*/
-                bitsBuffer.Write(0x2E, 0, 8);       /*crc (16~23) bits*/
-                bitsBuffer.Write(0xE6, 0, 8);       /*crc (8~15) bits*/
-                bitsBuffer.Write(0xD9, 0, 8);        /*crc (0~7) bits*/
+                ///*crc (2e b9 0f 3d)*/
+                //bitsBuffer.Write(0x8C, 0, 8);       /*crc (24~31) bits*/
+                //bitsBuffer.Write(0x2E, 0, 8);       /*crc (16~23) bits*/
+                //bitsBuffer.Write(0xE6, 0, 8);       /*crc (8~15) bits*/
+                //bitsBuffer.Write(0xD9, 0, 8);        /*crc (0~7) bits*/
 
-                Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PSM_HDR_LEN);
+                //Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PSM_HDR_LEN);
             }
             catch (Exception ex)
             {
@@ -458,55 +438,55 @@ namespace SIPSorcery.GB28181.Net
         {
             try
             {
-                BitStream bitsBuffer = new BitStream(PES_HDR_LEN);
+                //BitStream bitsBuffer = new BitStream(PES_HDR_LEN);
 
-                //bits_buffer_s bitsBuffer;
-                //bitsBuffer.i_size = PES_HDR_LEN;
-                //bitsBuffer.i_data = 0;
-                //bitsBuffer.i_mask = 0x80;
-                //bitsBuffer.p_data = (unsigned char*)(pData);
-                //memset(bitsBuffer.p_data, 0, PES_HDR_LEN);
-                /*system header*/
-                bitsBuffer.Write(0x000001, 0, 24);  /*start code*/
-                bitsBuffer.Write(stream_id, 0, 8);    /*streamID*/
-                bitsBuffer.Write((payload_len) + 13, 0, 16);    /*packet_len*/ //指出pes分组中数据长度和该字节后的长度和
+                ////bits_buffer_s bitsBuffer;
+                ////bitsBuffer.i_size = PES_HDR_LEN;
+                ////bitsBuffer.i_data = 0;
+                ////bitsBuffer.i_mask = 0x80;
+                ////bitsBuffer.p_data = (unsigned char*)(pData);
+                ////memset(bitsBuffer.p_data, 0, PES_HDR_LEN);
+                ///*system header*/
+                //bitsBuffer.Write(0x000001, 0, 24);  /*start code*/
+                //bitsBuffer.Write(stream_id, 0, 8);    /*streamID*/
+                //bitsBuffer.Write((payload_len) + 13, 0, 16);    /*packet_len*/ //指出pes分组中数据长度和该字节后的长度和
 
-                bitsBuffer.Write(2, 0, 2);//   bits_write(&bitsBuffer, 2, 2);      /*'10'*/
-                bitsBuffer.Write(0, 0, 2); // bits_write(&bitsBuffer, 2, 0);      /*scrambling_control*/
-                bitsBuffer.Write(0, 0, 1);//  bits_write(&bitsBuffer, 1, 0);      /*priority*/
-                bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*data_alignment_indicator*/
-                bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*copyright*/
-                bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*original_or_copy*/
-                bitsBuffer.Write(1, 0, 1); //bits_write(&bitsBuffer, 1, 1);      /*PTS_flag*/
-                bitsBuffer.Write(1, 0, 1); //bits_write(&bitsBuffer, 1, 1);      /*DTS_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*ESCR_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*ES_rate_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*DSM_trick_mode_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*additional_copy_info_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*PES_CRC_flag*/
-                bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*PES_extension_flag*/
-                bitsBuffer.Write(10, 0, 8);//bits_write(&bitsBuffer, 8, 10);     /*header_data_length*/
+                //bitsBuffer.Write(2, 0, 2);//   bits_write(&bitsBuffer, 2, 2);      /*'10'*/
+                //bitsBuffer.Write(0, 0, 2); // bits_write(&bitsBuffer, 2, 0);      /*scrambling_control*/
+                //bitsBuffer.Write(0, 0, 1);//  bits_write(&bitsBuffer, 1, 0);      /*priority*/
+                //bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*data_alignment_indicator*/
+                //bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*copyright*/
+                //bitsBuffer.Write(0, 0, 1); //bits_write(&bitsBuffer, 1, 0);      /*original_or_copy*/
+                //bitsBuffer.Write(1, 0, 1); //bits_write(&bitsBuffer, 1, 1);      /*PTS_flag*/
+                //bitsBuffer.Write(1, 0, 1); //bits_write(&bitsBuffer, 1, 1);      /*DTS_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*ESCR_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*ES_rate_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*DSM_trick_mode_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*additional_copy_info_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*PES_CRC_flag*/
+                //bitsBuffer.Write(0, 0, 1);//bits_write(&bitsBuffer, 1, 0);      /*PES_extension_flag*/
+                //bitsBuffer.Write(10, 0, 8);//bits_write(&bitsBuffer, 8, 10);     /*header_data_length*/
 
-                // 指出包含在 PES 分组标题中的可选字段和任何填充字节所占用的总字节数。该字段之前
-                //的字节指出了有无可选字段。
+                //// 指出包含在 PES 分组标题中的可选字段和任何填充字节所占用的总字节数。该字段之前
+                ////的字节指出了有无可选字段。
 
-                /*PTS,DTS*/
-                bitsBuffer.Write(3, 0, 4);//bits_write(&bitsBuffer, 4, 3);                    /*'0011'*/
-                bitsBuffer.Write(((pts) >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, ((pts) >> 30) & 0x07);     /*PTS[32..30]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
-                bitsBuffer.Write(((pts) >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, ((pts) >> 15) & 0x7FFF);    /*PTS[29..15]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
-                bitsBuffer.Write((pts) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (pts) & 0x7FFF);          /*PTS[14..0]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
-                bitsBuffer.Write(1, 0, 4);//bits_write(&bitsBuffer, 4, 1);                    /*'0001'*/
-                bitsBuffer.Write(((dts) >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, ((dts) >> 30) & 0x07);     /*DTS[32..30]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
-                bitsBuffer.Write(((dts) >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, ((dts) >> 15) & 0x7FFF);    /*DTS[29..15]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
-                bitsBuffer.Write((dts) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (dts) & 0x7FFF);          /*DTS[14..0]*/
-                bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                ///*PTS,DTS*/
+                //bitsBuffer.Write(3, 0, 4);//bits_write(&bitsBuffer, 4, 3);                    /*'0011'*/
+                //bitsBuffer.Write(((pts) >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, ((pts) >> 30) & 0x07);     /*PTS[32..30]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                //bitsBuffer.Write(((pts) >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, ((pts) >> 15) & 0x7FFF);    /*PTS[29..15]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                //bitsBuffer.Write((pts) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (pts) & 0x7FFF);          /*PTS[14..0]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                //bitsBuffer.Write(1, 0, 4);//bits_write(&bitsBuffer, 4, 1);                    /*'0001'*/
+                //bitsBuffer.Write(((dts) >> 30) & 0x07, 0, 3);//bits_write(&bitsBuffer, 3, ((dts) >> 30) & 0x07);     /*DTS[32..30]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                //bitsBuffer.Write(((dts) >> 15) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, ((dts) >> 15) & 0x7FFF);    /*DTS[29..15]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
+                //bitsBuffer.Write((dts) & 0x7FFF, 0, 15);//bits_write(&bitsBuffer, 15, (dts) & 0x7FFF);          /*DTS[14..0]*/
+                //bitsBuffer.Write(1, 0, 1);//bits_write(&bitsBuffer, 1, 1);
 
-                Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PES_HDR_LEN);
+                //Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, PES_HDR_LEN);
 
             }
             catch (Exception ex)

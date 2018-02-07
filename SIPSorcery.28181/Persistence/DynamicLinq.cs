@@ -1,9 +1,7 @@
 ﻿//Copyright (C) Microsoft Corporation.  All rights reserved.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -229,11 +227,13 @@ namespace System.Linq.Dynamic
 
         private ClassFactory() {
             AssemblyName name = new AssemblyName("DynamicClasses");
-            AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            //  AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            AssemblyBuilder assembly = AssemblyBuilder.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
 #if ENABLE_LINQ_PARTIAL_TRUST
             new ReflectionPermission(PermissionState.Unrestricted).Assert();
 #endif
-            try {
+            try
+            {
                 module = assembly.DefineDynamicModule("Module");
             }
             finally {

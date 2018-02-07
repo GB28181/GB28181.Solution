@@ -1,15 +1,4 @@
-﻿using SIPSorcery.GB28181.Persistence;
-using SIPSorcery.GB28181.SIP.App;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data.Linq.Mapping;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SIPSorcery.GB28181.Sys.Config
+﻿namespace SIPSorcery.GB28181.Sys.Config
 {
     ///// <summary>
     ///// 设备列表
@@ -178,7 +167,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //    /// <summary>
     //    /// 设备列表信息
     //    /// </summary>
-    //    [Table(Name = "NvrItem")]
+    //    // [Table(Name = "NvrItem")]
     //    [DataContractAttribute]
     //    public class NvrItem : INotifyPropertyChanged, ISIPAsset
     //    {
@@ -195,7 +184,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        }
 
     //        private Guid _id;
-    //        [Column(Name = "Id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "Id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public Guid Id
     //        {
     //            get
@@ -212,7 +201,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 唯一标识
     //        /// </summary>
-    //        [Column(Name = "NvrID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "NvrID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public int NvrID
     //        {
     //            get { return _nvrID; }
@@ -222,7 +211,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台名称
     //        /// </summary>
-    //        [Column(Name = "NvrName", DbType = "varchar(100)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "NvrName", DbType = "varchar(100)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public string NvrName
     //        {
     //            get { return _nvrName; }
@@ -233,7 +222,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台id
     //        /// </summary>
-    //        [Column(Name = "CamID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CamID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string CamID
     //        {
     //            get { return _camID; }
@@ -245,7 +234,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台ip
     //        /// </summary>
-    //        [Column(Name = "CamIP", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CamIP", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string CamIP
     //        {
     //            get { return _campIP; }
@@ -256,7 +245,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台端口
     //        /// </summary>
-    //        [Column(Name = "CamPort", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CamPort", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public int CamPort
     //        {
     //            get { return _camPort; }
@@ -266,7 +255,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台用户
     //        /// </summary>
-    //        [Column(Name = "CamUser", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CamUser", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string CamUser
     //        {
     //            get { return _camUser; }
@@ -277,7 +266,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台密码
     //        /// </summary>
-    //        [Column(Name = "CamPassword", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CamPassword", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string CamPassword
     //        {
     //            get { return _camPassword; }
@@ -287,7 +276,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台类型
     //        /// </summary>
-    //        [Column(Name = "DevType", DbType = "varchar(30)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "DevType", DbType = "varchar(30)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public string DevType
     //        {
     //            get { return _devType; }
@@ -297,7 +286,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// onvif地址
     //        /// </summary>
-    //        [Column(Name = "OnvifAddress", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "OnvifAddress", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string OnvifAddress
     //        {
     //            get { return _onvifAddress; }
@@ -307,7 +296,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 标准化码流
     //        /// </summary>
-    //        [Column(Name = "IsAnalyzer", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "IsAnalyzer", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public bool IsAnalyzer
     //        {
     //            get { return _isAnalyzer; }
@@ -317,7 +306,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 是/否有录像
     //        /// </summary>
-    //        [Column(Name = "IsBackRecord", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "IsBackRecord", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public int IsBackRecord
     //        {
     //            get { return _isBackRecord; }
@@ -327,7 +316,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 本地平台Id
     //        /// </summary>
-    //        [Column(Name = "LocalID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "LocalID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string LocalID
     //        {
     //            get { return _localID; }
@@ -337,7 +326,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 本地平台ip
     //        /// </summary>
-    //        [Column(Name = "LocalIP", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "LocalIP", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string LocalIP
     //        {
     //            get { return _localIP; }
@@ -347,7 +336,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 本地平台端口
     //        /// </summary>
-    //        [Column(Name = "LocalPort", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "LocalPort", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public int LocalPort
     //        {
     //            get { return _localPort; }
@@ -356,7 +345,7 @@ namespace SIPSorcery.GB28181.Sys.Config
 
     //        public event PropertyChangedEventHandler PropertyChanged;
 
-            
+
 
     //        public void Load(System.Data.DataRow row)
     //        {
@@ -412,12 +401,12 @@ namespace SIPSorcery.GB28181.Sys.Config
     //    /// <summary>
     //    /// 通道信息
     //    /// </summary>
-    //    [Table(Name = "NvrChannel")]
+    //    // [Table(Name = "NvrChannel")]
     //    [DataContractAttribute]
     //    public class ChannelItem : INotifyPropertyChanged, ISIPAsset
     //    {
     //        private Guid _id;
-    //        [Column(Name = "Id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "Id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public Guid Id
     //        {
     //            get
@@ -434,7 +423,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 通道id
     //        /// </summary>
-    //        [Column(Name = "Guid", DbType = "int",  CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "Guid", DbType = "int",  CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public int Guid
     //        {
     //            get { return _guid; }
@@ -444,7 +433,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 设备/平台id
     //        /// </summary>
-    //        [Column(Name = "NvrID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "NvrID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public int NvrID
     //        {
     //            get { return _nvrID; }
@@ -454,7 +443,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 通道编码
     //        /// </summary>
-    //        [Column(Name = "ChannelID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "ChannelID", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public int Channel
     //        {
     //            get { return _channelID; }
@@ -464,7 +453,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 通道名称
     //        /// </summary>
-    //        [Column(Name = "ChannelName", DbType = "varchar(200)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "ChannelName", DbType = "varchar(200)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     //        public string Name
     //        {
     //            get { return _channelName; }
@@ -474,7 +463,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 帧率
     //        /// </summary>
-    //        [Column(Name = "FrameRate", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "FrameRate", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public int FrameRate
     //        {
     //            get { return _frameRate; }
@@ -484,7 +473,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 码流格式
     //        /// </summary>
-    //        [Column(Name = "StreamFormat", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "StreamFormat", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string StreamFormat
     //        {
     //            get { return _streamFormat; }
@@ -494,7 +483,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 音频格式
     //        /// </summary>
-    //        [Column(Name = "AudioFormat", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "AudioFormat", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string AudioFormat
     //        {
     //            get { return _audioFormat; }
@@ -504,7 +493,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// rtsp地址1
     //        /// </summary>
-    //        [Column(Name = "Rtsp1", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "Rtsp1", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string Rtsp1
     //        {
     //            get { return _rtsp1; }
@@ -514,7 +503,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// rtsp地址2
     //        /// </summary>
-    //        [Column(Name = "Rtsp2", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "Rtsp2", DbType = "varchar(200)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string Rtsp2
     //        {
     //            get { return _rtsp2; }
@@ -524,7 +513,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 主码流分辨率
     //        /// </summary>
-    //        [Column(Name = "MainResolution", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "MainResolution", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public ImageResolution MainResolution
     //        {
     //            get { return _mainResolution; }
@@ -534,7 +523,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 子码流分辨率
     //        /// </summary>
-    //        [Column(Name = "SubResolution", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "SubResolution", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public ImageResolution SubResolution
     //        {
     //            get { return _subResolution; }
@@ -544,7 +533,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 码流类型
     //        /// </summary>
-    //        [Column(Name = "StreamType", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "StreamType", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public StreamType StreamType
     //        {
     //            get { return _streamType; }
@@ -554,7 +543,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 摄像机id
     //        /// </summary>
-    //        [Column(Name = "CameraID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "CameraID", DbType = "varchar(30)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string CameraID
     //        {
     //            get { return _cameraID; }
@@ -564,7 +553,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 所属区域名称
     //        /// </summary>
-    //        [Column(Name = "AreaName", DbType = "varchar(100)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "AreaName", DbType = "varchar(100)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public string AreaName
     //        {
     //            get { return _areaName; }
@@ -574,7 +563,7 @@ namespace SIPSorcery.GB28181.Sys.Config
     //        /// <summary>
     //        /// 是/否有录像
     //        /// </summary>
-    //        [Column(Name = "IsBackRecord", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+    //        // [Column(Name = "IsBackRecord", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
     //        public byte IsBackRecord
     //        {
     //            get { return _isBackRecord; }
@@ -583,7 +572,7 @@ namespace SIPSorcery.GB28181.Sys.Config
 
     //        public event PropertyChangedEventHandler PropertyChanged;
 
-         
+
 
     //        public void Load(System.Data.DataRow row)
     //        {

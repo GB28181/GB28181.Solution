@@ -40,11 +40,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq.Mapping;
 #endif
 
 namespace SIPSorcery.GB28181.SIP.App
@@ -55,7 +54,7 @@ namespace SIPSorcery.GB28181.SIP.App
     /// and instead a flat table is used where the domain alias are stored as a delimited list in a single column field.
     /// </remarks>
     [DataContractAttribute]
-    [Table(Name = "sipdomains")]
+    // // // [Column(Name = "sipdomains")]
     public class SIPDomain : ISIPAsset
     {
         private const char ALIAS_SEPERATOR_CHAR = ';';
@@ -66,19 +65,19 @@ namespace SIPSorcery.GB28181.SIP.App
         private static string m_newLine = AppState.NewLine;
 
         [DataMember]
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public Guid Id { get; set; }
 
         [DataMember]
-        [Column(Name = "domain", DbType = "varchar(128)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "domain", DbType = "varchar(128)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string Domain { get; set; }
 
         [DataMember]
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string Owner { get; set; }
 
         private DateTimeOffset? m_inserted;
-        [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset? Inserted
         {
             get { return m_inserted; }
@@ -95,7 +94,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "aliaslist", DbType = "varchar(1024)", CanBeNull = true)]
+        // // [Column(Name = "aliaslist", DbType = "varchar(1024)", CanBeNull = true)]
         public string AliasList
         {
             get

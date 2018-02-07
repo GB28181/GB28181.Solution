@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Linq.Mapping;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.SIP.App
 {
     /// <summary>
     /// 通道信息
     /// </summary>
-    [Table(Name = "CameraInfo")]
+    // [Table(Name = "CameraInfo")]
     [DataContractAttribute]
     public class SvrCamera : INotifyPropertyChanged, ISIPAsset
     {

@@ -36,7 +36,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

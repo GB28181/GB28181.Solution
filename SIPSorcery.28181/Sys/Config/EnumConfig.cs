@@ -1,11 +1,4 @@
-﻿using GLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SIPSorcery.GB28181.Sys.Config
+﻿namespace SIPSorcery.GB28181.Sys.Config
 {
     /// <summary>
     /// 图像分辨率

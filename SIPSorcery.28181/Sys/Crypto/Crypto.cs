@@ -17,7 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Security.Cryptography;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

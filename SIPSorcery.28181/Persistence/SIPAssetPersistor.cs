@@ -36,20 +36,14 @@
 // ============================================================================
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using log4net;
-
-#if !SILVERLIGHT
+using Logger4Net;
 using System.Data;
 using System.Data.Common;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-#endif
+
 
 namespace SIPSorcery.GB28181.Persistence
 {
@@ -153,20 +147,20 @@ namespace SIPSorcery.GB28181.Persistence
         {
             DbParameter dbParameter = dbProviderFactory.CreateParameter();
             dbParameter.ParameterName = parameterName;
-            dbParameter.DbType = EntityTypeConversionTable.LookupDbType(member.DbType);
+            //dbParameter.DbType = EntityTypeConversionTable.LookupDbType(member.DbType);
 
-            if (parameterValue == null)
-            {
-                dbParameter.Value = null;
-            }
-            else if (member.Type == typeof(DateTimeOffset) || member.Type == typeof(Nullable<DateTimeOffset>))
-            {
-                dbParameter.Value = ((DateTimeOffset)parameterValue).ToString("o");
-            }
-            else
-            {
-                dbParameter.Value = parameterValue;
-            }
+            //if (parameterValue == null)
+            //{
+            //    dbParameter.Value = null;
+            //}
+            //else if (member.Type == typeof(DateTimeOffset) || member.Type == typeof(Nullable<DateTimeOffset>))
+            //{
+            //    dbParameter.Value = ((DateTimeOffset)parameterValue).ToString("o");
+            //}
+            //else
+            //{
+            //    dbParameter.Value = parameterValue;
+            //}
 
             return dbParameter;
         }

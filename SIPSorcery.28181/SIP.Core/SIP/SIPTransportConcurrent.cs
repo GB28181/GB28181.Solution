@@ -32,16 +32,15 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using SIPSorcery.Sys;
-using log4net;
+using Logger4Net;
+using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.Sys;
 
 namespace SIPSorcery.SIP
 {
@@ -1459,86 +1458,90 @@ namespace SIPSorcery.SIP
 
         public SIPNonInviteTransaction CreateNonInviteTransaction(SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
         {
-            try
-            {
-                if (localSIPEndPoint == null)
-                {
-                    localSIPEndPoint = GetDefaultSIPEndPoint();
-                }
+            //try
+            //{
+            //    if (localSIPEndPoint == null)
+            //    {
+            //        localSIPEndPoint = GetDefaultSIPEndPoint();
+            //    }
 
-                CheckTransactionEngineExists();
-                SIPNonInviteTransaction nonInviteTransaction = new SIPNonInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
-                m_transactionEngine.AddTransaction(nonInviteTransaction);
-                return nonInviteTransaction;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception CreateNonInviteTransaction. " + excp.Message);
-                throw;
-            }
+            //    CheckTransactionEngineExists();
+            //    SIPNonInviteTransaction nonInviteTransaction = new SIPNonInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
+            //    m_transactionEngine.AddTransaction(nonInviteTransaction);
+            //    return nonInviteTransaction;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception CreateNonInviteTransaction. " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
 
         public UACInviteTransaction CreateUACTransaction(SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
         {
-            try
-            {
-                if (localSIPEndPoint == null)
-                {
-                    localSIPEndPoint = GetDefaultSIPEndPoint();
-                }
+            //try
+            //{
+            //    if (localSIPEndPoint == null)
+            //    {
+            //        localSIPEndPoint = GetDefaultSIPEndPoint();
+            //    }
 
-                CheckTransactionEngineExists();
-                UACInviteTransaction uacInviteTransaction = new UACInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
-                m_transactionEngine.AddTransaction(uacInviteTransaction);
-                return uacInviteTransaction;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception CreateUACTransaction. " + excp.Message);
-                throw;
-            }
+            //    CheckTransactionEngineExists();
+            //    UACInviteTransaction uacInviteTransaction = new UACInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
+            //    m_transactionEngine.AddTransaction(uacInviteTransaction);
+            //    return uacInviteTransaction;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception CreateUACTransaction. " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
 
         public UASInviteTransaction CreateUASTransaction(SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
         {
-            try
-            {
-                if (localSIPEndPoint == null)
-                {
-                    localSIPEndPoint = GetDefaultSIPEndPoint();
-                }
+            //try
+            //{
+            //    if (localSIPEndPoint == null)
+            //    {
+            //        localSIPEndPoint = GetDefaultSIPEndPoint();
+            //    }
 
-                CheckTransactionEngineExists();
-                UASInviteTransaction uasInviteTransaction = new UASInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
-                m_transactionEngine.AddTransaction(uasInviteTransaction);
-                return uasInviteTransaction;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception CreateUASTransaction. " + excp.Message);
-                throw;
-            }
+            //    CheckTransactionEngineExists();
+            //    UASInviteTransaction uasInviteTransaction = new UASInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
+            //    m_transactionEngine.AddTransaction(uasInviteTransaction);
+            //    return uasInviteTransaction;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception CreateUASTransaction. " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
 
         public SIPCancelTransaction CreateCancelTransaction(SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, UASInviteTransaction inviteTransaction)
         {
-            try
-            {
-                if (localSIPEndPoint == null)
-                {
-                    localSIPEndPoint = GetDefaultSIPEndPoint();
-                }
+            //try
+            //{
+            //    if (localSIPEndPoint == null)
+            //    {
+            //        localSIPEndPoint = GetDefaultSIPEndPoint();
+            //    }
 
-                CheckTransactionEngineExists();
-                SIPCancelTransaction cancelTransaction = new SIPCancelTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, inviteTransaction);
-                m_transactionEngine.AddTransaction(cancelTransaction);
-                return cancelTransaction;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception CreateUASTransaction. " + excp.Message);
-                throw;
-            }
+            //    CheckTransactionEngineExists();
+            //    SIPCancelTransaction cancelTransaction = new SIPCancelTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, inviteTransaction);
+            //    m_transactionEngine.AddTransaction(cancelTransaction);
+            //    return cancelTransaction;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception CreateUASTransaction. " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
 
         private void CheckTransactionEngineExists()

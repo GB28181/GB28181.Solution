@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using SIPSorcery.GB28181.Sys;
-
-#if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-#endif
+
 
 namespace SIPSorcery.GB28181.SIP.App
 {
-    [Table(Name = "sipdialogues")]
+   // // [Table(Name = "sipdialogues")]
     public class SIPDialogueAsset: ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipdialogues";
@@ -26,69 +20,69 @@ namespace SIPSorcery.GB28181.SIP.App
         [IgnoreDataMember]
         public SIPDialogue SIPDialogue;
 
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public Guid Id
         {
             get { return SIPDialogue.Id; }
             set { SIPDialogue.Id = value; }
         }
 
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string Owner
         {
             get { return SIPDialogue.Owner; }
             set { SIPDialogue.Owner = value; }
         }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AdminMemberId
         {
             get { return SIPDialogue.AdminMemberId; }
             set { SIPDialogue.AdminMemberId = value; }
         }
 
-        //[Column(Name = "dialogueid", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        //// // [Column(Name = "dialogueid", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         //public string DialogueId {
         //   get { return SIPDialogue.DialogueId; }
         //    set { SIPDialogue.DialogueId = value; }
         //}
 
-        [Column(Name = "localtag", DbType = "varchar(64)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "localtag", DbType = "varchar(64)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string LocalTag
         {
             get { return SIPDialogue.LocalTag; }
             set { SIPDialogue.LocalTag = value; }
         }
 
-        [Column(Name = "remotetag", DbType = "varchar(64)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "remotetag", DbType = "varchar(64)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string RemoteTag
         {
             get { return SIPDialogue.RemoteTag; }
             set { SIPDialogue.RemoteTag = value; }
         }
 
-        [Column(Name = "callid", DbType = "varchar(128)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "callid", DbType = "varchar(128)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string CallId
         {
             get { return SIPDialogue.CallId; }
             set { SIPDialogue.CallId = value; }
         }
 
-        [Column(Name = "cseq", DbType = "int", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "cseq", DbType = "int", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public int CSeq
         {
             get { return SIPDialogue.CSeq; }
             set { SIPDialogue.CSeq = value; }
         }
 
-        [Column(Name = "bridgeid", DbType = "varchar(36)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "bridgeid", DbType = "varchar(36)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string BridgeId
         {
             get { return SIPDialogue.BridgeId.ToString(); }
             set { SIPDialogue.BridgeId = (!value.IsNullOrBlank()) ? new Guid(value) : Guid.Empty; }
         }
 
-        [Column(Name = "remotetarget", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "remotetarget", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string RemoteTarget
         {
             get { return SIPDialogue.RemoteTarget.ToString(); }
@@ -96,7 +90,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [IgnoreDataMember]
-        [Column(Name = "localuserfield", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "localuserfield", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string LocalUserField
         {
             get { return SIPDialogue.LocalUserField.ToString(); }
@@ -104,14 +98,14 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "remoteuserfield", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "remoteuserfield", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string RemoteUserField
         {
             get { return SIPDialogue.RemoteUserField.ToString(); }
             set { SIPDialogue.RemoteUserField = (!value.IsNullOrBlank()) ? SIPUserField.ParseSIPUserField(value) : null; }
         }
 
-        [Column(Name = "proxysipsocket", DbType = "varchar(64)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "proxysipsocket", DbType = "varchar(64)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProxySIPSocket
         {
@@ -120,14 +114,14 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [IgnoreDataMember]
-        [Column(Name = "routeset", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "routeset", DbType = "varchar(512)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string RouteSet
         {
             get { return (SIPDialogue.RouteSet != null) ? SIPDialogue.RouteSet.ToString() : null; }
             set { SIPDialogue.RouteSet = (!value.IsNullOrBlank()) ? SIPRouteSet.ParseSIPRouteSet(value) : null; }
         }
 
-        [Column(Name = "cdrid", DbType = "varchar(36)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "cdrid", DbType = "varchar(36)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string CDRId
         {
             get { return SIPDialogue.CDRId.ToString(); }
@@ -135,7 +129,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "calldurationlimit", DbType = "int", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "calldurationlimit", DbType = "int", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public int CallDurationLimit
         {
             get { return SIPDialogue.CallDurationLimit; }
@@ -143,7 +137,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset Inserted
         {
             get { return SIPDialogue.Inserted; }
@@ -151,7 +145,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "hangupat", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "hangupat", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset? HangupAt
         {
             get
@@ -169,7 +163,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "transfermode", DbType = "varchar(16)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "transfermode", DbType = "varchar(16)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string TransferMode
         {
             get { return SIPDialogue.TransferMode.ToString(); }
@@ -182,7 +176,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "direction", DbType = "varchar(3)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "direction", DbType = "varchar(3)", IsPrimaryKey = false, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public string Direction
         {
             get { return SIPDialogue.Direction.ToString(); }
@@ -195,63 +189,63 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "sdp", DbType = "varchar(2048)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "sdp", DbType = "varchar(2048)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string SDP
         {
             get { return SIPDialogue.SDP; }
             set { SIPDialogue.SDP = value; }
         }
 
-        [Column(Name = "remotesdp", DbType = "varchar(2048)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "remotesdp", DbType = "varchar(2048)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string RemoteSDP
         {
             get { return SIPDialogue.RemoteSDP; }
             set { SIPDialogue.RemoteSDP = value; }
         }
 
-        //[Column(Name = "switchboarddescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        //// // [Column(Name = "switchboarddescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         //public string SwitchboardDescription
         //{
         //    get { return SIPDialogue.SwitchboardDescription; }
         //    set { SIPDialogue.SwitchboardDescription = value; }
         //}
 
-        //[Column(Name = "switchboardcallerdescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        //// // [Column(Name = "switchboardcallerdescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         //public string SwitchboardCallerDescription 
         //{
         //    get { return SIPDialogue.SwitchboardCallerDescription; }
         //    set { SIPDialogue.SwitchboardCallerDescription = value; } 
         //}
 
-        [Column(Name = "switchboardowner", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "switchboardowner", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string SwitchboardOwner
         {
             get { return SIPDialogue.SwitchboardOwner; }
             set { SIPDialogue.SwitchboardOwner = value; }
         }
 
-        [Column(Name = "SwitchboardLineName", DbType = "varchar(128)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "SwitchboardLineName", DbType = "varchar(128)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string SwitchboardLineName
         {
             get { return SIPDialogue.SwitchboardLineName; }
             set { SIPDialogue.SwitchboardLineName = value; }
         }
 
-        [Column(Name = "CRMPersonName", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "CRMPersonName", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string CRMPersonName
         {
             get { return SIPDialogue.CRMPersonName; }
             set { SIPDialogue.CRMPersonName = value; }
         }
 
-        [Column(Name = "CRMCompanyName", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "CRMCompanyName", DbType = "varchar(256)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string CRMCompanyName
         {
             get { return SIPDialogue.CRMCompanyName; }
             set { SIPDialogue.CRMCompanyName = value; }
         }
 
-        [Column(Name = "CRMPictureURL", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "CRMPictureURL", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string CRMPictureURL
         {
             get { return SIPDialogue.CRMPictureURL; }

@@ -4,12 +4,11 @@ using SIPSorcery.GB28181.Sys;
 
 #if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq.Mapping;
 #endif
 
 namespace SIPSorcery.GB28181.SIP.App
 {
-    [Table(Name = "cdr")]
+ //   // [Table(Name = "cdr")]
     public class SIPCDRAsset : ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipcdrs";
@@ -21,7 +20,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public static int TimeZoneOffsetMinutes;
 
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+     //   // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public Guid Id
         {
             get { return m_sipCDR.CDRId; }
@@ -29,14 +28,14 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         [DataMember]
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+      //  // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string Owner
         {
             get { return m_sipCDR.Owner; }
             set { m_sipCDR.Owner = value; }
         }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+       // // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string AdminMemberId
         {
@@ -45,14 +44,14 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_inserted;
-        [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+      //  // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset Inserted
         {
             get { return m_inserted.ToUniversalTime(); }
             set { m_inserted = value.ToUniversalTime(); }
         }
 
-        [Column(Name = "direction", DbType = "varchar(3)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+       // // // [Column(Name = "direction", DbType = "varchar(3)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string CallDirection
         {
@@ -60,7 +59,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.CallDirection = (!value.IsNullOrBlank()) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), value, true) : SIPCallDirection.None; }
         }
 
-        [Column(Name = "created", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+       // // // [Column(Name = "created", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset Created
         {
@@ -73,7 +72,7 @@ namespace SIPSorcery.GB28181.SIP.App
             get { return Created.AddMinutes(TimeZoneOffsetMinutes); }
         }
 
-        [Column(Name = "dst", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+      //  // // [Column(Name = "dst", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Dst
         {
@@ -81,7 +80,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { } // Set on DstURI.
         }
 
-        [Column(Name = "dsthost", DbType = "varchar(128)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "dsthost", DbType = "varchar(128)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DstHost
         {
@@ -89,7 +88,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { } // Set on DstURI.
         }
 
-        [Column(Name = "dsturi", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "dsturi", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DstURI
         {
@@ -97,7 +96,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.Destination = (!value.IsNullOrBlank()) ? SIPURI.ParseSIPURI(value) : null; }
         }
 
-        [Column(Name = "fromuser", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "fromuser", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string FromUser
         {
@@ -105,7 +104,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { } // Set on FromHeader.
         }
 
-        [Column(Name = "fromname", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "fromname", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string FromName
         {
@@ -113,7 +112,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { } // Set on FromHeader.
         }
 
-        [Column(Name = "fromheader", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "fromheader", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string FromHeader
         {
@@ -121,7 +120,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.From = (!value.IsNullOrBlank()) ? SIPFromHeader.ParseFromHeader(value) : null; }
         }
 
-        [Column(Name = "callid", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "callid", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string CallId
         {
@@ -129,7 +128,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.CallId = value; }
         }
 
-        [Column(Name = "localsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "localsocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string LocalSocket
         {
@@ -137,7 +136,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.LocalSIPEndPoint = (!value.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(value) : null; }
         }
 
-        [Column(Name = "remotesocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "remotesocket", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RemoteSocket
         {
@@ -145,7 +144,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.RemoteEndPoint = (!value.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(value) : null; }
         }
 
-        [Column(Name = "bridgeid", DbType = "varchar(36)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "bridgeid", DbType = "varchar(36)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string BridgeId
         {
@@ -153,7 +152,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.BridgeId = (!value.IsNullOrBlank()) ? new Guid(value) : Guid.Empty; }
         }
 
-        [Column(Name = "inprogresstime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inprogresstime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset? InProgressTime
         {
@@ -181,7 +180,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "inprogressstatus", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inprogressstatus", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int InProgressStatus
         {
@@ -189,7 +188,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.ProgressStatus = value; }
         }
 
-        [Column(Name = "inprogressreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inprogressreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string InProgressReason
         {
@@ -197,7 +196,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.ProgressReasonPhrase = value; }
         }
 
-        [Column(Name = "ringduration", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "ringduration", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int RingDuration
         {
@@ -205,7 +204,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { }
         }
 
-        [Column(Name = "answeredtime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "answeredtime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset? AnsweredTime
         {
@@ -248,7 +247,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "answeredstatus", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "answeredstatus", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int AnsweredStatus
         {
@@ -256,7 +255,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.AnswerStatus = value; }
         }
 
-        [Column(Name = "answeredreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "answeredreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string AnsweredReason
         {
@@ -264,7 +263,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.AnswerReasonPhrase = value; }
         }
 
-        [Column(Name = "duration", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "duration", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int Duration
         {
@@ -272,7 +271,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { }
         }
 
-        [Column(Name = "hunguptime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "hunguptime", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset? HungupTime
         {
@@ -315,7 +314,7 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "hungupreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "hungupreason", DbType = "varchar(512)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string HungupReason
         {
@@ -323,7 +322,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.HangupReason = value; }
         }
 
-        [Column(Name = "answeredat", DbType = "datetime", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "answeredat", DbType = "datetime", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTime? AnsweredAt
         {
@@ -331,7 +330,7 @@ namespace SIPSorcery.GB28181.SIP.App
             set { m_sipCDR.AnsweredAt = value; }
         }
 
-        [Column(Name = "dialplancontextid", DbType = "varchar(36)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "dialplancontextid", DbType = "varchar(36)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DialPlanContextId
         {

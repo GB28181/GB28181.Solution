@@ -1,22 +1,17 @@
-﻿using log4net;
-using SIPSorcery.GB28181.SIP.App;
+﻿using Logger4Net;
 using SIPSorcery.GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Linq.Mapping;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.SIP.App
 {
     /// <summary>
     /// 设备信息
     /// </summary>
-    [Table(Name = "Device")]
-    [DataContractAttribute]
+    // [Table(Name = "Device")]
+    [DataContract]
     public class SvrDevice : INotifyPropertyChanged, ISIPAsset
     {
         private ILog logger = AppState.logger;
@@ -30,7 +25,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// ID
         /// </summary>
-        [Column(Name = "ID", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "ID", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid Id
         {
@@ -42,7 +37,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 编号(设备/下级平台)
         /// </summary>
-        [Column(Name = "DeviceID", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "DeviceID", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DeviceID
         {
@@ -54,7 +49,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 名称
         /// </summary>
-        [Column(Name = "Name", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "Name", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Name
         {
@@ -66,7 +61,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 厂商
         /// </summary>
-        [Column(Name = "Manufacture", DbType = "varchar(50)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "Manufacture", DbType = "varchar(50)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Manufacture
         {
@@ -78,7 +73,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 类型
         /// </summary>
-        [Column(Name = "DevType", DbType = "varchar(20)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "DevType", DbType = "varchar(20)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string DevType
         {
@@ -90,7 +85,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 型号
         /// </summary>
-        [Column(Name = "Model", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "Model", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Model
         {
@@ -102,7 +97,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 所有者
         /// </summary>
-        [Column(Name = "Owner", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "Owner", DbType = "varchar(20)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Owner
         {
@@ -114,7 +109,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 城市码
         /// </summary>
-        [Column(Name = "CvilCode", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "CvilCode", DbType = "int", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int CvilCode
         {

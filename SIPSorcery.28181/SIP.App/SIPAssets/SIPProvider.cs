@@ -39,11 +39,10 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;
-using System.Data.Linq.Mapping;
 #endif
 
 namespace SIPSorcery.GB28181.SIP.App
@@ -62,7 +61,7 @@ namespace SIPSorcery.GB28181.SIP.App
         Gizmo = 7,
     }
 
-    [Table(Name = "sipproviders")]
+   // // [Table(Name = "sipproviders")]
     [DataContractAttribute]
     public class SIPProvider : INotifyPropertyChanged, ISIPAsset
     {
@@ -82,7 +81,7 @@ namespace SIPSorcery.GB28181.SIP.App
         private static ILog logger = AppState.logger;
 
         private ProviderTypes m_providerType;            // Identifies whether the provider entry is a SIP or Google Voice entry.
-        [Column(Name = "providertype", DbType = "varchar(16)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providertype", DbType = "varchar(16)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public ProviderTypes ProviderType
         {
@@ -95,7 +94,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private Guid m_id;
-        [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public Guid Id
         {
@@ -104,7 +103,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_owner;                         // The username of the account that owns this SIP provider configuration.
-        [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Owner
         {
@@ -116,11 +115,11 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string AdminMemberId { get; set; }    // If set it designates this asset as a belonging to a user with the matching adminid.
 
         private string m_providerName;
-        [Column(Name = "providername", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providername", DbType = "varchar(50)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderName
         {
@@ -133,7 +132,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_providerUsername;
-        [Column(Name = "providerusername", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerusername", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderUsername
         {
@@ -146,7 +145,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_providerPassword;
-        [Column(Name = "providerpassword", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerpassword", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderPassword
         {
@@ -159,7 +158,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private SIPURI m_providerServer;
-        [Column(Name = "providerserver", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerserver", DbType = "varchar(256)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderServer
         {
@@ -172,7 +171,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_providerAuthUsername;             // An optional setting if authusername differs from username for authentication.
-        [Column(Name = "providerauthusername", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerauthusername", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderAuthUsername
         {
@@ -185,7 +184,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_providerOutboundProxy;
-        [Column(Name = "provideroutboundproxy", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "provideroutboundproxy", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderOutboundProxy
         {
@@ -198,7 +197,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_providerFrom;                     // If set determines how the From header will be set for calls to the SIP provider.
-        [Column(Name = "providerfrom", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "providerfrom", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string ProviderFrom
         {
@@ -211,7 +210,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_customHeaders;                  // An optional list of custom SIP headers that will be added to calls to the SIP provider.
-        [Column(Name = "customheaders", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "customheaders", DbType = "varchar(1024)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string CustomHeaders
         {
@@ -224,7 +223,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private SIPURI m_registerContact;
-        [Column(Name = "registercontact", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registercontact", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegisterContact
         {
@@ -237,7 +236,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private int m_registerExpiry = REGISTER_DEFAULT_EXPIRY;
-        [Column(Name = "registerexpiry", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registerexpiry", DbType = "int", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public int RegisterExpiry
         {
@@ -250,7 +249,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private SIPURI m_registerServer;                    // If set this host address will be used for the Registrar server, if not set the ProviderServer is used.
-        [Column(Name = "registerserver", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registerserver", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegisterServer
         {
@@ -263,7 +262,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_registerRealm;                     // An optional setting if the register realm differs from the provider server.
-        [Column(Name = "registerrealm", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registerrealm", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegisterRealm
         {
@@ -276,7 +275,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_registerEnabled;                     // If the registration has been disabled this will be set to false.
-        [Column(Name = "registerenabled", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registerenabled", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool RegisterEnabled
         {
@@ -289,7 +288,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_registerAdminEnabled;                // This setting allows and administrator to override the user setting and disable a registration.
-        [Column(Name = "registeradminenabled", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registeradminenabled", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool RegisterAdminEnabled
         {
@@ -307,7 +306,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_registerDisabledReason;            // If the registration agent disabled the registration it will set a reason.
-        [Column(Name = "registerdisabledreason", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "registerdisabledreason", DbType = "varchar(256)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string RegisterDisabledReason
         {
@@ -320,7 +319,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_gvCallbackNumber;            // The callback number for Google Voice calls.
-        [Column(Name = "gvcallbacknumber", DbType = "varchar(16)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "gvcallbacknumber", DbType = "varchar(16)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string GVCallbackNumber
         {
@@ -333,7 +332,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private string m_gvCallbackPattern;            // The callback number for Google Voice calls.
-        [Column(Name = "gvcallbackpattern", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "gvcallbackpattern", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string GVCallbackPattern
         {
@@ -346,7 +345,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private GoogleVoiceCallbackTypes? m_gvCallbackType;
-        [Column(Name = "gvcallbacktype", DbType = "varchar(16)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "gvcallbacktype", DbType = "varchar(16)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public GoogleVoiceCallbackTypes? GVCallbackType
         {
@@ -359,7 +358,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_lastUpdate;
-        [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "lastupdate", DbType = "datetimeoffset", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset LastUpdate
         {
@@ -372,7 +371,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private DateTimeOffset m_inserted;
-        [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset Inserted
         {
@@ -381,7 +380,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_isReadOnly;                     
-        [Column(Name = "isreadonly", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "isreadonly", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool IsReadOnly
         {
@@ -394,7 +393,7 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         private bool m_sendMWISubscribe;                     // If this is set and the provider is being registered then an MWI subscription will be sent on a successful registration.
-        [Column(Name = "sendmwisubscribe", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // [Column(Name = "sendmwisubscribe", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool SendMWISubscribe
         {

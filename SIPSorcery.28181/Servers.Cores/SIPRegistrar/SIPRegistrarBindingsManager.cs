@@ -35,21 +35,15 @@
 // ============================================================================
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data.Linq;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Transactions;
 using SIPSorcery.GB28181.Persistence;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Servers
 {

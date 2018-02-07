@@ -34,16 +34,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
+using SIPSorcery.GB28181.SIP.App;
+using SIPSorcery.GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using SIPSorcery.GB28181.SIP.App;
-using SIPSorcery.GB28181.Sys;
 
 namespace SIPSorcery.GB28181.Persistence
 {
@@ -63,163 +61,163 @@ namespace SIPSorcery.GB28181.Persistence
 
         public override List<T> Add(List<T> assets)
         {
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
-            {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        IDbCommand insertCommand = connection.CreateCommand();
-                        insertCommand.Transaction = trans;
-                        foreach (var asset in assets)
-                        {
+            //using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            //{
+            //    connection.ConnectionString = m_dbConnectionStr;
+            //    connection.Open();
+            //    using (IDbTransaction trans = connection.BeginTransaction())
+            //    {
+            //        try
+            //        {
+            //            IDbCommand insertCommand = connection.CreateCommand();
+            //            insertCommand.Transaction = trans;
+            //            foreach (var asset in assets)
+            //            {
 
 
-                            StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
-                            StringBuilder parametersStr = new StringBuilder("(");
-                            List<DbParameter> dbParameters = new List<DbParameter>();
+            //                //StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
+            //                //StringBuilder parametersStr = new StringBuilder("(");
+            //                //List<DbParameter> dbParameters = new List<DbParameter>();
 
-                            int paramNumber = 1;
-                            Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
-                            foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
-                            {
-                                DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
-                                insertCommand.Parameters.Add(dbParameter);
+            //                //int paramNumber = 1;
+            //                //Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
+            //                //foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
+            //                //{
+            //                //    DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
+            //                //    insertCommand.Parameters.Add(dbParameter);
 
-                                insertQuery.Append(propertyValue.Key.MappedName + ",");
-                                parametersStr.Append("?" + paramNumber + ",");
-                                paramNumber++;
-                            }
+            //                //    insertQuery.Append(propertyValue.Key.MappedName + ",");
+            //                //    parametersStr.Append("?" + paramNumber + ",");
+            //                //    paramNumber++;
+            //                //}
 
-                            string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
+            //                string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
 
-                            //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
+            //                //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
 
-                            insertCommand.CommandText = insertCommandText;
-                            insertCommand.ExecuteNonQuery();
-                            if (Added != null)
-                            {
-                                Added(asset);
-                            }
-                        }
-                        trans.Commit();
+            //                insertCommand.CommandText = insertCommandText;
+            //                insertCommand.ExecuteNonQuery();
+            //                Added?.Invoke(asset);
+            //            }
+            //            trans.Commit();
 
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
-                return assets;
-            }
+            //        }
+            //        catch (Exception excp)
+            //        {
+            //            trans.Rollback();
+            //            logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
+            //            throw;
+            //        }
+            //    }
+            //    return assets;
+            //}
+            return null;
         }
 
         public override T Add(T asset)
         {
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
-            {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
-                {
-                    try
-                    {
+            //using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            //{
+            //    connection.ConnectionString = m_dbConnectionStr;
+            //    connection.Open();
+            //    using (IDbTransaction trans = connection.BeginTransaction())
+            //    {
+            //        try
+            //        {
 
-                        IDbCommand insertCommand = connection.CreateCommand();
-                        insertCommand.Transaction = trans;
-                        StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
-                        StringBuilder parametersStr = new StringBuilder("(");
-                        List<DbParameter> dbParameters = new List<DbParameter>();
+            //            IDbCommand insertCommand = connection.CreateCommand();
+            //            insertCommand.Transaction = trans;
+            //            StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
+            //            StringBuilder parametersStr = new StringBuilder("(");
+            //            List<DbParameter> dbParameters = new List<DbParameter>();
 
-                        int paramNumber = 1;
-                        Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
-                        foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
-                        {
-                            DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
-                            insertCommand.Parameters.Add(dbParameter);
+            //            int paramNumber = 1;
+            //            Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
+            //            foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
+            //            {
+            //                DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
+            //                insertCommand.Parameters.Add(dbParameter);
 
-                            insertQuery.Append(propertyValue.Key.MappedName + ",");
-                            parametersStr.Append("?" + paramNumber + ",");
-                            paramNumber++;
-                        }
+            //                insertQuery.Append(propertyValue.Key.MappedName + ",");
+            //                parametersStr.Append("?" + paramNumber + ",");
+            //                paramNumber++;
+            //            }
 
-                        string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
+            //            string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
 
-                        //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
+            //            //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
 
-                        insertCommand.CommandText = insertCommandText;
-                        insertCommand.ExecuteNonQuery();
-                        trans.Commit();
-                        if (Added != null)
-                        {
-                            Added(asset);
-                        }
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
-                return asset;
-            }
+            //            insertCommand.CommandText = insertCommandText;
+            //            insertCommand.ExecuteNonQuery();
+            //            trans.Commit();
+            //            if (Added != null)
+            //            {
+            //                Added(asset);
+            //            }
+            //        }
+            //        catch (Exception excp)
+            //        {
+            //            trans.Rollback();
+            //            logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
+            //            throw;
+            //        }
+            //    }
+            //    return asset;
+            //}
+            return null;
         }
 
         public override T Update(T asset)
         {
-            try
-            {
-                using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
-                {
-                    connection.ConnectionString = m_dbConnectionStr;
-                    connection.Open();
+            //try
+            //{
+            //    using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            //    {
+            //        connection.ConnectionString = m_dbConnectionStr;
+            //        connection.Open();
 
-                    IDbCommand insertCommand = connection.CreateCommand();
+            //        IDbCommand insertCommand = connection.CreateCommand();
 
-                    IDbCommand updateCommand = connection.CreateCommand();
+            //        IDbCommand updateCommand = connection.CreateCommand();
 
-                    StringBuilder updateQuery = new StringBuilder("update " + m_objectMapper.TableName + " set ");
-                    List<DbParameter> dbParameters = new List<DbParameter>();
+            //        StringBuilder updateQuery = new StringBuilder("update " + m_objectMapper.TableName + " set ");
+            //        List<DbParameter> dbParameters = new List<DbParameter>();
 
-                    int paramNumber = 1;
-                    Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
-                    foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
-                    {
-                        if (!propertyValue.Key.IsPrimaryKey)
-                        {
-                            DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
-                            updateCommand.Parameters.Add(dbParameter);
+            //        int paramNumber = 1;
+            //        Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
+            //        foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
+            //        {
+            //            if (!propertyValue.Key.IsPrimaryKey)
+            //            {
+            //                DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
+            //                updateCommand.Parameters.Add(dbParameter);
 
-                            updateQuery.Append(propertyValue.Key.MappedName + "= ?" + paramNumber + ",");
-                            paramNumber++;
-                        }
-                    }
+            //                updateQuery.Append(propertyValue.Key.MappedName + "= ?" + paramNumber + ",");
+            //                paramNumber++;
+            //            }
+            //        }
 
-                    string updateCommandText = updateQuery.ToString().TrimEnd(',') + " where id = '" + asset.Id + "'";
+            //        string updateCommandText = updateQuery.ToString().TrimEnd(',') + " where id = '" + asset.Id + "'";
 
-                    //logger.Debug("SQLAssetPersistor update SQL: " + updateCommandText + ".");
+            //        //logger.Debug("SQLAssetPersistor update SQL: " + updateCommandText + ".");
 
-                    updateCommand.CommandText = updateCommandText;
-                    updateCommand.ExecuteNonQuery();
+            //        updateCommand.CommandText = updateCommandText;
+            //        updateCommand.ExecuteNonQuery();
 
-                    if (Updated != null)
-                    {
-                        Updated(asset);
-                    }
+            //        if (Updated != null)
+            //        {
+            //            Updated(asset);
+            //        }
 
-                    return asset;
-                }
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SQLAssetPersistor Update (for " + typeof(T).Name + "). " + excp.Message);
-                throw;
-            }
+            //        return asset;
+            //    }
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception SQLAssetPersistor Update (for " + typeof(T).Name + "). " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
 
         public override void UpdateProperty(Guid id, string propertyName, object value)
@@ -532,7 +530,7 @@ namespace SIPSorcery.GB28181.Persistence
     [TestFixture]
     public class SQLAssetPersistorUnitTest {
 
-        [Table(Name="table")]
+        // [Table(Name="table")]
         private class MockSIPAsset : ISIPAsset {
 
             private Guid m_id;

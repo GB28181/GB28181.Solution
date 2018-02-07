@@ -47,7 +47,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -145,7 +145,7 @@ namespace SIPSorcery.GB28181.SIP
             [TestFixtureSetUp]
             public void Init()
             {
-                log4net.Config.BasicConfigurator.Configure();
+                Logger4Net.Config.BasicConfigurator.Configure();
             }
 
             /// <summary>

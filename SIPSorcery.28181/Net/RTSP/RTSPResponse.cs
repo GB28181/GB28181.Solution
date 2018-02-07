@@ -35,7 +35,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Text;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Net
 {

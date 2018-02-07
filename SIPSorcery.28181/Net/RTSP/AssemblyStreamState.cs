@@ -34,22 +34,17 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Xml;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using System;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Net
 {
-	/// <summary>
-	/// This class maintains static application configuration settings that can be used by all classes within
-	/// the AppDomain. This class is the one stop shop for retrieving or accessing application configuration settings.
-	/// </summary>
-	public class AssemblyStreamState
+    /// <summary>
+    /// This class maintains static application configuration settings that can be used by all classes within
+    /// the AppDomain. This class is the one stop shop for retrieving or accessing application configuration settings.
+    /// </summary> 
+    public class AssemblyStreamState
 	{
 		public const string LOGGER_NAME = "rtsp";
 

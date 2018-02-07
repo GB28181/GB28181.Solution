@@ -1,10 +1,7 @@
-﻿using log4net;
+﻿using Logger4Net;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -193,7 +190,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 {
                     obj = (T)s.Deserialize(r);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     r.Close();
                     return null;
@@ -232,7 +229,7 @@ namespace SIPSorcery.GB28181.Sys.XML
             {
                 obj = (T)s.Deserialize(sr);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //logger.Error("反序列化错误" + ex.Message + ex.StackTrace.ToString());
                 sr.Close();
@@ -292,7 +289,7 @@ namespace SIPSorcery.GB28181.Sys.XML
         public virtual void Save(T t)
         {
             CheckConstructPath(t.GetType());
-            this.Serialize(t);
+            Serialize(t);
         }
 
         /// <summary>
@@ -304,7 +301,7 @@ namespace SIPSorcery.GB28181.Sys.XML
         public virtual string Save<T>(T t)
         {
             CheckConstructPath(t.GetType());
-            return this.Serialize<T>(t);
+            return Serialize(t);
         }
     }
 }

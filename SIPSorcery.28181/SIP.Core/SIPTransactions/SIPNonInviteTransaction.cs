@@ -30,28 +30,28 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Text.RegularExpressions;
-using log4net;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
+using SIPSorcery.SIP;
+
 namespace SIPSorcery.GB28181.SIP
 {
-	public class SIPNonInviteTransaction : SIPTransaction
+    public class SIPNonInviteTransaction : SIPTransaction
 	{
+        private SIPSorcery.SIP.SIPTransport sIPTransport;
+        private SIPRequest sipRequest;
+        private SIPEndPoint dstEndPoint;
+
         public event SIPTransactionResponseReceivedDelegate NonInviteTransactionInfoResponseReceived;
         public event SIPTransactionResponseReceivedDelegate NonInviteTransactionFinalResponseReceived;
         public event SIPTransactionTimedOutDelegate NonInviteTransactionTimedOut;
         public event SIPTransactionRequestReceivedDelegate NonInviteRequestReceived;
         public event SIPTransactionRequestRetransmitDelegate NonInviteTransactionRequestRetransmit;
 
-        internal SIPNonInviteTransaction(SIPTransport sipTransport, SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
+        public SIPNonInviteTransaction(SIPTransport sipTransport, SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
             : base(sipTransport, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy)
         {
             TransactionType = SIPTransactionTypesEnum.NonInvite;
@@ -62,6 +62,8 @@ namespace SIPSorcery.GB28181.SIP
             TransactionRemoved += SIPNonInviteTransaction_TransactionRemoved;
             TransactionRequestRetransmit += SIPNonInviteTransaction_TransactionRequestRetransmit;
         }
+
+
 
         private void SIPNonInviteTransaction_TransactionRemoved(SIPTransaction transaction)
         {

@@ -35,7 +35,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

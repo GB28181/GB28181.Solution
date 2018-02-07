@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Data.Linq.Mapping;
 using System.Text;
 
-namespace SIPSorcery.GB28181.Persistence {
- 
+namespace SIPSorcery.GB28181.Persistence
+{
+
     internal class SQLExpressionVisitor : ExpressionVisitor {
 
         private StringBuilder sb;
@@ -193,33 +192,34 @@ namespace SIPSorcery.GB28181.Persistence {
         }
 
         private string GetTableName(Type tableType) {
-            AttributeMappingSource mappingSource = new AttributeMappingSource();
-            MetaModel mapping = mappingSource.GetModel(tableType);
-            MetaTable table = mapping.GetTable(tableType);
-            return table.TableName;
+            //AttributeMappingSource mappingSource = new AttributeMappingSource();
+            //MetaModel mapping = mappingSource.GetModel(tableType);
+            //MetaTable table = mapping.GetTable(tableType);
+            //return table.TableName;
+            return null; 
         }
 
         private bool IsPrimaryKey(MemberExpression m) {
-            AttributeMappingSource mappingSource = new AttributeMappingSource();
-            MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
-            MetaTable table = mapping.GetTable(m.Member.DeclaringType);
-            foreach (MetaDataMember dataMember in table.RowType.PersistentDataMembers) {
-                if (dataMember.Name == m.Member.Name) {
-                    return dataMember.IsPrimaryKey;
-                }
-            }
+            //AttributeMappingSource mappingSource = new AttributeMappingSource();
+            //MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
+            //MetaTable table = mapping.GetTable(m.Member.DeclaringType);
+            //foreach (MetaDataMember dataMember in table.RowType.PersistentDataMembers) {
+            //    if (dataMember.Name == m.Member.Name) {
+            //        return dataMember.IsPrimaryKey;
+            //    }
+            //}
             return false;
         }
 
         private Type GetMemberType(MemberExpression m) {
-            AttributeMappingSource mappingSource = new AttributeMappingSource();
-            MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
-            MetaTable table = mapping.GetTable(m.Member.DeclaringType);
-            foreach (MetaDataMember dataMember in table.RowType.PersistentDataMembers) {
-                if (dataMember.Name == m.Member.Name) {
-                    return dataMember.Type;
-                }
-            }
+            //AttributeMappingSource mappingSource = new AttributeMappingSource();
+            //MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
+            //MetaTable table = mapping.GetTable(m.Member.DeclaringType);
+            //foreach (MetaDataMember dataMember in table.RowType.PersistentDataMembers) {
+            //    if (dataMember.Name == m.Member.Name) {
+            //        return dataMember.Type;
+            //    }
+            //}
             return null;
         }
     }

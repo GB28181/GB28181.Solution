@@ -48,7 +48,7 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

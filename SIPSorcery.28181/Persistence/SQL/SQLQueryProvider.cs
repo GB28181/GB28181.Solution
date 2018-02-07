@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Transactions;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Persistence {
 
@@ -145,7 +145,7 @@ namespace SIPSorcery.GB28181.Persistence {
         [TestFixture]
         public class SQLQueryProviderUnitTest {
 
-            [Table(Name = "table")]
+            // [Table(Name = "table")]
             private class MockSIPAsset : ISIPAsset {
 
                 private Guid m_id;
@@ -168,7 +168,7 @@ namespace SIPSorcery.GB28181.Persistence {
                 }
 
                 private bool m_expired;
-                [Column(Name = "expired", DbType = "boolean", CanBeNull = false)]
+                // [Column(Name = "expired", DbType = "boolean", CanBeNull = false)]
                 public bool Expired {
                     get { return m_expired; }
                     set { m_expired = value; }
@@ -211,7 +211,7 @@ namespace SIPSorcery.GB28181.Persistence {
 
             [TestFixtureSetUp]
             public void Init() {
-                log4net.Config.BasicConfigurator.Configure();
+                Logger4Net.Config.BasicConfigurator.Configure();
             }
 
             [TestFixtureTearDown]

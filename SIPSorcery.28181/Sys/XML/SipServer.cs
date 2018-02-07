@@ -57,7 +57,7 @@ namespace SIPSorcery.GB28181.Sys.XML
             public string localSocket { get; set; }
         }
 
-        public void Save<T>(T t)
+        public new void  Save<T>(T t)
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
             MemoryStream stream = new MemoryStream();

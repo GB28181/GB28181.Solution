@@ -42,7 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using log4net;
+using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

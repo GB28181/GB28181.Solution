@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Xml;
-using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.Sys.Auth
 {
-    public class SIPSorcerySecurityHeader : MessageHeader
+    public class SIPSorcerySecurityHeader 
     {
         private const string SECURITY_NAMESPACE = "http://www.sipsorcery.com/security";
         private const string SECURITY_HEADER_NAME = "Security";
@@ -21,9 +17,9 @@ namespace SIPSorcery.GB28181.Sys.Auth
         public string AuthID;
         public string APIKey;
 
-        public override bool MustUnderstand { get { return true; } }
-        public override string Name { get { return SECURITY_HEADER_NAME; } }
-        public override string Namespace { get { return SECURITY_NAMESPACE; } }
+        public  bool MustUnderstand { get { return true; } }
+        public  string Name { get { return SECURITY_HEADER_NAME; } }
+        public  string Namespace { get { return SECURITY_NAMESPACE; } }
 
         public SIPSorcerySecurityHeader(string authID, string apiKey)
         {
@@ -31,7 +27,7 @@ namespace SIPSorcery.GB28181.Sys.Auth
             APIKey = apiKey;
         }
 
-        protected override void OnWriteHeaderContents(XmlDictionaryWriter writer, MessageVersion messageVersion)
+        protected  void OnWriteHeaderContents(XmlDictionaryWriter writer, string messageVersion)
         {
             if (!AuthID.IsNullOrBlank())
             {
@@ -48,45 +44,46 @@ namespace SIPSorcery.GB28181.Sys.Auth
             }
         }
 
-        protected override void OnWriteStartHeader(XmlDictionaryWriter writer, MessageVersion messageVersion)
+        protected  void OnWriteStartHeader(XmlDictionaryWriter writer, string messageVersion)
         {
             writer.WriteStartElement(SECURITY_PREFIX, this.Name, this.Namespace);
         }
 
-        public static SIPSorcerySecurityHeader ParseHeader(OperationContext context)
+        public static SIPSorcerySecurityHeader ParseHeader(/*OperationContext context*/)
         {
-            try
-            {
-                int headerIndex = context.IncomingMessageHeaders.FindHeader(SECURITY_HEADER_NAME, SECURITY_NAMESPACE);
-                if (headerIndex != -1)
-                {
-                    XmlDictionaryReader reader = context.IncomingMessageHeaders.GetReaderAtHeader(headerIndex);
+            //try
+            //{
+            //    int headerIndex = context.IncomingMessageHeaders.FindHeader(SECURITY_HEADER_NAME, SECURITY_NAMESPACE);
+            //    if (headerIndex != -1)
+            //    {
+            //        XmlDictionaryReader reader = context.IncomingMessageHeaders.GetReaderAtHeader(headerIndex);
 
-                    if (reader.IsStartElement(SECURITY_HEADER_NAME, SECURITY_NAMESPACE))
-                    {
-                        reader.ReadStartElement();
-                        reader.MoveToContent();
+            //        if (reader.IsStartElement(SECURITY_HEADER_NAME, SECURITY_NAMESPACE))
+            //        {
+            //            reader.ReadStartElement();
+            //            reader.MoveToContent();
 
-                        if (reader.IsStartElement(AUTHID_ELEMENT_NAME, SECURITY_NAMESPACE))
-                        {
-                            string authID = reader.ReadElementContentAsString();
-                            return new SIPSorcerySecurityHeader(authID, null);
-                        }
+            //            if (reader.IsStartElement(AUTHID_ELEMENT_NAME, SECURITY_NAMESPACE))
+            //            {
+            //                string authID = reader.ReadElementContentAsString();
+            //                return new SIPSorcerySecurityHeader(authID, null);
+            //            }
 
-                        if (reader.IsStartElement(APIKEY_ELEMENT_NAME, SECURITY_NAMESPACE))
-                        {
-                            string apiKey = reader.ReadElementContentAsString();
-                            return new SIPSorcerySecurityHeader(null, apiKey);
-                        }
-                    }
-                }
-                 return null;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPSorcerySecurityHeader ParseHeader. " + excp.Message);
-                throw;
-            }
+            //            if (reader.IsStartElement(APIKEY_ELEMENT_NAME, SECURITY_NAMESPACE))
+            //            {
+            //                string apiKey = reader.ReadElementContentAsString();
+            //                return new SIPSorcerySecurityHeader(null, apiKey);
+            //            }
+            //        }
+            //    }
+            //     return null;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception SIPSorcerySecurityHeader ParseHeader. " + excp.Message);
+            //    throw;
+            //}
+            return null;
         }
     }
 }

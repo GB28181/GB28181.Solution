@@ -35,14 +35,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
+using Logger4Net;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using log4net;
+using System.Diagnostics;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -84,30 +81,31 @@ namespace SIPSorcery.GB28181.Sys
 
         private static bool m_sipsorceryCategoryReady;
         
-        private static Dictionary<string, PerformanceCounterType> m_counterNames = new Dictionary<string, PerformanceCounterType>()
-        {
-            // Proxy
-            { PROXY_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { PROXY_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { PROXY_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { PROXY_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //private static Dictionary<string, PerformanceCounterType> m_counterNames = new Dictionary<string, PerformanceCounterType>()
+        //{
+          
+        //    // Proxy
+        //    { PROXY_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { PROXY_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { PROXY_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { PROXY_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
 
-            // Registrar
-            { REGISTRAR_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRAR_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRAR_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRAR_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRAR_REGISTRATION_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    // Registrar
+        //    { REGISTRAR_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRAR_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRAR_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRAR_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRAR_REGISTRATION_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
             
-            // Registration agent counters.
-            { REGISTRATION_AGENT_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRATION_AGENT_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRATION_AGENT_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRATION_AGENT_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            { REGISTRATION_AGENT_REGISTRATIONS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 }
-        };
+        //    // Registration agent counters.
+        //    { REGISTRATION_AGENT_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRATION_AGENT_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRATION_AGENT_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRATION_AGENT_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
+        //    { REGISTRATION_AGENT_REGISTRATIONS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 }
+        //};
 
-        private static Dictionary<string, PerformanceCounter> m_counters = new Dictionary<string, PerformanceCounter>();
+        //private static Dictionary<string, PerformanceCounter> m_counters = new Dictionary<string, PerformanceCounter>();
 
         static SIPSorceryPerformanceMonitor()
         {
@@ -127,86 +125,86 @@ namespace SIPSorcery.GB28181.Sys
 
         public static void IncrementCounter(string counterName, int incrementBy)
         {
-            try
-            {
-                if (m_sipsorceryCategoryReady)
-                {
-                    if (m_counters.ContainsKey(counterName))
-                    {
-                        m_counters[counterName].IncrementBy(incrementBy);
-                    }
-                    else
-                    {
-                        PerformanceCounter counter = new PerformanceCounter(PERFORMANCE_COUNTER_CATEGORY_NAME, counterName, false);
-                        m_counters.Add(counterName, counter);
-                        counter.IncrementBy(incrementBy);
-                    }
-                }
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPSorceryPerformanceMonitor IncrementCounter (" + counterName + "). " + excp.Message);
-            }
+            //try
+            //{
+            //    if (m_sipsorceryCategoryReady)
+            //    {
+            //        if (m_counters.ContainsKey(counterName))
+            //        {
+            //            m_counters[counterName].IncrementBy(incrementBy);
+            //        }
+            //        else
+            //        {
+            //            PerformanceCounter counter = new PerformanceCounter(PERFORMANCE_COUNTER_CATEGORY_NAME, counterName, false);
+            //            m_counters.Add(counterName, counter);
+            //            counter.IncrementBy(incrementBy);
+            //        }
+            //    }
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception SIPSorceryPerformanceMonitor IncrementCounter (" + counterName + "). " + excp.Message);
+            //}
         }
 
         private static void CheckCounters()
         {
-            try
-            {
-                if (!PerformanceCounterCategory.Exists(PERFORMANCE_COUNTER_CATEGORY_NAME))
-                {
-                    CreateCategory();
-                }
-                else
-                {
-                    foreach (var counter in m_counterNames)
-                    {
-                        if (!PerformanceCounterCategory.CounterExists(counter.Key, PERFORMANCE_COUNTER_CATEGORY_NAME))
-                        {
-                            CreateCategory();
-                            break;
-                        }
-                    }
-                }
+            //try
+            //{
+            //    if (!PerformanceCounterCategory.Exists(PERFORMANCE_COUNTER_CATEGORY_NAME))
+            //    {
+            //        CreateCategory();
+            //    }
+            //    else
+            //    {
+            //        foreach (var counter in m_counterNames)
+            //        {
+            //            if (!PerformanceCounterCategory.CounterExists(counter.Key, PERFORMANCE_COUNTER_CATEGORY_NAME))
+            //            {
+            //                CreateCategory();
+            //                break;
+            //            }
+            //        }
+            //    }
 
-                m_sipsorceryCategoryReady = true;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPSorceryPerformanceMonitor CheckCounters. " + excp.Message);
-            }
+            //    m_sipsorceryCategoryReady = true;
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception SIPSorceryPerformanceMonitor CheckCounters. " + excp.Message);
+            //}
         }
 
         private static void CreateCategory()
         {
-            try
-            {
-                logger.Debug("SIPSorceryPerformanceMonitor creating " + PERFORMANCE_COUNTER_CATEGORY_NAME + " category.");
+            //try
+            //{
+            //    logger.Debug("SIPSorceryPerformanceMonitor creating " + PERFORMANCE_COUNTER_CATEGORY_NAME + " category.");
 
-                if (PerformanceCounterCategory.Exists(PERFORMANCE_COUNTER_CATEGORY_NAME))
-                {
-                    PerformanceCounterCategory.Delete(PERFORMANCE_COUNTER_CATEGORY_NAME);
-                }
+            //    if (PerformanceCounterCategory.Exists(PERFORMANCE_COUNTER_CATEGORY_NAME))
+            //    {
+            //        PerformanceCounterCategory.Delete(PERFORMANCE_COUNTER_CATEGORY_NAME);
+            //    }
 
-                 CounterCreationDataCollection ccdc = new CounterCreationDataCollection();
+            //     CounterCreationDataCollection ccdc = new CounterCreationDataCollection();
 
-                 foreach (var counter in m_counterNames)
-                 {
-                     CounterCreationData counterData = new CounterCreationData();
-                     counterData.CounterType = counter.Value;
-                     counterData.CounterName = counter.Key;
-                     ccdc.Add(counterData);
+            //     foreach (var counter in m_counterNames)
+            //     {
+            //         CounterCreationData counterData = new CounterCreationData();
+            //         counterData.CounterType = counter.Value;
+            //         counterData.CounterName = counter.Key;
+            //         ccdc.Add(counterData);
 
-                     logger.Debug("SIPSorceryPerformanceMonitor added counter " + counter.Key + ".");
-                 }
+            //         logger.Debug("SIPSorceryPerformanceMonitor added counter " + counter.Key + ".");
+            //     }
 
-                PerformanceCounterCategory.Create(PERFORMANCE_COUNTER_CATEGORY_NAME, "SIP Sorcery performance counters", PerformanceCounterCategoryType.SingleInstance, ccdc);
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPSorceryPerformanceMonitor CreateCategory. " + excp.Message);
-                throw;
-            }
+            //    PerformanceCounterCategory.Create(PERFORMANCE_COUNTER_CATEGORY_NAME, "SIP Sorcery performance counters", PerformanceCounterCategoryType.SingleInstance, ccdc);
+            //}
+            //catch (Exception excp)
+            //{
+            //    logger.Error("Exception SIPSorceryPerformanceMonitor CreateCategory. " + excp.Message);
+            //    throw;
+            //}
         }
 
         #region Unit testing.

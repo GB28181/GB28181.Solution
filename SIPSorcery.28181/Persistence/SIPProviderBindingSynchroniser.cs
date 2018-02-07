@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Persistence;
-using log4net;
+using Logger4Net;
 
 namespace SIPSorcery.GB28181.SIP.App
 {

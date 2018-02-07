@@ -30,12 +30,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.ServiceModel.Configuration;
-using System.Text;
 
 namespace SIPSorcery.GB28181.Sys
 {
@@ -43,14 +38,14 @@ namespace SIPSorcery.GB28181.Sys
     {
         public static bool DoesWCFServiceExist(string serviceName)
         {
-            ServiceModelSectionGroup serviceModelSectionGroup = ServiceModelSectionGroup.GetSectionGroup(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None));
-            foreach (ServiceElement serviceElement in serviceModelSectionGroup.Services.Services)
-            {
-                if (serviceElement.Name == serviceName)
-                {
-                    return true;
-                }
-            }
+            //ServiceModelSectionGroup serviceModelSectionGroup = ServiceModelSectionGroup.GetSectionGroup(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None));
+            //foreach (ServiceElement serviceElement in serviceModelSectionGroup.Services.Services)
+            //{
+            //    if (serviceElement.Name == serviceName)
+            //    {
+            //        return true;
+            //    }
+            //}
 
             return false;
         }
