@@ -282,11 +282,13 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public SIPDialogue Answer(string contentType, string body, SIPDialogue answeredDialogue, SIPDialogueTransferModesEnum transferMode)
         {
+            NoRingTimeout.Invoke(this);
             throw new NotImplementedException();
         }
 
         public SIPDialogue Answer(string contentType, string body, string toTag, SIPDialogue answeredDialogue, SIPDialogueTransferModesEnum transferMode)
         {
+            TransactionComplete.Invoke(this);
             throw new NotImplementedException();
         }
 
@@ -321,11 +323,13 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI)
         {
+            UASStateChanged.Invoke(this, SIPResponseStatusCodesEnum.ExtensionRequired, "ExtensionRequired");
             throw new NotImplementedException();
         }
 
         public void NoCDR()
         {
+            CallCancelled.Invoke(this);
             throw new NotImplementedException();
         }
 

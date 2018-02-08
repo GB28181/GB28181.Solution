@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace SIPSorcery.GB28181.Sys.XML
@@ -13,22 +9,12 @@ namespace SIPSorcery.GB28181.Sys.XML
     [XmlRoot("Query")]
     public class RecordQuery : XmlHelper<RecordQuery>
     {
-        private static RecordQuery _instance;
+        private static readonly RecordQuery _instance = new RecordQuery();
 
         /// <summary>
         /// 以单例模式访问
         /// </summary>
-        public static RecordQuery Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new RecordQuery();
-                }
-                return _instance;
-            }
-        }
+        public static RecordQuery Instance => _instance;
 
         /// <summary>
         /// 指令类型

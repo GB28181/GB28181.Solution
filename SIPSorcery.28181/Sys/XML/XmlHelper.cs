@@ -76,10 +76,10 @@ namespace SIPSorcery.GB28181.Sys.XML
             //w.Close();
         }
 
-        public virtual string Serialize<T>(T obj)
+        public virtual string Serialize<T1>(T1 obj)
         {
             var stream = new MemoryStream();
-            var xml = new XmlSerializer(typeof(T));
+            var xml = new XmlSerializer(typeof(T1));
             try
             {
                 var xns = new XmlSerializerNamespaces();
@@ -297,10 +297,10 @@ namespace SIPSorcery.GB28181.Sys.XML
         /// <summary>
         /// 保存文件
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
-        /// <param name="t">类型</param>
+        /// <typeparam name="T1">类型1</typeparam>
+        /// <param name="t">类型实例</param>
         /// <returns></returns>
-        public virtual string Save<T>(T t)
+        public virtual string Save<T1>(T1 t)
         {
             CheckConstructPath(t.GetType());
             return Serialize(t);

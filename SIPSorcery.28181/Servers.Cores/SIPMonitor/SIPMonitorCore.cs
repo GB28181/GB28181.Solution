@@ -1641,7 +1641,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 DeviceID = _deviceId,
                 SN = new Random().Next(1, ushort.MaxValue),
             };
-            string xmlBody = Control.Instance.Save<PositionInfoSubNotify>(nty);
+            string xmlBody = Control.Instance.Save(nty);
             catalogReq.Body = xmlBody;
             _msgCore.SendRequest(_remoteEP, catalogReq);
 

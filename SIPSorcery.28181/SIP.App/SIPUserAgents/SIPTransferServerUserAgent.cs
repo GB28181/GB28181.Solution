@@ -156,6 +156,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public SIPDialogue Answer(string contentType, string body, SIPDialogue answeredDialogue, SIPDialogueTransferModesEnum transferMode)
         {
+
             return Answer(contentType, body, null, answeredDialogue, transferMode);
         }
 
@@ -187,7 +188,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
                     BlindTransfer_External(m_dialogueToReplace, m_oppositeDialogue, answeredDialogue);
                 }
-
+                TransactionComplete.Invoke(this);
                 return null;
             }
             catch (Exception excp)
@@ -211,6 +212,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI)
         {
+            NoRingTimeout.Invoke(this);
             throw new NotImplementedException("SIPTransferServerUserAgent Redirect");
         }
         

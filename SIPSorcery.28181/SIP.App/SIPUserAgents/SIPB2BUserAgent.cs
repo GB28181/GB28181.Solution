@@ -331,7 +331,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void AnswerNonInvite(SIPResponseStatusCodesEnum answerStatus, string reasonPhrase, string[] customHeaders, string contentType, string body)
         {
-            NoRingTimeout.Invoke(this);
+            TransactionComplete.Invoke(this);
             throw new NotImplementedException();
         }
 
@@ -359,6 +359,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI)
         {
+            NoRingTimeout.Invoke(this);
             logger.Debug("SIPB2BUserAgent Redirect.");
             //m_uas.Redirect(redirectCode, redirectURI);
 
