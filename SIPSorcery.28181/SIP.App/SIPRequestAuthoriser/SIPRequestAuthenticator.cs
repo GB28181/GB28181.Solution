@@ -64,10 +64,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 }
                 else if (sipAccount.IsDisabled)
                 {
-                    if (logSIPMonitorEvent != null)
-                    {
-                        logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.DialPlan, "SIP account " + sipAccount.SIPUsername + "@" + sipAccount.SIPDomain + " is disabled for " + sipRequest.Method + ".", sipAccount.Owner));
-                    }
+                    logSIPMonitorEvent?.Invoke(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.DialPlan, "SIP account " + sipAccount.SIPUsername + "@" + sipAccount.SIPDomain + " is disabled for " + sipRequest.Method + ".", sipAccount.Owner));
                     return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.Forbidden, null);
                 }
                 else
@@ -92,61 +89,58 @@ namespace SIPSorcery.GB28181.SIP.App
                     else
                     {
                         return new SIPRequestAuthenticationResult(true, false);
-                        // Check for IP address authentication.
-                        if (!sipAccount.IPAddressACL.IsNullOrBlank())
-                        {
-                            SIPEndPoint uaEndPoint = (!sipRequest.Header.ProxyReceivedFrom.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedFrom) : remoteEndPoint;
-                            if (Regex.Match(uaEndPoint.GetIPEndPoint().ToString(), sipAccount.IPAddressACL).Success)
-                            {
-                                // Successfully authenticated
-                                return new SIPRequestAuthenticationResult(true, true);
-                            }
-                        }
+                        //// Check for IP address authentication.
+                        //if (!sipAccount.IPAddressACL.IsNullOrBlank())
+                        //{
+                        //    SIPEndPoint uaEndPoint = (!sipRequest.Header.ProxyReceivedFrom.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedFrom) : remoteEndPoint;
+                        //    if (Regex.Match(uaEndPoint.GetIPEndPoint().ToString(), sipAccount.IPAddressACL).Success)
+                        //    {
+                        //        // Successfully authenticated
+                        //        return new SIPRequestAuthenticationResult(true, true);
+                        //    }
+                        //}
 
-                        string requestNonce = reqAuthHeader.SIPDigest.Nonce;
-                        string uri = reqAuthHeader.SIPDigest.URI;
-                        string response = reqAuthHeader.SIPDigest.Response;
+                        //string requestNonce = reqAuthHeader.SIPDigest.Nonce;
+                        //string uri = reqAuthHeader.SIPDigest.URI;
+                        //string response = reqAuthHeader.SIPDigest.Response;
 
-                        // Check for stale nonces.
-                        if (IsNonceStale(requestNonce))
-                        {
-                            if (logSIPMonitorEvent != null)
-                            {
-                                logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Warn, "Authentication failed stale nonce for realm=" + sipAccount.SIPDomain + ", username=" + sipAccount.SIPUsername + ", uri=" + uri + ", nonce=" + requestNonce + ", method=" + sipRequest.Method + ".", null));
-                            }
-                            SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, sipAccount.SIPDomain, GetNonce());
-                            return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.Unauthorised, authHeader);
-                        }
-                        else
-                        {
-                            SIPAuthorisationDigest checkAuthReq = reqAuthHeader.SIPDigest;
-                            checkAuthReq.SetCredentials(sipAccount.SIPUsername, sipAccount.SIPPassword, uri, sipRequest.Method.ToString());
-                            string digest = checkAuthReq.Digest;
+                        //// Check for stale nonces.
+                        //if (IsNonceStale(requestNonce))
+                        //{
+                        //    if (logSIPMonitorEvent != null)
+                        //    {
+                        //        logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Warn, "Authentication failed stale nonce for realm=" + sipAccount.SIPDomain + ", username=" + sipAccount.SIPUsername + ", uri=" + uri + ", nonce=" + requestNonce + ", method=" + sipRequest.Method + ".", null));
+                        //    }
+                        //    SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, sipAccount.SIPDomain, GetNonce());
+                        //    return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.Unauthorised, authHeader);
+                        //}
+                        //else
+                        //{
+                        //    SIPAuthorisationDigest checkAuthReq = reqAuthHeader.SIPDigest;
+                        //    checkAuthReq.SetCredentials(sipAccount.SIPUsername, sipAccount.SIPPassword, uri, sipRequest.Method.ToString());
+                        //    string digest = checkAuthReq.Digest;
 
-                            if (digest == response)
-                            {
-                                // Successfully authenticated
-                                return new SIPRequestAuthenticationResult(true, false);
-                            }
-                            else
-                            {
-                                if (logSIPMonitorEvent != null)
-                                {
-                                    logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Warn, "Authentication token check failed for realm=" + sipAccount.SIPDomain + ", username=" + sipAccount.SIPUsername + ", uri=" + uri + ", nonce=" + requestNonce + ", method=" + sipRequest.Method + ".", sipAccount.Owner));
-                                }
-                                SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, sipAccount.SIPDomain, GetNonce());
-                                return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.Unauthorised, authHeader);
-                            }
-                        }
+                        //    if (digest == response)
+                        //    {
+                        //        // Successfully authenticated
+                        //        return new SIPRequestAuthenticationResult(true, false);
+                        //    }
+                        //    else
+                        //    {
+                        //        if (logSIPMonitorEvent != null)
+                        //        {
+                        //            logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Warn, "Authentication token check failed for realm=" + sipAccount.SIPDomain + ", username=" + sipAccount.SIPUsername + ", uri=" + uri + ", nonce=" + requestNonce + ", method=" + sipRequest.Method + ".", sipAccount.Owner));
+                        //        }
+                        //        SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, sipAccount.SIPDomain, GetNonce());
+                        //        return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.Unauthorised, authHeader);
+                        //    }
+                        //}
                     }
                 }
             }
             catch (Exception excp)
             {
-                if (logSIPMonitorEvent != null)
-                {
-                    logSIPMonitorEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Error, "Exception AuthoriseSIPRequest. " + excp.Message, null));
-                }
+                logSIPMonitorEvent?.Invoke(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Authoriser, SIPMonitorEventTypesEnum.Error, "Exception AuthoriseSIPRequest. " + excp.Message, null));
                 return new SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum.InternalServerError, null);
             }
         }

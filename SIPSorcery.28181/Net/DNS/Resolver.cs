@@ -156,8 +156,7 @@ namespace Heijden.DNS
 
         private void Verbose(string format, params object[] args)
         {
-            if (OnVerbose != null)
-                OnVerbose(this, new VerboseEventArgs(string.Format(format, args)));
+            OnVerbose?.Invoke(this, new VerboseEventArgs(string.Format(format, args)));
         }
 
         /// <summary>
@@ -248,8 +247,7 @@ namespace Heijden.DNS
             }
             set
             {
-                IPAddress ip;
-                if (IPAddress.TryParse(value, out ip))
+                if (IPAddress.TryParse(value, out IPAddress ip))
                 {
                     m_DnsServers.Clear();
                     m_DnsServers.Add(new IPEndPoint(ip, DefaultPort));
@@ -461,8 +459,10 @@ namespace Heijden.DNS
             //}
 
             logger.Warn("Resolver UDP request timed out for " + requestStr + ".");
-            DNSResponse responseTimeout = new DNSResponse();
-            responseTimeout.Timedout = true;
+            DNSResponse responseTimeout = new DNSResponse
+            {
+                Timedout = true
+            };
             return responseTimeout;
         }
 
@@ -483,8 +483,10 @@ namespace Heijden.DNS
             {
                 for (int intDnsServer = 0; intDnsServer < dnsServers.Count; intDnsServer++)
                 {
-                    TcpClient tcpClient = new TcpClient();
-                    tcpClient.ReceiveTimeout = timeout * 1000;
+                    var tcpClient = new TcpClient
+                    {
+                        ReceiveTimeout = timeout * 1000
+                    };
 
                     try
                     {
@@ -575,8 +577,10 @@ namespace Heijden.DNS
                     }
                 }
             }
-            DNSResponse responseTimeout = new DNSResponse();
-            responseTimeout.Timedout = true;
+            DNSResponse responseTimeout = new DNSResponse
+            {
+                Timedout = true
+            };
             return responseTimeout;
         }
 
@@ -673,8 +677,10 @@ namespace Heijden.DNS
 
             if (response == null)
             {
-                response = new DNSResponse();
-                response.Error = "Unknown TransportType";
+                response = new DNSResponse
+                {
+                    Error = "Unknown TransportType"
+                };
             }
 
             Question question = request.Questions[0];
@@ -710,9 +716,10 @@ namespace Heijden.DNS
 
         private IPHostEntry MakeEntry(string HostName, int timeout)
         {
-            IPHostEntry entry = new IPHostEntry();
-
-            entry.HostName = HostName;
+            IPHostEntry entry = new IPHostEntry
+            {
+                HostName = HostName
+            };
 
             DNSResponse response = Query(HostName, DNSQType.A, QClass.IN, timeout);
 
@@ -797,8 +804,7 @@ namespace Heijden.DNS
         ///</returns>
         public IPHostEntry GetHostEntry(string hostNameOrAddress)
         {
-            IPAddress iPAddress;
-            if (IPAddress.TryParse(hostNameOrAddress, out iPAddress))
+            if (IPAddress.TryParse(hostNameOrAddress, out IPAddress iPAddress))
                 return GetHostEntry(iPAddress);
             else
                 return MakeEntry(hostNameOrAddress, DEFAULT_TIMEOUT);

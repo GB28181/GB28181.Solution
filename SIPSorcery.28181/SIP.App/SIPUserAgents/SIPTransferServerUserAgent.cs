@@ -120,6 +120,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public event SIPUASDelegate TransactionComplete;
         public event SIPUASStateChangedDelegate UASStateChanged;
 
+
         public SIPTransferServerUserAgent(            
             SIPMonitorLogDelegate logDelegate,
             BlindTransferDelegate blindTransfer,
@@ -145,10 +146,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void Progress(SIPResponseStatusCodesEnum progressStatus, string reasonPhrase, string[] customHeaders, string progressContentType, string progressBody)
         {
-            if (UASStateChanged != null)
-            {
-                UASStateChanged(this, progressStatus, reasonPhrase);
-            }
+            UASStateChanged?.Invoke(this, progressStatus, reasonPhrase);
 
             if (progressBody != null)
             {
@@ -185,10 +183,7 @@ namespace SIPSorcery.GB28181.SIP.App
                     m_answered = true;
                     Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.AppServer, SIPMonitorEventTypesEnum.DialPlan, "A blind transfer received an answer.", m_owner));
 
-                    if (UASStateChanged != null)
-                    {
-                        UASStateChanged(this, SIPResponseStatusCodesEnum.Ok, null);
-                    }
+                    UASStateChanged?.Invoke(this, SIPResponseStatusCodesEnum.Ok, null);
 
                     BlindTransfer_External(m_dialogueToReplace, m_oppositeDialogue, answeredDialogue);
                 }
@@ -211,10 +206,7 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             logger.Warn("SIPTransferServerUserAgent Reject called with " + failureStatus + " " + reasonPhrase + ".");
 
-            if (UASStateChanged != null)
-            {
-                UASStateChanged(this, failureStatus, reasonPhrase);
-            }
+            UASStateChanged?.Invoke(this, failureStatus, reasonPhrase);
         }
 
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI)
@@ -251,8 +243,10 @@ namespace SIPSorcery.GB28181.SIP.App
         private SIPRequest CreateDummyRequest(SIPDialogue dialogueToReplace, string callDestination)
         {
             SIPRequest dummyInvite = new SIPRequest(SIPMethodsEnum.INVITE, SIPURI.ParseSIPURIRelaxed(callDestination + "@sipsorcery.com"));
-            SIPHeader dummyHeader = new SIPHeader("<sip:anon@sipsorcery.com>", "<sip:anon@sipsorcery.com>", 1, CallProperties.CreateNewCallId());
-            dummyHeader.CSeqMethod = SIPMethodsEnum.INVITE;
+            SIPHeader dummyHeader = new SIPHeader("<sip:anon@sipsorcery.com>", "<sip:anon@sipsorcery.com>", 1, CallProperties.CreateNewCallId())
+            {
+                CSeqMethod = SIPMethodsEnum.INVITE
+            };
             dummyHeader.Vias.PushViaHeader(new SIPViaHeader(new IPEndPoint(SIPTransport.BlackholeAddress, 0), CallProperties.CreateBranchId()));
             dummyInvite.Header = dummyHeader;
             dummyInvite.Header.ContentType = "application/sdp";
@@ -273,10 +267,7 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             try
             {
-                if (CallCancelled != null)
-                {
-                    CallCancelled(this);
-                }
+                CallCancelled?.Invoke(this);
             }
             catch(Exception excp)
             {

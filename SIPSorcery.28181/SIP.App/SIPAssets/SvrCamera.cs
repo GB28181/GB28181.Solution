@@ -9,10 +9,10 @@ namespace SIPSorcery.GB28181.SIP.App
     /// 通道信息
     /// </summary>
     // [Table(Name = "CameraInfo")]
-    [DataContractAttribute]
+    [DataContract]
     public class SvrCamera : INotifyPropertyChanged, ISIPAsset
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+       // public event PropertyChangedEventHandler PropertyChanged;
 
         private Guid _id;
         /// <summary>
@@ -58,7 +58,9 @@ namespace SIPSorcery.GB28181.SIP.App
         public string GBID
         {
             get { return _gbID; }
-            set { _gbID = value; }
+            set { _gbID = value;
+                PropertyChanged?.Invoke(this,new PropertyChangedEventArgs(GBID));
+                    }
         }
 
         private string _name;
@@ -200,6 +202,9 @@ namespace SIPSorcery.GB28181.SIP.App
             set { _createTime = value; }
         }
         private DateTime _updateTime;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// 更新时间
         /// </summary>

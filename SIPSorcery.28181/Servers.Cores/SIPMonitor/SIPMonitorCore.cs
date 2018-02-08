@@ -137,11 +137,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private string _deviceId;
         private SIPRequest _reqSession;
         private int[] _mediaPort;
-        private SIPContactHeader _contact;
+      //  private SIPContactHeader _contact;
         private string _toTag;
-        private SIPViaSet _via;
+      //  private SIPViaSet _via;
         private int _recordTotal = -1;
-        private DevStatus _Status;
+     //   private DevStatus _Status;
         private SIPAccount _account;
         #endregion
 
@@ -227,12 +227,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPRequest ackReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.ACK, remoteUri);
             SIPFromHeader from = _reqSession.Header.From;
             SIPToHeader to = _reqSession.Header.To; to.ToTag = toTag;
-            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId);
-            header.CSeqMethod = SIPMethodsEnum.ACK;
-            header.Contact = _reqSession.Header.Contact;
-            header.Vias = _reqSession.Header.Vias;
-            header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-            header.Allow = null;
+            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.ACK,
+                Contact = _reqSession.Header.Contact,
+                Vias = _reqSession.Header.Vias,
+                UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                Allow = null
+            };
             ackReq.Header = header;
             _toTag = toTag;
             _msgCore.SendRequest(_remoteEP, ackReq);
@@ -241,10 +243,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private FileStream m_fs;
         private void RtpChannel_OnFrameReady(RTPFrame frame)
         {
-            if (OnStreamReady != null)
-            {
-                OnStreamReady(frame);
-            }
+            OnStreamReady?.Invoke(frame);
             //foreach (var item in frame.FramePackets)
             //{
             //    logger.Debug("Seq:" + item.Header.SequenceNumber + "----Timestamp:" + item.Header.Timestamp + "-----Length:" + item.Payload.Length);
@@ -276,13 +275,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPFromHeader from = _reqSession.Header.From;
             SIPToHeader to = _reqSession.Header.To; to.ToTag = _toTag;
             SIPRequest byeReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.BYE, remoteUri);
-            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq + 1, _reqSession.Header.CallId);
-            header.CSeqMethod = SIPMethodsEnum.BYE;
-            header.Vias = _reqSession.Header.Vias;
-            header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-            header.Contact = _reqSession.Header.Contact;
+            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq + 1, _reqSession.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.BYE,
+                Vias = _reqSession.Header.Vias,
+                UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                Contact = _reqSession.Header.Contact
+            };
             byeReq.Header = header;
-            this.Stop();
+            Stop();
             _msgCore.SendReliableRequest(_remoteEP, byeReq);
         }
 
@@ -315,26 +316,33 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         {
             SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
 
-            SDP sdp = new SDP();
-            sdp.Version = 0;
-            sdp.SessionId = "0";
-            sdp.Username = _msgCore.LocalSIPId;
-            sdp.SessionName = CommandType.Play.ToString();
-            sdp.Connection = sdpConn;
-            sdp.Timing = "0 0";
-            sdp.Address = localIp;
+            SDP sdp = new SDP
+            {
+                Version = 0,
+                SessionId = "0",
+                Username = _msgCore.LocalSIPId,
+                SessionName = CommandType.Play.ToString(),
+                Connection = sdpConn,
+                Timing = "0 0",
+                Address = localIp
+            };
 
-            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS);
-            psFormat.IsStandardAttribute = false;
-            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264);
-            h264Format.IsStandardAttribute = false;
-            SDPMediaAnnouncement media = new SDPMediaAnnouncement();
-
-            media.Media = SDPMediaTypesEnum.video;
-
+            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaAnnouncement media = new SDPMediaAnnouncement
+            {
+                Media = SDPMediaTypesEnum.video
+            };
             media.MediaFormats.Add(psFormat);
             media.MediaFormats.Add(h264Format);
             media.AddExtra("a=recvonly");
+
             if (_account.StreamProtocol == ProtocolType.Tcp)
             {
                 media.Transport = "TCP/RTP/AVP";
@@ -529,23 +537,30 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         {
             SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
 
-            SDP sdp = new SDP();
-            sdp.Version = 0;
-            sdp.SessionId = "0";
-            sdp.Username = _msgCore.LocalSIPId;
-            sdp.SessionName = CommandType.Playback.ToString();
-            sdp.Connection = sdpConn;
-            sdp.Timing = startTime + " " + stopTime;
-            sdp.Address = localIp;
-            sdp.URI = _deviceId + ":" + 1;
+            SDP sdp = new SDP
+            {
+                Version = 0,
+                SessionId = "0",
+                Username = _msgCore.LocalSIPId,
+                SessionName = CommandType.Playback.ToString(),
+                Connection = sdpConn,
+                Timing = startTime + " " + stopTime,
+                Address = localIp,
+                URI = _deviceId + ":" + 1
+            };
 
-            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS);
-            psFormat.IsStandardAttribute = false;
-            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264);
-            h264Format.IsStandardAttribute = false;
-            SDPMediaAnnouncement media = new SDPMediaAnnouncement();
-
-            media.Media = SDPMediaTypesEnum.video;
+            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaAnnouncement media = new SDPMediaAnnouncement
+            {
+                Media = SDPMediaTypesEnum.video
+            };
 
             media.MediaFormats.Add(psFormat);
             media.MediaFormats.Add(h264Format);
@@ -577,23 +592,30 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         {
             SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
 
-            SDP sdp = new SDP();
-            sdp.Version = 0;
-            sdp.SessionId = "0";
-            sdp.Username = _msgCore.LocalSIPId;
-            sdp.SessionName = CommandType.Download.ToString();
-            sdp.Connection = sdpConn;
-            sdp.Timing = startTime + " " + stopTime;
-            sdp.Address = localIp;
-            sdp.URI = _deviceId + ":" + 1;
+            SDP sdp = new SDP
+            {
+                Version = 0,
+                SessionId = "0",
+                Username = _msgCore.LocalSIPId,
+                SessionName = CommandType.Download.ToString(),
+                Connection = sdpConn,
+                Timing = startTime + " " + stopTime,
+                Address = localIp,
+                URI = _deviceId + ":" + 1
+            };
 
-            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS);
-            psFormat.IsStandardAttribute = false;
-            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264);
-            h264Format.IsStandardAttribute = false;
-            SDPMediaAnnouncement media = new SDPMediaAnnouncement();
-
-            media.Media = SDPMediaTypesEnum.video;
+            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaFormat h264Format = new SDPMediaFormat(SDPMediaFormatsEnum.H264)
+            {
+                IsStandardAttribute = false
+            };
+            SDPMediaAnnouncement media = new SDPMediaAnnouncement
+            {
+                Media = SDPMediaTypesEnum.video
+            };
 
             media.MediaFormats.Add(psFormat);
             media.MediaFormats.Add(h264Format);
@@ -634,11 +656,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPFromHeader from = new SIPFromHeader(null, localUri, _reqSession.Header.From.FromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, _reqSession.Header.To.ToTag);
             SIPRequest byeReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.BYE, remoteUri);
-            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId);
-            header.CSeqMethod = byeReq.Header.CSeqMethod;
-            header.Vias = byeReq.Header.Vias;
-            header.MaxForwards = byeReq.Header.MaxForwards;
-            header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId)
+            {
+                CSeqMethod = byeReq.Header.CSeqMethod,
+                Vias = byeReq.Header.Vias,
+                MaxForwards = byeReq.Header.MaxForwards,
+                UserAgent = SIPConstants.SIP_USERAGENT_STRING
+            };
             byeReq.Header.From = from;
             byeReq.Header = header;
             this.Stop();
@@ -1026,11 +1050,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <returns></returns>
         private string GetPtzCmd(PTZCommand ucommand, int dwSpeed)
         {
-            List<int> cmdList = new List<int>(8);
-            cmdList.Add(0xA5);
-            cmdList.Add(0x0F);
-            cmdList.Add(0x01);
-            switch ((PTZCommand)ucommand)
+            List<int> cmdList = new List<int>(8)
+            {
+                0xA5,
+                0x0F,
+                0x01
+            };
+            switch (ucommand)
             {
                 case PTZCommand.Stop:
                     cmdList.Add(00);
@@ -1565,7 +1591,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private string _fromTag = string.Empty;
         int cSeq = CallProperties.CreateNewCSeq();
         SIPViaSet _vvia;
-        private int sn = 1;
+      //  private int sn = 1;
         /// <summary>
         /// 移动设备位置订阅
         /// </summary>
@@ -1629,7 +1655,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string gb2312_gbk(string text)
+        public static string Gb2312_gbk(string text)
         {
             //声明字符集   
             System.Text.Encoding gbk, gb2312;

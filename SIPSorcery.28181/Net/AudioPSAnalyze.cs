@@ -26,7 +26,7 @@ namespace SIPSorcery.GB28181.Net
       *@return:  0 success others failed 
       */
 
-        public int gb28181_streampackageForH264(byte[] pData, int nFrameLen, Data_Info_s pPacker, int stream_type)
+        public int Gb28181_streampackageForH264(byte[] pData, int nFrameLen, Data_Info_s pPacker, int stream_type)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace SIPSorcery.GB28181.Net
                 Array.Clear(szTempPacketHead, 0, szTempPacketHead.Length);
 
                 // 1 package for ps header   
-                gb28181_make_ps_header(szTempPacketHead, nSizePos, pPacker.s64CurPts);
+                Gb28181_make_ps_header(szTempPacketHead, nSizePos, pPacker.s64CurPts);
 
 
 
@@ -47,7 +47,7 @@ namespace SIPSorcery.GB28181.Net
                 //if (pPacker.IFrame == 1)
                 //{
                 // 如果是I帧的话，则添加系统头 
-                gb28181_make_sys_header(szTempPacketHead, nSizePos);
+                Gb28181_make_sys_header(szTempPacketHead, nSizePos);
 
                 nSizePos += SYS_HDR_LEN;
                 //这个地方我是不管是I帧还是p帧都加上了map的，貌似只是I帧加也没有问题  
@@ -55,7 +55,7 @@ namespace SIPSorcery.GB28181.Net
                 //      nSizePos += PSM_HDR_LEN;  
                 //}
                 // 3 psm头 (也是map)  
-                gb28181_make_psm_header(szTempPacketHead, nSizePos);
+                Gb28181_make_psm_header(szTempPacketHead, nSizePos);
 
                 nSizePos += PSM_HDR_LEN;
 
@@ -82,11 +82,11 @@ namespace SIPSorcery.GB28181.Net
                     //每次帧的长度不要超过short类型，过了就得分片进循环行发送  
                     nSize = (nFrameLen > PS_PES_PAYLOAD_SIZE) ? PS_PES_PAYLOAD_SIZE : nFrameLen;
                     // 添加pes头  
-                    gb28181_make_pes_header(pBuff, szTempPacketHead.Length, stream_type == 1 ? 0xC0 : 0xE0, nSize, (pPacker.s64CurPts / 1), (pPacker.s64CurPts / 3));
+                    Gb28181_make_pes_header(pBuff, szTempPacketHead.Length, stream_type == 1 ? 0xC0 : 0xE0, nSize, (pPacker.s64CurPts / 1), (pPacker.s64CurPts / 3));
 
 
                     //最后在添加rtp头并发送数据  
-                    if (gb28181_send_rtp_pack(pBuff, startIndex, szTempPacketHead.Length + nSize + PES_HDR_LEN, ((nSize == nFrameLen) ? 1 : 0), pPacker) != 0)
+                    if (Gb28181_send_rtp_pack(pBuff, startIndex, szTempPacketHead.Length + nSize + PES_HDR_LEN, ((nSize == nFrameLen) ? 1 : 0), pPacker) != 0)
                     {
                         Console.WriteLine("gb28181_send_pack failed!\n");
                         return -1;
@@ -116,7 +116,7 @@ namespace SIPSorcery.GB28181.Net
 *@return:   0 success, others failed 
 */
         private uint _timestamp = 320;
-        int gb28181_send_rtp_pack(byte[] databuff, int index, int nDataLen, int mark_flag, Data_Info_s pPacker)
+        int Gb28181_send_rtp_pack(byte[] databuff, int index, int nDataLen, int mark_flag, Data_Info_s pPacker)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace SIPSorcery.GB28181.Net
                 if (nDataLen + RTP_HDR_LEN <= RTP_MAX_PACKET_BUFF)// 1460 pPacker指针本来有一个1460大小的buffer数据缓存  
                 {
                     // 一帧数据发送完后，给mark标志位置1  
-                    gb28181_make_rtp_header(szRtpHdr, 0, ((mark_flag == 1) ? 1 : 0), ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
+                    Gb28181_make_rtp_header(szRtpHdr, 0, ((mark_flag == 1) ? 1 : 0), ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
 
                     Array.Copy(szRtpHdr, pPacker.szBuff, RTP_HDR_LEN);
                     Array.Copy(databuff, index, pPacker.szBuff, RTP_HDR_LEN, nDataLen);
@@ -147,7 +147,7 @@ namespace SIPSorcery.GB28181.Net
                 else
                 {
                     nPlayLoadLen = RTP_MAX_PACKET_BUFF - RTP_HDR_LEN; // 每次只能发送的数据长度 除去rtp头  
-                    gb28181_make_rtp_header(pPacker.szBuff, 0, 0, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
+                    Gb28181_make_rtp_header(pPacker.szBuff, 0, 0, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
 
                     //memcpy(pPacker->szBuff + RTP_HDR_LEN, databuff, nPlayLoadLen);
                     Array.Copy(databuff, index, pPacker.szBuff, RTP_HDR_LEN, nPlayLoadLen);
@@ -169,12 +169,12 @@ namespace SIPSorcery.GB28181.Net
                         if (nDataLen <= nPlayLoadLen)
                         {
                             //一帧数据发送完，置mark标志位  
-                            gb28181_make_rtp_header(databuff, index, mark_flag, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
+                            Gb28181_make_rtp_header(databuff, index, mark_flag, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
                             nSendSize = nDataLen;
                         }
                         else
                         {
-                            gb28181_make_rtp_header(databuff, index, 0, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
+                            Gb28181_make_rtp_header(databuff, index, 0, ++pPacker.u16CSeq, (pPacker.s64CurPts / 1), pPacker.u32Ssrc);
                             nSendSize = nPlayLoadLen;
                         }
                         nRet = SendDataBuff(databuff, index, RTP_HDR_LEN + nSendSize, pPacker);//ZXB： 发送数据 为什么加databuff参数需不需要加上index
@@ -239,7 +239,7 @@ namespace SIPSorcery.GB28181.Net
         /// <param name="curpts"></param>
         /// <param name="ssrc"></param>
         /// <returns></returns>
-        private int gb28181_make_rtp_header(byte[] pData, int startIndex, int marker_flag, ushort cseq, long curpts, uint ssrc)
+        private int Gb28181_make_rtp_header(byte[] pData, int startIndex, int marker_flag, ushort cseq, long curpts, uint ssrc)
         {
             try
             {
@@ -273,7 +273,7 @@ namespace SIPSorcery.GB28181.Net
        *           s64Src [in] 时间戳 
        *@return:   0 success, others failed 
        */
-        private int gb28181_make_ps_header(byte[] pData, int startIndex, ulong s64Scr)
+        private int Gb28181_make_ps_header(byte[] pData, int startIndex, ulong s64Scr)
         {
             try
             {
@@ -319,7 +319,7 @@ namespace SIPSorcery.GB28181.Net
 *@param :   pData  [in] 填充ps头数据的地址 
 *@return:   0 success, others failed 
 */
-        private int gb28181_make_sys_header(byte[] pData, int startIndex)
+        private int Gb28181_make_sys_header(byte[] pData, int startIndex)
         {
             try
             {
@@ -372,7 +372,7 @@ namespace SIPSorcery.GB28181.Net
         // *@param :   pData  [in] 填充ps头数据的地址
         // *@return:   0 success, others failed
         //*/
-        private int gb28181_make_psm_header(byte[] pData, int startIndex)
+        private int Gb28181_make_psm_header(byte[] pData, int startIndex)
         {
             try
             {
@@ -430,7 +430,7 @@ namespace SIPSorcery.GB28181.Net
       *           dts        [in]
       *@return:   0 success, others failed
      */
-        private int gb28181_make_pes_header(byte[] pData, int startIndex, int stream_id, int payload_len, ulong pts, ulong dts)
+        private int Gb28181_make_pes_header(byte[] pData, int startIndex, int stream_id, int payload_len, ulong pts, ulong dts)
         {
             try
             {

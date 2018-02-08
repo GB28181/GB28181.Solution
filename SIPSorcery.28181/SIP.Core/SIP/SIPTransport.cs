@@ -32,20 +32,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
+using Logger4Net;
+using SIPSorcery.GB28181.Sys;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using SIPSorcery.GB28181.Sys;
-using Logger4Net;
-
-#if UNITTEST
-using NUnit.Framework;
-#endif
 
 namespace SIPSorcery.GB28181.SIP
 {
@@ -157,35 +151,20 @@ namespace SIPSorcery.GB28181.SIP
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
         }
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, bool queueIncoming)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
             AddSIPChannel(sipChannel);
 
@@ -243,9 +222,16 @@ namespace SIPSorcery.GB28181.SIP
             {
                 m_transportThreadStarted = true;
 
-                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage));
-                inMessageThread.Name = RECEIVE_THREAD_NAME;
+                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage))
+                {
+                    Name = RECEIVE_THREAD_NAME
+                };
                 inMessageThread.Start();
+
+                //  Task.Factory.StartNew(() => ProcessInMessage());
+
+
+
             }
         }
 
@@ -253,8 +239,10 @@ namespace SIPSorcery.GB28181.SIP
         {
             m_reliablesThreadRunning = true;
 
-            Thread reliableTransmissionsThread = new Thread(new ThreadStart(ProcessPendingReliableTransactions));
-            reliableTransmissionsThread.Name = RELIABLES_THREAD_NAME;
+            var reliableTransmissionsThread = new Thread(new ThreadStart(ProcessPendingReliableTransactions))
+            {
+                Name = RELIABLES_THREAD_NAME
+            };
             reliableTransmissionsThread.Start();
         }
 
@@ -554,8 +542,8 @@ namespace SIPSorcery.GB28181.SIP
 
         public byte[] ConvertUnicodeToUTF8(string message)
         {
-            System.Text.Encoding utf8, gb2312;
-            utf8 = System.Text.Encoding.GetEncoding("utf-8");
+
+            var utf8 = System.Text.Encoding.GetEncoding("utf-8");
             byte[] array = Encoding.GetEncoding("gb2312").GetBytes(message);
             //byte[] s4 = System.Text.Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), System.Text.Encoding.UTF8, array);
             return array;
@@ -592,7 +580,7 @@ namespace SIPSorcery.GB28181.SIP
                     //else
 
                     //{
-                        sipChannel.Send(dstEndPoint.GetIPEndPoint(), Encoding.UTF8.GetBytes(sipRequest.ToString()));
+                    sipChannel.Send(dstEndPoint.GetIPEndPoint(), Encoding.UTF8.GetBytes(sipRequest.ToString()));
 
                     //sipChannel.Send(dstEndPoint.GetIPEndPoint(), ConvertUnicodeToUTF8(sipRequest.ToString()));
 
@@ -1310,12 +1298,10 @@ namespace SIPSorcery.GB28181.SIP
 
                                     try
                                     {
-#if !SILVERLIGHT
                                         if (PerformanceMonitorPrefix != null)
                                         {
                                             SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_RESPONSES_PER_SECOND_SUFFIX);
                                         }
-#endif
 
                                         SIPResponse sipResponse = SIPResponse.ParseSIPResponse(sipMessage);
 
@@ -1342,9 +1328,9 @@ namespace SIPSorcery.GB28181.SIP
 
                                             transaction.GotResponse(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
                                         }
-                                        else if (SIPTransportResponseReceived != null)
+                                        else
                                         {
-                                            SIPTransportResponseReceived(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
+                                            SIPTransportResponseReceived?.Invoke(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
                                         }
                                     }
                                     catch (SIPValidationException sipValidationException)
@@ -1372,8 +1358,7 @@ namespace SIPSorcery.GB28181.SIP
                                         SIPRequest sipRequest = SIPRequest.ParseSIPRequest(sipMessage);
 
                                         SIPValidationFieldsEnum sipRequestErrorField = SIPValidationFieldsEnum.Unknown;
-                                        string sipRequestValidationError = null;
-                                        if (!sipRequest.IsValid(out sipRequestErrorField, out sipRequestValidationError))
+                                        if (!sipRequest.IsValid(out sipRequestErrorField, out string sipRequestValidationError))
                                         {
                                             throw new SIPValidationException(sipRequestErrorField, sipRequestValidationError);
                                         }
@@ -1385,7 +1370,7 @@ namespace SIPSorcery.GB28181.SIP
 
                                         // Stateful cores will create transactions once they get the request and the transport layer will use those transactions.
                                         // Stateless cores will not be affected by this step as the transaction layer will always return false.
-                                        SIPTransaction requestTransaction = (m_transactionEngine != null) ? m_transactionEngine.GetTransaction(sipRequest) : null;
+                                        SIPTransaction requestTransaction = m_transactionEngine?.GetTransaction(sipRequest);
                                         if (requestTransaction != null)
                                         {
                                             if (requestTransaction.TransactionState == SIPTransactionStatesEnum.Completed && sipRequest.Method != SIPMethodsEnum.ACK)
@@ -1602,10 +1587,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (SIPRequestInTraceEvent != null)
-                {
-                    SIPRequestInTraceEvent(localSIPEndPoint, remoteEndPoint, sipRequest);
-                }
+                SIPRequestInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipRequest);
             }
             catch (Exception excp)
             {
@@ -1617,10 +1599,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (SIPRequestOutTraceEvent != null)
-                {
-                    SIPRequestOutTraceEvent(localSIPEndPoint, remoteEndPoint, sipRequest);
-                }
+                SIPRequestOutTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipRequest);
             }
             catch (Exception excp)
             {
@@ -1632,10 +1611,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (SIPResponseInTraceEvent != null)
-                {
-                    SIPResponseInTraceEvent(localSIPEndPoint, remoteEndPoint, sipResponse);
-                }
+                SIPResponseInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipResponse);
             }
             catch (Exception excp)
             {
@@ -1647,10 +1623,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (SIPResponseOutTraceEvent != null)
-                {
-                    SIPResponseOutTraceEvent(localSIPEndPoint, remoteEndPoint, sipResponse);
-                }
+                SIPResponseOutTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipResponse);
             }
             catch (Exception excp)
             {
@@ -1664,10 +1637,7 @@ namespace SIPSorcery.GB28181.SIP
             {
                 //logger.Warn("SIPTransport SIPValidationException SIPRequest. Field=" + sipErrorField + ", Message=" + message + ", Remote=" + remoteEndPoint.ToString() + ".");
 
-                if (SIPBadRequestInTraceEvent != null)
-                {
-                    SIPBadRequestInTraceEvent(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
-                }
+                SIPBadRequestInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
             }
             catch (Exception excp)
             {
@@ -1679,10 +1649,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (SIPBadResponseInTraceEvent != null)
-                {
-                    SIPBadResponseInTraceEvent(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
-                }
+                SIPBadResponseInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
             }
             catch (Exception excp)
             {
@@ -1711,8 +1678,10 @@ namespace SIPSorcery.GB28181.SIP
                 int cSeq = (requestHeader == null || requestHeader.CSeq != -1) ? requestHeader.CSeq : 1;
                 string callId = (requestHeader == null || requestHeader.CallId != null) ? requestHeader.CallId : CallProperties.CreateNewCallId();
 
-                response.Header = new SIPHeader(from, to, cSeq, callId);
-                response.Header.CSeqMethod = (requestHeader != null) ? requestHeader.CSeqMethod : SIPMethodsEnum.NONE;
+                response.Header = new SIPHeader(from, to, cSeq, callId)
+                {
+                    CSeqMethod = (requestHeader != null) ? requestHeader.CSeqMethod : SIPMethodsEnum.NONE
+                };
 
                 if (requestHeader == null || requestHeader.Vias == null || requestHeader.Vias.Length == 0)
                 {
@@ -1753,8 +1722,10 @@ namespace SIPSorcery.GB28181.SIP
                 SIPToHeader to = new SIPToHeader(null, new SIPURI(sipScheme, localSIPEndPoint), null);
                 int cSeq = 1;
                 string callId = CallProperties.CreateNewCallId();
-                response.Header = new SIPHeader(from, to, cSeq, callId);
-                response.Header.CSeqMethod = SIPMethodsEnum.NONE;
+                response.Header = new SIPHeader(from, to, cSeq, callId)
+                {
+                    CSeqMethod = SIPMethodsEnum.NONE
+                };
                 response.Header.Vias.PushViaHeader(new SIPViaHeader(new SIPEndPoint(localSIPEndPoint.Protocol, remoteEndPoint.GetIPEndPoint()), CallProperties.CreateBranchId()));
                 response.Header.MaxForwards = Int32.MinValue;
                 response.Header.Allow = ALLOWED_SIP_METHODS;
@@ -1780,8 +1751,10 @@ namespace SIPSorcery.GB28181.SIP
                 localSIPEndPoint = GetDefaultSIPEndPoint();
             }
 
-            SIPRequest request = new SIPRequest(method, uri);
-            request.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest request = new SIPRequest(method, uri)
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
             SIPContactHeader contactHeader = new SIPContactHeader(null, new SIPURI(SIPSchemesEnum.sip, localSIPEndPoint));
             SIPFromHeader fromHeader = new SIPFromHeader(null, contactHeader.ContactURI, CallProperties.CreateNewTag());

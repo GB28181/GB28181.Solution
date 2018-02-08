@@ -44,7 +44,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         #region 私有字段
 
         private static ILog logger = AppState.logger;
-        private bool _subscribe = false;
+        //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
         private RegistrarCore m_registrarCore;
@@ -176,17 +176,21 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 logger.Debug("SIP Registrar daemon starting...");
 
                 // Configure the SIP transport layer.
-                Transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
-                Transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
-                Transport.MsgEncode = _account.MsgEncode;
+                Transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false)
+                {
+                    PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX,
+                    MsgEncode = _account.MsgEncode
+                };
                 List<SIPChannel> sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
                 Transport.AddSIPChannel(sipChannels);
 
                 Transport.SIPTransportRequestReceived += AddMessageRequest;
                 Transport.SIPTransportResponseReceived += AddMessageResponse;
 
-                m_registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest);
-                m_registrarCore.Auth = _account.Authentication;
+                m_registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
+                {
+                    Auth = _account.Authentication
+                };
                 m_registrarCore.Start(1);
 
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -316,8 +320,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             audioOK.Header.ContentType = "application/sdp";
             SIPURI localUri = new SIPURI(LocalSIPId, LocalEP.ToHost(), "");
             SIPContactHeader contact = new SIPContactHeader(null, localUri);
-            audioOK.Header.Contact = new List<SIPContactHeader>();
-            audioOK.Header.Contact.Add(contact);
+            audioOK.Header.Contact = new List<SIPContactHeader>
+            {
+                contact
+            };
             //SDP
             audioOK.Body = SetMediaAudio(localEP.Address.ToString(), port[0], request.URI.User);
             _audioResponse = audioOK;
@@ -355,7 +361,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 byte[] buffer = new byte[240];
                 _g711Stream.Read(buffer, 0, buffer.Length);
-                _psAnalyze.gb28181_streampackageForH264(buffer, buffer.Length, packer, 1);
+                _psAnalyze.Gb28181_streampackageForH264(buffer, buffer.Length, packer, 1);
                 _g711Stream.Seek(offset, SeekOrigin.Begin);
                 Thread.Sleep(5);
                 i += buffer.Length;
@@ -379,14 +385,20 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             SIPFromHeader from = new SIPFromHeader(null, localUri, _ackRequest.Header.To.ToTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, _ackRequest.Header.From.FromTag);
             SIPRequest byeReq = new SIPRequest(SIPMethodsEnum.BYE, localUri);
-            SIPHeader header = new SIPHeader(from, to, _ackRequest.Header.CSeq + 1, _ackRequest.Header.CallId);
-            header.CSeqMethod = SIPMethodsEnum.BYE;
+            SIPHeader header = new SIPHeader(from, to, _ackRequest.Header.CSeq + 1, _ackRequest.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.BYE
+            };
 
-            SIPViaHeader viaHeader = new SIPViaHeader(LocalEP, CallProperties.CreateBranchId());
-            viaHeader.Branch = CallProperties.CreateBranchId();
-            viaHeader.Transport = SIPProtocolsEnum.udp;
-            SIPViaSet viaSet = new SIPViaSet();
-            viaSet.Via = new List<SIPViaHeader>();
+            SIPViaHeader viaHeader = new SIPViaHeader(LocalEP, CallProperties.CreateBranchId())
+            {
+                Branch = CallProperties.CreateBranchId(),
+                Transport = SIPProtocolsEnum.udp
+            };
+            SIPViaSet viaSet = new SIPViaSet
+            {
+                Via = new List<SIPViaHeader>()
+            };
             viaSet.Via.Add(viaHeader);
             header.Vias = viaSet;
 
@@ -400,20 +412,24 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         private byte[] RtpG711Packet(byte[] buffer, ushort seq, uint timestamp)
         {
-            RTPPacket packet = new RTPPacket();
-            RTPHeader header = new RTPHeader();
-            header.Version = 2;
-            header.PaddingFlag = 0;
-            header.HeaderExtensionFlag = 0;
-            header.CSRCCount = 0;
-            header.MarkerBit = 1;
-            header.PayloadType = 0x88;
-            header.SequenceNumber = seq;
-            header.HeaderExtensionFlag = 0;
-            header.Timestamp = timestamp;
-            header.SyncSource = 0x0857;
-            packet.Header = header;
-            packet.Payload = buffer;
+            RTPHeader header = new RTPHeader
+            {
+                Version = 2,
+                PaddingFlag = 0,
+                HeaderExtensionFlag = 0,
+                CSRCCount = 0,
+                MarkerBit = 1,
+                PayloadType = 0x88,
+                SequenceNumber = seq,
+                Timestamp = timestamp,
+                SyncSource = 0x0857,
+            };
+
+            RTPPacket packet = new RTPPacket
+            {
+                Header = header,
+                Payload = buffer
+            };
             byte[] newBuffer = new byte[12 + buffer.Length];
             Buffer.BlockCopy(header.GetBytes(), 0, newBuffer, 0, 12);
             Buffer.BlockCopy(buffer, 0, newBuffer, 12, buffer.Length);
@@ -430,21 +446,26 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
 
-            SDP sdp = new SDP();
-            sdp.Version = 0;
-            sdp.SessionId = "0";
-            sdp.Username = audioId;
-            sdp.SessionName = CommandType.Play.ToString();
-            sdp.Connection = sdpConn;
-            sdp.Timing = "0 0";
-            sdp.Address = localIp;
+            SDP sdp = new SDP
+            {
+                Version = 0,
+                SessionId = "0",
+                Username = audioId,
+                SessionName = CommandType.Play.ToString(),
+                Connection = sdpConn,
+                Timing = "0 0",
+                Address = localIp
+            };
 
-            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS);
-            psFormat.IsStandardAttribute = false;
+            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
+            {
+                IsStandardAttribute = false
+            };
 
-            SDPMediaAnnouncement media = new SDPMediaAnnouncement();
-
-            media.Media = SDPMediaTypesEnum.audio;
+            SDPMediaAnnouncement media = new SDPMediaAnnouncement
+            {
+                Media = SDPMediaTypesEnum.audio
+            };
 
             media.MediaFormats.Add(psFormat);
             media.AddExtra("a=sendonly");
@@ -501,14 +522,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                         string ip = GetReceiveIP(response.Body);
                         int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video);
                         MonitorService[key].AckRequest(response.Header.To.ToTag, ip, port);
-                        
+
                     }
                 }
-                
-                if (OnResponseCodeReceived != null)
-                {
-                    OnResponseCodeReceived(response.Status, "对方国标平台返回状态【成功】", remoteEP);
-                }
+
+                OnResponseCodeReceived?.Invoke(response.Status, "对方国标平台返回状态【成功】", remoteEP);
             }
             else
             {
@@ -604,10 +622,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 }
             }
 
-            if (OnCatalogReceived != null)
-            {
-                OnCatalogReceived(catalog);
-            }
+            OnCatalogReceived?.Invoke(catalog);
         }
 
         /// <summary>
@@ -632,11 +647,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             //{
             //    DeviceCatalogSubscribe(remoteEP, request.Header.From.FromURI.User);
             //}
-            if (OnKeepaliveReceived != null)
-            {
-                OnKeepaliveReceived(remoteEP, keepAlive, request.Header.From.FromURI.User);
-            }
-            _subscribe = true;
+            OnKeepaliveReceived?.Invoke(remoteEP, keepAlive, request.Header.From.FromURI.User);
+            // _subscribe = true;
             logger.Debug("KeepAlive:" + remoteEP.ToHost() + "=====DevID:" + keepAlive.DeviceID + "=====Status:" + keepAlive.Status + "=====SN:" + keepAlive.SN);
         }
 
@@ -711,10 +723,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 //NotifyType未找到相关文档标明所有该类型值，暂时只处理121
                 if (mediaStatus.NotifyType.Equals("121"))
                 {
-                    if (OnMediaStatusReceived != null)
-                    {
-                        OnMediaStatusReceived(remoteEP, mediaStatus);
-                    }
+                    OnMediaStatusReceived?.Invoke(remoteEP, mediaStatus);
                 }
                 return;
             }
@@ -723,10 +732,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             DeviceStatus deviceStatus = DeviceStatus.Instance.Read(request.Body);
             if (deviceStatus != null && deviceStatus.CmdType == CommandType.DeviceStatus)
             {
-                if (OnDeviceStatusReceived != null)
-                {
-                    OnDeviceStatusReceived(remoteEP, deviceStatus);
-                }
+                OnDeviceStatusReceived?.Invoke(remoteEP, deviceStatus);
                 return;
             }
 
@@ -734,10 +740,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             DeviceInfo deviceInfo = DeviceInfo.Instance.Read(request.Body);
             if (deviceInfo != null && deviceInfo.CmdType == CommandType.DeviceInfo)
             {
-                if (OnDeviceInfoReceived != null)
-                {
-                    OnDeviceInfoReceived(remoteEP, deviceInfo);
-                }
+                OnDeviceInfoReceived?.Invoke(remoteEP, deviceInfo);
                 return;
             }
 
@@ -745,30 +748,21 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             DeviceConfigDownload devDownload = DeviceConfigDownload.Instance.Read(request.Body);
             if (devDownload != null && devDownload.CmdType == CommandType.ConfigDownload)
             {
-                if (OnDeviceConfigDownloadReceived != null)
-                {
-                    OnDeviceConfigDownloadReceived(remoteEP, devDownload);
-                }
+                OnDeviceConfigDownloadReceived?.Invoke(remoteEP, devDownload);
             }
 
             //预置位查询
             PresetInfo preset = PresetInfo.Instance.Read(request.Body);
             if (preset != null && preset.CmdType == CommandType.PresetQuery)
             {
-                if (OnPresetQueryReceived != null)
-                {
-                    OnPresetQueryReceived(remoteEP, preset);
-                }
+                OnPresetQueryReceived?.Invoke(remoteEP, preset);
             }
 
             //报警通知
             Alarm alarm = Alarm.Instance.Read(request.Body);
             if (alarm != null && alarm.CmdType == CommandType.Alarm)//单兵上报经纬度
             {
-                if (OnAlarmReceived != null)
-                {
-                    OnAlarmReceived(alarm);
-                }
+                OnAlarmReceived?.Invoke(alarm);
             }
         }
 
@@ -785,10 +779,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             NotifyCatalog notify = NotifyCatalog.Instance.Read(request.Body);
             if (notify != null && notify.CmdType == CommandType.Catalog)  //设备目录
             {
-                if (OnNotifyCatalogReceived != null)
-                {
-                    OnNotifyCatalogReceived(notify);
-                }
+                OnNotifyCatalogReceived?.Invoke(notify);
             }
 
             //语音广播通知
@@ -796,10 +787,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             VoiceBroadcastNotify voice = VoiceBroadcastNotify.Instance.Read(request.Body);
             if (voice != null && voice.CmdType == CommandType.Broadcast)    //语音广播
             {
-                if (OnVoiceBroadcaseReceived != null)
-                {
-                    OnVoiceBroadcaseReceived(voice);
-                }
+                OnVoiceBroadcaseReceived?.Invoke(voice);
             }
 
 
@@ -851,11 +839,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             }
 
             SIPTransaction trans = Transport.CreateUASTransaction(request, remoteEP, LocalEP, null);
-            trans.TransactionStateChanged += trans_TransactionStateChanged;
+            trans.TransactionStateChanged += Trans_TransactionStateChanged;
             trans.SendReliableRequest();
         }
 
-        private void trans_TransactionStateChanged(SIPTransaction transaction)
+        private void Trans_TransactionStateChanged(SIPTransaction transaction)
         {
             AddMessageResponse(transaction.LocalSIPEndPoint, transaction.RemoteEndPoint, transaction.TransactionFinalResponse);
         }
@@ -894,8 +882,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     Match mediaMatch = Regex.Match(line.Substring(2).Trim(), @"(?<type>\w+)\s+(?<port>\d+)\s+(?<transport>\S+)\s+(?<formats>.*)$");
                     if (mediaMatch.Success)
                     {
-                        SDPMediaAnnouncement announcement = new SDPMediaAnnouncement();
-                        announcement.Media = SDPMediaTypes.GetSDPMediaType(mediaMatch.Result("${type}"));
+                        SDPMediaAnnouncement announcement = new SDPMediaAnnouncement
+                        {
+                            Media = SDPMediaTypes.GetSDPMediaType(mediaMatch.Result("${type}"))
+                        };
                         Int32.TryParse(mediaMatch.Result("${port}"), out announcement.Port);
                         announcement.Transport = mediaMatch.Result("${transport}");
                         announcement.ParseMediaFormats(mediaMatch.Result("${formats}"));
@@ -954,11 +944,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 SIPFromHeader from = request.Header.From;
                 from.FromTag = request.Header.From.FromTag;
                 SIPToHeader to = request.Header.To;
-                response.Header = new SIPHeader(from, to, request.Header.CSeq, request.Header.CallId);
-                response.Header.CSeqMethod = request.Header.CSeqMethod;
-                response.Header.Vias = request.Header.Vias;
-                response.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-                response.Header.CSeq = request.Header.CSeq;
+                response.Header = new SIPHeader(from, to, request.Header.CSeq, request.Header.CallId)
+                {
+                    CSeqMethod = request.Header.CSeqMethod,
+                    Vias = request.Header.Vias,
+                    UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                    CSeq = request.Header.CSeq
+                };
 
                 if (response.Header.To.ToTag == null || request.Header.To.ToTag.Trim().Length == 0)
                 {

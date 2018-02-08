@@ -34,8 +34,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
+using SIPSorcery.GB28181.SIP.App;
+using SIPSorcery.GB28181.Sys;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -44,12 +45,8 @@ using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using SIPSorcery.GB28181.Sys;
-using Logger4Net;
-using SIPSorcery.GB28181.SIP.App;
 
 namespace SIPSorcery.GB28181.Persistence.XML
 {
@@ -126,10 +123,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                 WriteSIPAssetXML();
 
-                if (Added != null)
-                {
-                    Added(sipAsset);
-                }
+                Added?.Invoke(sipAsset);
 
                 return Get(id);
             }
@@ -161,10 +155,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                     WriteSIPAssetXML();
 
-                    if (Updated != null)
-                    {
-                        Updated(sipAsset);
-                    }
+                    Updated?.Invoke(sipAsset);
 
                     return m_sipAssets[id];
                 }
@@ -295,10 +286,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                     WriteSIPAssetXML();
 
-                    if (Deleted != null)
-                    {
-                        Deleted(sipAsset);
-                    }
+                    Deleted?.Invoke(sipAsset);
                 }
                 else
                 {
@@ -496,10 +484,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
                 m_sipAssets.Add(keyValPair.Key, (T)keyValPair.Value);
             }
 
-            if (Modified != null)
-            {
-                Modified();
-            }
+            Modified?.Invoke();
 
             if (m_xmlFileWatcher == null)
             {

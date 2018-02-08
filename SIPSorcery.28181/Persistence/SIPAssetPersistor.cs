@@ -47,19 +47,15 @@ using System.Data.Common;
 
 namespace SIPSorcery.GB28181.Persistence
 {
-#if !SILVERLIGHT
     public delegate T SIPAssetGetFromDirectQueryDelegate<T>(string sqlQuery, params IDbDataParameter[] sqlParameters);
-#endif
 
     public class SIPAssetPersistor<T>
     {
         protected static ILog logger = AppState.logger;
 
-#if !SILVERLIGHT
         protected DbProviderFactory m_dbProviderFactory;
         protected string m_dbConnectionStr;
         protected ObjectMapper<T> m_objectMapper;
-#endif
 
         public virtual event SIPAssetDelegate<T> Added;
         public virtual event SIPAssetDelegate<T> Updated;
@@ -68,6 +64,7 @@ namespace SIPSorcery.GB28181.Persistence
 
         public virtual T Add(T asset)
         {
+            Added?.Invoke(asset);
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
 
@@ -78,11 +75,13 @@ namespace SIPSorcery.GB28181.Persistence
 
         public virtual T Update(T asset)
         {
+            Updated?.Invoke(asset);
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
 
         public virtual void UpdateProperty(Guid id, string propertyName, object value)
         {
+            Modified.Invoke();
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
 
@@ -99,10 +98,12 @@ namespace SIPSorcery.GB28181.Persistence
 
         public virtual void Delete()
         {
+      
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
         public virtual void Delete(T asset)
         {
+            Deleted?.Invoke(asset);
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
 
@@ -140,8 +141,6 @@ namespace SIPSorcery.GB28181.Persistence
         {
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
-
-#if !SILVERLIGHT
 
         protected DbParameter GetParameter(DbProviderFactory dbProviderFactory, MetaDataMember member, object parameterValue, string parameterName)
         {
@@ -216,6 +215,6 @@ namespace SIPSorcery.GB28181.Persistence
                 throw;
             }
         }
-#endif
+
     }
 }

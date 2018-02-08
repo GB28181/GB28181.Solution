@@ -54,7 +54,11 @@ namespace SIPSorcery.GB28181.SIP.App
         public string Name
         {
             get { return _name; }
-            set { _name = value; }
+            set
+            {
+                _name = value;
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(_name));
+            }
         }
 
         private string _manufacture;
@@ -102,7 +106,11 @@ namespace SIPSorcery.GB28181.SIP.App
         public string Owner
         {
             get { return _owner; }
-            set { _owner = value; }
+            set
+            {
+                _owner = value;
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(_owner));
+            }
         }
 
         private int _cvilCode;
@@ -385,7 +393,7 @@ namespace SIPSorcery.GB28181.SIP.App
             get { return _uri; }
             set { _uri = value; }
         }
-        
+
         private int _webPort;
         /// <summary>
         /// web端口
@@ -423,6 +431,8 @@ namespace SIPSorcery.GB28181.SIP.App
             set { _createTime = value; }
         }
         private DateTime _updateTime;
+
+
         /// <summary>
         /// 修改时间
         /// </summary>

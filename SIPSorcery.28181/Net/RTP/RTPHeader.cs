@@ -141,7 +141,7 @@ namespace SIPSorcery.GB28181.Net
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 
             }

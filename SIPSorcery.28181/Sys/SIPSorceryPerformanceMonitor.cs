@@ -79,7 +79,7 @@ namespace SIPSorcery.GB28181.Sys
 
         private static ILog logger = AppState.logger;
 
-        private static bool m_sipsorceryCategoryReady;
+        private static bool m_sipsorceryCategoryReady = false;
         
         //private static Dictionary<string, PerformanceCounterType> m_counterNames = new Dictionary<string, PerformanceCounterType>()
         //{

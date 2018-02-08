@@ -122,7 +122,7 @@ namespace SIPSorcery.GB28181.Servers
         private bool m_mangleUACContact = false;            // Whether or not to adjust contact URIs that contain private hosts to the value of the bottom via received socket.
         private bool m_strictRealmHandling = false;         // If true the registrar will only accept registration requests for domains it is configured for, otherwise any realm is accepted.
         //private event SIPMonitorLogDelegate m_registrarLogEvent;
-        private SIPUserAgentConfigurationManager m_userAgentConfigs;
+       // private SIPUserAgentConfigurationManager m_userAgentConfigs;
         private Queue<SIPNonInviteTransaction> m_registerQueue = new Queue<SIPNonInviteTransaction>();
         private AutoResetEvent m_registerARE = new AutoResetEvent(false);
         //private RSACryptoServiceProvider m_switchbboardRSAProvider; // If available this certificate can be used to sign switchboard tokens.
@@ -249,10 +249,7 @@ namespace SIPSorcery.GB28181.Servers
                                 TimeSpan duration = DateTime.Now.Subtract(startTime);
                                 FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegistrarTiming, "register result=" + result.ToString() + ", time=" + duration.TotalMilliseconds + "ms, user=" + registrarTransaction.TransactionRequest.Header.To.ToURI.User + ".", null));
 
-                                if (RegisterComplete != null)
-                                {
-                                    RegisterComplete(duration.TotalMilliseconds, registrarTransaction.TransactionRequest.Header.AuthenticationHeader != null);
-                                }
+                                RegisterComplete?.Invoke(duration.TotalMilliseconds, registrarTransaction.TransactionRequest.Header.AuthenticationHeader != null);
                             }
                         }
                         catch (InvalidOperationException invalidOpExcp)
@@ -308,11 +305,13 @@ namespace SIPSorcery.GB28181.Servers
 
 
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser && s.SIPDomain == canonicalDomain);
-                SIPAccount sipAccount = new SIPAccount();
-                sipAccount.Id = Guid.NewGuid();
-                sipAccount.Owner = "admin";
-                sipAccount.SIPUsername = toUser;
-                sipAccount.SIPDomain = canonicalDomain;
+                SIPAccount sipAccount = new SIPAccount
+                {
+                    Id = Guid.NewGuid(),
+                    Owner = "admin",
+                    SIPUsername = toUser,
+                    SIPDomain = canonicalDomain
+                };
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser);
                 SIPRequestAuthenticationResult authenticationResult = SIPRequestAuthenticator_External(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
 
@@ -378,7 +377,7 @@ namespace SIPSorcery.GB28181.Servers
                         SIPEndPoint registrarEndPoint = registerTransaction.LocalSIPEndPoint;
 
                         SIPResponseStatusCodesEnum updateResult = SIPResponseStatusCodesEnum.Ok;
-                        string updateMessage = null;
+                       // string updateMessage = null;
 
                         DateTime startTime = DateTime.Now;
 
@@ -405,7 +404,7 @@ namespace SIPSorcery.GB28181.Servers
                         {
                             string proxySocketStr = (proxySIPEndPoint != null) ? " (proxy=" + proxySIPEndPoint.ToString() + ")" : null;
 
-                            int bindingCount = 1;
+                          //  int bindingCount = 1;
                             //foreach (SIPRegistrarBinding binding in bindingsList)
                             //{
                             //    string bindingIndex = (bindingsList.Count == 1) ? String.Empty : " (" + bindingCount + ")";
@@ -510,8 +509,10 @@ namespace SIPSorcery.GB28181.Servers
 
                 foreach (SIPRegistrarBinding binding in bindings)
                 {
-                    SIPContactHeader bindingContact = new SIPContactHeader(null, binding.ContactSIPURI);
-                    bindingContact.Expires = Convert.ToInt32(binding.ExpiryTime.Subtract(DateTime.UtcNow).TotalSeconds % Int32.MaxValue);
+                    SIPContactHeader bindingContact = new SIPContactHeader(null, binding.ContactSIPURI)
+                    {
+                        Expires = Convert.ToInt32(binding.ExpiryTime.Subtract(DateTime.UtcNow).TotalSeconds % Int32.MaxValue)
+                    };
                     contactHeaderList.Add(bindingContact);
                 }
 

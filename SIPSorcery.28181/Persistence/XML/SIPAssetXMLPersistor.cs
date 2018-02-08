@@ -126,10 +126,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                 WriteSIPAssetXML();
 
-                if (Added != null)
-                {
-                    Added(sipAsset);
-                }
+                Added?.Invoke(sipAsset);
 
                 return Get(id);
             }
@@ -161,10 +158,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                     WriteSIPAssetXML();
 
-                    if (Updated != null)
-                    {
-                        Updated(sipAsset);
-                    }
+                    Updated?.Invoke(sipAsset);
 
                     return m_sipAssets[id];
                 }
@@ -295,10 +289,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
                     WriteSIPAssetXML();
 
-                    if (Deleted != null)
-                    {
-                        Deleted(sipAsset);
-                    }
+                    Deleted?.Invoke(sipAsset);
                 }
                 else
                 {
@@ -476,10 +467,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
                 m_sipAssets.Add(keyValPair.Key, (T)keyValPair.Value);
             }
 
-            if (Modified != null)
-            {
-                Modified();
-            }
+            Modified?.Invoke();
 
             if (m_xmlFileWatcher == null)
             {

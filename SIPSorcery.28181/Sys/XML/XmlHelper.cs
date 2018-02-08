@@ -51,11 +51,13 @@ namespace SIPSorcery.GB28181.Sys.XML
 
 
 
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.OmitXmlDeclaration = false;
-            settings.Encoding = Encoding.GetEncoding("utf-8");
-            
-            settings.Indent = true;
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                OmitXmlDeclaration = false,
+                Encoding = Encoding.GetEncoding("utf-8"),
+
+                Indent = true
+            };
             XmlSerializer s = new XmlSerializer(t.GetType());
             var xns = new XmlSerializerNamespaces();
             xns.Add("", "");

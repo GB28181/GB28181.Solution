@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.Sys
 {
@@ -19,8 +15,10 @@ namespace SIPSorcery.GB28181.Sys
         /// <returns></returns>
         public static uint DateToTimeStamp(DateTime date)
         {
-            DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            return (uint)(date - startTime).TotalSeconds;
+            //   DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+
+            return (uint)TimeZoneInfo.Local.GetUtcOffset(date).Seconds;
+
         }
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace SIPSorcery.GB28181.Sys
         /// <returns></returns>
         public static DateTime TimeStampToDate(uint timestamp)
         {
-            return TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1)).AddSeconds(timestamp);
+            return TimeZoneInfo.ConvertTimeToUtc(DateTime.Now.AddSeconds(timestamp));
         }
     }
 }

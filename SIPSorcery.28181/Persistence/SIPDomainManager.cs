@@ -73,14 +73,14 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private ILog logger = AppState.logger;
 
-        private static readonly string m_storageFileName = AssemblyState.XML_DOMAINS_FILENAME;
+    //    private static readonly string m_storageFileName = AssemblyState.XML_DOMAINS_FILENAME;
 
         private Dictionary<string, SIPDomain> m_domains = new Dictionary<string, SIPDomain>();  // Records the domains that are being maintained.
         private SIPAssetPersistor<SIPDomain> m_sipDomainPersistor;
         private SIPDomain m_wildCardDomain;
 
-        //public SIPDomainManager()
-        //{ }
+        public SIPDomainManager()
+        { }
 
         public SIPDomainManager(SIPAssetPersistor<SIPDomain> sipDomain)
         {
@@ -165,7 +165,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <returns>The canconical domain name for the host if found or null if not.</returns>
         public string GetDomain(string host, bool wilcardOk) {
             SIPDomain domain = GetSIPDomain(host, wilcardOk);
-            return (domain != null) ? domain.Domain.ToLower() : null;
+            return domain?.Domain.ToLower();
         }
 
         private SIPDomain GetSIPDomain(string host, bool wildcardOk)

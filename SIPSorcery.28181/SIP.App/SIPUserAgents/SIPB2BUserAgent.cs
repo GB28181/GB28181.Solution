@@ -72,10 +72,10 @@ namespace SIPSorcery.GB28181.SIP.App
         public UACInviteTransaction ServerTransaction { get { return m_uacTransaction; } }
         public SIPCallDescriptor CallDescriptor { get { return m_uacCallDescriptor; } }
 
-        public event SIPCallResponseDelegate CallTrying;
+        // public event SIPCallResponseDelegate CallTrying;
         public event SIPCallResponseDelegate CallRinging;
         public event SIPCallResponseDelegate CallAnswered;
-        public event SIPCallFailedDelegate CallFailed;
+        //  public event SIPCallFailedDelegate CallFailed;
 
         // UAS fields.
         private UASInviteTransaction m_uasTransaction;
@@ -84,7 +84,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public bool IsInvite
         {
             get { return true; }
-        } 
+        }
 
         public SIPCallDirection CallDirection { get { return SIPCallDirection.In; } }
         public UASInviteTransaction SIPTransaction
@@ -122,6 +122,8 @@ namespace SIPSorcery.GB28181.SIP.App
         public event SIPUASDelegate NoRingTimeout;
         public event SIPUASDelegate TransactionComplete;
         public event SIPUASStateChangedDelegate UASStateChanged;
+        public event SIPCallResponseDelegate CallTrying;
+        public event SIPCallFailedDelegate CallFailed;
 
         // UAS and UAC field.
         private SIPDialogue m_sipDialogue;
@@ -188,6 +190,8 @@ namespace SIPSorcery.GB28181.SIP.App
                 //m_uasTransaction.UASInviteTransactionCancelled += (t) => { };
 
                 QueueNewCall_External(this);
+
+                CallTrying.Invoke(this, null);
             }
             catch (Exception excp)
             {
@@ -203,10 +207,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 m_uasTransaction.CancelCall();
                 m_uacTransaction.CancelCall();
 
-                if (CallCancelled != null)
-                {
-                    CallCancelled(this);
-                }
+                CallCancelled?.Invoke(this);
             }
             catch (Exception excp)
             {
@@ -250,10 +251,7 @@ namespace SIPSorcery.GB28181.SIP.App
                     }
                     else
                     {
-                        if (UASStateChanged != null)
-                        {
-                            UASStateChanged(this, progressStatus, reasonPhrase);
-                        }
+                        UASStateChanged?.Invoke(this, progressStatus, reasonPhrase);
 
                         if (m_uasTransaction.TransactionState == SIPTransactionStatesEnum.Proceeding)
                         {
@@ -279,7 +277,7 @@ namespace SIPSorcery.GB28181.SIP.App
                                 }
                             }
                             m_uacTransaction.GotResponse(m_blackhole, m_blackhole, uacProgressResponse);
-                            CallRinging((ISIPClientUserAgent)this, uacProgressResponse);
+                            CallRinging(this, uacProgressResponse);
                         }
                     }
                 }
@@ -306,10 +304,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 logger.Debug("SIPB2BUserAgent Answer.");
                 m_sipDialogue = answeredDialogue;
 
-                if (UASStateChanged != null)
-                {
-                    UASStateChanged(this, SIPResponseStatusCodesEnum.Ok, null);
-                }
+                UASStateChanged?.Invoke(this, SIPResponseStatusCodesEnum.Ok, null);
 
                 SIPResponse uasOkResponse = SIPTransport.GetResponse(m_uasTransaction.TransactionRequest, SIPResponseStatusCodesEnum.Ok, null);
                 m_uasTransaction.SendFinalResponse(uasOkResponse);
@@ -324,7 +319,7 @@ namespace SIPSorcery.GB28181.SIP.App
                     uacOkResponse.Body = body;
                     uacOkResponse.Header.ContentLength = body.Length;
                 }
-                CallAnswered((ISIPClientUserAgent)this, uacOkResponse);
+                CallAnswered.Invoke(this, uacOkResponse);
                 return null;
             }
             catch (Exception excp)
@@ -336,6 +331,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public void AnswerNonInvite(SIPResponseStatusCodesEnum answerStatus, string reasonPhrase, string[] customHeaders, string contentType, string body)
         {
+            NoRingTimeout.Invoke(this);
             throw new NotImplementedException();
         }
 
@@ -343,10 +339,7 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             logger.Debug("SIPB2BUserAgent Reject.");
 
-            if (UASStateChanged != null)
-            {
-                UASStateChanged(this, rejectCode, rejectReason);
-            }
+            UASStateChanged?.Invoke(this, rejectCode, rejectReason);
 
             SIPResponse uasfailureResponse = SIPTransport.GetResponse(m_uasTransaction.TransactionRequest, rejectCode, rejectReason);
             m_uasTransaction.SendFinalResponse(uasfailureResponse);
@@ -360,13 +353,15 @@ namespace SIPSorcery.GB28181.SIP.App
                 }
             }
             m_uacTransaction.GotResponse(m_blackhole, m_blackhole, uacfailureResponse);
-            CallAnswered((ISIPClientUserAgent)this, uacfailureResponse);
+            CallAnswered(this, uacfailureResponse);
+            CallFailed.Invoke(this,"failed");
         }
 
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI)
         {
             logger.Debug("SIPB2BUserAgent Redirect.");
             //m_uas.Redirect(redirectCode, redirectURI);
+
         }
 
         public void NoCDR()
@@ -403,8 +398,10 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             SIPFromHeader fromHeader = sipCallDescriptor.GetFromHeader();
 
-            SIPRequest inviteRequest = new SIPRequest(SIPMethodsEnum.INVITE, SIPURI.ParseSIPURI(callURI));
-            inviteRequest.LocalSIPEndPoint = m_blackhole;
+            SIPRequest inviteRequest = new SIPRequest(SIPMethodsEnum.INVITE, SIPURI.ParseSIPURI(callURI))
+            {
+                LocalSIPEndPoint = m_blackhole
+            };
 
             SIPHeader inviteHeader = new SIPHeader(fromHeader, new SIPToHeader(null, inviteRequest.URI, null), 1, CallProperties.CreateNewCallId());
 

@@ -62,8 +62,16 @@ namespace SIPSorcery.GB28181.Sys.Config
         public void Read()
         {
             SIPAssetPersistor<SIPAccount> account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
+
+            account.Added += Account_Added;
+
             _sipAccount = account;
             _accounts = account.Get();
+        }
+
+        private void Account_Added(SIPAccount asset)
+        {
+            throw new NotImplementedException();
         }
 
         public void Save(SIPAccount account)

@@ -47,10 +47,10 @@ namespace SIPSorcery.GB28181.Persistence
 {
     public class SQLAssetPersistor<T> : SIPAssetPersistor<T> where T : class, ISIPAsset, new()
     {
-        public override event SIPAssetDelegate<T> Added;
-        public override event SIPAssetDelegate<T> Updated;
-        public override event SIPAssetDelegate<T> Deleted;
-        public override event SIPAssetsModifiedDelegate Modified;
+        //public override event SIPAssetDelegate<T> Added;
+        //public override event SIPAssetDelegate<T> Updated;
+        //public override event SIPAssetDelegate<T> Deleted;
+        //public override event SIPAssetsModifiedDelegate Modified;
 
         public SQLAssetPersistor(DbProviderFactory factory, string dbConnStr)
         {
@@ -304,10 +304,8 @@ namespace SIPSorcery.GB28181.Persistence
                         deleteCommand.CommandText = "delete from " + m_objectMapper.TableName + " where id = '" + asset.Id + "'";
                         deleteCommand.ExecuteNonQuery();
                         trans.Commit();
-                        if (Deleted != null)
-                        {
-                            Deleted(asset);
-                        }
+                     //   Deleted?.(asset);
+
                     }
                     catch (Exception excp)
                     {

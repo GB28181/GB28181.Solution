@@ -99,7 +99,7 @@ namespace SIPSorcery.GB28181.Net.RTP
             {
                 _rtpSocket.EndConnect(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }
@@ -174,7 +174,7 @@ namespace SIPSorcery.GB28181.Net.RTP
                       HandleTcpDatagramReceived,
                       internalClient);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -312,7 +312,7 @@ namespace SIPSorcery.GB28181.Net.RTP
         //        }
         //    }
         //}
-        FileStream m_fs;
+     //   FileStream m_fs;
         protected void TcpDatagramToEnqueue(byte[] buffer)
         {
             if (buffer.Length > RTPHeader.MIN_HEADER_LEN)

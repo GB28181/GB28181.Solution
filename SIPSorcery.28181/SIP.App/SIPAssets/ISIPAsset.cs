@@ -8,11 +8,9 @@ namespace SIPSorcery.GB28181.SIP.App
     {
         Guid Id { get; set; }
 
-#if !SILVERLIGHT
         void Load(System.Data.DataRow row);
         Dictionary<Guid, object> Load(XmlDocument dom);
         System.Data.DataTable GetTable();
-#endif
         string ToXML();
         string ToXMLNoParent();
         string GetXMLElementName();

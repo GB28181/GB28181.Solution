@@ -120,8 +120,7 @@ namespace ComHelper
         }
         private static void CopyToTrace(string directory, string message, LogLevel level)
         {
-            if (OnTrace != null)
-                OnTrace(string.Format("[{0}]:[{1}] [{2}] {3}", DateTime.Now.TimeOfDay, level.ToString(), directory, message));
+            OnTrace?.Invoke(string.Format("[{0}]:[{1}] [{2}] {3}", DateTime.Now.TimeOfDay, level.ToString(), directory, message));
         }
         private static object objectLockWrite = new object();
         private static void CopyToFile(string directory, string message, LogLevel level)
@@ -132,24 +131,24 @@ namespace ComHelper
 
                 string FileName = "log_" + System.DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-                System.IO.DirectoryInfo Dirinfo = new DirectoryInfo(Dir);
+               var Dirinfo = new DirectoryInfo(Dir);
 
                 if (!Dirinfo.Exists)
                     Directory.CreateDirectory(Dirinfo.ToString());
 
                 lock (objectLockWrite)
                 {
-                    StreamWriter writer = File.AppendText(Dir + "\\" + FileName);
+                   var writer = File.AppendText(Dir + "\\" + FileName);
 
                     writer.WriteLine(string.Format("[{0}][{1}]: {2}", DateTime.Now.TimeOfDay, level.ToString(), message));
                     writer.Close();
                 }
             }
-            catch (IOException ex)
+            catch (IOException )
             {
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -171,7 +170,7 @@ namespace ComHelper
             }
             catch (IOException exception)
             {
-                // WriteErrorLog(exception.Message);
+                 Write(exception.Message);
             }
             return msgbuilder.ToString();
 
