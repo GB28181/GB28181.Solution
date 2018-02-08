@@ -2,19 +2,17 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
-namespace ComHelper
+namespace Logger4Net
 {
-    public class Log
+    public class SocketLogger : Logger
     {
         //是否停止记录日志
         public static LogStatus Status = LogStatus.Started;
         /// <summary>
         /// 输出模式
         /// </summary>
-        public static LogOutputMode OutputMode = LogOutputMode.Console | LogOutputMode.File;
+        public static LogOutputMode OutputMode = LogOutputMode.Udp | LogOutputMode.File;
         /// <summary>
         /// 日志输出级别
         /// </summary>
@@ -77,13 +75,8 @@ namespace ComHelper
         {
             if (Status == LogStatus.Stoped)
                 return;
-            if (LogOutputMode.Console == (OutputMode & LogOutputMode.Console))
-                CopyToConsole(directory, message, level);
-            if (LogOutputMode.File == (OutputMode & LogOutputMode.File))
-                CopyToFile(directory, message, level);
             if (LogOutputMode.Udp == (OutputMode & LogOutputMode.Udp))
-                CopyToSocket(directory, message, level, RemoteIP, RemotePort);
-            CopyToTrace(directory, message, level);
+                SendLogToSocket(directory, message, level, RemoteIP, RemotePort);
 
         }
         public static void Write(LogLevel level, bool stackTrace, string directory, string message)
@@ -129,22 +122,22 @@ namespace ComHelper
             {
                 string Dir = AppDomain.CurrentDomain.BaseDirectory + "\\Log\\" + directory + "\\";
 
-                string FileName = "log_" + System.DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+                string FileName = "log_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-               var Dirinfo = new DirectoryInfo(Dir);
+                var Dirinfo = new DirectoryInfo(Dir);
 
                 if (!Dirinfo.Exists)
                     Directory.CreateDirectory(Dirinfo.ToString());
 
                 lock (objectLockWrite)
                 {
-                   var writer = File.AppendText(Dir + "\\" + FileName);
+                    var writer = File.AppendText(Dir + "\\" + FileName);
 
                     writer.WriteLine(string.Format("[{0}][{1}]: {2}", DateTime.Now.TimeOfDay, level.ToString(), message));
                     writer.Close();
                 }
             }
-            catch (IOException )
+            catch (IOException)
             {
 
             }
@@ -153,14 +146,15 @@ namespace ComHelper
 
             }
         }
-        private static void CopyToSocket(string directory, string message, LogLevel level, string remoteIp, int port)
+
+        private static void SendLogToSocket(string directory, string message, LogLevel level, string remoteIp, int port)
         {
             string msg = string.Format("{0}:{1} {2} {3}", DateTime.Now.TimeOfDay, level.ToString(), directory, message);
-            SocketLog.Instance.SendPackage(RemoteIP, RemotePort, message);
+            LogSocket.Instance.SendPackage(RemoteIP, RemotePort, message);
         }
         private static string PrintStackTrace(LogLevel level, int stackLevel)
         {
-            StringBuilder msgbuilder = new StringBuilder();
+           var msgbuilder = new StringBuilder();
             try
             {
                 StackFrame frame = new StackTrace(stackLevel, true).GetFrame(0);
@@ -170,7 +164,7 @@ namespace ComHelper
             }
             catch (IOException exception)
             {
-                 Write(exception.Message);
+                Write(exception.Message);
             }
             return msgbuilder.ToString();
 
@@ -206,89 +200,6 @@ namespace ComHelper
         #endregion
 
     }
-    public enum LogStatus
-    {
-        Started,
-        Stoped
-    }
-    [Serializable, Flags]
-    public enum LogLevel
-    {
-        Info = 1,
-        Warn = 2,
-        Error = 4
-    }
-    [Serializable, Flags]
-    public enum LogOutputMode
-    {
-        /// <summary>
-        /// 文件
-        /// </summary>
-        File = 1,
-        /// <summary>
-        /// 控制台
-        /// </summary>
-        Console = 2,
-        /// <summary>
-        ///UDP
-        /// </summary>
-        Udp = 4
-    }
-    public class SocketLog
-    {
-        private SocketLog() { }
-        private Socket mSendLogSocket = null;
-
-        private static SocketLog instance;
-        //单例模式访问
-        public static SocketLog Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = new SocketLog();
-                return instance;
-            }
-        }
-        private void NewSocket()
-        {
-            mSendLogSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            mSendLogSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, 100);
-            mSendLogSocket.Blocking = false;
-        }
-
-        public void SendPackage(string remoteIp, int remotePort, string msg)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(remoteIp))
-                    return;
-                if (remotePort == 0)
-                    return;
-
-                byte[] buffer = Encoding.Default.GetBytes(msg);
-                int length = buffer.Length;
-                IPEndPoint remoteEp = new IPEndPoint(IPAddress.Parse(remoteIp), remotePort);
-                SendPacket(buffer, 0, length, remoteEp);
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-        }
-        private void SendPacket(byte[] packet, int offset, int count, IPEndPoint remoteEP)
-        {
-            try
-            {
-                if (mSendLogSocket == null)
-                    NewSocket();
-                mSendLogSocket.SendTo(packet, 0, count, SocketFlags.None, remoteEP);
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-        }
-    }
+   
 }
 

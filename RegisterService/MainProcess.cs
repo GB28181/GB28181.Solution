@@ -8,7 +8,6 @@ using SIPSorcery.GB28181.Sys.Config;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Servers;
 
 namespace RegisterService
@@ -37,7 +36,6 @@ namespace RegisterService
 
 
         private List<CameraInfo> _cameras = null;
-        private List<SIPAccount> _accountList = null;
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
@@ -134,7 +132,7 @@ namespace RegisterService
                 // start the Listening SipService in main Service
                 _mainService = Task.Factory.StartNew(() =>
                 {
-                    var _messageCore = new SIPMessageCore(_cameras, SIPSqlite.Instance.Accounts.First());
+                    var _messageCore = new SIPCoreMessageService(_cameras, SIPSqlite.Instance.Accounts.First());
 
                     _messageCore.OnKeepaliveReceived += MessageCore_OnKeepaliveReceived;
                     _messageCore.OnServiceChanged += SIPServiceChangeHandle;

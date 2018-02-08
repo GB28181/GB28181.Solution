@@ -6,24 +6,32 @@ namespace Logger4Net
     {
         public Logger() { }
 
-        public void Debug(string debugMessge)
+        public virtual void Debug(string debugMessge)
         {
             Console.WriteLine(" this debugMessge  :" + debugMessge);
         }
 
-        public void Error(string errorMessge)
+        public virtual void Error(string errorMessge)
         {
             Console.WriteLine(" this errorMessge  :" + errorMessge);
         }
 
-        public void Info(string infoMessge)
+        public virtual void Info(string infoMessge)
         {
             Console.WriteLine(" this infoMessge  :" + infoMessge);
         }
 
-        public void Warn(string warnMessge)
+        public virtual void Warn(string warnMessge)
         {
             Console.WriteLine(" this warnMessge  :" + warnMessge);
         }
+    }
+
+
+    public class LoggingEvent
+    {
+        public string RenderedMessage { get; set; }
+
+        public int Level { get; set; }
     }
 }

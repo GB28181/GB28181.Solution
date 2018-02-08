@@ -14,11 +14,4 @@
     }
 
 
-
-    public class LoggingEvent
-    {
-        public string RenderedMessage { get; set; }
-
-        public int Level { get; set; }
-    }
 }

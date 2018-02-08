@@ -125,7 +125,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
-        private SIPMessageCore _msgCore;
+        private SIPCoreMessageService _msgCore;
         /// <summary>
         /// 远程终结点
         /// </summary>
@@ -153,7 +153,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         #endregion
 
         #region 初始化监控
-        public SIPMonitorCore(SIPMessageCore msgCore, string deviceId,
+        public SIPMonitorCore(SIPCoreMessageService msgCore, string deviceId,
             SIPEndPoint remoteEP, SIPAccount account)
         {
             _msgCore = msgCore;

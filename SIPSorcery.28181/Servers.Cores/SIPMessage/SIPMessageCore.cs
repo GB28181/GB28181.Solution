@@ -39,7 +39,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     /// <summary>
     /// sip消息核心处理
     /// </summary>
-    public class SIPMessageCore
+    public class SIPCoreMessageService
     {
         #region 私有字段
 
@@ -141,7 +141,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #region 初始化
 
-        public SIPMessageCore(IList<CameraInfo> cameras, SIPAccount account)
+        public SIPCoreMessageService(IList<CameraInfo> cameras, SIPAccount account)
         {
             _serviceState = ServiceStatus.Wait;
             _account = account;
