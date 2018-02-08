@@ -8,40 +8,63 @@ using SIPSorcery.GB28181.Sys.Config;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.SIP.App;
+using SIPSorcery.GB28181.Servers;
 
 namespace RegisterService
 {
     public class MainProcess : IDisposable
     {
 
-
         //interface IDisposable implementation
         private bool _already_disposed = false;
 
         // Thread signal for stop work.
-        private readonly ManualResetEvent eventStopService = new ManualResetEvent(false);
+        private readonly ManualResetEvent _eventStopService = new ManualResetEvent(false);
 
         // Thread signal for infor thread is over.
-        private readonly ManualResetEvent eventThreadExit = new ManualResetEvent(false);
+        private readonly ManualResetEvent _eventThreadExit = new ManualResetEvent(false);
 
         //signal to exit the main Process
-        private readonly AutoResetEvent eventExitMainProcess = new AutoResetEvent(false);
+        private readonly AutoResetEvent _eventExitMainProcess = new AutoResetEvent(false);
 
 
-
-        private Thread _mainWorkThread = null;
+        private Task _mainTask = null;
+        private Task _mainService = null;
 
         private DateTime _keepaliveTime;
-        private Queue<Keep> _keepQueue = new Queue<Keep>();
+        private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
+
+
+        private List<CameraInfo> _cameras = null;
+        private List<SIPAccount> _accountList = null;
+
+        private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
         #region 委托回调
 
+        /// <summary>
+        /// 设置服务状态回调
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="state"></param>
+        public delegate void SIPServiceStatusHandler(string msg, ServiceStatus state);
+        /// <summary>
+        /// 设置设备查询目录回调
+        /// </summary>
+        /// <param name="cata"></param>
+        public delegate void CatalogQueryHandler(Catalog cata);
+        /// <summary>
+        /// 设置录像文件查询回调
+        /// </summary>
+        /// <param name="record"></param>
+        public delegate void RecordQueryHandler(RecordInfo record);
         /// <summary>
         /// 设置心跳消息回调
         /// </summary>
         /// <param name="remoteEP"></param>
         /// <param name="keepalive"></param>
-        public delegate void SetKeepaliveText(string remoteEP, KeepAlive keepalive);
+        public delegate void KeepAliveHandler(string remoteEP, KeepAlive keepalive);
         #endregion
 
         public MainProcess() { }
@@ -66,8 +89,8 @@ namespace RegisterService
 
                 if (disposing)
                 {
-                    eventStopService.Close();
-                    eventThreadExit.Close();
+                    _eventStopService.Close();
+                    _eventThreadExit.Close();
                 }
             }
 
@@ -76,30 +99,59 @@ namespace RegisterService
 
         #endregion
 
-        private void MainProcessing()
+        public void Run()
         {
+            _eventStopService.Reset();
+            _eventThreadExit.Reset();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            //Start the main serice
+            _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
+
+            //wait the process exit of main
+            _eventExitMainProcess.WaitOne();
+        }
+
+
+
+        public void Stop()
+        {
+            // signal main service exit
+            _eventStopService.Set();
+            _eventThreadExit.WaitOne();
+
+        }
+
+        private void MainServiceProcessing()
+        {
 
             _keepaliveTime = DateTime.Now;
 
             try
             {
-
-                Task.Factory.StartNew(() =>
+                _cameras = new List<CameraInfo>();
+                // start the Listening SipService in main Service
+                _mainService = Task.Factory.StartNew(() =>
                 {
-                    var cameras = new List<CameraInfo>();
-                    var account = SIPSqlite.Instance.Accounts.First();
-                    var _messageCore = new SIPMessageCore(cameras, account);
+                    var _messageCore = new SIPMessageCore(_cameras, SIPSqlite.Instance.Accounts.First());
+
+                    _messageCore.OnKeepaliveReceived += MessageCore_OnKeepaliveReceived;
+                    _messageCore.OnServiceChanged += SIPServiceChangeHandle;
+                    _messageCore.OnCatalogReceived += M_msgCore_OnCatalogReceived;
+
                     _messageCore.Start();
                 });
 
-                eventExitMainProcess.Set();
-                eventStopService.WaitOne();
+                //wait main service exit
+                _eventStopService.WaitOne();
+
+                //signal main process exit
+                _eventExitMainProcess.Set();
             }
             catch (Exception)
             {
-                eventExitMainProcess.Set();
+                _eventExitMainProcess.Set();
             }
             finally
             {
@@ -108,27 +160,90 @@ namespace RegisterService
 
         }
 
-        public void Run()
+
+        private void SetRecord(RecordInfo record)
         {
-            eventStopService.Reset();
-            eventThreadExit.Reset();
-            _mainWorkThread = new Thread(new ThreadStart(MainProcessing))
+            foreach (var item in record.RecordItems.Items)
             {
-                IsBackground = true
-            };
-            _mainWorkThread.Start();
-
-            eventExitMainProcess.WaitOne();
+            }
         }
 
 
+        #region Event Call back
 
-        public void Stop()
+
+
+        private void MessageCore_OnKeepaliveReceived(SIPEndPoint remoteEP, KeepAlive keapalive, string devId)
         {
-            eventStopService.Set();
-            eventThreadExit.WaitOne();
+            _keepaliveTime = DateTime.Now;
+            var hbPoint = new HeartBeatEndPoint()
+            {
+                RemoteEP = remoteEP,
+                Heart = keapalive
+            };
+            _keepAliveQueue.Enqueue(hbPoint);
+        }
+
+        private void SIPServiceChangeHandle(string msg, ServiceStatus state)
+        {
+            SetSIPService(msg, state);
 
         }
+
+        /// <summary>
+        /// 设置sip服务状态
+        /// </summary>
+        /// <param name="state">sip状态</param>
+        private void SetSIPService(string msg, ServiceStatus state)
+        {
+            if (state == ServiceStatus.Wait)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// 目录查询回调
+        /// </summary>
+        /// <param name="cata"></param>
+        private void M_msgCore_OnCatalogReceived(Catalog cata)
+        {
+            _catalogQueue.Enqueue(cata);
+        }
+
+        //设备信息查询回调函数
+        private void DeviceInfoReceived(SIPEndPoint remoteEP, DeviceInfo device)
+        {
+
+
+        }
+
+        //设备状态查询回调函数
+        private void DeviceStatusReceived(SIPEndPoint remoteEP, DeviceStatus device)
+        {
+
+        }
+
+
+
+        /// <summary>
+        /// 录像查询回调
+        /// </summary>
+        /// <param name="record"></param>
+        private void MessageCore_OnRecordInfoReceived(RecordInfo record)
+        {
+
+            SetRecord(record);
+
+        }
+
+        #endregion
+
+
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -146,7 +261,7 @@ namespace RegisterService
     /// <summary>
     /// 心跳
     /// </summary>
-    public class Keep
+    public class HeartBeatEndPoint
     {
         /// <summary>
         /// 远程终结点

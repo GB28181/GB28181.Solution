@@ -57,12 +57,12 @@ namespace ComHelper
                     msgbuilder.Append("[StackTrace]:" + ex.StackTrace + "\r\n   ");
                 Write(LogLevel.Error, directory, msgbuilder.ToString());
             }
-            catch (IOException exception)
+            catch (IOException)
             {
                 //Write(LogLevel.Error, "system", "写入消息：" + message + "的时候发生了异常" + ex.Message + ":" + exception.StackTrace);
                 //throw exception;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //  throw exception;
             }

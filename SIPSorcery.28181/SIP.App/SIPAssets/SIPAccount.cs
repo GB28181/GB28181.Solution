@@ -60,7 +60,7 @@ namespace SIPSorcery.GB28181.SIP.App
     /// in them but will prevent a different user from being able to hijack an "x.username" account and caue unexpected behaviour.
     /// </remarks>
    // // [Table(Name = "sipaccounts")]
-    [DataContractAttribute]
+    [DataContract]
     public class SIPAccount : INotifyPropertyChanged, ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipaccounts";
@@ -818,10 +818,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

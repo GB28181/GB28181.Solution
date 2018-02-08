@@ -95,7 +95,6 @@ namespace Gb28181_Client
         private void Initialize()
         {
             _devList = new List<ListViewItem>();
-            txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             txtStopTime.Text = DateTime.Now.ToString("yyyy-MM-dd 9:00:00");
 
             var configType = new Dictionary<string, string>
@@ -163,6 +162,7 @@ namespace Gb28181_Client
             //_tn.Nodes.Add(_bg);
 
             //tvCalatog.Nodes.Add(_tn);
+            txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             _keepaliveTime = DateTime.Now;
             playerWin.Start();
 
@@ -174,7 +174,6 @@ namespace Gb28181_Client
             _messageCore.OnCatalogReceived += m_msgCore_OnCatalogReceived;
             _messageCore.OnNotifyCatalogReceived += MessageCore_OnNotifyCatalogReceived;
             _messageCore.OnAlarmReceived += MessageCore_OnAlarmReceived;
-
             _messageCore.OnRecordInfoReceived += MessageCore_OnRecordInfoReceived;
             _messageCore.OnKeepaliveReceived += MessageCore_OnKeepaliveReceived;
             _messageCore.OnDeviceStatusReceived += DeviceStatusReceived;
