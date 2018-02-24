@@ -3,6 +3,7 @@ using SIPSorcery.GB28181.SIP.App;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 /// <summary>
 /// read configuraton and config the data storage
 /// </summary>
@@ -14,7 +15,9 @@ namespace SIPSorcery.GB28181.Sys.Config
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private static readonly string m_XMLFilename = "gb28181.xml"; //default storage filename
 
+        //数据存储类型，比如xml,json,sqlite.postgresql
         private static StorageTypes m_storageType;
+        //连接字符串
         private static string m_connStr;
 
         private static SipStorage _instance;
@@ -23,8 +26,8 @@ namespace SIPSorcery.GB28181.Sys.Config
 
         public List<SIPAccount> Accounts
         {
-            get { return _accounts; }
-            set { _accounts = value; }
+            get => _accounts;
+            set => _accounts = value;
         }
         private SIPAssetPersistor<SIPAccount> _sipAccount;
 
@@ -50,11 +53,12 @@ namespace SIPSorcery.GB28181.Sys.Config
         static SipStorage()
         {
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : StorageTypes.Unknown;
-            m_connStr = AppState.GetConfigSetting(m_connStrKey);
+
+            var rootPath = AppDomain.CurrentDomain.BaseDirectory;
+            m_connStr = Path.Combine(rootPath, AppState.GetConfigSetting(m_connStrKey));
             if (m_storageType == StorageTypes.SQLite)
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "Config\\";
-                m_connStr = string.Format(m_connStr, path);
+                m_connStr = string.Format(m_connStr, rootPath);
             }
             if (m_storageType == StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
@@ -64,7 +68,7 @@ namespace SIPSorcery.GB28181.Sys.Config
 
         public void Read()
         {
-            SIPAssetPersistor<SIPAccount> account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
+            var account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
 
             account.Added += Account_Added;
 

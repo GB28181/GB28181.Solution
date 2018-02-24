@@ -67,11 +67,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// 本地sip编码
         /// </summary>
         internal string LocalSIPId;
-        public Dictionary<string, string> Trans;
+        /// <summary>
+        /// Trans
+        /// </summary>
+        public Dictionary<string, string> Trans { get; set; }
         /// <summary>
         /// 监控服务
         /// </summary>
-        public Dictionary<MonitorKey, ISIPMonitorService> MonitorService;
+        public Dictionary<MonitorKey, ISIPMonitorService> MonitorService { get; set; }
 
         #endregion
 
@@ -160,7 +163,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                         DeviceID = channel.ChannelID,
                         CmdType = cmdType
                     };
-                    ISIPMonitorService monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
+                    var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
                     MonitorService.Add(key, monitor);
                 }
             }

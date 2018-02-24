@@ -60,10 +60,6 @@ namespace SIPSorcery.GB28181.Persistence
                     }
                     return new XMLAssetPersistor<T>(storageConnectionStr + filename);
                 }
-                //if (storageType == StorageTypes.SQLLinqMySQL)
-                //{
-                //    return new SQLAssetPersistor<T>(MySql.Data.MySqlClient.MySqlClientFactory.Instance, storageConnectionStr);
-                //}
                 else if (storageType == StorageTypes.SQLite)
                 {
                     return new SQLAssetPersistor<T>(null, storageConnectionStr);

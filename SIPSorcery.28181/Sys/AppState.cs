@@ -53,7 +53,7 @@ namespace SIPSorcery.GB28181.Sys
                 {
                     // Initialise logging functionality from an XML node in the app.config file.
                     Console.WriteLine("Starting logging initialisation.");
-                   // Logger4Net.Config.XmlConfigurator.Configure();
+                    // Logger4Net.Config.XmlConfigurator.Configure();
                 }
                 catch
                 {
@@ -82,7 +82,7 @@ namespace SIPSorcery.GB28181.Sys
                     }
                     catch (Exception excp)
                     {
-                        StreamWriter errorLog = new StreamWriter(DEFAULT_ERRRORLOG_FILE, true);
+                        var errorLog = new StreamWriter(DEFAULT_ERRRORLOG_FILE, true);
                         errorLog.WriteLine(DateTime.Now.ToString("dd MMM yyyy HH:mm:ss") + " Exception Initialising AppState Logging. " + excp.Message);
                         errorLog.Close();
                     }
@@ -113,12 +113,11 @@ namespace SIPSorcery.GB28181.Sys
         /// </summary>
         public static void ConfigureConsoleLogger()
         {
-            Appender.ConsoleAppender appender = new Appender.ConsoleAppender();
-
-           Layout.ILayout fallbackLayout = new Layout.PatternLayout("%m%n");
+            var appender = new Appender.ConsoleAppender();
+            var fallbackLayout = new Layout.PatternLayout("%m%n");
             appender.Layout = fallbackLayout;
 
-           // Logger4Net.Config.BasicConfigurator.Configure(appender);
+            // Logger4Net.Config.BasicConfigurator.Configure(appender);
         }
 
         /// <summary>
@@ -305,7 +304,7 @@ namespace SIPSorcery.GB28181.Sys
         /// <returns>An absolute directory path.</returns>
         public static string ToAbsoluteDirectoryPath(string directoryPath)
         {
-             if (directoryPath.IsNullOrBlank())
+            if (directoryPath.IsNullOrBlank())
             {
                 return null;
             }

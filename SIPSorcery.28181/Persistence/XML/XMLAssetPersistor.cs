@@ -52,18 +52,15 @@ namespace SIPSorcery.GB28181.Persistence.XML
 {
     public class XMLAssetPersistor<T> : SIPAssetPersistor<T> where T : ISIPAsset, new()
     {
-        private const int RELOAD_SPACING_SECONDS = 3;                           // Minimum interval the XML file change events will be allowed.
+        // Minimum interval the XML file change events will be allowed.
+        private const int RELOAD_SPACING_SECONDS = 3;
         private const int MINIMUM_FILE_UDPATE_INTERVAL = 2;
 
         private static string m_newLine = AppState.NewLine;
 
         private Dictionary<Guid, T> m_sipAssets = new Dictionary<Guid, T>();
 
-        public Dictionary<Guid, T> SipAssets
-        {
-            get { return m_sipAssets; }
-            set { m_sipAssets = value; }
-        }
+        public Dictionary<Guid, T> SipAssets { get => m_sipAssets; set => m_sipAssets = value; }
 
         private string m_xmlAssetFilePath;
         private FileSystemWatcher m_xmlFileWatcher;
@@ -83,7 +80,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
             if (!File.Exists(m_xmlAssetFilePath))
             {
                 logger.Warn("File " + m_xmlAssetFilePath + " does not exist for SIPAssetXMLPersistor, creating new one.");
-                FileStream fs = File.Create(m_xmlAssetFilePath);
+                var fs = File.Create(m_xmlAssetFilePath);
                 byte[] bytes = Encoding.ASCII.GetBytes("<" + (new T()).GetXMLDocumentElementName() + "/>");
                 fs.Write(bytes, 0, bytes.Length);
                 fs.Close();
@@ -91,7 +88,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
             try
             {
-                XmlDocument sipAssetDOM = LoadSIPAssetsDOM(m_xmlAssetFilePath);
+                var sipAssetDOM = LoadSIPAssetsDOM(m_xmlAssetFilePath);
                 LoadSIPAssetsFromXML(sipAssetDOM);
             }
             catch (Exception excp)
@@ -270,7 +267,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
                     throw new ArgumentException("The SIP Asset cannot be empty for Delete.");
                 }
 
-                //logger.Debug("SIPAssetsXMLPersistor attempting to delete " + sipAsset.Id + " type " + sipAsset.GetType().ToString() + ".");
+                logger.Debug("SIPAssetsXMLPersistor attempting to delete " + sipAsset.Id + " type " + sipAsset.GetType().ToString() + ".");
 
                 Guid id = sipAsset.Id;
 
@@ -476,10 +473,10 @@ namespace SIPSorcery.GB28181.Persistence.XML
         private void LoadSIPAssetsFromXML(XmlDocument xmlDom)
         {
 
-            Dictionary<Guid, object> assets = (new T()).Load(xmlDom);
+            var assets = (new T()).Load(xmlDom);
 
             m_sipAssets.Clear();
-            foreach (KeyValuePair<Guid, object> keyValPair in assets)
+            foreach (var keyValPair in assets)
             {
                 m_sipAssets.Add(keyValPair.Key, (T)keyValPair.Value);
             }
@@ -488,8 +485,8 @@ namespace SIPSorcery.GB28181.Persistence.XML
 
             if (m_xmlFileWatcher == null)
             {
-                string dir = Path.GetDirectoryName(m_xmlAssetFilePath);
-                string file = Path.GetFileName(m_xmlAssetFilePath);
+                var dir = Path.GetDirectoryName(m_xmlAssetFilePath);
+                var file = Path.GetFileName(m_xmlAssetFilePath);
                 logger.Debug("Starting file watch on " + dir + " and " + file + ".");
                 m_xmlFileWatcher = new FileSystemWatcher(dir, file);
                 m_xmlFileWatcher.Changed += new FileSystemEventHandler(AssetXMLFileChanged);
@@ -506,7 +503,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
                     m_lastReload = DateTime.Now;
                     logger.Debug("Reloading SIP Assets.");
 
-                    XmlDocument sipAssetDOM = LoadSIPAssetsDOM(m_xmlAssetFilePath);
+                    var sipAssetDOM = LoadSIPAssetsDOM(m_xmlAssetFilePath);
                     LoadSIPAssetsFromXML(sipAssetDOM);
                 }
                 catch (Exception excp)
@@ -519,13 +516,13 @@ namespace SIPSorcery.GB28181.Persistence.XML
         private XmlDocument LoadSIPAssetsDOM(string filePath)
         {
 
-            string copyFilename = filePath + ".copy";
+            var copyFilename = filePath + ".copy";
             if (!File.Exists(copyFilename))
             {
                 File.Copy(filePath, copyFilename, true);
             }
 
-            XmlDocument sipAssetDOM = new XmlDocument();
+            var sipAssetDOM = new XmlDocument();
             sipAssetDOM.Load(copyFilename);
             if (sipAssetDOM == null || sipAssetDOM.DocumentElement == null)
             {
