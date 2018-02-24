@@ -189,8 +189,7 @@ namespace SIPSorcery.GB28181.Sys
 
         public static bool GetConfigSettingAsBool(string key)
         {
-            bool boolVal = false;
-            Boolean.TryParse(GetConfigSetting(key), out boolVal);
+            Boolean.TryParse(GetConfigSetting(key), out bool boolVal);
             return boolVal;
         }
 

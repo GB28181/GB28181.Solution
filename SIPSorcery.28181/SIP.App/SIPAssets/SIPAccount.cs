@@ -35,21 +35,19 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-using SIPSorcery.GB28181.Sys;
 using Logger4Net;
-
-#if !SILVERLIGHT
-using System.Data;
+using SIPSorcery.GB28181.Net.RTP;
+using SIPSorcery.GB28181.Sys;
+using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.ComponentModel;
+using System.Data;
 using System.Net;
 using System.Net.Sockets;
-using SIPSorcery.GB28181.Net.RTP;
-#endif
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Xml;
+
 
 namespace SIPSorcery.GB28181.SIP.App
 {
@@ -553,17 +551,9 @@ namespace SIPSorcery.GB28181.SIP.App
             try
             {
                 m_id = Guid.NewGuid();
-                //(row.Table.Columns.Contains("ID") && row["ID"].ToString().Trim().Length > 0) ? new Guid(row["id"] as string) : Guid.NewGuid();
-                //m_sipUsername = row["sipusername"] as string;
-                //m_sipPassword = row["sippassword"] as string;
-                //m_sipDomain = row["sipdomain"] as string;
-                //m_owner = (row.Table.Columns.Contains("owner") && row["owner"] != null) ? row["owner"] as string : SIPUsername;
                 m_localID = row["LocalID"].ToString();
                 IPAddress.TryParse(row["LocalIP"].ToString(), out m_localIP);
                 ushort.TryParse(row["LocalPort"].ToString(), out m_localPort);
-                //m_remoteID = row["RemoteID"].ToString();
-                //IPAddress.TryParse(row["RemoteIP"].ToString(), out m_remoteIP);
-                //ushort.TryParse(row["RemotePort"].ToString(), out m_remotePort);
                 bool.TryParse(row["Authentication"].ToString(), out m_authentication);
                 m_sipUsername = row["SIPUsername"].ToString();
                 m_sipPassword = row["SIPPassword"].ToString();
@@ -575,23 +565,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 byte.TryParse(row["KeepaliveNumber"].ToString(), out m_keepaliveNumber);
                 //IPAddress.TryParse(row["OutputIP"].ToString(), out m_OutputIP);
                 _msgEncode = row["MsgEncode"].ToString();
-                //m_owner = (row.Table.Columns.Contains("owner") && row["owner"] != null) ? row["owner"] as string : SIPUsername;
-                //AdminMemberId = (row.Table.Columns.Contains("adminmemberid") && row["adminmemberid"] != null) ? row["adminmemberid"] as string : null;
-                //m_sendNATKeepAlives = (row.Table.Columns.Contains("sendnatkeepalives") && row["sendnatkeepalives"] != null && row["sendnatkeepalives"] != DBNull.Value) ? Convert.ToBoolean(row["sendnatkeepalives"]) : false;
-                //m_isIncomingOnly = (row.Table.Columns.Contains("isincomingonly") && row["isincomingonly"] != null && row["isincomingonly"] != DBNull.Value) ? Convert.ToBoolean(row["isincomingonly"]) : false;
-                //m_outDialPlanName = (row.Table.Columns.Contains("outdialplanname") && row["outdialplanname"] != null && row["outdialplanname"].ToString().Trim().Length > 0) ? row["outdialplanname"] as string : null;
-                //m_inDialPlanName = (row.Table.Columns.Contains("indialplanname") && row["indialplanname"] != null && row["indialplanname"].ToString().Trim().Length > 0) ? row["indialplanname"] as string : null;
-                //m_isUserDisabled = (row.Table.Columns.Contains("isuserdisabled") && row["isuserdisabled"] != null && row["isuserdisabled"] != DBNull.Value) ? Convert.ToBoolean(row["isuserdisabled"]) : false;
-                //m_isAdminDisabled = (row.Table.Columns.Contains("isadmindisabled") && row["isadmindisabled"] != null && row["isadmindisabled"] != DBNull.Value) ? Convert.ToBoolean(row["isadmindisabled"]) : false;
-                //m_adminDisabledReason = (row.Table.Columns.Contains("admindisabledreason") && row["admindisabledreason"] != null) ? row["admindisabledreason"] as string : null;
-                //m_inserted = (row.Table.Columns.Contains("inserted") && row["inserted"] != null) ? DateTimeOffset.Parse(row["inserted"] as string) : DateTimeOffset.UtcNow;
-                //m_networkId = (row.Table.Columns.Contains("networkid") && row["networkid"] != null) ? row["networkid"] as string : null;
-                //m_ipAddressACL = (row.Table.Columns.Contains("ipaddressacl") && row["ipaddressacl"] != null) ? row["ipaddressacl"] as string : null;
-                //m_isSwitchboardEnabled = (row.Table.Columns.Contains("isswitchboardenabled") && row["isswitchboardenabled"] != null && row["isswitchboardenabled"] != DBNull.Value) ? Convert.ToBoolean(row["isswitchboardenabled"]) : false;
-                //m_dontMangleEnabled = (row.Table.Columns.Contains("dontmangleenabled") && row["dontmangleenabled"] != null && row["dontmangleenabled"] != DBNull.Value) ? Convert.ToBoolean(row["dontmangleenabled"]) : false;
-                //m_avatarURL = (row.Table.Columns.Contains("avatarurl") && row["avatarurl"] != null) ? row["avatarurl"] as string : null;
-                //m_accountCode = (row.Table.Columns.Contains("accountcode") && row["accountcode"] != null) ? row["accountcode"] as string : null;
-                //m_description = (row.Table.Columns.Contains("description") && row["description"] != null) ? row["description"] as string : null;
+
             }
             catch (Exception excp)
             {

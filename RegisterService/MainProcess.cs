@@ -132,7 +132,8 @@ namespace RegisterService
                 // start the Listening SipService in main Service
                 _mainService = Task.Factory.StartNew(() =>
                 {
-                    var _messageCore = new SIPCoreMessageService(_cameras, SIPSqlite.Instance.Accounts.First());
+
+                    var _messageCore = new SIPCoreMessageService(_cameras, SipStorage.Instance.Accounts.First());
 
                     _messageCore.OnKeepaliveReceived += MessageCore_OnKeepaliveReceived;
                     _messageCore.OnServiceChanged += SIPServiceChangeHandle;

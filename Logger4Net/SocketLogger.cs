@@ -26,7 +26,6 @@ namespace Logger4Net
         /// </summary>
         public static int RemotePort = 5433;
 
-        public static event Action<string> OnTrace;
         /// <summary>
         /// 
         /// </summary>
@@ -35,15 +34,7 @@ namespace Logger4Net
         {
             Write(LogLevel.Info, "system", message);
         }
-        /// <summary>
-        /// 写入基本信息到指定的目录
-        /// </summary>
-        /// <param name="directory"></param>
-        /// <param name="message"></param>
-        public static void Write(string directory, string message)
-        {
-            Write(LogLevel.Info, directory, message);
-        }
+ 
         public static void Write(Exception ex, string directory, string message)
         {
             StringBuilder msgbuilder = new StringBuilder();
@@ -67,7 +58,7 @@ namespace Logger4Net
 
         }
         /// <summary>
-        /// 写入日志到指定的目录
+        /// 发送日志到Socket
         /// </summary>
         /// <param name="directory"></param>
         /// <param name="message"></param>
@@ -105,15 +96,6 @@ namespace Logger4Net
             if (stackTrace)
                 builder.Append(PrintStackTrace(level, 2));
             Write(level, directory, builder.ToString());
-        }
-
-        private static void CopyToConsole(string directory, string message, LogLevel level)
-        {
-            Console.WriteLine(string.Format("[{0}]:[{1}] [{2}] {3}", DateTime.Now.TimeOfDay, level.ToString(), directory, message));
-        }
-        private static void CopyToTrace(string directory, string message, LogLevel level)
-        {
-            OnTrace?.Invoke(string.Format("[{0}]:[{1}] [{2}] {3}", DateTime.Now.TimeOfDay, level.ToString(), directory, message));
         }
         private static object objectLockWrite = new object();
         private static void CopyToFile(string directory, string message, LogLevel level)

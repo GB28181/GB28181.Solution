@@ -3,19 +3,21 @@ using SIPSorcery.GB28181.SIP.App;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+/// <summary>
+/// read configuraton and config the data storage
+/// </summary>
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public class SIPSqlite
+    public class SipStorage
     {
         private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
-        private static readonly string m_XMLFilename = "gb28181.xml";
+        private static readonly string m_XMLFilename = "gb28181.xml"; //default storage filename
 
         private static StorageTypes m_storageType;
         private static string m_connStr;
 
-        private static SIPSqlite _instance;
+        private static SipStorage _instance;
 
         private List<SIPAccount> _accounts;
 
@@ -31,27 +33,28 @@ namespace SIPSorcery.GB28181.Sys.Config
             get { return _sipAccount; }
         }
 
-        public static SIPSqlite Instance
+        public static SipStorage Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new SIPSqlite();
+                    _instance = new SipStorage();
                 }
                 return _instance;
             }
         }
 
-        static SIPSqlite()
+
+        // here init the gb28181.xml file setting from app.config
+        static SipStorage()
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + "Config\\";
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : StorageTypes.Unknown;
             m_connStr = AppState.GetConfigSetting(m_connStrKey);
             if (m_storageType == StorageTypes.SQLite)
             {
+                var path = AppDomain.CurrentDomain.BaseDirectory + "Config\\";
                 m_connStr = string.Format(m_connStr, path);
-
             }
             if (m_storageType == StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
