@@ -14,7 +14,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Config\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Folder>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Config\gb28181.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
