@@ -14,15 +14,8 @@ namespace SIPSorcery.GB28181.Sys.XML
         /// <summary>
         /// 单例模式访问
         /// </summary>
-        public static Catalog Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new Catalog();
-                return _instance;
-            }
-        }
+        public static Catalog Instance => _instance ?? (_instance = new Catalog());
+
 
         /// <summary>
         /// 命令类型
@@ -168,9 +161,12 @@ namespace SIPSorcery.GB28181.Sys.XML
             /// 当为设备时，安装地址(必选)
             /// </summary>
             [XmlElement("Address")]
-            public string Address { get {
-                return _address;
-            }
+            public string Address
+            {
+                get
+                {
+                    return _address;
+                }
                 set
                 {
                     _address = value == null ? "" : value.Replace();
@@ -188,15 +184,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("Parental")]
             public string ParentalValue
             {
-                get
-                {
-                    return Parental.HasValue ? Parental.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    Parental = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => Parental.HasValue ? Parental.Value.ToString() : null;
+                set => Parental = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -224,15 +213,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("SafetyWay")]
             public string SafetyWayValue
             {
-                get
-                {
-                    return SafetyWay.HasValue ? SafetyWay.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    SafetyWay = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => SafetyWay.HasValue ? SafetyWay.Value.ToString() : null;
+                set => SafetyWay = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -247,15 +229,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("RegisterWay")]
             public string RegisterWayValue
             {
-                get
-                {
-                    return RegisterWay.HasValue ? RegisterWay.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    RegisterWay = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => RegisterWay.HasValue ? RegisterWay.Value.ToString() : null;
+                set => RegisterWay = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -281,8 +256,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Certifiable = int.TryParse(value, out result) ? result : (int?)null;
+                    Certifiable = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -301,8 +275,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    ErrCode = int.TryParse(value, out result) ? result : (int?)null;
+                    ErrCode = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -329,8 +302,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Secrecy = int.TryParse(value, out result) ? result : (int?)null;
+                    Secrecy = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -355,8 +327,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    ushort result;
-                    Port = ushort.TryParse(value, out result) ? result : (ushort?)null;
+                    Port = ushort.TryParse(value, out ushort result) ? result : (ushort?)null;
                 }
             }
 
@@ -387,8 +358,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    double result;
-                    Longitude = double.TryParse(value, out result) ? result : (double?)null;
+                    Longitude = double.TryParse(value, out double result) ? result : (double?)null;
                 }
             }
 
@@ -407,8 +377,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    double result;
-                    Latitude = double.TryParse(value, out result) ? result : (double?)null;
+                    Latitude = double.TryParse(value, out double result) ? result : (double?)null;
                 }
             }
 
@@ -449,8 +418,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    PTZType = int.TryParse(value, out result) ? result : (int?)null;
+                    PTZType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -480,8 +448,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    PositionType = int.TryParse(value, out result) ? result : (int?)null;
+                    PositionType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -504,8 +471,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    RoomType = int.TryParse(value, out result) ? result : (int?)null;
+                    RoomType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -528,8 +494,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    UseType = int.TryParse(value, out result) ? result : (int?)null;
+                    UseType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -552,8 +517,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    SupplyLightType = int.TryParse(value, out result) ? result : (int?)null;
+                    SupplyLightType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -581,8 +545,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    DirectionType = int.TryParse(value, out result) ? result : (int?)null;
+                    DirectionType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -629,8 +592,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    SVCSpaceSupportMode = int.TryParse(value, out result) ? result : (int?)null;
+                    SVCSpaceSupportMode = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -653,8 +615,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    SVCTimeSupportMode = int.TryParse(value, out result) ? result : (int?)null;
+                    SVCTimeSupportMode = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
         }
@@ -804,8 +765,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Parental = int.TryParse(value, out result) ? result : (int?)null;
+                    Parental = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -840,8 +800,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    SafetyWay = int.TryParse(value, out result) ? result : (int?)null;
+                    SafetyWay = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -863,8 +822,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    RegisterWay = int.TryParse(value, out result) ? result : (int?)null;
+                    RegisterWay = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -891,8 +849,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Certifiable = int.TryParse(value, out result) ? result : (int?)null;
+                    Certifiable = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -911,8 +868,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    ErrCode = int.TryParse(value, out result) ? result : (int?)null;
+                    ErrCode = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -939,8 +895,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Secrecy = int.TryParse(value, out result) ? result : (int?)null;
+                    Secrecy = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -965,8 +920,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    ushort result;
-                    Port = ushort.TryParse(value, out result) ? result : (ushort?)null;
+                    Port = ushort.TryParse(value, out ushort result) ? result : (ushort?)null;
                 }
             }
 
@@ -991,15 +945,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("Longitude")]
             public string LongitudeValue
             {
-                get
-                {
-                    return Longitude.HasValue ? Longitude.Value.ToString() : null;
-                }
-                set
-                {
-                    double result;
-                    Longitude = double.TryParse(value, out result) ? result : (double?)null;
-                }
+                get => Longitude.HasValue ? Longitude.Value.ToString() : null;
+                set => Longitude = double.TryParse(value, out double result) ? result : (double?)null;
             }
 
             /// <summary>
@@ -1017,8 +964,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    double result;
-                    Latitude = double.TryParse(value, out result) ? result : (double?)null;
+                    Latitude = double.TryParse(value, out double result) ? result : (double?)null;
                 }
             }
 
@@ -1059,8 +1005,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    PTZType = int.TryParse(value, out result) ? result : (int?)null;
+                    PTZType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -1084,15 +1029,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("PositionType")]
             public string PositionTypeValue
             {
-                get
-                {
-                    return PositionType.HasValue ? PositionType.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    PositionType = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => PositionType.HasValue ? PositionType.Value.ToString() : null;
+                set => PositionType = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
 
@@ -1114,8 +1052,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    RoomType = int.TryParse(value, out result) ? result : (int?)null;
+                    RoomType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -1138,8 +1075,7 @@ namespace SIPSorcery.GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    UseType = int.TryParse(value, out result) ? result : (int?)null;
+                    UseType = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -1156,15 +1092,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("SupplyLightType")]
             public string SupplyLightTypeValue
             {
-                get
-                {
-                    return SupplyLightType.HasValue ? SupplyLightType.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    SupplyLightType = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => SupplyLightType.HasValue ? SupplyLightType.Value.ToString() : null;
+                set => SupplyLightType = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -1185,15 +1114,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("DirectionType")]
             public string DirectionTypeValue
             {
-                get
-                {
-                    return DirectionType.HasValue ? DirectionType.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    DirectionType = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => DirectionType.HasValue ? DirectionType.Value.ToString() : null;
+                set => DirectionType = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -1233,15 +1155,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("SVCSpaceSupportMode")]
             public string SVCSpaceSupportModeValue
             {
-                get
-                {
-                    return SVCSpaceSupportMode.HasValue ? SVCSpaceSupportMode.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    SVCSpaceSupportMode = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => SVCSpaceSupportMode.HasValue ? SVCSpaceSupportMode.Value.ToString() : null;
+                set => SVCSpaceSupportMode = int.TryParse(value, out int result) ? result : (int?)null;
             }
 
             /// <summary>
@@ -1257,15 +1172,8 @@ namespace SIPSorcery.GB28181.Sys.XML
             [XmlElement("SVCTimeSupportMode")]
             public string SVCTimeSupportModeValue
             {
-                get
-                {
-                    return SVCTimeSupportMode.HasValue ? SVCTimeSupportMode.Value.ToString() : null;
-                }
-                set
-                {
-                    int result;
-                    SVCTimeSupportMode = int.TryParse(value, out result) ? result : (int?)null;
-                }
+                get => SVCTimeSupportMode.HasValue ? SVCTimeSupportMode.Value.ToString() : null;
+                set => SVCTimeSupportMode = int.TryParse(value, out int result) ? result : (int?)null;
             }
         }
     }
@@ -1280,17 +1188,7 @@ namespace SIPSorcery.GB28181.Sys.XML
         /// <summary>
         /// 单例模式访问
         /// </summary>
-        public static CatalogQuery Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new CatalogQuery();
-                }
-                return _instance;
-            }
-        }
+        public static CatalogQuery Instance => _instance ?? (_instance = new CatalogQuery());
 
         /// <summary>
         /// 命令类型

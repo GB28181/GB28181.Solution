@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SIPSorcery.GB28181.Servers;
+using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Sys.XML;
 
@@ -14,7 +15,16 @@ namespace RegisterService
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
-        public void OnKeepaliveReceived(SIPEndPoint remoteEP, KeepAlive keapalive, string devId)
+
+        private SIPCoreMessageService _sipCoreMessageService;
+
+        public MessageCenter(SIPCoreMessageService sipCoreMessageService)
+        {
+            _sipCoreMessageService = sipCoreMessageService;
+
+        }
+
+        internal void OnKeepaliveReceived(SIPEndPoint remoteEP, KeepAlive keapalive, string devId)
         {
             _keepaliveTime = DateTime.Now;
             var hbPoint = new HeartBeatEndPoint()
@@ -25,7 +35,7 @@ namespace RegisterService
             _keepAliveQueue.Enqueue(hbPoint);
         }
 
-        public void OnServiceChanged(string msg, ServiceStatus state)
+        internal void OnServiceChanged(string msg, ServiceStatus state)
         {
             SetSIPService(msg, state);
 
@@ -77,7 +87,7 @@ namespace RegisterService
         /// 录像查询回调
         /// </summary>
         /// <param name="record"></param>
-        public void OnRecordInfoReceived(RecordInfo record)
+        internal void OnRecordInfoReceived(RecordInfo record)
         {
 
             SetRecord(record);
@@ -92,7 +102,73 @@ namespace RegisterService
             }
         }
 
+        internal void OnNotifyCatalogReceived(NotifyCatalog notify)
+        {
+            if (notify.DeviceList == null)
+            {
+                return;
+            }
+            new Action(() =>
+            {
+                foreach (var item in notify.DeviceList.Items)
+                {
 
+                }
+            }).BeginInvoke(null, null);
+        }
+
+        internal void OnAlarmReceived(Alarm alarm)
+        {
+            var msg = "DeviceID:" + alarm.DeviceID +
+               "\r\nSN:" + alarm.SN +
+               "\r\nCmdType:" + alarm.CmdType +
+               "\r\nAlarmPriority:" + alarm.AlarmPriority +
+               "\r\nAlarmMethod:" + alarm.AlarmMethod +
+               "\r\nAlarmTime:" + alarm.AlarmTime +
+               "\r\nAlarmDescription:" + alarm.AlarmDescription;
+            new Action(() =>
+            {
+
+                var key = new MonitorKey()
+                {
+                    CmdType = CommandType.Play,
+                    DeviceID = alarm.DeviceID
+                };
+                _sipCoreMessageService.MonitorService[key].AlarmResponse(alarm);
+            }).Invoke();
+        }
+
+        internal void OnDeviceStatusReceived(SIPEndPoint remoteEP, DeviceStatus device)
+        {
+            var msg = "DeviceID:" + device.DeviceID +
+                 "\r\nResult:" + device.Result +
+                 "\r\nOnline:" + device.Online +
+                 "\r\nState:" + device.Status;
+            new Action(() =>
+            {
+
+            }).Invoke();
+        }
+
+        internal void OnDeviceInfoReceived(SIPEndPoint arg1, DeviceInfo arg2)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OnMediaStatusReceived(SIPEndPoint arg1, MediaStatus arg2)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OnPresetQueryReceived(SIPEndPoint arg1, PresetInfo arg2)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OnDeviceConfigDownloadReceived(SIPEndPoint arg1, DeviceConfigDownload arg2)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>

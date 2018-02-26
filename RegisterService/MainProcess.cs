@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RegisterService
 {
@@ -80,6 +81,9 @@ namespace RegisterService
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            var services = new ServiceCollection();
+            services.AddSingleton<ILog, Logger>();
+            services.AddSingleton(this);
             //Start the main serice
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
@@ -116,10 +120,19 @@ namespace RegisterService
 
                         var _mainSipService = new SIPCoreMessageService(_cameras, account);
 
-                        MessagerHandlers = new MessageCenter();
+                        MessagerHandlers = new MessageCenter(_mainSipService);
                         _mainSipService.OnKeepaliveReceived += MessagerHandlers.OnKeepaliveReceived;
                         _mainSipService.OnServiceChanged += MessagerHandlers.OnServiceChanged;
                         _mainSipService.OnCatalogReceived += MessagerHandlers.OnCatalogReceived;
+
+                        _mainSipService.OnNotifyCatalogReceived += MessagerHandlers.OnNotifyCatalogReceived;
+                        _mainSipService.OnAlarmReceived += MessagerHandlers.OnAlarmReceived;
+                        _mainSipService.OnRecordInfoReceived += MessagerHandlers.OnRecordInfoReceived;
+                        _mainSipService.OnDeviceStatusReceived += MessagerHandlers.OnDeviceStatusReceived;
+                        _mainSipService.OnDeviceInfoReceived += MessagerHandlers.OnDeviceInfoReceived;
+                        _mainSipService.OnMediaStatusReceived += MessagerHandlers.OnMediaStatusReceived;
+                        _mainSipService.OnPresetQueryReceived += MessagerHandlers.OnPresetQueryReceived;
+                        _mainSipService.OnDeviceConfigDownloadReceived += MessagerHandlers.OnDeviceConfigDownloadReceived;
 
                         _mainSipService.Start();
                     });
