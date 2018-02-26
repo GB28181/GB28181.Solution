@@ -103,7 +103,7 @@ namespace SIPSorcery.GB28181.Sys
 
         public static ILog GetLogger(string logName)
         {
-            return Logger4Net.LogManager.GetLogger(logName);
+            return LogManager.GetLogger(logName);
         }
 
         /// <summary>

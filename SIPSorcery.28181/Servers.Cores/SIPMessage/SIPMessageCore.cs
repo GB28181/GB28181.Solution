@@ -47,7 +47,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
-        private RegistrarCore m_registrarCore;
+        private RegistrarCore _registrarCore;
         private SIPAccount _account;
         private ServiceStatus _serviceState;
 
@@ -144,7 +144,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #region 初始化
 
-        public SIPCoreMessageService(IList<CameraInfo> cameras, SIPAccount account)
+        public SIPCoreMessageService(List<CameraInfo> cameraList, SIPAccount account)
         {
             _serviceState = ServiceStatus.Wait;
             _account = account;
@@ -153,12 +153,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
             MonitorService = new Dictionary<MonitorKey, ISIPMonitorService>();
             Trans = new Dictionary<string, string>();
-            foreach (var channel in cameras)
+
+            cameraList.ForEach(channel =>
             {
                 for (int i = 0; i < 2; i++)
                 {
                     CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                    MonitorKey key = new MonitorKey()
+                    var key = new MonitorKey()
                     {
                         DeviceID = channel.ChannelID,
                         CmdType = cmdType
@@ -166,12 +167,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
                     MonitorService.Add(key, monitor);
                 }
-            }
+            });
+
         }
 
         #endregion
 
-        #region 启动/停止消息服务
+        #region 启动/停止消息主服务(监听注册链接)
         public void Start()
         {
             try
@@ -190,11 +192,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 Transport.SIPTransportRequestReceived += AddMessageRequest;
                 Transport.SIPTransportResponseReceived += AddMessageResponse;
 
-                m_registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
+                _registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
                 {
                     Auth = _account.Authentication
                 };
-                m_registrarCore.Start(1);
+                _registrarCore.Start(1);
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 logger.Debug("SIP Registrar successfully started.");
@@ -580,7 +582,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     Trans.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
                 }
             }
-            m_registrarCore.AddRegisterRequest(localEP, remoteEP, request);
+            _registrarCore.AddRegisterRequest(localEP, remoteEP, request);
         }
 
         /// <summary>

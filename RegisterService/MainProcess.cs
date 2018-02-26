@@ -16,7 +16,7 @@ namespace RegisterService
     public class MainProcess : IDisposable
     {
 
-        private static ILog logger = AppState.GetLogger("startup");
+        private static ILog logger = AppState.GetLogger("Startup");
         //interface IDisposable implementation
         private bool _already_disposed = false;
 
@@ -42,6 +42,7 @@ namespace RegisterService
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
+        private readonly ServiceCollection servicesContainer = new ServiceCollection();
         public MainProcess() { }
 
         #region IDisposable interface
@@ -81,10 +82,11 @@ namespace RegisterService
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            var services = new ServiceCollection();
-            services.AddSingleton<ILog, Logger>();
-            services.AddSingleton(this);
+            servicesContainer.AddSingleton(servicesContainer); // add itself 
+            servicesContainer.AddSingleton<ILog, Logger>();
+            servicesContainer.AddSingleton(this);
             //Start the main serice
+
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
             //wait the process exit of main

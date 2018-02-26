@@ -1,15 +1,20 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Text;
 
 namespace Logger4Net
 {
     public class LogManager
     {
 
+        private static readonly Dictionary<string, ILog> _loggerMapper = new Dictionary<string, ILog>();
+
         public static ILog GetLogger(string loggerName)
         {
-            return new Logger();
+            if (!_loggerMapper.ContainsKey(loggerName))
+            {
+                _loggerMapper.Add(loggerName, new Logger());
+            }
+            return _loggerMapper[loggerName];
 
         }
 
