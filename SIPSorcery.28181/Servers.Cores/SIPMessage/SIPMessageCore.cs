@@ -184,7 +184,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX,
                     MsgEncode = _account.MsgEncode
                 };
-                List<SIPChannel> sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
+                var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
                 Transport.AddSIPChannel(sipChannels);
 
                 Transport.SIPTransportRequestReceived += AddMessageRequest;
