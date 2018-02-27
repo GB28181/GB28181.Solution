@@ -218,10 +218,7 @@ namespace SIPSorcery.GB28181.SIP
                 m_connectionFailureStrikes.Remove(remoteEndPoint.GetIPEndPoint().ToString());
             }
 
-            if (SIPMessageReceived != null)
-            {
-                SIPMessageReceived(channel, remoteEndPoint, buffer);
-            }
+            SIPMessageReceived?.Invoke(channel, remoteEndPoint, buffer);
         }
 
         public override void Send(IPEndPoint destinationEndPoint, string message)

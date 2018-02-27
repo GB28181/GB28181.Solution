@@ -47,7 +47,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
-
+using System.Linq;
 
 namespace SIPSorcery.GB28181.SIP.App
 {
@@ -517,7 +517,6 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public SIPAccount() { }
 
-#if !SILVERLIGHT
 
         public SIPAccount(DataRow sipAccountRow)
         {
@@ -564,9 +563,9 @@ namespace SIPSorcery.GB28181.SIP.App
                 bool.TryParse(row["Authentication"].ToString(), out m_authentication);
                 m_sipUsername = row["SIPUsername"].ToString();
                 m_sipPassword = row["SIPPassword"].ToString();
-                Enum.TryParse(row["MsgProtocol"].ToString(), out _msgProtocol);
-                Enum.TryParse(row["StreamProtocol"].ToString(), out _streamProtocol);
-                Enum.TryParse(row["TcpMode"].ToString(), out _tcpMode);
+                Enum.TryParse(GeFirstUpperString(row["MsgProtocol"].ToString()), out _msgProtocol);
+                Enum.TryParse(GeFirstUpperString(row["StreamProtocol"].ToString()), out _streamProtocol);
+                Enum.TryParse(GeFirstUpperString(row["TcpMode"].ToString()), out _tcpMode);
                 bool.TryParse(row["PacketOutOrder"].ToString(), out m_packetOutOrder);
                 ushort.TryParse(row["KeepaliveInterval"].ToString(), out m_keepaliveInterval);
                 byte.TryParse(row["KeepaliveNumber"].ToString(), out m_keepaliveNumber);
@@ -631,7 +630,6 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-#endif
 
         public SIPAccount(string owner, string sipDomain, string sipUsername, string sipPassword, string outDialPlanName)
         {
@@ -801,5 +799,19 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private string GeFirstUpperString(string input)
+        {
+            if (!input.IsNullOrBlank() && input.Length > 1)
+            {
+                return char.ToUpper(input[0]) + input.Substring(1).ToLower();
+            }
+            else if (input.Length > 0)
+            {
+                return input.ToUpper();
+            }
+            return "";
+        }
+
     }
 }

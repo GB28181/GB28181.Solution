@@ -64,13 +64,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// </summary>
         internal SIPTransport Transport;
         /// <summary>
-        /// 本地sip编码
+        /// 本地域的sip编码
         /// </summary>
         internal string LocalSIPId;
         /// <summary>
-        /// Trans
+        /// SIP远端Host的Socket地址(host:Port)和用户名(GBID)
         /// </summary>
-        public Dictionary<string, string> Trans { get; set; }
+        public Dictionary<string, string> RemoteTransEPs { get; set; }
         /// <summary>
         /// 监控服务
         /// </summary>
@@ -152,7 +152,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             LocalSIPId = account.LocalID;
 
             MonitorService = new Dictionary<MonitorKey, ISIPMonitorService>();
-            Trans = new Dictionary<string, string>();
+            RemoteTransEPs = new Dictionary<string, string>();
 
             cameraList.ForEach(channel =>
             {
@@ -178,7 +178,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             try
             {
-                logger.Debug("SIP Registrar daemon starting...", ConsoleColor.Green);
+                logger.Debug("SIP Registrar daemon starting...");
 
                 // Configure the SIP transport layer.
                 Transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false)
@@ -200,7 +200,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 logger.Debug("SIPRegistrarCore thread started ");
                 Task.Factory.StartNew(() => _registrarCore.ProcessRegisterRequest());
 
-                logger.Debug("SIP Registrar successfully started at " + _account.LocalIP + ":" + _account.LocalPort, ConsoleColor.Green);
+                logger.Debug("SIP Registrar successfully started at " + _account.LocalIP + ":" + _account.LocalPort);
 
             }
             catch (Exception excp)
@@ -556,15 +556,22 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         public void OnSIPServiceChange(string msg, ServiceStatus state)
         {
-            Action<string, ServiceStatus> action = OnServiceChanged;
             _serviceState = ServiceStatus.Complete;
 
-            if (action == null) return;
-            foreach (Action<string, ServiceStatus> handler in action.GetInvocationList())
-            {
-                try { handler(msg, state); }
-                catch { continue; }
-            }
+            try { OnServiceChanged.Invoke(msg, state); }
+            catch { }
+            //OnServiceChanged?.GetInvocationList().ToList().ForEach((item) =>
+            //{
+            //    var handler = item as Action<string, ServiceStatus>;
+            //    try { handler?.Invoke(msg, state); }
+            //    catch { }
+            //});
+
+            //foreach (Action<string, ServiceStatus> handler in OnServiceChanged.GetInvocationList())
+            //{
+            //    try { OnServiceChanged(msg, state); }
+            //    catch { continue; }
+            //}
         }
 
         /// <summary>
@@ -576,11 +583,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private void RegisterHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request)
         {
             OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Complete);
-            lock (Trans)
+            lock (RemoteTransEPs)
             {
-                if (!Trans.ContainsKey(remoteEP.ToHost()))
+                if (!RemoteTransEPs.ContainsKey(remoteEP.ToHost()))
                 {
-                    Trans.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
+                    RemoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
                 }
             }
             _registrarCore.AddRegisterRequest(localEP, remoteEP, request);
@@ -642,11 +649,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             //SendResponse(localEP, remoteEP, request);
             OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Complete);
-            lock (Trans)
+            lock (RemoteTransEPs)
             {
-                if (!Trans.ContainsKey(remoteEP.ToHost()))
+                if (!RemoteTransEPs.ContainsKey(remoteEP.ToHost()))
                 {
-                    Trans.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
+                    RemoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
                 }
             }
             //if (!_subscribe)
@@ -980,9 +987,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="deviceId">目的设备编码</param>
         public void DeviceCatalogQuery()
         {
-            lock (Trans)
+            lock (RemoteTransEPs)
             {
-                foreach (var item in Trans)
+                foreach (var item in RemoteTransEPs)
                 {
                     SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
                     SIPRequest catalogReq = QueryItems(remoteEP, item.Value);
@@ -1082,9 +1089,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         public void MobileDataSubscription(string devID)
         {
-            lock (Trans)
+            lock (RemoteTransEPs)
             {
-                foreach (var item in Trans)
+                foreach (var item in RemoteTransEPs)
                 {
                     SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
                     SIPRequest eventSubscribeReq = QueryItems(remoteEP, devID);

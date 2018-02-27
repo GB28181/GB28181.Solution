@@ -35,26 +35,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml;
-using System.Xml.Serialization;
-using SIPSorcery.GB28181.Persistence;
+using Logger4Net;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
-using Logger4Net;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 #if UNITTEST
 using NUnit.Framework;

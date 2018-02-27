@@ -1232,12 +1232,10 @@ namespace SIPSorcery.GB28181.SIP
                         {
                             STUNRequestReceived(sipChannel.SIPChannelEndPoint.GetIPEndPoint(), remoteEndPoint.GetIPEndPoint(), buffer, buffer.Length);
 
-#if !SILVERLIGHT
                             if (PerformanceMonitorPrefix != null)
                             {
                                 SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_STUN_REQUESTS_PER_SECOND_SUFFIX);
                             }
-#endif
                         }
                     }
                     else
@@ -1249,13 +1247,10 @@ namespace SIPSorcery.GB28181.SIP
                             FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "SIP message too large, " + buffer.Length + " bytes, maximum allowed is " + SIPConstants.SIP_MAXIMUM_RECEIVE_LENGTH + " bytes.", SIPValidationFieldsEnum.Request, rawErrorMessage);
                             SIPResponse tooLargeResponse = GetResponse(sipChannel.SIPChannelEndPoint, remoteEndPoint, SIPResponseStatusCodesEnum.MessageTooLarge, null);
                             SendResponse(tooLargeResponse);
-
-#if !SILVERLIGHT
                             if (PerformanceMonitorPrefix != null)
                             {
                                 SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                             }
-#endif
                         }
                         else
                         {
@@ -1265,12 +1260,10 @@ namespace SIPSorcery.GB28181.SIP
                                 // An emptry transmission has been received. More than likely this is a NAT keep alive and can be disregarded.
                                 //FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "No printable characters, length " + buffer.Length + " bytes.", SIPValidationFieldsEnum.Unknown, null);
 
-#if !SILVERLIGHT
                                 if (PerformanceMonitorPrefix != null)
                                 {
                                     // SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                                 }
-#endif
 
                                 return;
                             }
@@ -1278,12 +1271,10 @@ namespace SIPSorcery.GB28181.SIP
                             {
                                 FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "Missing SIP string.", SIPValidationFieldsEnum.NoSIPString, rawSIPMessage);
 
-#if !SILVERLIGHT
                                 if (PerformanceMonitorPrefix != null)
                                 {
                                     SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                                 }
-#endif
 
                                 return;
                             }
@@ -1345,13 +1336,10 @@ namespace SIPSorcery.GB28181.SIP
                                 else
                                 {
                                     #region SIP Request.
-
-#if !SILVERLIGHT
                                     if (PerformanceMonitorPrefix != null)
                                     {
                                         SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_REQUESTS_PER_SECOND_SUFFIX);
                                     }
-#endif
 
                                     try
                                     {

@@ -34,8 +34,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Generic;
 using System.Net;
 
 namespace SIPSorcery.GB28181.SIP

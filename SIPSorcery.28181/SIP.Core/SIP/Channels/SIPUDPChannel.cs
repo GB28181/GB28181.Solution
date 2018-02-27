@@ -68,8 +68,10 @@ namespace SIPSorcery.GB28181.SIP
             try {
                 m_sipConn = new UdpClient(m_localSIPEndPoint.GetIPEndPoint());
 
-                Thread listenThread = new Thread(new ThreadStart(Listen));
-                listenThread.Name = THREAD_NAME + Crypto.GetRandomString(4);
+                Thread listenThread = new Thread(new ThreadStart(Listen))
+                {
+                    Name = THREAD_NAME + Crypto.GetRandomString(4)
+                };
                 listenThread.Start();
 
                 logger.Debug("SIPUDPChannel listener created " + m_localSIPEndPoint.GetIPEndPoint() + ".");
@@ -132,11 +134,8 @@ namespace SIPSorcery.GB28181.SIP
 					}
 					else
 					{
-						if(SIPMessageReceived != null)
-						{
-                            SIPMessageReceived(this, new SIPEndPoint(SIPProtocolsEnum.udp, inEndPoint), buffer);
-						}
-					}
+                        SIPMessageReceived?.Invoke(this, new SIPEndPoint(SIPProtocolsEnum.udp, inEndPoint), buffer);
+                    }
 				}
 
                 logger.Debug("SIPUDPChannel socket on " + m_localSIPEndPoint + " listening halted.");

@@ -454,10 +454,7 @@ namespace SIPSorcery.GB28181.SIP
 
         private void SIPTLSMessageReceived(SIPChannel channel, SIPEndPoint remoteEndPoint, byte[] buffer)
         {
-            if (SIPMessageReceived != null)
-            {
-                SIPMessageReceived(channel, remoteEndPoint, buffer);
-            }
+            SIPMessageReceived?.Invoke(channel, remoteEndPoint, buffer);
         }
 
         private X509Certificate GetServerCert()

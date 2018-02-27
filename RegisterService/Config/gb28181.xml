@@ -5,13 +5,13 @@
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34010000002000000001</LocalID>
     <LocalIP>192.168.230.53</LocalIP>
-    <LocalPort>5060</LocalPort>
+    <LocalPort>7777</LocalPort>
     <RemotePort>0</RemotePort>
     <Authentication>true</Authentication>
     <SIPUsername>admin</SIPUsername>
     <SIPPassword>34010000001360000001</SIPPassword>
-    <MsgProtocol>Udp</MsgProtocol>
-    <StreamProtocol>Udp</StreamProtocol>
+    <MsgProtocol>UDP</MsgProtocol>
+    <StreamProtocol>UDP</StreamProtocol>
     <TcpMode>passive</TcpMode>
     <MsgEncode>GB2312</MsgEncode>
     <PacketOutOrder>true</PacketOutOrder>

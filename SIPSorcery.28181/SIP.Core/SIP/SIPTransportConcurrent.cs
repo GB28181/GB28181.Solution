@@ -189,8 +189,10 @@ namespace SIPSorcery.SIP
             {
                 m_transportThreadStarted = true;
 
-                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage));
-                inMessageThread.Name = RECEIVE_THREAD_NAME;
+                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage))
+                {
+                    Name = RECEIVE_THREAD_NAME
+                };
                 inMessageThread.Start();
             }
         }
