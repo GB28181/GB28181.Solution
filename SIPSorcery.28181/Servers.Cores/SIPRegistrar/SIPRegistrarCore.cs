@@ -121,8 +121,8 @@ namespace SIPSorcery.GB28181.Servers
         private string m_serverAgent = SIPConstants.SIP_USERAGENT_STRING;
         private bool m_mangleUACContact = false;            // Whether or not to adjust contact URIs that contain private hosts to the value of the bottom via received socket.
         private bool m_strictRealmHandling = false;         // If true the registrar will only accept registration requests for domains it is configured for, otherwise any realm is accepted.
-        //private event SIPMonitorLogDelegate m_registrarLogEvent;
-       // private SIPUserAgentConfigurationManager m_userAgentConfigs;
+                                                            //private event SIPMonitorLogDelegate m_registrarLogEvent;
+                                                            // private SIPUserAgentConfigurationManager m_userAgentConfigs;
         private Queue<SIPNonInviteTransaction> m_registerQueue = new Queue<SIPNonInviteTransaction>();
         private AutoResetEvent m_registerARE = new AutoResetEvent(false);
         //private RSACryptoServiceProvider m_switchbboardRSAProvider; // If available this certificate can be used to sign switchboard tokens.
@@ -151,17 +151,17 @@ namespace SIPSorcery.GB28181.Servers
             m_serverAgent = SIPConstants.SIP_SERVER_STRING;
         }
 
-        public void Start(int threadCount)
-        {
-            logger.Debug("SIPRegistrarCore thread started with " + threadCount + " threads.");
+        //public void Start(int threadCount)
+        //{
+        //    logger.Debug("SIPRegistrarCore thread started with " + threadCount + " threads.");
 
-            //for (int index = 1; index <= threadCount; index++)
-            //{
-            //    string threadSuffix = index.ToString();
-            //    ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(REGISTRAR_THREAD_NAME_PREFIX + threadSuffix); });
-            //}
-            ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(); });
-        }
+        //    //for (int index = 1; index <= threadCount; index++)
+        //    //{
+        //    //    string threadSuffix = index.ToString();
+        //    //    ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(REGISTRAR_THREAD_NAME_PREFIX + threadSuffix); });
+        //    //}
+        //    ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(); });
+        //}
 
         public void AddRegisterRequest(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPRequest registerRequest)
         {
@@ -226,7 +226,7 @@ namespace SIPSorcery.GB28181.Servers
             }
         }
 
-        private void ProcessRegisterRequest()
+        public void ProcessRegisterRequest()
         {
             try
             {
@@ -377,7 +377,7 @@ namespace SIPSorcery.GB28181.Servers
                         SIPEndPoint registrarEndPoint = registerTransaction.LocalSIPEndPoint;
 
                         SIPResponseStatusCodesEnum updateResult = SIPResponseStatusCodesEnum.Ok;
-                       // string updateMessage = null;
+                        // string updateMessage = null;
 
                         DateTime startTime = DateTime.Now;
 
@@ -404,7 +404,7 @@ namespace SIPSorcery.GB28181.Servers
                         {
                             string proxySocketStr = (proxySIPEndPoint != null) ? " (proxy=" + proxySIPEndPoint.ToString() + ")" : null;
 
-                          //  int bindingCount = 1;
+                            //  int bindingCount = 1;
                             //foreach (SIPRegistrarBinding binding in bindingsList)
                             //{
                             //    string bindingIndex = (bindingsList.Count == 1) ? String.Empty : " (" + bindingCount + ")";

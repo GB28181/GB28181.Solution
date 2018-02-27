@@ -16,7 +16,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
-
+using System.Threading.Tasks;
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
     /// <summary>
@@ -178,7 +178,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             try
             {
-                logger.Debug("SIP Registrar daemon starting...");
+                logger.Debug("SIP Registrar daemon starting...", ConsoleColor.Green);
 
                 // Configure the SIP transport layer.
                 Transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false)
@@ -196,11 +196,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 {
                     Auth = _account.Authentication
                 };
-                _registrarCore.Start(1);
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                logger.Debug("SIP Registrar successfully started.");
-                Console.ForegroundColor = ConsoleColor.White;
+                logger.Debug("SIPRegistrarCore thread started ");
+                Task.Factory.StartNew(() => _registrarCore.ProcessRegisterRequest());
+
+                logger.Debug("SIP Registrar successfully started at " + _account.LocalIP + ":" + _account.LocalPort, ConsoleColor.Green);
+
             }
             catch (Exception excp)
             {

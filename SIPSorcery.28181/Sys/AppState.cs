@@ -38,7 +38,7 @@ namespace SIPSorcery.GB28181.Sys
         // From http://fightingforalostcause.net/misc/2006/compare-email-regex.php.
         public const string EMAIL_VALIDATION_REGEX = @"^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-zA-Z0-9]{1}[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]{1})|[a-zA-Z])\.)+[a-zA-Z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$";
 
-        public static ILog logger;		                        // Used to provide logging functionality for the application.
+        public static ILog logger;                        // Used to provide logging functionality for the application.
 
         private static StringDictionary m_appConfigSettings;	// Contains application configuration key, value pairs.
         private static X509Certificate2 m_encryptedSettingsCertificate;

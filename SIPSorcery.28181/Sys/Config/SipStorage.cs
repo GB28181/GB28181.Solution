@@ -29,11 +29,11 @@ namespace SIPSorcery.GB28181.Sys.Config
             get => _accounts;
             set => _accounts = value;
         }
-        private SIPAssetPersistor<SIPAccount> _sipAccount;
+        private SIPAssetPersistor<SIPAccount> _sipAccounts;
 
         public SIPAssetPersistor<SIPAccount> SipAccount
         {
-            get { return _sipAccount; }
+            get { return _sipAccounts; }
         }
 
         public static SipStorage Instance
@@ -68,12 +68,12 @@ namespace SIPSorcery.GB28181.Sys.Config
 
         public void Read()
         {
-            var account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
+            var accounts = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
 
-            account.Added += Account_Added;
+            accounts.Added += Account_Added;
 
-            _sipAccount = account;
-            _accounts = account.Get();
+            _sipAccounts = accounts;
+            _accounts = accounts.Get();
         }
 
         private void Account_Added(SIPAccount asset)

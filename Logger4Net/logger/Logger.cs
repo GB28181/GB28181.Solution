@@ -14,24 +14,34 @@ namespace Logger4Net
             return DateTime.Now.ToString(format);
         }
 
-        public virtual void Debug(string debugMessge)
+        public virtual void Debug(string debugMessge, ConsoleColor consoleColor)
         {
-            Console.WriteLine( GetTimeString() + " [Debug] :" + debugMessge);
+
+            if (consoleColor != ConsoleColor.White)
+            {
+                Console.ForegroundColor = consoleColor;
+                Console.WriteLine(GetTimeString() + " [Debug]: " + debugMessge);
+                Console.ForegroundColor = ConsoleColor.White;
+                return;
+            }
+            Console.WriteLine(GetTimeString() + " [Debug]: " + debugMessge);
+
+
         }
 
         public virtual void Error(string errorMessge)
         {
-            Console.WriteLine(GetTimeString() + " [Error] :" + errorMessge);
+            Console.WriteLine(GetTimeString() + " [Error]: " + errorMessge);
         }
 
         public virtual void Info(string infoMessge)
         {
-            Console.WriteLine(GetTimeString() + " [Info] :" + infoMessge);
+            Console.WriteLine(GetTimeString() + " [Info]: " + infoMessge);
         }
 
         public virtual void Warn(string warnMessge)
         {
-            Console.WriteLine(GetTimeString() + " [Warn] :" + warnMessge);
+            Console.WriteLine(GetTimeString() + " [Warn]: " + warnMessge);
         }
 
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Net;
+﻿using Logger4Net;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using SIPSorcery.GB28181.Sys;
-using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
