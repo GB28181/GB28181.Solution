@@ -102,7 +102,7 @@ namespace SIPSorcery.GB28181.Servers
         private int m_minimumBindingExpiry = SIPRegistrarBindingsManager.MINIMUM_EXPIRY_SECONDS;
 
         private SIPTransport m_sipTransport;
-        private SIPAuthenticateRequestDelegate SIPRequestAuthenticator_External;
+        private SIPAuthenticateRequestDelegate SIPRequestAuthenticator_External = null;
         //private SIPAssetPersistor<Customer> CustomerPersistor_External;
 
         private string m_serverAgent = SIPConstants.SIP_USERAGENT_STRING;
@@ -123,7 +123,7 @@ namespace SIPSorcery.GB28181.Servers
 
         public bool Stop;
 
-        public bool Auth;
+        public bool _needAuthentication;
 
         public RegistrarCore(
             SIPTransport sipTransport,
@@ -300,9 +300,9 @@ namespace SIPSorcery.GB28181.Servers
                     SIPDomain = canonicalDomain
                 };
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser);
-                SIPRequestAuthenticationResult authenticationResult = SIPRequestAuthenticator_External(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
+                SIPRequestAuthenticationResult authenticationResult = SIPRequestAuthenticator_External?.Invoke(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
 
-                if (!Auth)
+                if (!_needAuthentication)
                 {
                     SIPResponse okRes = GetOkResponse(sipRequest);
                     registerTransaction.SendFinalResponse(okRes);

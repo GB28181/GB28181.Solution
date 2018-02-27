@@ -9,7 +9,7 @@
     <RemotePort>0</RemotePort>
     <Authentication>true</Authentication>
     <SIPUsername>admin</SIPUsername>
-    <SIPPassword>34010000001360000001</SIPPassword>
+    <SIPPassword>12345678</SIPPassword>
     <MsgProtocol>UDP</MsgProtocol>
     <StreamProtocol>UDP</StreamProtocol>
     <TcpMode>passive</TcpMode>

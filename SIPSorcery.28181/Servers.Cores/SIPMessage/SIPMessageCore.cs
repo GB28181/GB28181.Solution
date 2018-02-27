@@ -194,7 +194,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
                 _registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
                 {
-                    Auth = _account.Authentication
+                    _needAuthentication = _account.Authentication
                 };
 
                 logger.Debug("SIPRegistrarCore thread started ");
