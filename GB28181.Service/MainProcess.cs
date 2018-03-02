@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RegisterService
+namespace GB28181Service
 {
     public class MainProcess : IDisposable
     {

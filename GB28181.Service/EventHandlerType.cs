@@ -1,7 +1,7 @@
 ﻿using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Sys.XML;
 
-namespace RegisterService
+namespace GB28181Service
 {
 
     #region 委托回调

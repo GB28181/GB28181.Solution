@@ -5,7 +5,7 @@ using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Sys.XML;
 
-namespace RegisterService
+namespace GB28181Service
 {
     public class MessageCenter
     {

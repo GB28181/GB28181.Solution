@@ -1,6 +1,6 @@
 ﻿
 
-namespace RegisterService
+namespace GB28181Service
 {
     class Program
     {
