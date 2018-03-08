@@ -13,9 +13,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.Service", "GB28181.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logger4Net", "Logger4Net\Logger4Net.csproj", "{BCF4602E-348C-46A2-960C-02496F28C950}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoMicro.Sidecar", "GoMicro.SideCar\GoMicro.Sidecar.csproj", "{00172E1F-78F2-443A-BA95-3330B197F685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoMicro.Sidecar", "GoMicro.SideCar\GoMicro.Sidecar.csproj", "{00172E1F-78F2-443A-BA95-3330B197F685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proto.Grpc", "Proto.Grpc\Proto.Grpc.csproj", "{CDEC4F51-CC42-45A7-8504-80F6F84DFAA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proto.Grpc", "Proto.Grpc\Proto.Grpc.csproj", "{CDEC4F51-CC42-45A7-8504-80F6F84DFAA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20DD9F87-14BF-4459-B3A6-83ED06403934}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protos", "protos", "{9E3509F7-2B9B-45B2-92F6-E4F52D981B50}"
+	ProjectSection(SolutionItems) = preProject
+		Protos\generate_protos.bat = Protos\generate_protos.bat
+		Protos\video_session.proto = Protos\video_session.proto
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +140,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E3509F7-2B9B-45B2-92F6-E4F52D981B50} = {20DD9F87-14BF-4459-B3A6-83ED06403934}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7260E210-1C97-432B-A1FB-EC434B600A9F}
