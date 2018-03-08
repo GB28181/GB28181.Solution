@@ -2,8 +2,9 @@
 
 namespace GoMicro.SideCar
 {
-    public class GoMicroSideCar
+    public class GoMicroSidecar
     {
+
 
     }
 }
