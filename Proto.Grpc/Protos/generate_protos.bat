@@ -30,11 +30,13 @@ set PLUGIN=%UserProfile%/.nuget/packages/Grpc.Tools/1.10.0/tools/windows_x64/grp
 
 endlocal
 
-
-echo work had been done.
 echo.
 echo.
-echo code had been generated to  "../"
+echo          work had been done.
 echo.
-echo press any key to exit
+echo.
+echo          code had been generated to  "../"
+echo.
+echo          press any key to exit
+echo          
 pause >nul

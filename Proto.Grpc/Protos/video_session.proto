@@ -6,65 +6,128 @@ package MediaSession;
 
 // The VideoControl service definition.
 service VideoControl {
-  // Sends a greeting
-  rpc AskVideo (MediaSessionRequest) returns (MediaSessionReply) {}
+  //AskParameters
   rpc AskParameters (ParametersRequest) returns (ParametersReply) {}
+  //LivePlay
+  rpc LivePlay (LivePlayRequest) returns (LivePlayReply) {}
+  //playback
+  rpc PlayBack (PlaybackRequest) returns (PlaybackReply) {}
+  //keepalive between two point
+  rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {}
+
 }
 
-enum Operation {
+//operition catalog
+enum Business {
 	VIDEO_LIVE_PLAY = 0;
 	VIDEO_PLAYBACK = 1;
 	VIDEO_DOWANLOAD = 2;
+	VIDEO_MORE_INFO = 3;
+	VIDEO_MAX =4;
+}
+
+enum SessionAction {
+	START = 0;
+	STOP = 1;
+	SAMAX = 2;
+}
+
+//one action to do
+enum PlayBackControl {
+	PBC_RESUME = 0;
+	PBC_SPEED = 1;
+	PBC_PAUSE = 2;
+	PBC_MAX = 3;
 }
 
 enum StreamProtocol {
 	TCP = 0;
 	UDP = 1;
+	MAX = 2;
 }
 
-// The access protocol of device
-enum AccessProtocol {
-	ONVIF = 0;
-	SIP = 1;
-	MQTT =2;
-	COAP = 3;
-	WEBSOCKET =4;
-	HTTP2 = 5;
-	HTTP1 = 6;
+message Header {
+	int32 Version = 1;
+    int32 sequence = 2;
+	int32 sessionid = 3;
+}
+
+message Status {
+    int32 code = 1;
+    string msg = 2;
 }
 
 
-// The request message containing videoSessionRequest.
-message MediaSessionRequest {
-	AccessProtocol access_protocol = 1;
-	Operation   action_to_do =2;
+// The request message containing LivePlayRequest.
+message LivePlayRequest {
+	Header hdr =1;
 	StreamProtocol stream_protocol = 3;
-	bool is_ipv6 = 4;
-	string deviceid = 5;
+	string gbid = 5;
+	bool is_ipv6 = 6;
+	string ipaddr = 7;
+	int32 port = 8;
+}
+
+
+// The response message containing the LivePlayReply.
+message LivePlayReply {
+	Header hdr = 1;
+	Status status = 2;
+	string ipaddr = 3;
+	int32 port = 4;
+	string ssrc = 5;
+	string extend_msg = 6;
+}
+
+
+
+// The request message containing PlaybackRequest/download.
+message PlaybackRequest {
+	Header hdr =1;
+	StreamProtocol stream_protocol = 3;
+	string gbid = 4;
+	bool is_ipv6 = 5;
 	string ipaddr = 6;
 	int32 port = 7;
+	string ssrc = 8;
+	bool is_download = 9;
+    int32 file_size = 10;
 }
 
 
-// The response message containing the videoSessionResponse.
-message MediaSessionReply {
-	string deviceid = 1;
-	string ipaddr = 2;
-	int32 port = 3;
-	string ssrc = 4;
-	string osd_string = 5;
+// The response message containing the PlaybackReply/download.
+message PlaybackReply {
+	Header hdr = 1;
+	Status status = 2;
+	string ipaddr = 3;
+	int32 port = 4;
+	string ssrc = 5;
+	string extend_msg = 6;
 }
 
 
-// The request message containing videoSessionRequest.
+// The request message containing ParametersRequest.
+message KeepAliveRequest {
+	Header hdr = 1;
+}
+
+
+// The response message containing the ParametersReply.
+message KeepAliveReply {
+	Header hdr = 1;
+	Status status = 2;
+}
+
+
+// The request message containing ParametersRequest.
 message ParametersRequest {
-	AccessProtocol access_protocol = 1;
-	string deviceid = 2;
+	Header hdr = 1;
 }
 
 
-// The response message containing the videoSessionResponse.
+// The response message containing the ParametersReply.
 message ParametersReply {
-	string deviceid = 1;
-	string osd_string = 2;
+	Header hdr = 1;
+	Status status = 2;
+	string param_content = 3;
 }
