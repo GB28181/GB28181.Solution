@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="1.10.0" />
-    <PackageReference Include="Grpc.Tools" Version="1.10.0" />
+    <ProjectReference Include="..\Proto.Grpc\GrpcProtocol.csproj" />
   </ItemGroup>
 
 </Project>

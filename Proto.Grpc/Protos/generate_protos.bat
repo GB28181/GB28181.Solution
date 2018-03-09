@@ -1,4 +1,4 @@
-@rem Copyright 2018 gRPC authors.
+@rem Copyright 2018 husplus authors.
 @rem
 @rem Licensed under the Apache License, Version 2.0 (the "License");
 @rem you may not use this file except in compliance with the License.
@@ -11,16 +11,30 @@
 @rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 @rem See the License for the specific language governing permissions and
 @rem limitations under the License.
-
 @rem Generate the C# code for .proto files
+
+
+@echo off
 
 setlocal
 
-@rem enter this directory
+@rem enter this directory of bat
 cd /d %~dp0
 
-set TOOLS_PATH=packages\Grpc.Tools.1.10.0\tools\windows_x64
+@rem set path for rpc compiler tool
+set PROTOC=%UserProfile%/.nuget/packages/Google.Protobuf.Tools/3.5.1/tools/windows_x64/protoc.exe
+set PLUGIN=%UserProfile%/.nuget/packages/Grpc.Tools/1.10.0/tools/windows_x64/grpc_csharp_plugin.exe
 
-%TOOLS_PATH%\protoc.exe -I../../protos --csharp_out Proto.Grpc  ./videosession.proto --grpc_out Proto.Grpc --plugin=protoc-gen-grpc=%TOOLS_PATH%\grpc_csharp_plugin.exe
+@rem use csharp plugin compile *.proto to csharp code 
+%PROTOC%   --csharp_out ../ --grpc_out ../ ./video_session.proto  --plugin=protoc-gen-grpc=%PLUGIN%
 
 endlocal
+
+
+echo work had been done.
+echo.
+echo.
+echo code had been generated to  "../"
+echo.
+echo press any key to exit
+pause >nul

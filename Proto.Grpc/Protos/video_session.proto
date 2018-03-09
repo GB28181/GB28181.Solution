@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+option objc_class_prefix = "ms";
+
+package MediaSession;
+
+// The VideoControl service definition.
+service VideoControl {
+  // Sends a greeting
+  rpc AskVideo (MediaSessionRequest) returns (MediaSessionReply) {}
+  rpc AskParameters (ParametersRequest) returns (ParametersReply) {}
+}
+
+enum Operation {
+	VIDEO_LIVE_PLAY = 0;
+	VIDEO_PLAYBACK = 1;
+	VIDEO_DOWANLOAD = 2;
+}
+
+enum StreamProtocol {
+	TCP = 0;
+	UDP = 1;
+}
+
+// The access protocol of device
+enum AccessProtocol {
+	ONVIF = 0;
+	SIP = 1;
+	MQTT =2;
+	COAP = 3;
+	WEBSOCKET =4;
+	HTTP2 = 5;
+	HTTP1 = 6;
+}
+
+
+// The request message containing videoSessionRequest.
+message MediaSessionRequest {
+	AccessProtocol access_protocol = 1;
+	Operation   action_to_do =2;
+	StreamProtocol stream_protocol = 3;
+	bool is_ipv6 = 4;
+	string deviceid = 5;
+	string ipaddr = 6;
+	int32 port = 7;
+}
+
+
+// The response message containing the videoSessionResponse.
+message MediaSessionReply {
+	string deviceid = 1;
+	string ipaddr = 2;
+	int32 port = 3;
+	string ssrc = 4;
+	string osd_string = 5;
+}
+
+
+// The request message containing videoSessionRequest.
+message ParametersRequest {
+	AccessProtocol access_protocol = 1;
+	string deviceid = 2;
+}
+
+
+// The response message containing the videoSessionResponse.
+message ParametersReply {
+	string deviceid = 1;
+	string osd_string = 2;
+}
