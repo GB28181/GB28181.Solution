@@ -7,20 +7,23 @@ using MediaSession;
 
 namespace GrpcAgent.WebsocketServer
 {
-    class SSMediaSessionImpl : VideoControl.VideoControlBase
+  public  class SSMediaSessionImpl : VideoControl.VideoControlBase
     {
         public override Task<KeepAliveReply> KeepAlive(KeepAliveRequest request, ServerCallContext context)
         {
+            ///TODO ....
             return base.KeepAlive(request, context);
         }
 
         public override Task<LivePlayReply> LivePlay(LivePlayRequest request, ServerCallContext context)
         {
+            ///TODO ....
             return base.LivePlay(request, context);
         }
 
         public override Task<PlaybackReply> PlayBack(PlaybackRequest request, ServerCallContext context)
         {
+            ///TODO ....
             return base.PlayBack(request, context);
         }
     }

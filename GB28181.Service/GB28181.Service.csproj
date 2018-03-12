@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GoMicro.SideCar\GoMicro.Sidecar.csproj" />
+    <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
     <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
   </ItemGroup>
 

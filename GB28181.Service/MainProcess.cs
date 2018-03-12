@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Proto.Grpc;
 
 namespace GB28181Service
 {
@@ -32,7 +33,8 @@ namespace GB28181Service
         public MessageCenter MessagerHandlers { get; set; }
 
         private Task _mainTask = null;
-        private Task _mainService = null;
+        private Task _mainSipTask = null;
+        private Task _mainWebSocketRpcTask = null;
 
         private DateTime _keepaliveTime;
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
@@ -116,8 +118,15 @@ namespace GB28181Service
                 if (account != null)
                 {
 
+                    //Run the Rpc Server End
+                    _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
+                    {
+                        var _mainWebSocketRpcServer = new WebsocketStub();
+                        _mainWebSocketRpcServer.RunRpcServerStub();
+                    });
+
                     // start the Listening SipService in main Service
-                    _mainService = Task.Factory.StartNew(() =>
+                    _mainSipTask = Task.Factory.StartNew(() =>
                     {
 
                         var _mainSipService = new SIPCoreMessageService(_cameras, account);
