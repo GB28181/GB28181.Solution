@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Proto.Grpc;
+using GrpcAgent;
 
 namespace GB28181Service
 {
@@ -121,8 +121,8 @@ namespace GB28181Service
                     //Run the Rpc Server End
                     _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                     {
-                        var _mainWebSocketRpcServer = new WebsocketStub();
-                        _mainWebSocketRpcServer.RunRpcServerStub();
+                        var _mainWebSocketRpcServer = new RpcServer();
+                        _mainWebSocketRpcServer.Run();
                     });
 
                     // start the Listening SipService in main Service

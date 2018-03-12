@@ -1,15 +1,16 @@
 ﻿using Grpc.Core;
+using GrpcAgent.WebsocketRpcServer;
 using MediaSession;
 
-namespace GrpcAgent.WebsocketServer
+namespace GrpcAgent
 {
-    class WebsocketRpcServer
+    public class RpcServer
     {
 
         private int _port = 0;
         private string _ipaddress = "localhost";
         private Server _server = null;
-        public WebsocketRpcServer(int port = 0)
+        public RpcServer(int port = 0)
         {
             if (port < 1)
             {

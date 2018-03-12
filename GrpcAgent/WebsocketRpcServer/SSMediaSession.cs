@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using MediaSession;
 
-namespace GrpcAgent.WebsocketServer
+namespace GrpcAgent.WebsocketRpcServer
 {
   public  class SSMediaSessionImpl : VideoControl.VideoControlBase
     {
