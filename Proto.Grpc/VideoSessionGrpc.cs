@@ -18,21 +18,12 @@ namespace MediaSession {
   {
     static readonly string __ServiceName = "MediaSession.VideoControl";
 
-    static readonly grpc::Marshaller<global::MediaSession.ParametersRequest> __Marshaller_ParametersRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.ParametersRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.ParametersReply> __Marshaller_ParametersReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.ParametersReply.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.LivePlayRequest> __Marshaller_LivePlayRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.LivePlayRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.LivePlayReply> __Marshaller_LivePlayReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.LivePlayReply.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.PlaybackRequest> __Marshaller_PlaybackRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.PlaybackRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.PlaybackReply> __Marshaller_PlaybackReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.PlaybackReply.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.KeepAliveRequest> __Marshaller_KeepAliveRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.KeepAliveRequest.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::MediaSession.KeepAliveReply> __Marshaller_KeepAliveReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.KeepAliveReply.Parser.ParseFrom);
-
-    static readonly grpc::Method<global::MediaSession.ParametersRequest, global::MediaSession.ParametersReply> __Method_AskParameters = new grpc::Method<global::MediaSession.ParametersRequest, global::MediaSession.ParametersReply>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "AskParameters",
-        __Marshaller_ParametersRequest,
-        __Marshaller_ParametersReply);
 
     static readonly grpc::Method<global::MediaSession.LivePlayRequest, global::MediaSession.LivePlayReply> __Method_LivePlay = new grpc::Method<global::MediaSession.LivePlayRequest, global::MediaSession.LivePlayReply>(
         grpc::MethodType.Unary,
@@ -64,17 +55,6 @@ namespace MediaSession {
     /// <summary>Base class for server-side implementations of VideoControl</summary>
     public abstract partial class VideoControlBase
     {
-      /// <summary>
-      ///AskParameters
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::MediaSession.ParametersReply> AskParameters(global::MediaSession.ParametersRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
       /// <summary>
       ///LivePlay
       /// </summary>
@@ -133,50 +113,6 @@ namespace MediaSession {
       {
       }
 
-      /// <summary>
-      ///AskParameters
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.ParametersReply AskParameters(global::MediaSession.ParametersRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return AskParameters(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///AskParameters
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.ParametersReply AskParameters(global::MediaSession.ParametersRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_AskParameters, null, options, request);
-      }
-      /// <summary>
-      ///AskParameters
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.ParametersReply> AskParametersAsync(global::MediaSession.ParametersRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
-      {
-        return AskParametersAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///AskParameters
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.ParametersReply> AskParametersAsync(global::MediaSession.ParametersRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_AskParameters, null, options, request);
-      }
       /// <summary>
       ///LivePlay
       /// </summary>
@@ -321,7 +257,6 @@ namespace MediaSession {
     public static grpc::ServerServiceDefinition BindService(VideoControlBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_AskParameters, serviceImpl.AskParameters)
           .AddMethod(__Method_LivePlay, serviceImpl.LivePlay)
           .AddMethod(__Method_PlayBack, serviceImpl.PlayBack)
           .AddMethod(__Method_KeepAlive, serviceImpl.KeepAlive).Build();

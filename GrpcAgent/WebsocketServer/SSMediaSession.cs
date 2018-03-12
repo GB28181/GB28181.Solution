@@ -9,14 +9,19 @@ namespace GrpcAgent.WebsocketServer
 {
     class SSMediaSessionImpl : VideoControl.VideoControlBase
     {
-        public override Task<ParametersReply> AskParameters(ParametersRequest request, ServerCallContext context)
+        public override Task<KeepAliveReply> KeepAlive(KeepAliveRequest request, ServerCallContext context)
         {
-            return base.AskParameters(request, context);
+            return base.KeepAlive(request, context);
         }
 
-        public override Task<MediaSessionReply> AskVideo(MediaSessionRequest request, ServerCallContext context)
+        public override Task<LivePlayReply> LivePlay(LivePlayRequest request, ServerCallContext context)
         {
-            return base.AskVideo(request, context);
+            return base.LivePlay(request, context);
+        }
+
+        public override Task<PlaybackReply> PlayBack(PlaybackRequest request, ServerCallContext context)
+        {
+            return base.PlayBack(request, context);
         }
     }
 }

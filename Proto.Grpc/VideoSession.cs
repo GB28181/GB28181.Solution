@@ -27,73 +27,49 @@ namespace MediaSession {
             "ChN2aWRlb19zZXNzaW9uLnByb3RvEgxNZWRpYVNlc3Npb24iPgoGSGVhZGVy",
             "Eg8KB1ZlcnNpb24YASABKAUSEAoIc2VxdWVuY2UYAiABKAUSEQoJc2Vzc2lv",
             "bmlkGAMgASgFIiMKBlN0YXR1cxIMCgRjb2RlGAEgASgFEgsKA21zZxgCIAEo",
-            "CSKoAQoPTGl2ZVBsYXlSZXF1ZXN0EiEKA2hkchgBIAEoCzIULk1lZGlhU2Vz",
-            "c2lvbi5IZWFkZXISNQoPc3RyZWFtX3Byb3RvY29sGAMgASgOMhwuTWVkaWFT",
-            "ZXNzaW9uLlN0cmVhbVByb3RvY29sEgwKBGdiaWQYBSABKAkSDwoHaXNfaXB2",
-            "NhgGIAEoCBIOCgZpcGFkZHIYByABKAkSDAoEcG9ydBgIIAEoBSKYAQoNTGl2",
-            "ZVBsYXlSZXBseRIhCgNoZHIYASABKAsyFC5NZWRpYVNlc3Npb24uSGVhZGVy",
-            "EiQKBnN0YXR1cxgCIAEoCzIULk1lZGlhU2Vzc2lvbi5TdGF0dXMSDgoGaXBh",
-            "ZGRyGAMgASgJEgwKBHBvcnQYBCABKAUSDAoEc3NyYxgFIAEoCRISCgpleHRl",
-            "bmRfbXNnGAYgASgJIt4BCg9QbGF5YmFja1JlcXVlc3QSIQoDaGRyGAEgASgL",
-            "MhQuTWVkaWFTZXNzaW9uLkhlYWRlchI1Cg9zdHJlYW1fcHJvdG9jb2wYAyAB",
-            "KA4yHC5NZWRpYVNlc3Npb24uU3RyZWFtUHJvdG9jb2wSDAoEZ2JpZBgEIAEo",
-            "CRIPCgdpc19pcHY2GAUgASgIEg4KBmlwYWRkchgGIAEoCRIMCgRwb3J0GAcg",
-            "ASgFEgwKBHNzcmMYCCABKAkSEwoLaXNfZG93bmxvYWQYCSABKAgSEQoJZmls",
-            "ZV9zaXplGAogASgFIpgBCg1QbGF5YmFja1JlcGx5EiEKA2hkchgBIAEoCzIU",
-            "Lk1lZGlhU2Vzc2lvbi5IZWFkZXISJAoGc3RhdHVzGAIgASgLMhQuTWVkaWFT",
-            "ZXNzaW9uLlN0YXR1cxIOCgZpcGFkZHIYAyABKAkSDAoEcG9ydBgEIAEoBRIM",
-            "CgRzc3JjGAUgASgJEhIKCmV4dGVuZF9tc2cYBiABKAkiNQoQS2VlcEFsaXZl",
-            "UmVxdWVzdBIhCgNoZHIYASABKAsyFC5NZWRpYVNlc3Npb24uSGVhZGVyIlkK",
-            "DktlZXBBbGl2ZVJlcGx5EiEKA2hkchgBIAEoCzIULk1lZGlhU2Vzc2lvbi5I",
-            "ZWFkZXISJAoGc3RhdHVzGAIgASgLMhQuTWVkaWFTZXNzaW9uLlN0YXR1cyI2",
-            "ChFQYXJhbWV0ZXJzUmVxdWVzdBIhCgNoZHIYASABKAsyFC5NZWRpYVNlc3Np",
-            "b24uSGVhZGVyInEKD1BhcmFtZXRlcnNSZXBseRIhCgNoZHIYASABKAsyFC5N",
-            "ZWRpYVNlc3Npb24uSGVhZGVyEiQKBnN0YXR1cxgCIAEoCzIULk1lZGlhU2Vz",
-            "c2lvbi5TdGF0dXMSFQoNcGFyYW1fY29udGVudBgDIAEoCSpsCghCdXNpbmVz",
-            "cxITCg9WSURFT19MSVZFX1BMQVkQABISCg5WSURFT19QTEFZQkFDSxABEhMK",
-            "D1ZJREVPX0RPV0FOTE9BRBACEhMKD1ZJREVPX01PUkVfSU5GTxADEg0KCVZJ",
-            "REVPX01BWBAEKi8KDVNlc3Npb25BY3Rpb24SCQoFU1RBUlQQABIICgRTVE9Q",
-            "EAESCQoFU0FNQVgQAipMCg9QbGF5QmFja0NvbnRyb2wSDgoKUEJDX1JFU1VN",
-            "RRAAEg0KCVBCQ19TUEVFRBABEg0KCVBCQ19QQVVTRRACEgsKB1BCQ19NQVgQ",
-            "AyorCg5TdHJlYW1Qcm90b2NvbBIHCgNUQ1AQABIHCgNVRFAQARIHCgNNQVgQ",
-            "AjLCAgoMVmlkZW9Db250cm9sElEKDUFza1BhcmFtZXRlcnMSHy5NZWRpYVNl",
-            "c3Npb24uUGFyYW1ldGVyc1JlcXVlc3QaHS5NZWRpYVNlc3Npb24uUGFyYW1l",
-            "dGVyc1JlcGx5IgASSAoITGl2ZVBsYXkSHS5NZWRpYVNlc3Npb24uTGl2ZVBs",
-            "YXlSZXF1ZXN0GhsuTWVkaWFTZXNzaW9uLkxpdmVQbGF5UmVwbHkiABJICghQ",
-            "bGF5QmFjaxIdLk1lZGlhU2Vzc2lvbi5QbGF5YmFja1JlcXVlc3QaGy5NZWRp",
-            "YVNlc3Npb24uUGxheWJhY2tSZXBseSIAEksKCUtlZXBBbGl2ZRIeLk1lZGlh",
-            "U2Vzc2lvbi5LZWVwQWxpdmVSZXF1ZXN0GhwuTWVkaWFTZXNzaW9uLktlZXBB",
-            "bGl2ZVJlcGx5IgBCBaICAm1zYgZwcm90bzM="));
+            "CSKWAQoPTGl2ZVBsYXlSZXF1ZXN0EiEKA2hkchgBIAEoCzIULk1lZGlhU2Vz",
+            "c2lvbi5IZWFkZXISNAoLdHJhbnNfcHJvdG8YAiABKA4yHy5NZWRpYVNlc3Np",
+            "b24uVHJhbnNwb3J0UHJvdG9jb2wSDAoEZ2JpZBgDIAEoCRIOCgZpcGFkZHIY",
+            "BCABKAkSDAoEcG9ydBgFIAEoBSJ2Cg1MaXZlUGxheVJlcGx5EiEKA2hkchgB",
+            "IAEoCzIULk1lZGlhU2Vzc2lvbi5IZWFkZXISJAoGc3RhdHVzGAIgASgLMhQu",
+            "TWVkaWFTZXNzaW9uLlN0YXR1cxIOCgZpcGFkZHIYAyABKAkSDAoEcG9ydBgE",
+            "IAEoBSKrAQoPUGxheWJhY2tSZXF1ZXN0EiEKA2hkchgBIAEoCzIULk1lZGlh",
+            "U2Vzc2lvbi5IZWFkZXISNAoLdHJhbnNfcHJvdG8YAiABKA4yHy5NZWRpYVNl",
+            "c3Npb24uVHJhbnNwb3J0UHJvdG9jb2wSEwoLaXNfZG93bmxvYWQYAyABKAgS",
+            "DAoEcG9ydBgEIAEoBRIOCgZpcGFkZHIYBSABKAkSDAoEZ2JpZBgGIAEoCSJ2",
+            "Cg1QbGF5YmFja1JlcGx5EiEKA2hkchgBIAEoCzIULk1lZGlhU2Vzc2lvbi5I",
+            "ZWFkZXISJAoGc3RhdHVzGAIgASgLMhQuTWVkaWFTZXNzaW9uLlN0YXR1cxIO",
+            "CgZpcGFkZHIYAyABKAkSDAoEcG9ydBgEIAEoBSI1ChBLZWVwQWxpdmVSZXF1",
+            "ZXN0EiEKA2hkchgBIAEoCzIULk1lZGlhU2Vzc2lvbi5IZWFkZXIiWQoOS2Vl",
+            "cEFsaXZlUmVwbHkSIQoDaGRyGAEgASgLMhQuTWVkaWFTZXNzaW9uLkhlYWRl",
+            "chIkCgZzdGF0dXMYAiABKAsyFC5NZWRpYVNlc3Npb24uU3RhdHVzKi8KDVNl",
+            "c3Npb25BY3Rpb24SCQoFU1RBUlQQABIICgRTVE9QEAESCQoFU0FNQVgQAipd",
+            "Cg9QbGF5QmFja0NvbnRyb2wSDgoKUEJDX1JFU1VNRRAAEg0KCVBCQ19TUEVF",
+            "RBABEg8KC1BCQ19NT1ZFX1RPEAISDQoJUEJDX1BBVVNFEAMSCwoHUEJDX01B",
+            "WBAEKi4KEVRyYW5zcG9ydFByb3RvY29sEgcKA1RDUBAAEgcKA1VEUBABEgcK",
+            "A01BWBACMu8BCgxWaWRlb0NvbnRyb2wSSAoITGl2ZVBsYXkSHS5NZWRpYVNl",
+            "c3Npb24uTGl2ZVBsYXlSZXF1ZXN0GhsuTWVkaWFTZXNzaW9uLkxpdmVQbGF5",
+            "UmVwbHkiABJICghQbGF5QmFjaxIdLk1lZGlhU2Vzc2lvbi5QbGF5YmFja1Jl",
+            "cXVlc3QaGy5NZWRpYVNlc3Npb24uUGxheWJhY2tSZXBseSIAEksKCUtlZXBB",
+            "bGl2ZRIeLk1lZGlhU2Vzc2lvbi5LZWVwQWxpdmVSZXF1ZXN0GhwuTWVkaWFT",
+            "ZXNzaW9uLktlZXBBbGl2ZVJlcGx5IgBCBaICAm1zYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MediaSession.Business), typeof(global::MediaSession.SessionAction), typeof(global::MediaSession.PlayBackControl), typeof(global::MediaSession.StreamProtocol), }, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MediaSession.SessionAction), typeof(global::MediaSession.PlayBackControl), typeof(global::MediaSession.TransportProtocol), }, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.Header), global::MediaSession.Header.Parser, new[]{ "Version", "Sequence", "Sessionid" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.Status), global::MediaSession.Status.Parser, new[]{ "Code", "Msg" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.LivePlayRequest), global::MediaSession.LivePlayRequest.Parser, new[]{ "Hdr", "StreamProtocol", "Gbid", "IsIpv6", "Ipaddr", "Port" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.LivePlayReply), global::MediaSession.LivePlayReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port", "Ssrc", "ExtendMsg" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.PlaybackRequest), global::MediaSession.PlaybackRequest.Parser, new[]{ "Hdr", "StreamProtocol", "Gbid", "IsIpv6", "Ipaddr", "Port", "Ssrc", "IsDownload", "FileSize" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.PlaybackReply), global::MediaSession.PlaybackReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port", "Ssrc", "ExtendMsg" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.LivePlayRequest), global::MediaSession.LivePlayRequest.Parser, new[]{ "Hdr", "TransProto", "Gbid", "Ipaddr", "Port" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.LivePlayReply), global::MediaSession.LivePlayReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.PlaybackRequest), global::MediaSession.PlaybackRequest.Parser, new[]{ "Hdr", "TransProto", "IsDownload", "Port", "Ipaddr", "Gbid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.PlaybackReply), global::MediaSession.PlaybackReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.KeepAliveRequest), global::MediaSession.KeepAliveRequest.Parser, new[]{ "Hdr" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.KeepAliveReply), global::MediaSession.KeepAliveReply.Parser, new[]{ "Hdr", "Status" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.ParametersRequest), global::MediaSession.ParametersRequest.Parser, new[]{ "Hdr" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.ParametersReply), global::MediaSession.ParametersReply.Parser, new[]{ "Hdr", "Status", "ParamContent" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaSession.KeepAliveReply), global::MediaSession.KeepAliveReply.Parser, new[]{ "Hdr", "Status" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Enums
-  /// <summary>
-  ///operition catalog
-  /// </summary>
-  public enum Business {
-    [pbr::OriginalName("VIDEO_LIVE_PLAY")] VideoLivePlay = 0,
-    [pbr::OriginalName("VIDEO_PLAYBACK")] VideoPlayback = 1,
-    [pbr::OriginalName("VIDEO_DOWANLOAD")] VideoDowanload = 2,
-    [pbr::OriginalName("VIDEO_MORE_INFO")] VideoMoreInfo = 3,
-    [pbr::OriginalName("VIDEO_MAX")] VideoMax = 4,
-  }
-
   public enum SessionAction {
     [pbr::OriginalName("START")] Start = 0,
     [pbr::OriginalName("STOP")] Stop = 1,
@@ -106,11 +82,12 @@ namespace MediaSession {
   public enum PlayBackControl {
     [pbr::OriginalName("PBC_RESUME")] PbcResume = 0,
     [pbr::OriginalName("PBC_SPEED")] PbcSpeed = 1,
-    [pbr::OriginalName("PBC_PAUSE")] PbcPause = 2,
-    [pbr::OriginalName("PBC_MAX")] PbcMax = 3,
+    [pbr::OriginalName("PBC_MOVE_TO")] PbcMoveTo = 2,
+    [pbr::OriginalName("PBC_PAUSE")] PbcPause = 3,
+    [pbr::OriginalName("PBC_MAX")] PbcMax = 4,
   }
 
-  public enum StreamProtocol {
+  public enum TransportProtocol {
     [pbr::OriginalName("TCP")] Tcp = 0,
     [pbr::OriginalName("UDP")] Udp = 1,
     [pbr::OriginalName("MAX")] Max = 2,
@@ -490,9 +467,8 @@ namespace MediaSession {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public LivePlayRequest(LivePlayRequest other) : this() {
       Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
-      streamProtocol_ = other.streamProtocol_;
+      transProto_ = other.transProto_;
       gbid_ = other.gbid_;
-      isIpv6_ = other.isIpv6_;
       ipaddr_ = other.ipaddr_;
       port_ = other.port_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -514,19 +490,19 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "stream_protocol" field.</summary>
-    public const int StreamProtocolFieldNumber = 3;
-    private global::MediaSession.StreamProtocol streamProtocol_ = 0;
+    /// <summary>Field number for the "trans_proto" field.</summary>
+    public const int TransProtoFieldNumber = 2;
+    private global::MediaSession.TransportProtocol transProto_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MediaSession.StreamProtocol StreamProtocol {
-      get { return streamProtocol_; }
+    public global::MediaSession.TransportProtocol TransProto {
+      get { return transProto_; }
       set {
-        streamProtocol_ = value;
+        transProto_ = value;
       }
     }
 
     /// <summary>Field number for the "gbid" field.</summary>
-    public const int GbidFieldNumber = 5;
+    public const int GbidFieldNumber = 3;
     private string gbid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Gbid {
@@ -536,19 +512,8 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "is_ipv6" field.</summary>
-    public const int IsIpv6FieldNumber = 6;
-    private bool isIpv6_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool IsIpv6 {
-      get { return isIpv6_; }
-      set {
-        isIpv6_ = value;
-      }
-    }
-
     /// <summary>Field number for the "ipaddr" field.</summary>
-    public const int IpaddrFieldNumber = 7;
+    public const int IpaddrFieldNumber = 4;
     private string ipaddr_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Ipaddr {
@@ -559,7 +524,7 @@ namespace MediaSession {
     }
 
     /// <summary>Field number for the "port" field.</summary>
-    public const int PortFieldNumber = 8;
+    public const int PortFieldNumber = 5;
     private int port_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Port {
@@ -583,9 +548,8 @@ namespace MediaSession {
         return true;
       }
       if (!object.Equals(Hdr, other.Hdr)) return false;
-      if (StreamProtocol != other.StreamProtocol) return false;
+      if (TransProto != other.TransProto) return false;
       if (Gbid != other.Gbid) return false;
-      if (IsIpv6 != other.IsIpv6) return false;
       if (Ipaddr != other.Ipaddr) return false;
       if (Port != other.Port) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -595,9 +559,8 @@ namespace MediaSession {
     public override int GetHashCode() {
       int hash = 1;
       if (hdr_ != null) hash ^= Hdr.GetHashCode();
-      if (StreamProtocol != 0) hash ^= StreamProtocol.GetHashCode();
+      if (TransProto != 0) hash ^= TransProto.GetHashCode();
       if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
-      if (IsIpv6 != false) hash ^= IsIpv6.GetHashCode();
       if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
       if (Port != 0) hash ^= Port.GetHashCode();
       if (_unknownFields != null) {
@@ -617,24 +580,20 @@ namespace MediaSession {
         output.WriteRawTag(10);
         output.WriteMessage(Hdr);
       }
-      if (StreamProtocol != 0) {
-        output.WriteRawTag(24);
-        output.WriteEnum((int) StreamProtocol);
+      if (TransProto != 0) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TransProto);
       }
       if (Gbid.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(26);
         output.WriteString(Gbid);
       }
-      if (IsIpv6 != false) {
-        output.WriteRawTag(48);
-        output.WriteBool(IsIpv6);
-      }
       if (Ipaddr.Length != 0) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(34);
         output.WriteString(Ipaddr);
       }
       if (Port != 0) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(40);
         output.WriteInt32(Port);
       }
       if (_unknownFields != null) {
@@ -648,14 +607,11 @@ namespace MediaSession {
       if (hdr_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
       }
-      if (StreamProtocol != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) StreamProtocol);
+      if (TransProto != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TransProto);
       }
       if (Gbid.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
-      }
-      if (IsIpv6 != false) {
-        size += 1 + 1;
       }
       if (Ipaddr.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Ipaddr);
@@ -680,14 +636,11 @@ namespace MediaSession {
         }
         Hdr.MergeFrom(other.Hdr);
       }
-      if (other.StreamProtocol != 0) {
-        StreamProtocol = other.StreamProtocol;
+      if (other.TransProto != 0) {
+        TransProto = other.TransProto;
       }
       if (other.Gbid.Length != 0) {
         Gbid = other.Gbid;
-      }
-      if (other.IsIpv6 != false) {
-        IsIpv6 = other.IsIpv6;
       }
       if (other.Ipaddr.Length != 0) {
         Ipaddr = other.Ipaddr;
@@ -713,23 +666,19 @@ namespace MediaSession {
             input.ReadMessage(hdr_);
             break;
           }
-          case 24: {
-            streamProtocol_ = (global::MediaSession.StreamProtocol) input.ReadEnum();
+          case 16: {
+            transProto_ = (global::MediaSession.TransportProtocol) input.ReadEnum();
             break;
           }
-          case 42: {
+          case 26: {
             Gbid = input.ReadString();
             break;
           }
-          case 48: {
-            IsIpv6 = input.ReadBool();
-            break;
-          }
-          case 58: {
+          case 34: {
             Ipaddr = input.ReadString();
             break;
           }
-          case 64: {
+          case 40: {
             Port = input.ReadInt32();
             break;
           }
@@ -771,8 +720,6 @@ namespace MediaSession {
       Status = other.status_ != null ? other.Status.Clone() : null;
       ipaddr_ = other.ipaddr_;
       port_ = other.port_;
-      ssrc_ = other.ssrc_;
-      extendMsg_ = other.extendMsg_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -825,28 +772,6 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "ssrc" field.</summary>
-    public const int SsrcFieldNumber = 5;
-    private string ssrc_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Ssrc {
-      get { return ssrc_; }
-      set {
-        ssrc_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "extend_msg" field.</summary>
-    public const int ExtendMsgFieldNumber = 6;
-    private string extendMsg_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ExtendMsg {
-      get { return extendMsg_; }
-      set {
-        extendMsg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as LivePlayReply);
@@ -864,8 +789,6 @@ namespace MediaSession {
       if (!object.Equals(Status, other.Status)) return false;
       if (Ipaddr != other.Ipaddr) return false;
       if (Port != other.Port) return false;
-      if (Ssrc != other.Ssrc) return false;
-      if (ExtendMsg != other.ExtendMsg) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -876,8 +799,6 @@ namespace MediaSession {
       if (status_ != null) hash ^= Status.GetHashCode();
       if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
       if (Port != 0) hash ^= Port.GetHashCode();
-      if (Ssrc.Length != 0) hash ^= Ssrc.GetHashCode();
-      if (ExtendMsg.Length != 0) hash ^= ExtendMsg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -907,14 +828,6 @@ namespace MediaSession {
         output.WriteRawTag(32);
         output.WriteInt32(Port);
       }
-      if (Ssrc.Length != 0) {
-        output.WriteRawTag(42);
-        output.WriteString(Ssrc);
-      }
-      if (ExtendMsg.Length != 0) {
-        output.WriteRawTag(50);
-        output.WriteString(ExtendMsg);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -934,12 +847,6 @@ namespace MediaSession {
       }
       if (Port != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
-      }
-      if (Ssrc.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ssrc);
-      }
-      if (ExtendMsg.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ExtendMsg);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -969,12 +876,6 @@ namespace MediaSession {
       }
       if (other.Port != 0) {
         Port = other.Port;
-      }
-      if (other.Ssrc.Length != 0) {
-        Ssrc = other.Ssrc;
-      }
-      if (other.ExtendMsg.Length != 0) {
-        ExtendMsg = other.ExtendMsg;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1007,14 +908,6 @@ namespace MediaSession {
           }
           case 32: {
             Port = input.ReadInt32();
-            break;
-          }
-          case 42: {
-            Ssrc = input.ReadString();
-            break;
-          }
-          case 50: {
-            ExtendMsg = input.ReadString();
             break;
           }
         }
@@ -1052,14 +945,11 @@ namespace MediaSession {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlaybackRequest(PlaybackRequest other) : this() {
       Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
-      streamProtocol_ = other.streamProtocol_;
-      gbid_ = other.gbid_;
-      isIpv6_ = other.isIpv6_;
-      ipaddr_ = other.ipaddr_;
-      port_ = other.port_;
-      ssrc_ = other.ssrc_;
+      transProto_ = other.transProto_;
       isDownload_ = other.isDownload_;
-      fileSize_ = other.fileSize_;
+      port_ = other.port_;
+      ipaddr_ = other.ipaddr_;
+      gbid_ = other.gbid_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1079,74 +969,19 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "stream_protocol" field.</summary>
-    public const int StreamProtocolFieldNumber = 3;
-    private global::MediaSession.StreamProtocol streamProtocol_ = 0;
+    /// <summary>Field number for the "trans_proto" field.</summary>
+    public const int TransProtoFieldNumber = 2;
+    private global::MediaSession.TransportProtocol transProto_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MediaSession.StreamProtocol StreamProtocol {
-      get { return streamProtocol_; }
+    public global::MediaSession.TransportProtocol TransProto {
+      get { return transProto_; }
       set {
-        streamProtocol_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "gbid" field.</summary>
-    public const int GbidFieldNumber = 4;
-    private string gbid_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Gbid {
-      get { return gbid_; }
-      set {
-        gbid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "is_ipv6" field.</summary>
-    public const int IsIpv6FieldNumber = 5;
-    private bool isIpv6_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool IsIpv6 {
-      get { return isIpv6_; }
-      set {
-        isIpv6_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "ipaddr" field.</summary>
-    public const int IpaddrFieldNumber = 6;
-    private string ipaddr_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Ipaddr {
-      get { return ipaddr_; }
-      set {
-        ipaddr_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "port" field.</summary>
-    public const int PortFieldNumber = 7;
-    private int port_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Port {
-      get { return port_; }
-      set {
-        port_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "ssrc" field.</summary>
-    public const int SsrcFieldNumber = 8;
-    private string ssrc_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Ssrc {
-      get { return ssrc_; }
-      set {
-        ssrc_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        transProto_ = value;
       }
     }
 
     /// <summary>Field number for the "is_download" field.</summary>
-    public const int IsDownloadFieldNumber = 9;
+    public const int IsDownloadFieldNumber = 3;
     private bool isDownload_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public bool IsDownload {
@@ -1156,14 +991,36 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "file_size" field.</summary>
-    public const int FileSizeFieldNumber = 10;
-    private int fileSize_;
+    /// <summary>Field number for the "port" field.</summary>
+    public const int PortFieldNumber = 4;
+    private int port_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int FileSize {
-      get { return fileSize_; }
+    public int Port {
+      get { return port_; }
       set {
-        fileSize_ = value;
+        port_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ipaddr" field.</summary>
+    public const int IpaddrFieldNumber = 5;
+    private string ipaddr_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Ipaddr {
+      get { return ipaddr_; }
+      set {
+        ipaddr_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "gbid" field.</summary>
+    public const int GbidFieldNumber = 6;
+    private string gbid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Gbid {
+      get { return gbid_; }
+      set {
+        gbid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1181,14 +1038,11 @@ namespace MediaSession {
         return true;
       }
       if (!object.Equals(Hdr, other.Hdr)) return false;
-      if (StreamProtocol != other.StreamProtocol) return false;
-      if (Gbid != other.Gbid) return false;
-      if (IsIpv6 != other.IsIpv6) return false;
-      if (Ipaddr != other.Ipaddr) return false;
-      if (Port != other.Port) return false;
-      if (Ssrc != other.Ssrc) return false;
+      if (TransProto != other.TransProto) return false;
       if (IsDownload != other.IsDownload) return false;
-      if (FileSize != other.FileSize) return false;
+      if (Port != other.Port) return false;
+      if (Ipaddr != other.Ipaddr) return false;
+      if (Gbid != other.Gbid) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1196,14 +1050,11 @@ namespace MediaSession {
     public override int GetHashCode() {
       int hash = 1;
       if (hdr_ != null) hash ^= Hdr.GetHashCode();
-      if (StreamProtocol != 0) hash ^= StreamProtocol.GetHashCode();
-      if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
-      if (IsIpv6 != false) hash ^= IsIpv6.GetHashCode();
-      if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
-      if (Port != 0) hash ^= Port.GetHashCode();
-      if (Ssrc.Length != 0) hash ^= Ssrc.GetHashCode();
+      if (TransProto != 0) hash ^= TransProto.GetHashCode();
       if (IsDownload != false) hash ^= IsDownload.GetHashCode();
-      if (FileSize != 0) hash ^= FileSize.GetHashCode();
+      if (Port != 0) hash ^= Port.GetHashCode();
+      if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
+      if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1221,37 +1072,25 @@ namespace MediaSession {
         output.WriteRawTag(10);
         output.WriteMessage(Hdr);
       }
-      if (StreamProtocol != 0) {
-        output.WriteRawTag(24);
-        output.WriteEnum((int) StreamProtocol);
-      }
-      if (Gbid.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteString(Gbid);
-      }
-      if (IsIpv6 != false) {
-        output.WriteRawTag(40);
-        output.WriteBool(IsIpv6);
-      }
-      if (Ipaddr.Length != 0) {
-        output.WriteRawTag(50);
-        output.WriteString(Ipaddr);
-      }
-      if (Port != 0) {
-        output.WriteRawTag(56);
-        output.WriteInt32(Port);
-      }
-      if (Ssrc.Length != 0) {
-        output.WriteRawTag(66);
-        output.WriteString(Ssrc);
+      if (TransProto != 0) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TransProto);
       }
       if (IsDownload != false) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(24);
         output.WriteBool(IsDownload);
       }
-      if (FileSize != 0) {
-        output.WriteRawTag(80);
-        output.WriteInt32(FileSize);
+      if (Port != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Port);
+      }
+      if (Ipaddr.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Ipaddr);
+      }
+      if (Gbid.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Gbid);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1264,29 +1103,20 @@ namespace MediaSession {
       if (hdr_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
       }
-      if (StreamProtocol != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) StreamProtocol);
-      }
-      if (Gbid.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
-      }
-      if (IsIpv6 != false) {
-        size += 1 + 1;
-      }
-      if (Ipaddr.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ipaddr);
-      }
-      if (Port != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
-      }
-      if (Ssrc.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ssrc);
+      if (TransProto != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TransProto);
       }
       if (IsDownload != false) {
         size += 1 + 1;
       }
-      if (FileSize != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(FileSize);
+      if (Port != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
+      }
+      if (Ipaddr.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ipaddr);
+      }
+      if (Gbid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1305,29 +1135,20 @@ namespace MediaSession {
         }
         Hdr.MergeFrom(other.Hdr);
       }
-      if (other.StreamProtocol != 0) {
-        StreamProtocol = other.StreamProtocol;
-      }
-      if (other.Gbid.Length != 0) {
-        Gbid = other.Gbid;
-      }
-      if (other.IsIpv6 != false) {
-        IsIpv6 = other.IsIpv6;
-      }
-      if (other.Ipaddr.Length != 0) {
-        Ipaddr = other.Ipaddr;
-      }
-      if (other.Port != 0) {
-        Port = other.Port;
-      }
-      if (other.Ssrc.Length != 0) {
-        Ssrc = other.Ssrc;
+      if (other.TransProto != 0) {
+        TransProto = other.TransProto;
       }
       if (other.IsDownload != false) {
         IsDownload = other.IsDownload;
       }
-      if (other.FileSize != 0) {
-        FileSize = other.FileSize;
+      if (other.Port != 0) {
+        Port = other.Port;
+      }
+      if (other.Ipaddr.Length != 0) {
+        Ipaddr = other.Ipaddr;
+      }
+      if (other.Gbid.Length != 0) {
+        Gbid = other.Gbid;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1347,36 +1168,24 @@ namespace MediaSession {
             input.ReadMessage(hdr_);
             break;
           }
+          case 16: {
+            transProto_ = (global::MediaSession.TransportProtocol) input.ReadEnum();
+            break;
+          }
           case 24: {
-            streamProtocol_ = (global::MediaSession.StreamProtocol) input.ReadEnum();
-            break;
-          }
-          case 34: {
-            Gbid = input.ReadString();
-            break;
-          }
-          case 40: {
-            IsIpv6 = input.ReadBool();
-            break;
-          }
-          case 50: {
-            Ipaddr = input.ReadString();
-            break;
-          }
-          case 56: {
-            Port = input.ReadInt32();
-            break;
-          }
-          case 66: {
-            Ssrc = input.ReadString();
-            break;
-          }
-          case 72: {
             IsDownload = input.ReadBool();
             break;
           }
-          case 80: {
-            FileSize = input.ReadInt32();
+          case 32: {
+            Port = input.ReadInt32();
+            break;
+          }
+          case 42: {
+            Ipaddr = input.ReadString();
+            break;
+          }
+          case 50: {
+            Gbid = input.ReadString();
             break;
           }
         }
@@ -1417,8 +1226,6 @@ namespace MediaSession {
       Status = other.status_ != null ? other.Status.Clone() : null;
       ipaddr_ = other.ipaddr_;
       port_ = other.port_;
-      ssrc_ = other.ssrc_;
-      extendMsg_ = other.extendMsg_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1471,28 +1278,6 @@ namespace MediaSession {
       }
     }
 
-    /// <summary>Field number for the "ssrc" field.</summary>
-    public const int SsrcFieldNumber = 5;
-    private string ssrc_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Ssrc {
-      get { return ssrc_; }
-      set {
-        ssrc_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "extend_msg" field.</summary>
-    public const int ExtendMsgFieldNumber = 6;
-    private string extendMsg_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ExtendMsg {
-      get { return extendMsg_; }
-      set {
-        extendMsg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as PlaybackReply);
@@ -1510,8 +1295,6 @@ namespace MediaSession {
       if (!object.Equals(Status, other.Status)) return false;
       if (Ipaddr != other.Ipaddr) return false;
       if (Port != other.Port) return false;
-      if (Ssrc != other.Ssrc) return false;
-      if (ExtendMsg != other.ExtendMsg) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1522,8 +1305,6 @@ namespace MediaSession {
       if (status_ != null) hash ^= Status.GetHashCode();
       if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
       if (Port != 0) hash ^= Port.GetHashCode();
-      if (Ssrc.Length != 0) hash ^= Ssrc.GetHashCode();
-      if (ExtendMsg.Length != 0) hash ^= ExtendMsg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1553,14 +1334,6 @@ namespace MediaSession {
         output.WriteRawTag(32);
         output.WriteInt32(Port);
       }
-      if (Ssrc.Length != 0) {
-        output.WriteRawTag(42);
-        output.WriteString(Ssrc);
-      }
-      if (ExtendMsg.Length != 0) {
-        output.WriteRawTag(50);
-        output.WriteString(ExtendMsg);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1580,12 +1353,6 @@ namespace MediaSession {
       }
       if (Port != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
-      }
-      if (Ssrc.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ssrc);
-      }
-      if (ExtendMsg.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ExtendMsg);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1615,12 +1382,6 @@ namespace MediaSession {
       }
       if (other.Port != 0) {
         Port = other.Port;
-      }
-      if (other.Ssrc.Length != 0) {
-        Ssrc = other.Ssrc;
-      }
-      if (other.ExtendMsg.Length != 0) {
-        ExtendMsg = other.ExtendMsg;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1653,14 +1414,6 @@ namespace MediaSession {
           }
           case 32: {
             Port = input.ReadInt32();
-            break;
-          }
-          case 42: {
-            Ssrc = input.ReadString();
-            break;
-          }
-          case 50: {
-            ExtendMsg = input.ReadString();
             break;
           }
         }
@@ -1971,344 +1724,6 @@ namespace MediaSession {
               status_ = new global::MediaSession.Status();
             }
             input.ReadMessage(status_);
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  /// <summary>
-  /// The request message containing ParametersRequest.
-  /// </summary>
-  public sealed partial class ParametersRequest : pb::IMessage<ParametersRequest> {
-    private static readonly pb::MessageParser<ParametersRequest> _parser = new pb::MessageParser<ParametersRequest>(() => new ParametersRequest());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ParametersRequest> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::MediaSession.VideoSessionReflection.Descriptor.MessageTypes[8]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersRequest() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersRequest(ParametersRequest other) : this() {
-      Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersRequest Clone() {
-      return new ParametersRequest(this);
-    }
-
-    /// <summary>Field number for the "hdr" field.</summary>
-    public const int HdrFieldNumber = 1;
-    private global::MediaSession.Header hdr_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MediaSession.Header Hdr {
-      get { return hdr_; }
-      set {
-        hdr_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as ParametersRequest);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ParametersRequest other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(Hdr, other.Hdr)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (hdr_ != null) hash ^= Hdr.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (hdr_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Hdr);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (hdr_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ParametersRequest other) {
-      if (other == null) {
-        return;
-      }
-      if (other.hdr_ != null) {
-        if (hdr_ == null) {
-          hdr_ = new global::MediaSession.Header();
-        }
-        Hdr.MergeFrom(other.Hdr);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            if (hdr_ == null) {
-              hdr_ = new global::MediaSession.Header();
-            }
-            input.ReadMessage(hdr_);
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  /// <summary>
-  /// The response message containing the ParametersReply.
-  /// </summary>
-  public sealed partial class ParametersReply : pb::IMessage<ParametersReply> {
-    private static readonly pb::MessageParser<ParametersReply> _parser = new pb::MessageParser<ParametersReply>(() => new ParametersReply());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ParametersReply> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::MediaSession.VideoSessionReflection.Descriptor.MessageTypes[9]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersReply() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersReply(ParametersReply other) : this() {
-      Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
-      Status = other.status_ != null ? other.Status.Clone() : null;
-      paramContent_ = other.paramContent_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ParametersReply Clone() {
-      return new ParametersReply(this);
-    }
-
-    /// <summary>Field number for the "hdr" field.</summary>
-    public const int HdrFieldNumber = 1;
-    private global::MediaSession.Header hdr_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MediaSession.Header Hdr {
-      get { return hdr_; }
-      set {
-        hdr_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "status" field.</summary>
-    public const int StatusFieldNumber = 2;
-    private global::MediaSession.Status status_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MediaSession.Status Status {
-      get { return status_; }
-      set {
-        status_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "param_content" field.</summary>
-    public const int ParamContentFieldNumber = 3;
-    private string paramContent_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ParamContent {
-      get { return paramContent_; }
-      set {
-        paramContent_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as ParametersReply);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ParametersReply other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(Hdr, other.Hdr)) return false;
-      if (!object.Equals(Status, other.Status)) return false;
-      if (ParamContent != other.ParamContent) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (hdr_ != null) hash ^= Hdr.GetHashCode();
-      if (status_ != null) hash ^= Status.GetHashCode();
-      if (ParamContent.Length != 0) hash ^= ParamContent.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (hdr_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Hdr);
-      }
-      if (status_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Status);
-      }
-      if (ParamContent.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(ParamContent);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (hdr_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
-      }
-      if (status_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Status);
-      }
-      if (ParamContent.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ParamContent);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ParametersReply other) {
-      if (other == null) {
-        return;
-      }
-      if (other.hdr_ != null) {
-        if (hdr_ == null) {
-          hdr_ = new global::MediaSession.Header();
-        }
-        Hdr.MergeFrom(other.Hdr);
-      }
-      if (other.status_ != null) {
-        if (status_ == null) {
-          status_ = new global::MediaSession.Status();
-        }
-        Status.MergeFrom(other.Status);
-      }
-      if (other.ParamContent.Length != 0) {
-        ParamContent = other.ParamContent;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            if (hdr_ == null) {
-              hdr_ = new global::MediaSession.Header();
-            }
-            input.ReadMessage(hdr_);
-            break;
-          }
-          case 18: {
-            if (status_ == null) {
-              status_ = new global::MediaSession.Status();
-            }
-            input.ReadMessage(status_);
-            break;
-          }
-          case 26: {
-            ParamContent = input.ReadString();
             break;
           }
         }

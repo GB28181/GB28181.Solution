@@ -14,9 +14,14 @@
 @rem Generate the C# code for .proto files
 
 
-@echo off
+@echo off &TITLE Generation Protobuf Code For C#
+
+mode con cols=100 lines=30
+color 0D
+cls
 
 setlocal
+
 
 @rem enter this directory of bat
 cd /d %~dp0
@@ -38,5 +43,4 @@ echo.
 echo          code had been generated to  "../"
 echo.
 echo          press any key to exit
-echo          
 pause >nul
