@@ -9,7 +9,7 @@ using System.IO;
 /// </summary>
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public class SipStorage
+    public class SipStorage : IStorageConfig
     {
         private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
@@ -29,12 +29,8 @@ namespace SIPSorcery.GB28181.Sys.Config
             get => _accounts;
             set => _accounts = value;
         }
-        private SIPAssetPersistor<SIPAccount> _sipAccounts;
 
-        public SIPAssetPersistor<SIPAccount> SipAccount
-        {
-            get { return _sipAccounts; }
-        }
+        public SIPAssetPersistor<SIPAccount> SipAccount { get; private set; }
 
         public static SipStorage Instance
         {
@@ -66,13 +62,13 @@ namespace SIPSorcery.GB28181.Sys.Config
             }
         }
 
-        public void Read()
+        public  void Read()
         {
             var accounts = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
 
             accounts.Added += Account_Added;
 
-            _sipAccounts = accounts;
+            SipAccount = accounts;
             _accounts = accounts.Get();
         }
 
@@ -81,7 +77,7 @@ namespace SIPSorcery.GB28181.Sys.Config
             throw new NotImplementedException();
         }
 
-        public void Save(SIPAccount account)
+        public  void Save(SIPAccount account)
         {
             if (_accounts.Any(d => d.SIPUsername == account.SIPUsername || d.SIPDomain == account.SIPDomain))
             {
@@ -93,5 +89,7 @@ namespace SIPSorcery.GB28181.Sys.Config
                 _accounts.Add(account);
             }
         }
+
+      
     }
 }

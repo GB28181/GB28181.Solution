@@ -10,36 +10,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using grpc = global::Grpc.Core;
 
-namespace MediaSession {
+namespace MediaContract {
   /// <summary>
-  /// The VideoControl service definition.
+  /// The VideoMessage service definition.
   /// </summary>
-  public static partial class VideoControl
+  public static partial class VideoSession
   {
-    static readonly string __ServiceName = "MediaSession.VideoControl";
+    static readonly string __ServiceName = "MediaContract.VideoSession";
 
-    static readonly grpc::Marshaller<global::MediaSession.LivePlayRequest> __Marshaller_LivePlayRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.LivePlayRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.LivePlayReply> __Marshaller_LivePlayReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.LivePlayReply.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.PlaybackRequest> __Marshaller_PlaybackRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.PlaybackRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.PlaybackReply> __Marshaller_PlaybackReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.PlaybackReply.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.KeepAliveRequest> __Marshaller_KeepAliveRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.KeepAliveRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::MediaSession.KeepAliveReply> __Marshaller_KeepAliveReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaSession.KeepAliveReply.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StartLiveRequest> __Marshaller_StartLiveRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StartLiveRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StartLiveReply> __Marshaller_StartLiveReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StartLiveReply.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StartPlaybackRequest> __Marshaller_StartPlaybackRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StartPlaybackRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StartPlaybackReply> __Marshaller_StartPlaybackReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StartPlaybackReply.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StopRequest> __Marshaller_StopRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StopRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.StopReply> __Marshaller_StopReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.StopReply.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.KeepAliveRequest> __Marshaller_KeepAliveRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.KeepAliveRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::MediaContract.KeepAliveReply> __Marshaller_KeepAliveReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::MediaContract.KeepAliveReply.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::MediaSession.LivePlayRequest, global::MediaSession.LivePlayReply> __Method_LivePlay = new grpc::Method<global::MediaSession.LivePlayRequest, global::MediaSession.LivePlayReply>(
+    static readonly grpc::Method<global::MediaContract.StartLiveRequest, global::MediaContract.StartLiveReply> __Method_StartLive = new grpc::Method<global::MediaContract.StartLiveRequest, global::MediaContract.StartLiveReply>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "LivePlay",
-        __Marshaller_LivePlayRequest,
-        __Marshaller_LivePlayReply);
+        "StartLive",
+        __Marshaller_StartLiveRequest,
+        __Marshaller_StartLiveReply);
 
-    static readonly grpc::Method<global::MediaSession.PlaybackRequest, global::MediaSession.PlaybackReply> __Method_PlayBack = new grpc::Method<global::MediaSession.PlaybackRequest, global::MediaSession.PlaybackReply>(
+    static readonly grpc::Method<global::MediaContract.StartPlaybackRequest, global::MediaContract.StartPlaybackReply> __Method_StartPlayback = new grpc::Method<global::MediaContract.StartPlaybackRequest, global::MediaContract.StartPlaybackReply>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "PlayBack",
-        __Marshaller_PlaybackRequest,
-        __Marshaller_PlaybackReply);
+        "StartPlayback",
+        __Marshaller_StartPlaybackRequest,
+        __Marshaller_StartPlaybackReply);
 
-    static readonly grpc::Method<global::MediaSession.KeepAliveRequest, global::MediaSession.KeepAliveReply> __Method_KeepAlive = new grpc::Method<global::MediaSession.KeepAliveRequest, global::MediaSession.KeepAliveReply>(
+    static readonly grpc::Method<global::MediaContract.StopRequest, global::MediaContract.StopReply> __Method_Stop = new grpc::Method<global::MediaContract.StopRequest, global::MediaContract.StopReply>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "Stop",
+        __Marshaller_StopRequest,
+        __Marshaller_StopReply);
+
+    static readonly grpc::Method<global::MediaContract.KeepAliveRequest, global::MediaContract.KeepAliveReply> __Method_KeepAlive = new grpc::Method<global::MediaContract.KeepAliveRequest, global::MediaContract.KeepAliveReply>(
         grpc::MethodType.Unary,
         __ServiceName,
         "KeepAlive",
@@ -49,11 +58,11 @@ namespace MediaSession {
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
-      get { return global::MediaSession.VideoSessionReflection.Descriptor.Services[0]; }
+      get { return global::MediaContract.VideoSessionReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of VideoControl</summary>
-    public abstract partial class VideoControlBase
+    /// <summary>Base class for server-side implementations of VideoSession</summary>
+    public abstract partial class VideoSessionBase
     {
       /// <summary>
       ///LivePlay
@@ -61,18 +70,29 @@ namespace MediaSession {
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::MediaSession.LivePlayReply> LivePlay(global::MediaSession.LivePlayRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::MediaContract.StartLiveReply> StartLive(global::MediaContract.StartLiveRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
       /// <summary>
-      ///playback
+      ///Start playback or Dowload
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::MediaSession.PlaybackReply> PlayBack(global::MediaSession.PlaybackRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::MediaContract.StartPlaybackReply> StartPlayback(global::MediaContract.StartPlaybackRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      ///Stop Video
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::MediaContract.StopReply> Stop(global::MediaContract.StopRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -83,33 +103,33 @@ namespace MediaSession {
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::MediaSession.KeepAliveReply> KeepAlive(global::MediaSession.KeepAliveRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::MediaContract.KeepAliveReply> KeepAlive(global::MediaContract.KeepAliveRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
     }
 
-    /// <summary>Client for VideoControl</summary>
-    public partial class VideoControlClient : grpc::ClientBase<VideoControlClient>
+    /// <summary>Client for VideoSession</summary>
+    public partial class VideoSessionClient : grpc::ClientBase<VideoSessionClient>
     {
-      /// <summary>Creates a new client for VideoControl</summary>
+      /// <summary>Creates a new client for VideoSession</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public VideoControlClient(grpc::Channel channel) : base(channel)
+      public VideoSessionClient(grpc::Channel channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for VideoControl that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for VideoSession that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public VideoControlClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public VideoSessionClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected VideoControlClient() : base()
+      protected VideoSessionClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected VideoControlClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected VideoSessionClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
@@ -121,9 +141,9 @@ namespace MediaSession {
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.LivePlayReply LivePlay(global::MediaSession.LivePlayRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::MediaContract.StartLiveReply StartLive(global::MediaContract.StartLiveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return LivePlay(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return StartLive(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
       ///LivePlay
@@ -131,9 +151,9 @@ namespace MediaSession {
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.LivePlayReply LivePlay(global::MediaSession.LivePlayRequest request, grpc::CallOptions options)
+      public virtual global::MediaContract.StartLiveReply StartLive(global::MediaContract.StartLiveRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_LivePlay, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_StartLive, null, options, request);
       }
       /// <summary>
       ///LivePlay
@@ -143,9 +163,9 @@ namespace MediaSession {
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.LivePlayReply> LivePlayAsync(global::MediaSession.LivePlayRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StartLiveReply> StartLiveAsync(global::MediaContract.StartLiveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return LivePlayAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return StartLiveAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
       ///LivePlay
@@ -153,53 +173,97 @@ namespace MediaSession {
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.LivePlayReply> LivePlayAsync(global::MediaSession.LivePlayRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StartLiveReply> StartLiveAsync(global::MediaContract.StartLiveRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_LivePlay, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_StartLive, null, options, request);
       }
       /// <summary>
-      ///playback
+      ///Start playback or Dowload
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.PlaybackReply PlayBack(global::MediaSession.PlaybackRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::MediaContract.StartPlaybackReply StartPlayback(global::MediaContract.StartPlaybackRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return PlayBack(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return StartPlayback(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      ///playback
+      ///Start playback or Dowload
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.PlaybackReply PlayBack(global::MediaSession.PlaybackRequest request, grpc::CallOptions options)
+      public virtual global::MediaContract.StartPlaybackReply StartPlayback(global::MediaContract.StartPlaybackRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_PlayBack, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_StartPlayback, null, options, request);
       }
       /// <summary>
-      ///playback
+      ///Start playback or Dowload
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.PlaybackReply> PlayBackAsync(global::MediaSession.PlaybackRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StartPlaybackReply> StartPlaybackAsync(global::MediaContract.StartPlaybackRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
-        return PlayBackAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return StartPlaybackAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      ///playback
+      ///Start playback or Dowload
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.PlaybackReply> PlayBackAsync(global::MediaSession.PlaybackRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StartPlaybackReply> StartPlaybackAsync(global::MediaContract.StartPlaybackRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_PlayBack, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_StartPlayback, null, options, request);
+      }
+      /// <summary>
+      ///Stop Video
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::MediaContract.StopReply Stop(global::MediaContract.StopRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return Stop(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Stop Video
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::MediaContract.StopReply Stop(global::MediaContract.StopRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_Stop, null, options, request);
+      }
+      /// <summary>
+      ///Stop Video
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StopReply> StopAsync(global::MediaContract.StopRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return StopAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      ///Stop Video
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.StopReply> StopAsync(global::MediaContract.StopRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_Stop, null, options, request);
       }
       /// <summary>
       ///keepalive between two point
@@ -209,7 +273,7 @@ namespace MediaSession {
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.KeepAliveReply KeepAlive(global::MediaSession.KeepAliveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::MediaContract.KeepAliveReply KeepAlive(global::MediaContract.KeepAliveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return KeepAlive(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
@@ -219,7 +283,7 @@ namespace MediaSession {
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The response received from the server.</returns>
-      public virtual global::MediaSession.KeepAliveReply KeepAlive(global::MediaSession.KeepAliveRequest request, grpc::CallOptions options)
+      public virtual global::MediaContract.KeepAliveReply KeepAlive(global::MediaContract.KeepAliveRequest request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_KeepAlive, null, options, request);
       }
@@ -231,7 +295,7 @@ namespace MediaSession {
       /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.KeepAliveReply> KeepAliveAsync(global::MediaSession.KeepAliveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.KeepAliveReply> KeepAliveAsync(global::MediaContract.KeepAliveRequest request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return KeepAliveAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
@@ -241,24 +305,25 @@ namespace MediaSession {
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::MediaSession.KeepAliveReply> KeepAliveAsync(global::MediaSession.KeepAliveRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::MediaContract.KeepAliveReply> KeepAliveAsync(global::MediaContract.KeepAliveRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_KeepAlive, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override VideoControlClient NewInstance(ClientBaseConfiguration configuration)
+      protected override VideoSessionClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new VideoControlClient(configuration);
+        return new VideoSessionClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(VideoControlBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(VideoSessionBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_LivePlay, serviceImpl.LivePlay)
-          .AddMethod(__Method_PlayBack, serviceImpl.PlayBack)
+          .AddMethod(__Method_StartLive, serviceImpl.StartLive)
+          .AddMethod(__Method_StartPlayback, serviceImpl.StartPlayback)
+          .AddMethod(__Method_Stop, serviceImpl.Stop)
           .AddMethod(__Method_KeepAlive, serviceImpl.KeepAlive).Build();
     }
 

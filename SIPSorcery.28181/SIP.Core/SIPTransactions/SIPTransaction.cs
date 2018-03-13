@@ -275,10 +275,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             FireTransactionTraceMessage("Received Request " + localSIPEndPoint.ToString() + "<-" + remoteEndPoint.ToString() + m_crLF + sipRequest.ToString());
 
-            if (TransactionRequestReceived != null)
-            {
-                TransactionRequestReceived(localSIPEndPoint, remoteEndPoint, this, sipRequest);
-            }
+            TransactionRequestReceived?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipRequest);
         }
 
         public void GotResponse(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPResponse sipResponse)
@@ -299,10 +296,7 @@ namespace SIPSorcery.GB28181.SIP
                     }
                 }
 
-                if (TransactionDuplicateResponse != null)
-                {
-                    TransactionDuplicateResponse(localSIPEndPoint, remoteEndPoint, this, sipResponse);
-                }
+                TransactionDuplicateResponse?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipResponse);
             }
             else
             {
@@ -451,11 +445,13 @@ namespace SIPSorcery.GB28181.SIP
                 SIPResponse informationalResponse = new SIPResponse(sipResponseCode, null, sipRequest.LocalSIPEndPoint);
 
                 SIPHeader requestHeader = sipRequest.Header;
-                informationalResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId);
-                informationalResponse.Header.CSeqMethod = requestHeader.CSeqMethod;
-                informationalResponse.Header.Vias = requestHeader.Vias;
-                informationalResponse.Header.MaxForwards = Int32.MinValue;
-                informationalResponse.Header.Timestamp = requestHeader.Timestamp;
+                informationalResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId)
+                {
+                    CSeqMethod = requestHeader.CSeqMethod,
+                    Vias = requestHeader.Vias,
+                    MaxForwards = Int32.MinValue,
+                    Timestamp = requestHeader.Timestamp
+                };
 
                 return informationalResponse;
             }
@@ -539,10 +535,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (TransactionTimedOut != null)
-                {
-                    TransactionTimedOut(this);
-                }
+                TransactionTimedOut?.Invoke(this);
             }
             catch (Exception excp)
             {
@@ -554,10 +547,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (TransactionRemoved != null)
-                {
-                    TransactionRemoved(this);
-                }
+                TransactionRemoved?.Invoke(this);
             }
             catch (Exception excp)
             {
@@ -572,34 +562,15 @@ namespace SIPSorcery.GB28181.SIP
 
         private void FireTransactionStateChangedEvent()
         {
-            FireTransactionTraceMessage("Transaction state changed to " + this.TransactionState + ".");
+            FireTransactionTraceMessage("Transaction state changed to " + TransactionState + ".");
+            TransactionStateChanged?.Invoke(this);
 
-            if (TransactionStateChanged != null)
-            {
-                try
-                {
-                    TransactionStateChanged(this);
-                }
-                catch (Exception excp)
-                {
-                    logger.Error("Exception FireTransactionStateChangedEvent. " + excp.Message);
-                }
-            }
         }
 
         private void FireTransactionTraceMessage(string message)
         {
-            if (TransactionTraceMessage != null)
-            {
-                try
-                {
-                    TransactionTraceMessage(this, message);
-                }
-                catch (Exception excp)
-                {
-                    logger.Error("Exception FireTransactionTraceMessage. " + excp.Message);
-                }
-            }
+            TransactionTraceMessage?.Invoke(this, message);
+
         }
 
         ~SIPTransaction()

@@ -1,4 +1,4 @@
-﻿namespace Gb28181_Client
+﻿namespace Gb28181.Client
 {
     partial class Form1
     {
@@ -212,7 +212,7 @@
             this.btnReal.TabIndex = 8;
             this.btnReal.Text = "直播视频";
             this.btnReal.UseVisualStyleBackColor = true;
-            this.btnReal.Click += new System.EventHandler(this.btnReal_Click);
+            this.btnReal.Click += new System.EventHandler(this.BtnReal_Click);
             // 
             // btnBye
             // 
@@ -222,7 +222,7 @@
             this.btnBye.TabIndex = 10;
             this.btnBye.Text = "终止直播";
             this.btnBye.UseVisualStyleBackColor = true;
-            this.btnBye.Click += new System.EventHandler(this.btnBye_Click);
+            this.btnBye.Click += new System.EventHandler(this.BtnBye_Click);
             // 
             // lvDev
             // 
@@ -1421,8 +1421,8 @@
             // 
             // playerWin
             // 
-            this.playerWin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.playerWin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.playerWin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.playerWin.Location = new System.Drawing.Point(353, 262);
@@ -1477,7 +1477,7 @@
 
         }
 
-     
+
 
         #endregion
 
@@ -1600,9 +1600,9 @@
         private System.Windows.Forms.Button btnSubscribeCancel;
         private System.Windows.Forms.ComboBox cbxRecordType;
         private System.Windows.Forms.Button btnKeyFrame;
+        private SLW.ClientBase.PlayerControl playerWin;
         private System.Windows.Forms.TreeView tvCalatog;
         private System.Windows.Forms.Button button2;
-        private SLW.ClientBase.PlayerControl playerWin;
     }
 }
 

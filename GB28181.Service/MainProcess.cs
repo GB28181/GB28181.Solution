@@ -45,6 +45,10 @@ namespace GB28181Service
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
         private readonly ServiceCollection servicesContainer = new ServiceCollection();
+
+        private SIPCoreMessageService _mainSipService = null;
+
+        private ServiceProvider _serviceProvider = null;
         public MainProcess() { }
 
         #region IDisposable interface
@@ -79,16 +83,28 @@ namespace GB28181Service
 
         public void Run()
         {
+
+
             _eventStopService.Reset();
             _eventThreadExit.Reset();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
+            //we should initialize resource here then use them.
             servicesContainer.AddSingleton(servicesContainer); // add itself 
             servicesContainer.AddSingleton<ILog, Logger>();
             servicesContainer.AddSingleton(this);
-            //Start the main serice
+            servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
+            servicesContainer.AddSingleton(new RpcServer()
+            {
+                Ipaddress = "127.0.0.1",
+                Port = 50051,
+                Name = "StreamRPC Server Stub"
+            });
 
+            _serviceProvider = servicesContainer.BuildServiceProvider();
+
+            
+            //Start the main serice
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
             //wait the process exit of main
@@ -107,21 +123,19 @@ namespace GB28181Service
 
         private void MainServiceProcessing()
         {
-
             _keepaliveTime = DateTime.Now;
-
             try
             {
                 _cameras = new List<CameraInfo>();
-                SipStorage.Instance.Read();
-                var account = SipStorage.Instance.Accounts.First();
+                var sipStorage = _serviceProvider.GetService<SipStorage>();
+                sipStorage.Read();
+                var account = sipStorage.Accounts.First();
                 if (account != null)
                 {
-
                     //Run the Rpc Server End
                     _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                     {
-                        var _mainWebSocketRpcServer = new RpcServer();
+                        var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
                         _mainWebSocketRpcServer.Run();
                     });
 
@@ -129,13 +143,11 @@ namespace GB28181Service
                     _mainSipTask = Task.Factory.StartNew(() =>
                     {
 
-                        var _mainSipService = new SIPCoreMessageService(_cameras, account);
-
+                        _mainSipService = new SIPCoreMessageService(_cameras, account);
                         MessagerHandlers = new MessageCenter(_mainSipService);
                         _mainSipService.OnKeepaliveReceived += MessagerHandlers.OnKeepaliveReceived;
                         _mainSipService.OnServiceChanged += MessagerHandlers.OnServiceChanged;
                         _mainSipService.OnCatalogReceived += MessagerHandlers.OnCatalogReceived;
-
                         _mainSipService.OnNotifyCatalogReceived += MessagerHandlers.OnNotifyCatalogReceived;
                         _mainSipService.OnAlarmReceived += MessagerHandlers.OnAlarmReceived;
                         _mainSipService.OnRecordInfoReceived += MessagerHandlers.OnRecordInfoReceived;

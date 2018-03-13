@@ -1,0 +1,89 @@
+﻿using SIPSorcery.GB28181.Net;
+using System;
+
+namespace SIPSorcery.GB28181.Servers
+{
+    public interface IMediaService
+    {
+        /// <summary>
+        /// 实时视频请求
+        /// </summary>
+        void RealVideoReq();
+
+        /// <summary>
+        /// 取消实时视频请求
+        /// </summary>
+        void ByeVideoReq();
+
+        /// <summary>
+        /// 确认接收实时视频请求
+        /// </summary>
+        /// <param name="toTag">ToTag</param>
+        /// <returns>sip请求</returns>
+        void AckRequest(string toTag, string ip, int port);
+
+
+        /// <summary>
+        /// 视频流回调完成
+        /// </summary>
+        event Action<RTPFrame> OnStreamReady;
+
+
+        #region 录像点播
+        /// <summary>
+        /// 录像文件查询结果
+        /// </summary>
+        /// <param name="recordTotal">录像条数</param>
+        void RecordQueryTotal(int recordTotal);
+
+        /// <summary>
+        /// 录像文件检索
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// </summary>
+        int RecordFileQuery(DateTime beginTime, DateTime endTime, string type);
+
+        /// <summary>
+        /// 录像点播视频请求
+        /// </summary>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        void BackVideoReq(DateTime beginTime, DateTime endTime);
+
+        /// <summary>
+        /// 录像文件下载请求
+        /// </summary>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        void VideoDownloadReq(DateTime beginTime, DateTime endTime);
+
+        /// <summary>
+        /// 录像点播视频播放速度控制请求
+        /// </summary>
+        /// <param name="scale">播放快进比例</param>
+        /// <param name="range">视频播放时间段</param>
+        bool BackVideoPlaySpeedControlReq(string range);
+
+        /// <summary>
+        /// 控制录像随机拖拽
+        /// </summary>
+        /// <param name="range">时间范围</param>
+        bool BackVideoPlayPositionControlReq(int range);
+        /// <summary>
+        /// 录像点播视频继续播放控制请求
+        /// </summary>
+        void BackVideoContinuePlayingControlReq();
+        /// <summary>
+        /// 录像点播视频暂停控制请求
+        /// </summary>
+        void BackVideoPauseControlReq();
+        /// <summary>
+        /// 录像点播视频停止播放控制请求
+        /// </summary>
+        void BackVideoStopPlayingControlReq();
+        #endregion
+
+
+
+    }
+}

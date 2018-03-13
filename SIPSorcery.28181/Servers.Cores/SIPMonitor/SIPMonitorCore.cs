@@ -178,7 +178,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, null);
             SIPRequest realReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
-            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            var contactHeader = new SIPContactHeader(null, localUri);
             realReq.Header.Contact.Clear();
             realReq.Header.Contact.Add(contactHeader);
 

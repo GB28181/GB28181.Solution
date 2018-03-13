@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gb28181.Client", "GB28181.Client\Gb28181.Client.csproj", "{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GB28181.Client", "GB28181.Client\GB28181.Client.csproj", "{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIPSorcery.28181", "SIPSorcery.28181\SIPSorcery.28181.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoMicro.Sidecar", "GoMicro.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcProtocol", "Proto.Grpc\GrpcProtocol.csproj", "{CDEC4F51-CC42-45A7-8504-80F6F84DFAA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcAgent", "GrpcAgent\GrpcAgent.csproj", "{D4E4C121-CCB2-44FC-91C1-E911E7DA5A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcAgent", "GrpcAgent\GrpcAgent.csproj", "{D4E4C121-CCB2-44FC-91C1-E911E7DA5A2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

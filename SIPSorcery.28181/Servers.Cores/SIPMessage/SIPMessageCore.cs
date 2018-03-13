@@ -629,8 +629,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                             continue;
                         }
                         remoteEP.Port = _account.KeepaliveInterval;
-                        ISIPMonitorService monitor = new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account);
-                        MonitorService.Add(key, monitor);
+                        MonitorService.Add(key, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
                     }
                 }
             }
@@ -850,8 +849,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Wait);
                 return;
             }
-
-            SIPTransaction trans = Transport.CreateUASTransaction(request, remoteEP, LocalEP, null);
+            var trans = Transport.CreateUASTransaction(request, remoteEP, LocalEP, null);
             trans.TransactionStateChanged += Trans_TransactionStateChanged;
             trans.SendReliableRequest();
         }

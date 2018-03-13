@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Gb28181_Client
+namespace Gb28181.Client
 {
     public partial class Form1 : Form
     {
@@ -519,7 +519,7 @@ namespace Gb28181_Client
         }
         public byte[] ConvertUnicodeToUTF8(string message)
         {
-            var utf8 = System.Text.Encoding.GetEncoding("utf-8");
+            var utf8 = Encoding.GetEncoding("utf-8");
             byte[] array = Encoding.Default.GetBytes(message);
             byte[] s4 = System.Text.Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), System.Text.Encoding.UTF8, array);
             return s4;
@@ -579,7 +579,7 @@ namespace Gb28181_Client
 
         #region 实时视频
         //开始实时视频
-        private void btnReal_Click(object sender, EventArgs e)
+        private void BtnReal_Click(object sender, EventArgs e)
         {
             _analyzer = new StreamAnalyzer();
             _messageCore.MonitorService[DevKey].RealVideoReq();
@@ -587,15 +587,19 @@ namespace Gb28181_Client
         }
 
         //停止实时视频
-        private void btnBye_Click(object sender, EventArgs e)
+        private void BtnBye_Click(object sender, EventArgs e)
         {
             _messageCore.MonitorService[DevKey].OnStreamReady -= Form1_OnStreamReady;
             _messageCore.MonitorService[DevKey].ByeVideoReq();
         }
 
         FileStream m_fs;
-        void Form1_OnStreamReady(SIPSorcery.GB28181.Net.RTPFrame rtpFrame)
+        void Form1_OnStreamReady(RTPFrame rtpFrame)
         {
+            if (rtpFrame == null)
+            {
+                throw new ArgumentNullException(nameof(rtpFrame));
+            }
             //byte[] buffer = rtpFrame.GetFramePayload();
             //if (this.m_fs == null)
             //{

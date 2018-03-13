@@ -2,32 +2,27 @@ syntax = "proto3";
 
 option objc_class_prefix = "ms";
 
-package MediaSession;
+package MediaContract;
 
-// The VideoControl service definition.
-service VideoControl {
+// The VideoMessage service definition.
+service VideoSession {
   //LivePlay
-  rpc LivePlay (LivePlayRequest) returns (LivePlayReply) {}
-  //playback
-  rpc PlayBack (PlaybackRequest) returns (PlaybackReply) {}
+  rpc StartLive (StartLiveRequest) returns (StartLiveReply) {}
+  //Start playback or Dowload
+  rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {}
+  //Stop Video
+  rpc Stop (StopRequest) returns (StopReply) {}
+
   //keepalive between two point
   rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {}
+
 }
 
-
-enum SessionAction {
-	START = 0;
-	STOP = 1;
-	SAMAX = 2;
-}
-
-//one action to do
-enum PlayBackControl {
-	PBC_RESUME = 0;
-	PBC_SPEED = 1;
-	PBC_MOVE_TO = 2;
-	PBC_PAUSE = 3;
-	PBC_MAX = 4;
+enum BusinessType {
+	BT_LIVEPLAY = 0;
+	BT_PLAYBACK = 1;
+	BT_DOWNLOAD = 2;
+	BT_MAX = 3;
 }
 
 
@@ -49,18 +44,16 @@ message Status {
 }
 
 
-// The request message containing LivePlayRequest.
-message LivePlayRequest {
+// The request message containing StartLiveRequest.
+message StartLiveRequest {
 	Header hdr =1;
 	TransportProtocol trans_proto = 2;
 	string gbid = 3;
 	string ipaddr = 4;
 	int32 port = 5;
 }
-
-
-// The response message containing the LivePlayReply.
-message LivePlayReply {
+// The response message containing the StartLiveReply.
+message StartLiveReply {
 	Header hdr = 1;
 	Status status = 2;
 	string ipaddr = 3;
@@ -69,8 +62,8 @@ message LivePlayReply {
 
 
 
-// The request message containing PlaybackRequest/download.
-message PlaybackRequest {
+// The request message containing StartPlaybackRequest/download.
+message StartPlaybackRequest {
 	Header hdr =1;
 	TransportProtocol trans_proto = 2;
 	bool is_download = 3;
@@ -79,14 +72,29 @@ message PlaybackRequest {
 	string gbid = 6;
 }
 
-
-// The response message containing the PlaybackReply/download.
-message PlaybackReply {
+// The response message containing the StartPlaybackReply/download.
+message StartPlaybackReply {
 	Header hdr = 1;
 	Status status = 2;
 	string ipaddr = 3;
 	int32 port = 4;
 }
+
+
+// The request message containing StopLiveRequest.
+message StopRequest {
+	Header hdr =1;
+	string gbid = 2;
+	BusinessType business_type =3;
+}
+
+
+// The response message containing the StopLiveReply.
+message StopReply {
+	Header hdr = 1;
+	Status status = 2;
+}
+
 
 
 // The request message containing ParametersRequest.
