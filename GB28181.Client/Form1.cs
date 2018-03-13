@@ -519,8 +519,7 @@ namespace Gb28181_Client
         }
         public byte[] ConvertUnicodeToUTF8(string message)
         {
-            System.Text.Encoding utf8, gb2312;
-            utf8 = System.Text.Encoding.GetEncoding("utf-8");
+            var utf8 = System.Text.Encoding.GetEncoding("utf-8");
             byte[] array = Encoding.Default.GetBytes(message);
             byte[] s4 = System.Text.Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), System.Text.Encoding.UTF8, array);
             return s4;
@@ -1072,7 +1071,7 @@ namespace Gb28181_Client
                 };
                 playerWin.Play(frame);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

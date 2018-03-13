@@ -7,8 +7,8 @@
     <ProjectGuid>{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gb28181_Client</RootNamespace>
-    <AssemblyName>Gb28181_Client</AssemblyName>
+    <RootNamespace>Gb28181.Client</RootNamespace>
+    <AssemblyName>Gb28181.Client</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -38,31 +38,41 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge">
-      <HintPath>..\packages\AForge.dll</HintPath>
+      <HintPath>..\Build\AForge.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Controls">
-      <HintPath>..\packages\AForge.Controls.dll</HintPath>
+      <HintPath>..\Build\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\AForge.Imaging.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video">
-      <HintPath>..\packages\AForge.Video.dll</HintPath>
+      <HintPath>..\Build\AForge.Video.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video.DirectShow">
-      <HintPath>..\packages\AForge.Video.DirectShow.dll</HintPath>
+      <HintPath>..\Build\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
     <Reference Include="DirectShowLib-2005">
-      <HintPath>..\packages\DirectShowLib-2005.dll</HintPath>
+      <HintPath>..\Build\DirectShowLib-2005.dll</HintPath>
     </Reference>
-    <Reference Include="GLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GLib">
+      <HintPath>..\Build\GLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Build\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="SIPSorcery.28181, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\GLib.dll</HintPath>
+      <HintPath>..\Build\SIPSorcery.28181.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+    <Reference Include="SLW.MeidaNetEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <HintPath>..\Build\SLW.MeidaNetEngine.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.103.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -182,14 +192,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj">
-      <Project>{42050b07-b393-4292-a89f-7ece14989e0f}</Project>
-      <Name>SIPSorcery.28181</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SLW.MeidaNetEngine\SLW.MeidaNetEngine.csproj">
-      <Project>{8332828e-da9a-4813-9569-9dba95df8ff8}</Project>
-      <Name>SLW.MeidaNetEngine</Name>
-    </ProjectReference>
+    <Analyzer Include="..\Build\AForge.Controls.dll" />
+    <Analyzer Include="..\Build\AForge.dll" />
+    <Analyzer Include="..\Build\AForge.Video.DirectShow.dll" />
+    <Analyzer Include="..\Build\AForge.Video.dll" />
+    <Analyzer Include="..\Build\DirectShowLib-2005.dll" />
+    <Analyzer Include="..\Build\GLib.dll" />
+    <Analyzer Include="..\Build\log4net.dll" />
+    <Analyzer Include="..\Build\SIPSorcery.28181.dll" />
+    <Analyzer Include="..\Build\SLW.MeidaNetEngine.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.103\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.103\build\net45\System.Data.SQLite.Core.targets')" />
