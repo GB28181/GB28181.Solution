@@ -36,7 +36,7 @@ namespace SIPSorcery.GB28181.Sys.Model
         public long ErrCode { get; set; }
         public long Secrecy { get; set; }
         public string IPAddress { get; set; }
-        public long? Port { get; set; }
+        public int Port { get; set; }
         public string Password { get; set; }
         public long? PTZType { get; set; }
         public long? PositionType { get; set; }

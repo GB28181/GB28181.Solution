@@ -64,11 +64,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <summary>
         /// 实时视频请求
         /// </summary>
-        /// <param name="deviceId">设备编码</param>
-        public void RealVideoReq()
+        /// <param name="mediaPort">接收Port</param>
+        /// <param name="receiveIP">接收IP</param>
+        public void RealVideoReq(int[] mediaPort, string receiveIP)
         {
-            _mediaPort = _msgCore.SetMediaPort();
-            string localIp = _msgCore.LocalEP.Address.ToString();
+            _mediaPort = mediaPort;
+           //  _mediaPort = _msgCore.SetMediaPort();
+          //  string localIp = _msgCore.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
             int cSeq = CallProperties.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
@@ -91,7 +93,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             realReq.Header.Subject = SetSubject();
             realReq.Header.ContentType = "application/sdp";
 
-            realReq.Body = SetMediaReq(localIp, _mediaPort);
+            realReq.Body = SetMediaReq(receiveIP, mediaPort);
             _msgCore.SendReliableRequest(_remoteEP, realReq);
             _reqSession = realReq;
         }
@@ -116,7 +118,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 _channel = new UDPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
             }
-            _channel.OnFrameReady += RtpChannel_OnFrameReady;
+         //   _channel.OnFrameReady += RtpChannel_OnFrameReady;
             _channel.Start();
 
             SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
@@ -206,12 +208,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <summary>
         /// 设置媒体参数请求(实时)
         /// </summary>
-        /// <param name="localIp">本地ip</param>
+        /// <param name="receiveIp">接收端ip地址</param>
         /// <param name="mediaPort">rtp/rtcp媒体端口(10000/10001)</param>
         /// <returns></returns>
-        private string SetMediaReq(string localIp, int[] mediaPort)
+        private string SetMediaReq(string receiveIp, int[] mediaPort)
         {
-            SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
+            SDPConnectionInformation sdpConn = new SDPConnectionInformation(receiveIp);
 
             SDP sdp = new SDP
             {
@@ -221,7 +223,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 SessionName = CommandType.Play.ToString(),
                 Connection = sdpConn,
                 Timing = "0 0",
-                Address = localIp
+                Address = receiveIp
             };
 
             SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
@@ -549,7 +551,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 return;
             }
             SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
-            SIPURI remoteUri = new SIPURI(_deviceId, _msgCore.RemoteEP.ToHost(), "");
+            SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, _reqSession.Header.From.FromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, _reqSession.Header.To.ToTag);
             SIPRequest byeReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.BYE, remoteUri);
@@ -563,7 +565,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             byeReq.Header.From = from;
             byeReq.Header = header;
             this.Stop();
-            _msgCore.SendRequest(_msgCore.RemoteEP, byeReq);
+            _msgCore.SendRequest(_remoteEP, byeReq);
         }
 
         /// <summary>

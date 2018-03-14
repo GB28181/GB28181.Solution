@@ -26,7 +26,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     public class SIPCoreMessageService : ISipCoreService
     {
         #region 私有字段
-
         private static ILog logger = AppState.logger;
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
@@ -34,15 +33,22 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private RegistrarCore _registrarCore;
         private SIPAccount _account;
         private ServiceStatus _serviceState;
+        private SIPRequest _ackRequest;
+        private SIPEndPoint _byeRemoteEP;
+        private SIPResponse _audioResponse;
+        /// <summary>
+        /// SIP远端Host的Socket地址(host:Port)和用户名(GBID)
+        /// </summary>
+        private readonly Dictionary<string, string> _remoteTransEPs = new Dictionary<string, string>();
+        /// <summary>
+        /// Monitor Service For all Remote Node
+        /// </summary>
+        private Dictionary<string, ISIPMonitorService> _nodeMonitorService = new Dictionary<string, ISIPMonitorService>();
 
         /// <summary>
         /// 本地sip终结点
         /// </summary>
         internal SIPEndPoint LocalEP;
-        /// <summary>
-        /// 远程sip终结点
-        /// </summary>
-        internal SIPEndPoint RemoteEP;
         /// <summary>
         /// sip传输请求
         /// </summary>
@@ -51,14 +57,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// 本地域的sip编码
         /// </summary>
         internal string LocalSIPId;
-        /// <summary>
-        /// SIP远端Host的Socket地址(host:Port)和用户名(GBID)
-        /// </summary>
-        private readonly Dictionary<string, string> _remoteTransEPs = new Dictionary<string, string>();
-        /// <summary>
-        /// Monitor Service For all Remote Node
-        /// </summary>
-        public Dictionary<string, ISIPMonitorService> NodeMonitorService { get; set; }
+        public Dictionary<string, ISIPMonitorService> NodeMonitorService => _nodeMonitorService;
+
+        private Stream _g711Stream;
+        private Channel _audioChannel;
+        private IPEndPoint _audioRemoteEP;
+        private AudioPSAnalyze _psAnalyze = new AudioPSAnalyze();
+        private Data_Info_s packer = new Data_Info_s();
+        private UInt32 src = 0;//算s64CurPts
+        private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
 
         #endregion
 
@@ -128,11 +135,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #region 初始化
 
-        public SIPCoreMessageService()
-        {
-            //create the binded MonitorService
-            NodeMonitorService = new Dictionary<string, ISIPMonitorService>();
-        }
 
         #endregion
 
@@ -144,20 +146,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + account.LocalIP.ToString() + ":" + account.LocalPort);
             LocalSIPId = account.LocalID;
             // init the camera info for connetctions
-            if (cameraList != null)
+            cameraList?.ForEach(deviceChannel =>
             {
-                cameraList.ForEach(channel =>
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-
-                        var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
-                        NodeMonitorService.Add(channel.ChannelID, monitor);
-                    }
-                });
-            }
-
+                var ipaddress = IPAddress.Parse(deviceChannel.IPAddress);
+                var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceChannel.Port);
+                var monitor = new SIPMonitorCore(this, deviceChannel.ChannelID, remoteEP, account);
+                _nodeMonitorService.Add(deviceChannel.ChannelID, monitor);
+            });
         }
 
         #endregion
@@ -200,14 +195,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         public void Stop()
         {
-            foreach (var item in NodeMonitorService)
+            foreach (var item in _nodeMonitorService)
             {
                 item.Value.Stop();
             }
             LocalEP = null;
-            RemoteEP = null;
-            NodeMonitorService.Clear();
-            NodeMonitorService = null;
+            _nodeMonitorService.Clear();
+            _nodeMonitorService = null;
             if (_audioChannel != null)
             {
                 _audioChannel.Stop();
@@ -288,16 +282,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         }
 
         #region 音频请求处理
-        private Stream _g711Stream;
-        private Channel _audioChannel;
-        private IPEndPoint _audioRemoteEP;
-        private AudioPSAnalyze _psAnalyze = new AudioPSAnalyze();
-        private Data_Info_s packer = new Data_Info_s();
-        private UInt32 src = 0;//算s64CurPts
-        private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
-        private SIPRequest _ackRequest;
-        private SIPEndPoint _byeRemoteEP;
-        private SIPResponse _audioResponse;
+
         /// <summary>
         ///  Invite请求消息
         /// </summary>
@@ -487,7 +472,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
                 {
-                    NodeMonitorService[response.Header.To.ToURI.User].Subscribe(response);
+                    _nodeMonitorService[response.Header.To.ToURI.User].Subscribe(response);
                 }
                 else if (response.Header.ContentType.ToLower() == "application/sdp")
                 {
@@ -496,18 +481,18 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     string sessionName = GetSessionName(response.Body);
                     if (sessionName != null)
                     {
-                        Enum.TryParse<CommandType>(sessionName, out cmdType);
+                        Enum.TryParse(sessionName, out cmdType);
                     }
 
                     if (cmdType == CommandType.Download)
                     {
                         cmdType = CommandType.Playback;
                     }
-                    lock (NodeMonitorService)
+                    lock (_nodeMonitorService)
                     {
                         string ip = GetReceiveIP(response.Body);
                         int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video);
-                        NodeMonitorService[response.Header.To.ToURI.User].AckRequest(response.Header.To.ToTag, ip, port);
+                        _nodeMonitorService[response.Header.To.ToURI.User].AckRequest(response.Header.To.ToTag, ip, port);
 
                     }
                 }
@@ -596,16 +581,16 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 }
                 for (int i = 0; i < 2; i++)
                 {
-                    CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
+                    //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
 
-                    lock (NodeMonitorService)
+                    lock (_nodeMonitorService)
                     {
-                        if (NodeMonitorService.ContainsKey(cata.DeviceID))
+                        if (_nodeMonitorService.ContainsKey(cata.DeviceID))
                         {
                             continue;
                         }
                         remoteEP.Port = _account.KeepaliveInterval;
-                        NodeMonitorService.Add(cata.DeviceID, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
+                        _nodeMonitorService.Add(cata.DeviceID, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
                     }
                 }
             }
@@ -650,7 +635,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private void RecordInfoHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request, RecordInfo record)
         {
 
-            NodeMonitorService[record.DeviceID].RecordQueryTotal(record.SumNum);
+            _nodeMonitorService[record.DeviceID].RecordQueryTotal(record.SumNum);
             if (OnRecordInfoReceived != null && record.RecordItems != null)
             {
                 OnRecordInfoReceived(record);
@@ -696,7 +681,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             MediaStatus mediaStatus = MediaStatus.Instance.Read(request.Body);
             if (mediaStatus != null && mediaStatus.CmdType == CommandType.MediaStatus)
             {
-                NodeMonitorService[request.Header.From.FromURI.User].ByeVideoReq();
+                _nodeMonitorService[request.Header.From.FromURI.User].ByeVideoReq();
                 //取值121表示历史媒体文件发送结束（回放结束/下载结束）
                 //NotifyType未找到相关文档标明所有该类型值，暂时只处理121
                 if (mediaStatus.NotifyType.Equals("121"))

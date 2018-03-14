@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using MediaContract;
-using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using System.Threading.Tasks;
 namespace GrpcAgent.WebsocketRpcServer
@@ -29,17 +28,32 @@ namespace GrpcAgent.WebsocketRpcServer
         {
             _eventSource?.FireLivePlayRequestEvent(request, context);
 
-            var result = Task.Factory.StartNew(() =>
+            if (_sipCoreMessageService == null)
             {
-                //get the response .
-                var res = new StartLiveReply()
-                {
-                    Ipaddr = "127.0.0.1",
-                    Port = 50005
-                };
+                throw new System.Exception("instance not exist!");
+            }
 
-                return res;
-            });
+            if (_sipCoreMessageService.NodeMonitorService.ContainsKey(request.Gbid))
+            {
+                var targetService = _sipCoreMessageService.NodeMonitorService[request.Gbid];
+                // make the real request
+                targetService.RealVideoReq(new int[] { request.Port }, request.Ipaddr);
+
+            }
+
+            var result = Task.Factory.StartNew(() =>
+                        {
+                            //get the response .
+                            var res = new StartLiveReply()
+                            {
+                                Ipaddr = "127.0.0.1",
+                                Port = 50005
+                            };
+
+                            return res;
+
+
+                        });
             return result;
 
             //_sipCoreMessageService.MonitorService[request.Gbid]

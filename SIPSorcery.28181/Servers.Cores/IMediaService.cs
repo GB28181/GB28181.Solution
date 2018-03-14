@@ -8,7 +8,7 @@ namespace SIPSorcery.GB28181.Servers
         /// <summary>
         /// 实时视频请求
         /// </summary>
-        void RealVideoReq();
+        void RealVideoReq(int [] mediaPort, string receiveIP);
 
         /// <summary>
         /// 取消实时视频请求
