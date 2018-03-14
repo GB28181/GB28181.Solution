@@ -16,7 +16,7 @@ using System.Threading;
 namespace SIPSorcery.GB28181.Servers.SIPMonitor
 {
     /// <summary>
-    /// sip监控核心处理
+    /// sip监控核心服务，每一个接入节点都有一个监控服务实例
     /// </summary>
     public class SIPMonitorCore : ISIPMonitorService
     {

@@ -32,8 +32,6 @@ namespace GrpcAgent
                 Services = { VideoSession.BindService(_videoSession) },
                 Ports = { new ServerPort(_ipaddress, _port, ServerCredentials.Insecure) }
             };
-
-
             _server.Start();
 
             _server.ShutdownAsync().Wait();

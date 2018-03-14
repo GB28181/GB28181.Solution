@@ -58,7 +58,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// Monitor Service For all Remote Node
         /// </summary>
-        public Dictionary<MonitoredNodeKey, ISIPMonitorService> NodeMonitorService { get; set; }
+        public Dictionary<string, ISIPMonitorService> NodeMonitorService { get; set; }
 
         #endregion
 
@@ -131,7 +131,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         public SIPCoreMessageService()
         {
             //create the binded MonitorService
-            NodeMonitorService = new Dictionary<MonitoredNodeKey, ISIPMonitorService>();
+            NodeMonitorService = new Dictionary<string, ISIPMonitorService>();
         }
 
         #endregion
@@ -151,13 +151,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     for (int i = 0; i < 2; i++)
                     {
                         CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                        var key = new MonitoredNodeKey()
-                        {
-                            DeviceID = channel.ChannelID,
-                            CmdType = cmdType
-                        };
+
                         var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
-                        NodeMonitorService.Add(key, monitor);
+                        NodeMonitorService.Add(channel.ChannelID, monitor);
                     }
                 });
             }
@@ -491,12 +487,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
                 {
-                    MonitoredNodeKey key = new MonitoredNodeKey()
-                    {
-                        CmdType = CommandType.Play,
-                        DeviceID = response.Header.To.ToURI.User
-                    };
-                    NodeMonitorService[key].Subscribe(response);
+                    NodeMonitorService[response.Header.To.ToURI.User].Subscribe(response);
                 }
                 else if (response.Header.ContentType.ToLower() == "application/sdp")
                 {
@@ -507,20 +498,16 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     {
                         Enum.TryParse<CommandType>(sessionName, out cmdType);
                     }
-                    MonitoredNodeKey key = new MonitoredNodeKey()
+
+                    if (cmdType == CommandType.Download)
                     {
-                        CmdType = cmdType,
-                        DeviceID = response.Header.To.ToURI.User
-                    };
-                    if (key.CmdType == CommandType.Download)
-                    {
-                        key.CmdType = CommandType.Playback;
+                        cmdType = CommandType.Playback;
                     }
                     lock (NodeMonitorService)
                     {
                         string ip = GetReceiveIP(response.Body);
                         int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video);
-                        NodeMonitorService[key].AckRequest(response.Header.To.ToTag, ip, port);
+                        NodeMonitorService[response.Header.To.ToURI.User].AckRequest(response.Header.To.ToTag, ip, port);
 
                     }
                 }
@@ -610,19 +597,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 for (int i = 0; i < 2; i++)
                 {
                     CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                    MonitoredNodeKey key = new MonitoredNodeKey()
-                    {
-                        DeviceID = cata.DeviceID,
-                        CmdType = cmdType
-                    };
+
                     lock (NodeMonitorService)
                     {
-                        if (NodeMonitorService.ContainsKey(key))
+                        if (NodeMonitorService.ContainsKey(cata.DeviceID))
                         {
                             continue;
                         }
                         remoteEP.Port = _account.KeepaliveInterval;
-                        NodeMonitorService.Add(key, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
+                        NodeMonitorService.Add(cata.DeviceID, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
                     }
                 }
             }
@@ -666,13 +649,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="record">录像xml结构体</param>
         private void RecordInfoHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request, RecordInfo record)
         {
-            MonitoredNodeKey key = new MonitoredNodeKey()
-            {
-                DeviceID = record.DeviceID,
-                CmdType = CommandType.Playback
-            };
 
-            NodeMonitorService[key].RecordQueryTotal(record.SumNum);
+            NodeMonitorService[record.DeviceID].RecordQueryTotal(record.SumNum);
             if (OnRecordInfoReceived != null && record.RecordItems != null)
             {
                 OnRecordInfoReceived(record);
@@ -718,12 +696,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             MediaStatus mediaStatus = MediaStatus.Instance.Read(request.Body);
             if (mediaStatus != null && mediaStatus.CmdType == CommandType.MediaStatus)
             {
-                MonitoredNodeKey key = new MonitoredNodeKey()
-                {
-                    CmdType = CommandType.Playback,
-                    DeviceID = request.Header.From.FromURI.User
-                };
-                NodeMonitorService[key].ByeVideoReq();
+                NodeMonitorService[request.Header.From.FromURI.User].ByeVideoReq();
                 //取值121表示历史媒体文件发送结束（回放结束/下载结束）
                 //NotifyType未找到相关文档标明所有该类型值，暂时只处理121
                 if (mediaStatus.NotifyType.Equals("121"))
@@ -859,13 +832,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             string[] sdpLines = sdpStr.Split('\n');
 
-            foreach (var line in sdpLines)
+            var targetLine = sdpLines.FirstOrDefault(line => line.Trim().StartsWith("c="));
+
+            if (targetLine != null)
             {
-                if (line.Trim().StartsWith("c="))
-                {
-                    SDPConnectionInformation conn = SDPConnectionInformation.ParseConnectionInformation(line);
-                    return conn.ConnectionAddress;
-                }
+                var conn = SDPConnectionInformation.ParseConnectionInformation(targetLine);
+                return conn.ConnectionAddress;
             }
             return null;
         }

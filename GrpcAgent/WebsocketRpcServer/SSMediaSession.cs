@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using MediaContract;
+using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using System.Threading.Tasks;
 namespace GrpcAgent.WebsocketRpcServer
@@ -28,15 +29,21 @@ namespace GrpcAgent.WebsocketRpcServer
         {
             _eventSource?.FireLivePlayRequestEvent(request, context);
 
-            var result = new StartLiveReply()
+            var result = Task.Factory.StartNew(() =>
             {
-                Ipaddr = "127.0.0.1",
-                Port = 50005
-            };
+                //get the response .
+                var res = new StartLiveReply()
+                {
+                    Ipaddr = "127.0.0.1",
+                    Port = 50005
+                };
+
+                return res;
+            });
+            return result;
 
             //_sipCoreMessageService.MonitorService[request.Gbid]
-
-            return base.StartLive(request, context);
+            // return base.StartLive(request, context);
         }
 
         public override Task<StartPlaybackReply> StartPlayback(StartPlaybackRequest request, ServerCallContext context)

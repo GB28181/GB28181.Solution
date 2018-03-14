@@ -134,13 +134,7 @@ namespace GB28181Service
                "\r\nAlarmDescription:" + alarm.AlarmDescription;
             new Action(() =>
             {
-
-                var key = new MonitoredNodeKey()
-                {
-                    CmdType = CommandType.Play,
-                    DeviceID = alarm.DeviceID
-                };
-                _sipCoreMessageService.NodeMonitorService[key].AlarmResponse(alarm);
+                _sipCoreMessageService.NodeMonitorService[alarm.DeviceID].AlarmResponse(alarm);
             }).Invoke();
         }
 
