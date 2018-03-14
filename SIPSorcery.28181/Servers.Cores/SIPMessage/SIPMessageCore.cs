@@ -472,16 +472,17 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
                 {
+                    //订阅消息
                     _nodeMonitorService[response.Header.To.ToURI.User].Subscribe(response);
                 }
                 else if (response.Header.ContentType.ToLower() == "application/sdp")
                 {
 
-                    CommandType cmdType = CommandType.Play;
                     string sessionName = GetSessionName(response.Body);
-                    if (sessionName != null)
+                    if (!Enum.TryParse(sessionName, out CommandType cmdType))
                     {
-                        Enum.TryParse(sessionName, out cmdType);
+                        OnResponseCodeReceived(response.Status, "接收到未知的SIP消息(application/sdp)", remoteEP);
+                        return;
                     }
 
                     if (cmdType == CommandType.Download)

@@ -31,7 +31,6 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
@@ -360,14 +359,14 @@ namespace SIPSorcery.GB28181.SIP
 
         public string FromName
         {
-            get { return m_userField.Name; }
-            set { m_userField.Name = value; }
+            get { return FromUserField.Name; }
+            set { FromUserField.Name = value; }
         }
 
         public SIPURI FromURI
         {
-            get { return m_userField.URI; }
-            set { m_userField.URI = value; }
+            get { return FromUserField.URI; }
+            set { FromUserField.URI = value; }
         }
 
         public string FromTag
@@ -391,23 +390,17 @@ namespace SIPSorcery.GB28181.SIP
 
         public SIPParameters FromParameters
         {
-            get { return m_userField.Parameters; }
-            set { m_userField.Parameters = value; }
+            get { return FromUserField.Parameters; }
+            set { FromUserField.Parameters = value; }
         }
-
-        private SIPUserField m_userField = new SIPUserField();
-        public SIPUserField FromUserField
-        {
-            get { return m_userField; }
-            set { m_userField = value; }
-        }
+        public SIPUserField FromUserField { get; set; } = new SIPUserField();
 
         private SIPFromHeader()
         { }
 
         public SIPFromHeader(string fromName, SIPURI fromURI, string fromTag)
         {
-            m_userField = new SIPUserField(fromName, fromURI, null);
+            FromUserField = new SIPUserField(fromName, fromURI, null);
             FromTag = fromTag;
         }
 
@@ -415,11 +408,11 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                SIPFromHeader fromHeader = new SIPFromHeader();
+                return new SIPFromHeader
+                {
+                    FromUserField = SIPUserField.ParseSIPUserField(fromHeaderStr)
+                };
 
-                fromHeader.m_userField = SIPUserField.ParseSIPUserField(fromHeaderStr);
-
-                return fromHeader;
             }
             catch (ArgumentException argExcp)
             {
@@ -433,7 +426,7 @@ namespace SIPSorcery.GB28181.SIP
 
         public override string ToString()
         {
-            return m_userField.ToString();
+            return FromUserField.ToString();
         }
 
         #region Unit testing.
@@ -591,14 +584,14 @@ namespace SIPSorcery.GB28181.SIP
 
         public string ToName
         {
-            get { return m_userField.Name; }
-            set { m_userField.Name = value; }
+            get { return ToUserField.Name; }
+            set { ToUserField.Name = value; }
         }
 
         public SIPURI ToURI
         {
-            get { return m_userField.URI; }
-            set { m_userField.URI = value; }
+            get { return ToUserField.URI; }
+            set { ToUserField.URI = value; }
         }
 
         public string ToTag
@@ -622,23 +615,17 @@ namespace SIPSorcery.GB28181.SIP
 
         public SIPParameters ToParameters
         {
-            get { return m_userField.Parameters; }
-            set { m_userField.Parameters = value; }
+            get { return ToUserField.Parameters; }
+            set { ToUserField.Parameters = value; }
         }
-
-        private SIPUserField m_userField;
-        public SIPUserField ToUserField
-        {
-            get { return m_userField; }
-            set { m_userField = value; }
-        }
+        public SIPUserField ToUserField { get; set; }
 
         private SIPToHeader()
         { }
 
         public SIPToHeader(string toName, SIPURI toURI, string toTag)
         {
-            m_userField = new SIPUserField(toName, toURI, null);
+            ToUserField = new SIPUserField(toName, toURI, null);
             ToTag = toTag;
         }
 
@@ -646,9 +633,10 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                SIPToHeader toHeader = new SIPToHeader();
-
-                toHeader.m_userField = SIPUserField.ParseSIPUserField(toHeaderStr);
+                SIPToHeader toHeader = new SIPToHeader
+                {
+                    ToUserField = SIPUserField.ParseSIPUserField(toHeaderStr)
+                };
 
                 return toHeader;
             }
@@ -664,7 +652,7 @@ namespace SIPSorcery.GB28181.SIP
 
         public override string ToString()
         {
-            return m_userField.ToString();
+            return ToUserField.ToString();
         }
 
         #region Unit testing.
@@ -904,9 +892,11 @@ namespace SIPSorcery.GB28181.SIP
 
                 foreach (string contactHeaderItemStr in contactHeaders)
                 {
-                    SIPContactHeader contactHeader = new SIPContactHeader();
-                    contactHeader.RawHeader = contactHeaderStr;
-                    contactHeader.m_userField = SIPUserField.ParseSIPUserField(contactHeaderItemStr);
+                    SIPContactHeader contactHeader = new SIPContactHeader
+                    {
+                        RawHeader = contactHeaderStr,
+                        m_userField = SIPUserField.ParseSIPUserField(contactHeaderItemStr)
+                    };
                     contactHeaderList.Add(contactHeader);
                 }
 
@@ -925,8 +915,10 @@ namespace SIPSorcery.GB28181.SIP
 
         public static List<SIPContactHeader> CreateSIPContactList(SIPURI sipURI)
         {
-            List<SIPContactHeader> contactHeaderList = new List<SIPContactHeader>();
-            contactHeaderList.Add(new SIPContactHeader(null, sipURI));
+            List<SIPContactHeader> contactHeaderList = new List<SIPContactHeader>
+            {
+                new SIPContactHeader(null, sipURI)
+            };
 
             return contactHeaderList;
         }
@@ -1003,9 +995,11 @@ namespace SIPSorcery.GB28181.SIP
 
         public SIPContactHeader CopyOf()
         {
-            SIPContactHeader copy = new SIPContactHeader();
-            copy.RawHeader = RawHeader;
-            copy.m_userField = m_userField.CopyOf();
+            SIPContactHeader copy = new SIPContactHeader
+            {
+                RawHeader = RawHeader,
+                m_userField = m_userField.CopyOf()
+            };
 
             return copy;
         }
@@ -1033,17 +1027,21 @@ namespace SIPSorcery.GB28181.SIP
 
         public SIPAuthenticationHeader(SIPAuthorisationHeadersEnum authorisationType, string realm, string nonce)
         {
-            SIPDigest = new SIPAuthorisationDigest(authorisationType);
-            SIPDigest.Realm = realm;
-            SIPDigest.Nonce = nonce;
+            SIPDigest = new SIPAuthorisationDigest(authorisationType)
+            {
+                Realm = realm,
+                Nonce = nonce
+            };
         }
 
         public static SIPAuthenticationHeader ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum authorizationType, string headerValue)
         {
             try
             {
-                SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader();
-                authHeader.SIPDigest = SIPAuthorisationDigest.ParseAuthorisationDigest(authorizationType, headerValue);
+                SIPAuthenticationHeader authHeader = new SIPAuthenticationHeader
+                {
+                    SIPDigest = SIPAuthorisationDigest.ParseAuthorisationDigest(authorizationType, headerValue)
+                };
                 return authHeader;
             }
             catch
@@ -1202,19 +1200,23 @@ namespace SIPSorcery.GB28181.SIP
             }
 
             m_userField = SIPUserField.ParseSIPUserField(host);
-            this.IsStrictRouter = !looseRouter;
+            IsStrictRouter = !looseRouter;
         }
 
         public SIPRoute(SIPURI uri)
         {
-            m_userField = new SIPUserField();
-            m_userField.URI = uri;
+            m_userField = new SIPUserField
+            {
+                URI = uri
+            };
         }
 
         public SIPRoute(SIPURI uri, bool looseRouter)
         {
-            m_userField = new SIPUserField();
-            m_userField.URI = uri;
+            m_userField = new SIPUserField
+            {
+                URI = uri
+            };
             this.IsStrictRouter = !looseRouter;
         }
 
@@ -1227,8 +1229,10 @@ namespace SIPSorcery.GB28181.SIP
 
             try
             {
-                SIPRoute sipRoute = new SIPRoute();
-                sipRoute.m_userField = SIPUserField.ParseSIPUserField(route);
+                SIPRoute sipRoute = new SIPRoute
+                {
+                    m_userField = SIPUserField.ParseSIPUserField(route)
+                };
 
                 return sipRoute;
             }
@@ -1883,23 +1887,13 @@ namespace SIPSorcery.GB28181.SIP
 
         private void Initialise(List<SIPContactHeader> contact, SIPFromHeader from, SIPToHeader to, int cseq, string callId)
         {
-            if (from == null)
-            {
-                throw new ApplicationException("The From header cannot be empty when creating a new SIP header.");
-            }
-
-            if (to == null)
-            {
-                throw new ApplicationException("The To header cannot be empty when creating a new SIP header.");
-            }
-
             if (callId == null || callId.Trim().Length == 0)
             {
                 throw new ApplicationException("The CallId header cannot be empty when creating a new SIP header.");
             }
 
-            From = from;
-            To = to;
+            From = from ?? throw new ApplicationException("The From header cannot be empty when creating a new SIP header.");
+            To = to ?? throw new ApplicationException("The To header cannot be empty when creating a new SIP header.");
             Contact = contact;
             CallId = callId;
 
@@ -1928,8 +1922,10 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                SIPHeader sipHeader = new SIPHeader();
-                sipHeader.MaxForwards = -1;		// This allows detection of whether this header is present or not.
+                SIPHeader sipHeader = new SIPHeader
+                {
+                    MaxForwards = -1        // This allows detection of whether this header is present or not.
+                };
                 string lastHeader = null;
 
                 for (int lineIndex = 0; lineIndex < headersCollection.Length; lineIndex++)
