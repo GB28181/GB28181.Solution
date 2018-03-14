@@ -39,7 +39,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     /// <summary>
     /// sip消息核心处理
     /// </summary>
-    public class SIPCoreMessageService
+    public class SIPCoreMessageService : ISipCoreService
     {
         #region 私有字段
 
@@ -70,9 +70,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// SIP远端Host的Socket地址(host:Port)和用户名(GBID)
         /// </summary>
-        public Dictionary<string, string> RemoteTransEPs { get; set; }
+        private readonly Dictionary<string, string> _remoteTransEPs = new Dictionary<string, string>();
         /// <summary>
-        /// 监控服务
+        /// Monitor Service For all Remote Node
         /// </summary>
         public Dictionary<MonitorKey, ISIPMonitorService> MonitorService { get; set; }
 
@@ -144,30 +144,40 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #region 初始化
 
-        public SIPCoreMessageService(List<CameraInfo> cameraList, SIPAccount account)
+        public SIPCoreMessageService()
+        {
+            //create the binded MonitorService
+            MonitorService = new Dictionary<MonitorKey, ISIPMonitorService>();
+        }
+
+        #endregion
+
+
+        #region 初始化资源，缓存注册上来的设备信息
+        public void Initialize(List<CameraInfo> cameraList, SIPAccount account)
         {
             _serviceState = ServiceStatus.Wait;
             _account = account;
             LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + account.LocalIP.ToString() + ":" + account.LocalPort);
             LocalSIPId = account.LocalID;
-
-            MonitorService = new Dictionary<MonitorKey, ISIPMonitorService>();
-            RemoteTransEPs = new Dictionary<string, string>();
-
-            cameraList.ForEach(channel =>
+            // init the camera info for connetctions
+            if (cameraList != null)
             {
-                for (int i = 0; i < 2; i++)
+                cameraList.ForEach(channel =>
                 {
-                    CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                    var key = new MonitorKey()
+                    for (int i = 0; i < 2; i++)
                     {
-                        DeviceID = channel.ChannelID,
-                        CmdType = cmdType
-                    };
-                    var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
-                    MonitorService.Add(key, monitor);
-                }
-            });
+                        CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
+                        var key = new MonitorKey()
+                        {
+                            DeviceID = channel.ChannelID,
+                            CmdType = cmdType
+                        };
+                        var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
+                        MonitorService.Add(key, monitor);
+                    }
+                });
+            }
 
         }
 
@@ -583,11 +593,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private void RegisterHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request)
         {
             OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Complete);
-            lock (RemoteTransEPs)
+            lock (_remoteTransEPs)
             {
-                if (!RemoteTransEPs.ContainsKey(remoteEP.ToHost()))
+                if (!_remoteTransEPs.ContainsKey(remoteEP.ToHost()))
                 {
-                    RemoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
+                    _remoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
                 }
             }
             _registrarCore.AddRegisterRequest(localEP, remoteEP, request);
@@ -648,11 +658,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         {
             //SendResponse(localEP, remoteEP, request);
             OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Complete);
-            lock (RemoteTransEPs)
+            lock (_remoteTransEPs)
             {
-                if (!RemoteTransEPs.ContainsKey(remoteEP.ToHost()))
+                if (!_remoteTransEPs.ContainsKey(remoteEP.ToHost()))
                 {
-                    RemoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
+                    _remoteTransEPs.Add(remoteEP.ToHost(), request.Header.From.FromURI.User);
                 }
             }
             //if (!_subscribe)
@@ -985,9 +995,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="deviceId">目的设备编码</param>
         public void DeviceCatalogQuery()
         {
-            lock (RemoteTransEPs)
+            lock (_remoteTransEPs)
             {
-                foreach (var item in RemoteTransEPs)
+                foreach (var item in _remoteTransEPs)
                 {
                     SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
                     SIPRequest catalogReq = QueryItems(remoteEP, item.Value);
@@ -1087,9 +1097,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         public void MobileDataSubscription(string devID)
         {
-            lock (RemoteTransEPs)
+            lock (_remoteTransEPs)
             {
-                foreach (var item in RemoteTransEPs)
+                foreach (var item in _remoteTransEPs)
                 {
                     SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
                     SIPRequest eventSubscribeReq = QueryItems(remoteEP, devID);

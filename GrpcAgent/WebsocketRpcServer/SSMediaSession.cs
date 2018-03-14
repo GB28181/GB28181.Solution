@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using MediaContract;
+using SIPSorcery.GB28181.Servers.SIPMessage;
 using System.Threading.Tasks;
 namespace GrpcAgent.WebsocketRpcServer
 {
@@ -7,10 +8,12 @@ namespace GrpcAgent.WebsocketRpcServer
     {
 
         private MediaEventSource _eventSource = null;
+        private SIPCoreMessageService _sipCoreMessageService = null;
 
-        public SSMediaSessionImpl(MediaEventSource eventSource)
+        public SSMediaSessionImpl(MediaEventSource eventSource, SIPCoreMessageService sipCoreMessageService)
         {
             _eventSource = eventSource;
+            _sipCoreMessageService = sipCoreMessageService;
         }
 
         public override Task<KeepAliveReply> KeepAlive(KeepAliveRequest request, ServerCallContext context)
@@ -19,11 +22,20 @@ namespace GrpcAgent.WebsocketRpcServer
             return base.KeepAlive(request, context);
         }
 
- 
+
 
         public override Task<StartLiveReply> StartLive(StartLiveRequest request, ServerCallContext context)
         {
             _eventSource?.FireLivePlayRequestEvent(request, context);
+
+            var result = new StartLiveReply()
+            {
+                Ipaddr = "127.0.0.1",
+                Port = 50005
+            };
+
+            //_sipCoreMessageService.MonitorService[request.Gbid]
+
             return base.StartLive(request, context);
         }
 

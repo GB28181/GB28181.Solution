@@ -1,18 +1,21 @@
 ﻿using Grpc.Core;
 using GrpcAgent.WebsocketRpcServer;
 using MediaContract;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace GrpcAgent
 {
     public class RpcServer : IRpcService, IDisposable
     {
+        private ServiceProvider _serviceProvider = null;
 
         private int _port = 0;
         private string _ipaddress = "localhost";
         private Server _server = null;
         private string _name = "DefaultName";
 
+        private ServiceCollection _serviceCollection = null;
         public string Ipaddress { get => _ipaddress; set => _ipaddress = value; }
         public int Port { get => _port; set => _port = value; }
 
@@ -20,22 +23,20 @@ namespace GrpcAgent
         public string Name { get => _name; set => _name = value; }
 
 
-        private MediaEventSource _wsMediaEventSource = null;
+
+        public RpcServer(ServiceCollection serviceCollection)
+        {
+            _serviceCollection = serviceCollection;
+            _serviceProvider = _serviceCollection.BuildServiceProvider();
+        }
 
 
         public void Run()
         {
-
-            if (_wsMediaEventSource == null)
-            {
-                _wsMediaEventSource = new MediaEventSource();
-            }
-
-            _wsMediaEventSource.LivePlayRequestReceived += _wsMediaEventSource_LivePlayRequestReceived;
-
+            var tagetService = _serviceProvider.GetRequiredService<SSMediaSessionImpl>();
             _server = new Server
             {
-                Services = { VideoSession.BindService(new SSMediaSessionImpl(_wsMediaEventSource)) },
+                Services = { VideoSession.BindService(tagetService) },
                 Ports = { new ServerPort(_ipaddress, _port, ServerCredentials.Insecure) }
             };
 
@@ -45,17 +46,8 @@ namespace GrpcAgent
             _server.ShutdownAsync().Wait();
         }
 
-        private void _wsMediaEventSource_LivePlayRequestReceived(StartLiveRequest request, ServerCallContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Dispose()
         {
-            if (_wsMediaEventSource != null)
-            {
-                _wsMediaEventSource.LivePlayRequestReceived -= _wsMediaEventSource_LivePlayRequestReceived;
-            }
         }
     }
 }

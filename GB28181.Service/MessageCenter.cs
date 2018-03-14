@@ -18,6 +18,12 @@ namespace GB28181Service
 
         private SIPCoreMessageService _sipCoreMessageService;
 
+
+        public MessageCenter()
+        {
+
+        }
+
         public MessageCenter(SIPCoreMessageService sipCoreMessageService)
         {
             _sipCoreMessageService = sipCoreMessageService;

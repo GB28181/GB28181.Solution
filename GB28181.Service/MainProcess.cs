@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using GrpcAgent;
+using GrpcAgent.WebsocketRpcServer;
+using MediaContract;
 
 namespace GB28181Service
 {
@@ -29,8 +31,6 @@ namespace GB28181Service
 
         //signal to exit the main Process
         private readonly AutoResetEvent _eventExitMainProcess = new AutoResetEvent(false);
-
-        public MessageCenter MessagerHandlers { get; set; }
 
         private Task _mainTask = null;
         private Task _mainSipTask = null;
@@ -83,8 +83,6 @@ namespace GB28181Service
 
         public void Run()
         {
-
-
             _eventStopService.Reset();
             _eventThreadExit.Reset();
 
@@ -94,16 +92,14 @@ namespace GB28181Service
             servicesContainer.AddSingleton<ILog, Logger>();
             servicesContainer.AddSingleton(this);
             servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
-            servicesContainer.AddSingleton(new RpcServer()
-            {
-                Ipaddress = "127.0.0.1",
-                Port = 50051,
-                Name = "StreamRPC Server Stub"
-            });
+            servicesContainer.AddSingleton<MediaEventSource>();
+            servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
+            servicesContainer.AddSingleton<IRpcService,RpcServer>();
+            servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
+            servicesContainer.AddSingleton<MessageCenter>();
 
             _serviceProvider = servicesContainer.BuildServiceProvider();
 
-            
             //Start the main serice
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
@@ -143,21 +139,23 @@ namespace GB28181Service
                     _mainSipTask = Task.Factory.StartNew(() =>
                     {
 
-                        _mainSipService = new SIPCoreMessageService(_cameras, account);
-                        MessagerHandlers = new MessageCenter(_mainSipService);
-                        _mainSipService.OnKeepaliveReceived += MessagerHandlers.OnKeepaliveReceived;
-                        _mainSipService.OnServiceChanged += MessagerHandlers.OnServiceChanged;
-                        _mainSipService.OnCatalogReceived += MessagerHandlers.OnCatalogReceived;
-                        _mainSipService.OnNotifyCatalogReceived += MessagerHandlers.OnNotifyCatalogReceived;
-                        _mainSipService.OnAlarmReceived += MessagerHandlers.OnAlarmReceived;
-                        _mainSipService.OnRecordInfoReceived += MessagerHandlers.OnRecordInfoReceived;
-                        _mainSipService.OnDeviceStatusReceived += MessagerHandlers.OnDeviceStatusReceived;
-                        _mainSipService.OnDeviceInfoReceived += MessagerHandlers.OnDeviceInfoReceived;
-                        _mainSipService.OnMediaStatusReceived += MessagerHandlers.OnMediaStatusReceived;
-                        _mainSipService.OnPresetQueryReceived += MessagerHandlers.OnPresetQueryReceived;
-                        _mainSipService.OnDeviceConfigDownloadReceived += MessagerHandlers.OnDeviceConfigDownloadReceived;
+                        //Get meassage Handler
+                        var messageHandler = _serviceProvider.GetService<MessageCenter>();
+
+                        _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
+                        _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
+                        _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
+                        _mainSipService.OnNotifyCatalogReceived += messageHandler.OnNotifyCatalogReceived;
+                        _mainSipService.OnAlarmReceived += messageHandler.OnAlarmReceived;
+                        _mainSipService.OnRecordInfoReceived += messageHandler.OnRecordInfoReceived;
+                        _mainSipService.OnDeviceStatusReceived += messageHandler.OnDeviceStatusReceived;
+                        _mainSipService.OnDeviceInfoReceived += messageHandler.OnDeviceInfoReceived;
+                        _mainSipService.OnMediaStatusReceived += messageHandler.OnMediaStatusReceived;
+                        _mainSipService.OnPresetQueryReceived += messageHandler.OnPresetQueryReceived;
+                        _mainSipService.OnDeviceConfigDownloadReceived += messageHandler.OnDeviceConfigDownloadReceived;
 
                         _mainSipService.Start();
+
                     });
 
                 }

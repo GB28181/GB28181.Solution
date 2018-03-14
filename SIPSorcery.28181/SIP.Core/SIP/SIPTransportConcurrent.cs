@@ -103,35 +103,20 @@ namespace SIPSorcery.SIP
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
         }
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, bool queueIncoming)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
 
         public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
+            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             m_transactionEngine = transactionEngine;
             AddSIPChannel(sipChannel);
 
@@ -189,11 +174,10 @@ namespace SIPSorcery.SIP
             {
                 m_transportThreadStarted = true;
 
-                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage))
+                new Thread(new ThreadStart(ProcessInMessage))
                 {
                     Name = RECEIVE_THREAD_NAME
-                };
-                inMessageThread.Start();
+                }.Start();
             }
         }
 
@@ -201,9 +185,11 @@ namespace SIPSorcery.SIP
         {
             m_reliablesThreadRunning = true;
 
-            Thread reliableTransmissionsThread = new Thread(new ThreadStart(ProcessPendingReliableTransactions));
-            reliableTransmissionsThread.Name = RELIABLES_THREAD_NAME;
-            reliableTransmissionsThread.Start();
+            new Thread(new ThreadStart(ProcessPendingReliableTransactions))
+            {
+                Name = RELIABLES_THREAD_NAME
+            }.Start();
+    
         }
 
         public void ReceiveMessage(SIPChannel sipChannel, SIPEndPoint remoteEndPoint, byte[] buffer)
@@ -992,9 +978,9 @@ namespace SIPSorcery.SIP
 
                                             transaction.GotResponse(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
                                         }
-                                        else if (SIPTransportResponseReceived != null)
+                                        else
                                         {
-                                            SIPTransportResponseReceived(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
+                                            SIPTransportResponseReceived?.Invoke(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
                                         }
                                     }
                                     catch (SIPValidationException sipValidationException)
@@ -1022,8 +1008,7 @@ namespace SIPSorcery.SIP
                                         SIPRequest sipRequest = SIPRequest.ParseSIPRequest(sipMessage);
 
                                         SIPValidationFieldsEnum sipRequestErrorField = SIPValidationFieldsEnum.Unknown;
-                                        string sipRequestValidationError = null;
-                                        if (!sipRequest.IsValid(out sipRequestErrorField, out sipRequestValidationError))
+                                        if (!sipRequest.IsValid(out sipRequestErrorField, out string sipRequestValidationError))
                                         {
                                             throw new SIPValidationException(sipRequestErrorField, sipRequestValidationError);
                                         }
@@ -1252,10 +1237,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                if (SIPRequestInTraceEvent != null)
-                {
-                    SIPRequestInTraceEvent(localSIPEndPoint, remoteEndPoint, sipRequest);
-                }
+                SIPRequestInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipRequest);
             }
             catch (Exception excp)
             {
@@ -1267,10 +1249,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                if (SIPRequestOutTraceEvent != null)
-                {
-                    SIPRequestOutTraceEvent(localSIPEndPoint, remoteEndPoint, sipRequest);
-                }
+                SIPRequestOutTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipRequest);
             }
             catch (Exception excp)
             {
@@ -1282,10 +1261,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                if (SIPResponseInTraceEvent != null)
-                {
-                    SIPResponseInTraceEvent(localSIPEndPoint, remoteEndPoint, sipResponse);
-                }
+                SIPResponseInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipResponse);
             }
             catch (Exception excp)
             {
@@ -1297,10 +1273,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                if (SIPResponseOutTraceEvent != null)
-                {
-                    SIPResponseOutTraceEvent(localSIPEndPoint, remoteEndPoint, sipResponse);
-                }
+                SIPResponseOutTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, sipResponse);
             }
             catch (Exception excp)
             {
@@ -1314,10 +1287,7 @@ namespace SIPSorcery.SIP
             {
                 //logger.Warn("SIPTransport SIPValidationException SIPRequest. Field=" + sipErrorField + ", Message=" + message + ", Remote=" + remoteEndPoint.ToString() + ".");
 
-                if (SIPBadRequestInTraceEvent != null)
-                {
-                    SIPBadRequestInTraceEvent(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
-                }
+                SIPBadRequestInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
             }
             catch (Exception excp)
             {
@@ -1329,10 +1299,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                if (SIPBadResponseInTraceEvent != null)
-                {
-                    SIPBadResponseInTraceEvent(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
-                }
+                SIPBadResponseInTraceEvent?.Invoke(localSIPEndPoint, remoteEndPoint, message, sipErrorField, rawMessage);
             }
             catch (Exception excp)
             {
@@ -1430,8 +1397,10 @@ namespace SIPSorcery.SIP
                 localSIPEndPoint = GetDefaultSIPEndPoint();
             }
 
-            SIPRequest request = new SIPRequest(method, uri);
-            request.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest request = new SIPRequest(method, uri)
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
             SIPContactHeader contactHeader = new SIPContactHeader(null, new SIPURI(SIPSchemesEnum.sip, localSIPEndPoint));
             SIPFromHeader fromHeader = new SIPFromHeader(null, contactHeader.ContactURI, CallProperties.CreateNewTag());
