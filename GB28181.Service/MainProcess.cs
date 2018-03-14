@@ -40,13 +40,11 @@ namespace GB28181Service
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
 
 
-        private List<CameraInfo> _cameras = null;
+        private List<CameraInfo> _cameras = new List<CameraInfo>();
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
         private readonly ServiceCollection servicesContainer = new ServiceCollection();
-
-        private SIPCoreMessageService _mainSipService = null;
 
         private ServiceProvider _serviceProvider = null;
         public MainProcess() { }
@@ -94,7 +92,7 @@ namespace GB28181Service
             servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
             servicesContainer.AddSingleton<MediaEventSource>();
             servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
-            servicesContainer.AddSingleton<IRpcService,RpcServer>();
+            servicesContainer.AddSingleton<IRpcService, RpcServer>();
             servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
             servicesContainer.AddSingleton<MessageCenter>();
 
@@ -122,7 +120,6 @@ namespace GB28181Service
             _keepaliveTime = DateTime.Now;
             try
             {
-                _cameras = new List<CameraInfo>();
                 var sipStorage = _serviceProvider.GetService<SipStorage>();
                 sipStorage.Read();
                 var account = sipStorage.Accounts.First();
@@ -139,9 +136,9 @@ namespace GB28181Service
                     _mainSipTask = Task.Factory.StartNew(() =>
                     {
 
+                        var _mainSipService = _serviceProvider.GetService<ISipCoreService>();
                         //Get meassage Handler
                         var messageHandler = _serviceProvider.GetService<MessageCenter>();
-
                         _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
                         _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
                         _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
@@ -153,7 +150,7 @@ namespace GB28181Service
                         _mainSipService.OnMediaStatusReceived += messageHandler.OnMediaStatusReceived;
                         _mainSipService.OnPresetQueryReceived += messageHandler.OnPresetQueryReceived;
                         _mainSipService.OnDeviceConfigDownloadReceived += messageHandler.OnDeviceConfigDownloadReceived;
-
+                        _mainSipService.Initialize(_cameras, account);
                         _mainSipService.Start();
 
                     });

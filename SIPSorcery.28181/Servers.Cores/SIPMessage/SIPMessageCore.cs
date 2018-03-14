@@ -19,22 +19,6 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
-    /// <summary>
-    /// 监控服务键
-    /// </summary>
-    /// <see cref="http://blog.csdn.net/suifcd/article/details/51997967"/>
-    public struct MonitorKey
-    {
-        /// <summary>
-        /// 设备编码
-        /// </summary>
-        public string DeviceID { get; set; }
-
-        /// <summary>
-        /// 命令类型
-        /// </summary>
-        public CommandType CmdType { get; set; }
-    }
 
     /// <summary>
     /// sip消息核心处理
@@ -74,7 +58,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// Monitor Service For all Remote Node
         /// </summary>
-        public Dictionary<MonitorKey, ISIPMonitorService> MonitorService { get; set; }
+        public Dictionary<MonitoredNodeKey, ISIPMonitorService> NodeMonitorService { get; set; }
 
         #endregion
 
@@ -147,11 +131,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         public SIPCoreMessageService()
         {
             //create the binded MonitorService
-            MonitorService = new Dictionary<MonitorKey, ISIPMonitorService>();
+            NodeMonitorService = new Dictionary<MonitoredNodeKey, ISIPMonitorService>();
         }
 
         #endregion
-
 
         #region 初始化资源，缓存注册上来的设备信息
         public void Initialize(List<CameraInfo> cameraList, SIPAccount account)
@@ -168,13 +151,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     for (int i = 0; i < 2; i++)
                     {
                         CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                        var key = new MonitorKey()
+                        var key = new MonitoredNodeKey()
                         {
                             DeviceID = channel.ChannelID,
                             CmdType = cmdType
                         };
                         var monitor = new SIPMonitorCore(this, channel.ChannelID, RemoteEP, account);
-                        MonitorService.Add(key, monitor);
+                        NodeMonitorService.Add(key, monitor);
                     }
                 });
             }
@@ -221,14 +204,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         public void Stop()
         {
-            foreach (var item in MonitorService)
+            foreach (var item in NodeMonitorService)
             {
                 item.Value.Stop();
             }
             LocalEP = null;
             RemoteEP = null;
-            MonitorService.Clear();
-            MonitorService = null;
+            NodeMonitorService.Clear();
+            NodeMonitorService = null;
             if (_audioChannel != null)
             {
                 _audioChannel.Stop();
@@ -508,12 +491,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
                 {
-                    MonitorKey key = new MonitorKey()
+                    MonitoredNodeKey key = new MonitoredNodeKey()
                     {
                         CmdType = CommandType.Play,
                         DeviceID = response.Header.To.ToURI.User
                     };
-                    MonitorService[key].Subscribe(response);
+                    NodeMonitorService[key].Subscribe(response);
                 }
                 else if (response.Header.ContentType.ToLower() == "application/sdp")
                 {
@@ -524,7 +507,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     {
                         Enum.TryParse<CommandType>(sessionName, out cmdType);
                     }
-                    MonitorKey key = new MonitorKey()
+                    MonitoredNodeKey key = new MonitoredNodeKey()
                     {
                         CmdType = cmdType,
                         DeviceID = response.Header.To.ToURI.User
@@ -533,11 +516,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     {
                         key.CmdType = CommandType.Playback;
                     }
-                    lock (MonitorService)
+                    lock (NodeMonitorService)
                     {
                         string ip = GetReceiveIP(response.Body);
                         int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video);
-                        MonitorService[key].AckRequest(response.Header.To.ToTag, ip, port);
+                        NodeMonitorService[key].AckRequest(response.Header.To.ToTag, ip, port);
 
                     }
                 }
@@ -627,19 +610,19 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 for (int i = 0; i < 2; i++)
                 {
                     CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-                    MonitorKey key = new MonitorKey()
+                    MonitoredNodeKey key = new MonitoredNodeKey()
                     {
                         DeviceID = cata.DeviceID,
                         CmdType = cmdType
                     };
-                    lock (MonitorService)
+                    lock (NodeMonitorService)
                     {
-                        if (MonitorService.ContainsKey(key))
+                        if (NodeMonitorService.ContainsKey(key))
                         {
                             continue;
                         }
                         remoteEP.Port = _account.KeepaliveInterval;
-                        MonitorService.Add(key, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
+                        NodeMonitorService.Add(key, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
                     }
                 }
             }
@@ -683,13 +666,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="record">录像xml结构体</param>
         private void RecordInfoHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request, RecordInfo record)
         {
-            MonitorKey key = new MonitorKey()
+            MonitoredNodeKey key = new MonitoredNodeKey()
             {
                 DeviceID = record.DeviceID,
                 CmdType = CommandType.Playback
             };
 
-            MonitorService[key].RecordQueryTotal(record.SumNum);
+            NodeMonitorService[key].RecordQueryTotal(record.SumNum);
             if (OnRecordInfoReceived != null && record.RecordItems != null)
             {
                 OnRecordInfoReceived(record);
@@ -735,12 +718,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             MediaStatus mediaStatus = MediaStatus.Instance.Read(request.Body);
             if (mediaStatus != null && mediaStatus.CmdType == CommandType.MediaStatus)
             {
-                MonitorKey key = new MonitorKey()
+                MonitoredNodeKey key = new MonitoredNodeKey()
                 {
                     CmdType = CommandType.Playback,
                     DeviceID = request.Header.From.FromURI.User
                 };
-                MonitorService[key].ByeVideoReq();
+                NodeMonitorService[key].ByeVideoReq();
                 //取值121表示历史媒体文件发送结束（回放结束/下载结束）
                 //NotifyType未找到相关文档标明所有该类型值，暂时只处理121
                 if (mediaStatus.NotifyType.Equals("121"))

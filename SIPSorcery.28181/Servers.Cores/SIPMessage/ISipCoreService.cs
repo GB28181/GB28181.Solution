@@ -1,16 +1,89 @@
 ﻿using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.SIP.App;
+using SIPSorcery.GB28181.Sys.Model;
+using SIPSorcery.GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
     public interface ISipCoreService
     {
+
+        void Initialize(List<CameraInfo> cameraList, SIPAccount account);
         void Start();
         void Stop();
+
         void AddMessageRequest(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request);
 
         void AddMessageResponse(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPResponse response);
+
+
+        #region 事件
+        /// <summary>
+        /// sip服务状态
+        /// </summary>
+        event Action<string, ServiceStatus> OnServiceChanged;
+
+        /// <summary>
+        /// 录像文件接收
+        /// </summary>
+        event Action<RecordInfo> OnRecordInfoReceived;
+
+        /// <summary>
+        /// 设备目录接收
+        /// </summary>
+        event Action<Catalog> OnCatalogReceived;
+
+        /// <summary>
+        /// 设备目录通知
+        /// </summary>
+        event Action<NotifyCatalog> OnNotifyCatalogReceived;
+
+        /// <summary>
+        /// 语音广播通知
+        /// </summary>
+        event Action<VoiceBroadcastNotify> OnVoiceBroadcaseReceived;
+
+        /// <summary>
+        /// 报警通知
+        /// </summary>
+        event Action<Alarm> OnAlarmReceived;
+
+        /// <summary>
+        /// 平台之间心跳接收
+        /// </summary>
+        event Action<SIPEndPoint, KeepAlive, string> OnKeepaliveReceived;
+        /// <summary>
+        /// 设备状态查询接收
+        /// </summary>
+        event Action<SIPEndPoint, DeviceStatus> OnDeviceStatusReceived;
+        /// <summary>
+        /// 设备信息查询接收
+        /// </summary>
+        event Action<SIPEndPoint, DeviceInfo> OnDeviceInfoReceived;
+
+        /// <summary>
+        /// 设备配置查询接收
+        /// </summary>
+        event Action<SIPEndPoint, DeviceConfigDownload> OnDeviceConfigDownloadReceived;
+        /// <summary>
+        /// 历史媒体发送结束接收
+        /// </summary>
+        event Action<SIPEndPoint, MediaStatus> OnMediaStatusReceived;
+        /// <summary>
+        /// 响应状态码接收
+        /// </summary>
+        event Action<SIPResponseStatusCodesEnum, string, SIPEndPoint> OnResponseCodeReceived;
+
+        /// <summary>
+        /// 预置位查询接收
+        /// </summary>
+        event Action<SIPEndPoint, PresetInfo> OnPresetQueryReceived;
+
+        #endregion
+
+
+
     }
 }

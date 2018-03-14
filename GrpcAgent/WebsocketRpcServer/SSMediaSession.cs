@@ -45,6 +45,10 @@ namespace GrpcAgent.WebsocketRpcServer
             {
                 _eventSource?.FireDownloadRequestEvent(request, context);
             }
+            else
+            {
+                _eventSource?.FirePlaybackRequestEvent(request, context);
+            }
 
             return base.StartPlayback(request, context);
         }

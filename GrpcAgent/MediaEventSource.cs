@@ -40,6 +40,12 @@ namespace GrpcAgent
         {
             DownloadRequestReceived?.Invoke(request, context);
         }
+
+
+        internal void FirePlaybackRequestEvent(StartPlaybackRequest request, ServerCallContext context)
+        {
+            PlaybackRequesReceived?.Invoke(request, context);
+        }
     }
 
 

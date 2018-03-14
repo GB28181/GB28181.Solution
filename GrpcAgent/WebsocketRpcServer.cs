@@ -1,21 +1,16 @@
 ﻿using Grpc.Core;
-using GrpcAgent.WebsocketRpcServer;
 using MediaContract;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace GrpcAgent
 {
     public class RpcServer : IRpcService, IDisposable
     {
-        private ServiceProvider _serviceProvider = null;
-
         private int _port = 0;
         private string _ipaddress = "localhost";
         private Server _server = null;
         private string _name = "DefaultName";
-
-        private ServiceCollection _serviceCollection = null;
+        private VideoSession.VideoSessionBase _videoSession;
         public string Ipaddress { get => _ipaddress; set => _ipaddress = value; }
         public int Port { get => _port; set => _port = value; }
 
@@ -24,19 +19,17 @@ namespace GrpcAgent
 
 
 
-        public RpcServer(ServiceCollection serviceCollection)
+        public RpcServer(VideoSession.VideoSessionBase videoSessionImp)
         {
-            _serviceCollection = serviceCollection;
-            _serviceProvider = _serviceCollection.BuildServiceProvider();
+            _videoSession = videoSessionImp;
         }
 
 
         public void Run()
         {
-            var tagetService = _serviceProvider.GetRequiredService<SSMediaSessionImpl>();
             _server = new Server
             {
-                Services = { VideoSession.BindService(tagetService) },
+                Services = { VideoSession.BindService(_videoSession) },
                 Ports = { new ServerPort(_ipaddress, _port, ServerCredentials.Insecure) }
             };
 

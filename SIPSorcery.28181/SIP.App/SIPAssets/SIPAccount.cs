@@ -47,7 +47,6 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Linq;
 
 namespace SIPSorcery.GB28181.SIP.App
 {
@@ -80,15 +79,9 @@ namespace SIPSorcery.GB28181.SIP.App
         private static string m_newLine = AppState.NewLine;
 
         public static int TimeZoneOffsetMinutes;
-
-        private Guid m_id;
         //  // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
-        public Guid Id
-        {
-            get { return m_id; }
-            set { m_id = value; }
-        }
+        public Guid Id { get; set; }
 
         private string m_owner;                 // The username of the account that owns this SIP account.
                                                 //   // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
@@ -104,13 +97,8 @@ namespace SIPSorcery.GB28181.SIP.App
         }
 
         #region 国标属性
-        private string m_gbVersion;
-        private string m_localID;
         private IPAddress m_localIP;
         private ushort m_localPort;
-        private string m_remoteID;
-        private IPAddress m_remoteIP;
-        private ushort m_remotePort;
         private bool m_authentication;
         private string m_sipUsername;
         private string m_sipPassword;
@@ -123,25 +111,16 @@ namespace SIPSorcery.GB28181.SIP.App
         private ushort m_keepaliveInterval;
         private byte m_keepaliveNumber;
         private IPAddress m_OutputIP;
-        private string _msgEncode;
 
         /// <summary>
         /// GB Version
         /// </summary>
-        public string GbVersion
-        {
-            get { return m_gbVersion; }
-            set { m_gbVersion = value; }
-        }
+        public string GbVersion { get; set; }
 
         /// <summary>
         /// 本地国标编码
         /// </summary>
-        public string LocalID
-        {
-            get { return m_localID; }
-            set { m_localID = value; }
-        }
+        public string LocalID { get; set; }
 
         /// <summary>
         /// 本地IP地址
@@ -164,29 +143,17 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 下级平台国标编码
         /// </summary>
-        public string RemoteID
-        {
-            get { return m_remoteID; }
-            set { m_remoteID = value; }
-        }
+        public string RemoteID { get; set; }
 
         /// <summary>
         /// 下级平台国标IP地址
         /// </summary>
-        public IPAddress RemoteIP
-        {
-            get { return m_remoteIP; }
-            set { m_remoteIP = value; }
-        }
+        public IPAddress RemoteIP { get; set; }
 
         /// <summary>
         /// 下级平台国标端口号
         /// </summary>
-        public ushort RemotePort
-        {
-            get { return m_remotePort; }
-            set { m_remotePort = value; }
-        }
+        public ushort RemotePort { get; set; }
 
         /// <summary>
         /// 鉴权启用
@@ -253,11 +220,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <summary>
         /// 消息信令字符编码
         /// </summary>
-        public string MsgEncode
-        {
-            get { return _msgEncode; }
-            set { _msgEncode = value; }
-        }
+        public string MsgEncode { get; set; }
 
         /// <summary>
         /// RTP包乱序处理
@@ -554,10 +517,10 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             try
             {
-                m_id = Guid.NewGuid();
+                Id = Guid.NewGuid();
 
-                m_gbVersion = row["GbVersion"].ToString();
-                m_localID = row["LocalID"].ToString();
+                GbVersion = row["GbVersion"].ToString();
+                LocalID = row["LocalID"].ToString();
                 IPAddress.TryParse(row["LocalIP"].ToString(), out m_localIP);
                 ushort.TryParse(row["LocalPort"].ToString(), out m_localPort);
                 bool.TryParse(row["Authentication"].ToString(), out m_authentication);
@@ -570,7 +533,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 ushort.TryParse(row["KeepaliveInterval"].ToString(), out m_keepaliveInterval);
                 byte.TryParse(row["KeepaliveNumber"].ToString(), out m_keepaliveNumber);
                 //IPAddress.TryParse(row["OutputIP"].ToString(), out m_OutputIP);
-                _msgEncode = row["MsgEncode"].ToString();
+                MsgEncode = row["MsgEncode"].ToString();
 
             }
             catch (Exception excp)
@@ -635,7 +598,7 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             try
             {
-                m_id = Guid.NewGuid();
+                Id = Guid.NewGuid();
                 m_owner = owner;
                 m_sipDomain = sipDomain;
                 m_sipUsername = sipUsername;
@@ -763,7 +726,7 @@ namespace SIPSorcery.GB28181.SIP.App
         public string ToXMLNoParent()
         {
             string sipAccountXML =
-                "  <id>" + m_id + "</id>" + m_newLine +
+                "  <id>" + Id + "</id>" + m_newLine +
                 "  <owner>" + m_owner + "</owner>" + m_newLine +
                 "  <sipusername>" + m_sipUsername + "</sipusername>" + m_newLine +
                 "  <sippassword>" + m_sipPassword + "</sippassword>" + m_newLine +
