@@ -2,6 +2,8 @@
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+
 namespace SIPSorcery.GB28181.Servers
 {
     public class SIPServiceDirector : ISIPServiceDirector
@@ -29,17 +31,24 @@ namespace SIPSorcery.GB28181.Servers
         }
 
         //make real Request
-        public Tuple<string, int, ProtocolType> MakeVideoRequest(string gbid, int[] mediaPort, string receiveIP)
+        async public Task<Tuple<string, int, ProtocolType>> MakeVideoRequest(string gbid, int[] mediaPort, string receiveIP)
         {
             var target = GetTargetMonitorService(gbid);
 
-            var cSeq = target.RealVideoReq(mediaPort, receiveIP, true);
 
-            var result = target.WaitRequestResult();
+            var taskResult = await Task.Factory.StartNew(() =>
+           {
 
-            var ipaddress = _sipCoreMessageService.GetReceiveIP(result.Item2.Body);
+               var cSeq = target.RealVideoReq(mediaPort, receiveIP, true);
 
-            var port = _sipCoreMessageService.GetReceivePort(result.Item2.Body, SDPMediaTypesEnum.video);
+               var result = target.WaitRequestResult();
+
+               return result;
+           });
+
+            var ipaddress = _sipCoreMessageService.GetReceiveIP(taskResult.Item2.Body);
+
+            var port = _sipCoreMessageService.GetReceivePort(taskResult.Item2.Body, SDPMediaTypesEnum.video);
 
             return Tuple.Create(ipaddress, port, ProtocolType.Udp);
         }

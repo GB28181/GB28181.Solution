@@ -28,34 +28,33 @@ namespace GrpcAgent.WebsocketRpcServer
         {
 
             // var restult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
-            var reqeustProcessRsult = Task.Factory.StartNew(() =>
-                        {
 
-                            _eventSource?.FireLivePlayRequestEvent(request, context);
-                            var resultMsg = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
 
-                            //get the response .
-                            var resReply = new StartLiveReply()
-                            {
-                                Ipaddr = resultMsg.Item1,
-                                Port = resultMsg.Item2,
-                                Hdr = request.Hdr,
+            _eventSource?.FireLivePlayRequestEvent(request, context);
+            var reqeustProcessResult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
 
-                                Status = new MediaContract.Status()
-                                {
-                                    Code = 200,
-                                    Msg = "Request Successful!"
-                                }
+            reqeustProcessResult.Wait(System.TimeSpan.FromSeconds(2));
 
-                            };
+            //get the response .
+            var resReply = new StartLiveReply()
+            {
+                Ipaddr = reqeustProcessResult.Result.Item1,
+                Port = reqeustProcessResult.Result.Item2,
+                Hdr = request.Hdr,
 
-                            return resReply;
+                Status = new MediaContract.Status()
+                {
+                    Code = 200,
+                    Msg = "Request Successful!"
+                }
 
-                        });
+            };
 
-            reqeustProcessRsult.Wait(System.TimeSpan.FromSeconds(2));
+            return Task.FromResult(resReply);
 
-            return reqeustProcessRsult;
+            //  reqeustProcessResult.Wait(System.TimeSpan.FromSeconds(2));
+
+            //  return reqeustProcessRsult;
 
             //_sipCoreMessageService.MonitorService[request.Gbid]
             // return base.StartLive(request, context);

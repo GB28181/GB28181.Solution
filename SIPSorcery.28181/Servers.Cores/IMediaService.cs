@@ -1,7 +1,6 @@
 ﻿using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.SIP;
 using System;
-using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.Servers
 {
@@ -13,7 +12,7 @@ namespace SIPSorcery.GB28181.Servers
         int RealVideoReq(int[] mediaPort, string receiveIP, bool needResult);
 
         //if an operation need Result you can wait the Result by WaitRequestResult
-       Tuple<SIPRequest, SIPResponse> WaitRequestResult();
+        Tuple<SIPRequest, SIPResponse> WaitRequestResult();
 
         /// <summary>
         /// 取消实时视频请求
