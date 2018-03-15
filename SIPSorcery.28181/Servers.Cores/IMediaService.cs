@@ -10,10 +10,10 @@ namespace SIPSorcery.GB28181.Servers
         /// <summary>
         /// 实时视频请求
         /// </summary>
-        void RealVideoReq(int[] mediaPort, string receiveIP, bool needSync);
+        int RealVideoReq(int[] mediaPort, string receiveIP, bool needResult);
 
         //if an operation need Result you can wait the Result by WaitRequestResult
-        Task<IAsyncResult> WaitRequestResult();
+       Tuple<SIPRequest, SIPResponse> WaitRequestResult();
 
         /// <summary>
         /// 取消实时视频请求

@@ -28,6 +28,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
         //concurent requet/reply
         private ConcurrentDictionary<int, SIPRequest> _syncRequestContext = new ConcurrentDictionary<int, SIPRequest>();
+        private ConcurrentQueue<Tuple<SIPRequest, SIPResponse>> _syncResponseContext = new ConcurrentQueue<Tuple<SIPRequest, SIPResponse>>();
         private SIPCoreMessageService _msgCore;
         /// <summary>
         /// 远程终结点
@@ -72,7 +73,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// </summary>
         /// <param name="mediaPort">接收Port</param>
         /// <param name="receiveIP">接收IP</param>
-        public void RealVideoReq(int[] mediaPort, string receiveIP, bool needSync = false)
+        public int RealVideoReq(int[] mediaPort, string receiveIP, bool needResult = false)
         {
             _mediaPort = mediaPort;
             //  _mediaPort = _msgCore.SetMediaPort();
@@ -101,11 +102,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             sipRequest.Body = SetMediaReq(receiveIP, mediaPort);
             _msgCore.SendReliableRequest(_remoteEP, sipRequest);
             _reqSession = sipRequest;
-            if (needSync)
+            if (needResult)
             {
                 _syncRequestContext.TryAdd(cSeq, sipRequest);
             }
+            return cSeq;
         }
+
+
 
         /// <summary>
         /// 确认接收视频请求
@@ -153,10 +157,17 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
             if (_syncRequestContext.ContainsKey(response.Header.CSeq))
             {
+
+                SIPRequest request = _syncRequestContext[response.Header.CSeq];
+
+                var targetValue = new Tuple<SIPRequest, SIPResponse>(request, response);
+                //update the collection
+                _syncResponseContext.Enqueue(targetValue);
+
                 //notice worker to go 
                 _autoResetEventForRpc.Set();
                 //remove it for collection.
-                _syncRequestContext.Remove(key: response.Header.CSeq, value: out _);
+
 
             }
             _msgCore.SendRequest(_remoteEP, ackReq);
@@ -1649,12 +1660,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         }
 
         //Wait Result of the Operation
-        async public Task<IAsyncResult> WaitRequestResult()
+        public Tuple<SIPRequest, SIPResponse> WaitRequestResult()
         {
-
             _autoResetEventForRpc.WaitOne();
-
-
+            _syncResponseContext.TryDequeue(out Tuple<SIPRequest, SIPResponse> sipResult);
+            return sipResult;
         }
     }
 }

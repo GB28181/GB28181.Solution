@@ -27,27 +27,35 @@ namespace GrpcAgent.WebsocketRpcServer
         public override Task<StartLiveReply> StartLive(StartLiveRequest request, ServerCallContext context)
         {
 
-            var restult = _sipServiceDirector.CreateVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
-
-           
-
-            _eventSource?.FireLivePlayRequestEvent(request, context);
-
-
-            var res = Task.Factory.StartNew(() =>
+            // var restult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
+            var reqeustProcessRsult = Task.Factory.StartNew(() =>
                         {
+
+                            _eventSource?.FireLivePlayRequestEvent(request, context);
+                            var resultMsg = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
+
                             //get the response .
                             var resReply = new StartLiveReply()
                             {
-                                Ipaddr = "127.0.0.1",
-                                Port = 50005
+                                Ipaddr = resultMsg.Item1,
+                                Port = resultMsg.Item2,
+                                Hdr = request.Hdr,
+
+                                Status = new MediaContract.Status()
+                                {
+                                    Code = 200,
+                                    Msg = "Request Successful!"
+                                }
+
                             };
 
                             return resReply;
 
-
                         });
-            return res;
+
+            reqeustProcessRsult.Wait(System.TimeSpan.FromSeconds(2));
+
+            return reqeustProcessRsult;
 
             //_sipCoreMessageService.MonitorService[request.Gbid]
             // return base.StartLive(request, context);

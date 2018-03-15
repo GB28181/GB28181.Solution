@@ -1,6 +1,5 @@
-﻿
-using System;
-using System.Threading.Tasks;
+﻿using System;
+using System.Net.Sockets;
 namespace SIPSorcery.GB28181.Servers
 {
     public interface ISIPServiceDirector
@@ -9,7 +8,7 @@ namespace SIPSorcery.GB28181.Servers
 
 
         //ip/port/protocol/ 
-         Task<Tuple<string, int, int>> CreateVideoRequest(string gbid, int[] mediaPort, string receiveIP);
+        Tuple<string, int, ProtocolType> MakeVideoRequest(string gbid, int[] mediaPort, string receiveIP);
 
 
     }
