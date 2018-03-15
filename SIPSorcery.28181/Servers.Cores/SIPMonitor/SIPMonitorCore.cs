@@ -7,11 +7,13 @@ using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.Servers.SIPMonitor
 {
@@ -22,6 +24,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
+        private AutoResetEvent _autoResetEventForRpc = new AutoResetEvent(false);
+
+        //concurent requet/reply
+        private ConcurrentDictionary<int, SIPRequest> _syncRequestContext = new ConcurrentDictionary<int, SIPRequest>();
         private SIPCoreMessageService _msgCore;
         /// <summary>
         /// 远程终结点
@@ -34,11 +40,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private string _deviceId;
         private SIPRequest _reqSession;
         private int[] _mediaPort;
-      //  private SIPContactHeader _contact;
+        //  private SIPContactHeader _contact;
         private string _toTag;
-      //  private SIPViaSet _via;
+        //  private SIPViaSet _via;
         private int _recordTotal = -1;
-     //   private DevStatus _Status;
+        //   private DevStatus _Status;
         private SIPAccount _account;
         #endregion
 
@@ -66,11 +72,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// </summary>
         /// <param name="mediaPort">接收Port</param>
         /// <param name="receiveIP">接收IP</param>
-        public void RealVideoReq(int[] mediaPort, string receiveIP)
+        public void RealVideoReq(int[] mediaPort, string receiveIP, bool needSync = false)
         {
             _mediaPort = mediaPort;
-           //  _mediaPort = _msgCore.SetMediaPort();
-          //  string localIp = _msgCore.LocalEP.Address.ToString();
+            //  _mediaPort = _msgCore.SetMediaPort();
+            //  string localIp = _msgCore.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
             int cSeq = CallProperties.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
@@ -79,23 +85,26 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, null);
-            SIPRequest realReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
+            SIPRequest sipRequest = _msgCore.Transport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
             var contactHeader = new SIPContactHeader(null, localUri);
-            realReq.Header.Contact.Clear();
-            realReq.Header.Contact.Add(contactHeader);
+            sipRequest.Header.Contact.Clear();
+            sipRequest.Header.Contact.Add(contactHeader);
 
-            realReq.Header.Allow = null;
-            realReq.Header.From = from;
-            realReq.Header.To = to;
-            realReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-            realReq.Header.CSeq = cSeq;
-            realReq.Header.CallId = callId;
-            realReq.Header.Subject = SetSubject();
-            realReq.Header.ContentType = "application/sdp";
-
-            realReq.Body = SetMediaReq(receiveIP, mediaPort);
-            _msgCore.SendReliableRequest(_remoteEP, realReq);
-            _reqSession = realReq;
+            sipRequest.Header.Allow = null;
+            sipRequest.Header.From = from;
+            sipRequest.Header.To = to;
+            sipRequest.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            sipRequest.Header.CSeq = cSeq;
+            sipRequest.Header.CallId = callId;
+            sipRequest.Header.Subject = SetSubject();
+            sipRequest.Header.ContentType = SIPHeader.ContentTypes.Application_SDP;
+            sipRequest.Body = SetMediaReq(receiveIP, mediaPort);
+            _msgCore.SendReliableRequest(_remoteEP, sipRequest);
+            _reqSession = sipRequest;
+            if (needSync)
+            {
+                _syncRequestContext.TryAdd(cSeq, sipRequest);
+            }
         }
 
         /// <summary>
@@ -103,8 +112,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// </summary>
         /// <param name="toTag">toTag</param>
         /// <returns></returns>
-        public void AckRequest(string toTag, string ip, int port)
+        //   public void AckRequest(string toTag, string ip, int port)
+        public void AckRequest(SIPResponse response)
         {
+            var ip = _msgCore.GetReceiveIP(response.Body);
+            var port = _msgCore.GetReceivePort(response.Body, SDPMediaTypesEnum.video);
+
             if (ip == null)
             {
                 return;
@@ -118,14 +131,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 _channel = new UDPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
             }
-         //   _channel.OnFrameReady += RtpChannel_OnFrameReady;
+            //   _channel.OnFrameReady += RtpChannel_OnFrameReady;
             _channel.Start();
 
             SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
             SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
             SIPRequest ackReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.ACK, remoteUri);
             SIPFromHeader from = _reqSession.Header.From;
-            SIPToHeader to = _reqSession.Header.To; to.ToTag = toTag;
+            SIPToHeader to = _reqSession.Header.To;
+            to.ToTag = response.Header.To.ToTag;
             SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId)
             {
                 CSeqMethod = SIPMethodsEnum.ACK,
@@ -135,7 +149,16 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 Allow = null
             };
             ackReq.Header = header;
-            _toTag = toTag;
+            _toTag = response.Header.To.ToTag;
+
+            if (_syncRequestContext.ContainsKey(response.Header.CSeq))
+            {
+                //notice worker to go 
+                _autoResetEventForRpc.Set();
+                //remove it for collection.
+                _syncRequestContext.Remove(key: response.Header.CSeq, value: out _);
+
+            }
             _msgCore.SendRequest(_remoteEP, ackReq);
         }
 
@@ -201,8 +224,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 m_fs = null;
             }
         }
-
-
 
         /// <summary>
         /// 设置媒体参数请求(实时)
@@ -864,7 +885,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
             backReq.Header.Subject = SetSubject();
-            backReq.Header.ContentType = "Application/MANSRTSP";
+            backReq.Header.ContentType = SIPHeader.ContentTypes.Application_MANSRTSP;
 
             backReq.Body = SetMediaReq(localIp, mediaPort, Time, cSeq);
             _reqSession = backReq;
@@ -1477,7 +1498,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
         private string callId = string.Empty;
         private string toTag;
-         
+
         public void Subscribe(SIPResponse response)
         {
             _fromTag = response.Header.From.FromTag;
@@ -1489,7 +1510,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private string _fromTag = string.Empty;
         int cSeq = CallProperties.CreateNewCSeq();
         SIPViaSet _vvia;
-      //  private int sn = 1;
+        //  private int sn = 1;
         /// <summary>
         /// 移动设备位置订阅
         /// </summary>
@@ -1497,7 +1518,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <param name="isStop">true订阅/false取消订阅</param>
         public void MobilePositionQueryRequest(int interval, bool isStop)
         {
-        // code conflict
+            // code conflict
 
         }
 
@@ -1625,6 +1646,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             string xmlBody = KeyFrameCmd.Instance.Save<KeyFrameCmd>(cmd);
             presetReq.Body = xmlBody;
             _msgCore.SendRequest(_remoteEP, presetReq);
+        }
+
+        //Wait Result of the Operation
+        async public Task<IAsyncResult> WaitRequestResult()
+        {
+
+            _autoResetEventForRpc.WaitOne();
+
+
         }
     }
 }

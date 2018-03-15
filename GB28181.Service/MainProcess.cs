@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using GrpcAgent;
 using GrpcAgent.WebsocketRpcServer;
 using MediaContract;
+using SIPSorcery.GB28181.Servers;
 
 namespace GB28181Service
 {
@@ -92,6 +93,7 @@ namespace GB28181Service
             servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
             servicesContainer.AddSingleton<MediaEventSource>();
             servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
+            servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
             servicesContainer.AddSingleton<IRpcService, RpcServer>();
             servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
             servicesContainer.AddSingleton<MessageCenter>();

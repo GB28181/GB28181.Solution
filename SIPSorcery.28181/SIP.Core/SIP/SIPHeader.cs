@@ -826,7 +826,7 @@ namespace SIPSorcery.GB28181.SIP
                 if (ContactParameters.Has(EXPIRES_PARAMETER_KEY))
                 {
                     string expiresStr = ContactParameters.Get(EXPIRES_PARAMETER_KEY);
-                    Int32.TryParse(expiresStr, out  expires);
+                    Int32.TryParse(expiresStr, out expires);
                 }
 
                 return expires;
@@ -1765,8 +1765,15 @@ namespace SIPSorcery.GB28181.SIP
     /// </bnf>
     public class SIPHeader
     {
-        public const int DEFAULT_CSEQ = 100;
+        public struct ContentTypes
+        {
+            public const string Application_SDP = "application/sdp";
+            public const string Application_MANSRTSP = "Application/MANSRTSP";
 
+        }
+
+
+        public const int DEFAULT_CSEQ = 100;
         private static ILog logger = AssemblyState.logger;
         private static string m_CRLF = SIPConstants.CRLF;
 

@@ -8,6 +8,7 @@ using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// Monitor Service For all Remote Node
         /// </summary>
-        private Dictionary<string, ISIPMonitorService> _nodeMonitorService = new Dictionary<string, ISIPMonitorService>();
+        private ConcurrentDictionary<string, ISIPMonitorService> _nodeMonitorService = new ConcurrentDictionary<string, ISIPMonitorService>();
 
         /// <summary>
         /// 本地sip终结点
@@ -57,7 +58,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// 本地域的sip编码
         /// </summary>
         internal string LocalSIPId;
-        public Dictionary<string, ISIPMonitorService> NodeMonitorService => _nodeMonitorService;
+        public ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService => _nodeMonitorService;
 
         private Stream _g711Stream;
         private Channel _audioChannel;
@@ -150,8 +151,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 var ipaddress = IPAddress.Parse(deviceChannel.IPAddress);
                 var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceChannel.Port);
-                var monitor = new SIPMonitorCore(this, deviceChannel.ChannelID, remoteEP, account);
-                _nodeMonitorService.Add(deviceChannel.ChannelID, monitor);
+                _nodeMonitorService.TryAdd(deviceChannel.ChannelID, new SIPMonitorCore(this, deviceChannel.ChannelID, remoteEP, account));
             });
         }
 
@@ -475,7 +475,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     //订阅消息
                     _nodeMonitorService[response.Header.To.ToURI.User].Subscribe(response);
                 }
-                else if (response.Header.ContentType.ToLower() == "application/sdp")
+                else if (response.Header.ContentType.ToLower() == SIPHeader.ContentTypes.Application_SDP)
                 {
 
                     string sessionName = GetSessionName(response.Body);
@@ -491,9 +491,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     }
                     lock (_nodeMonitorService)
                     {
-                        string ip = GetReceiveIP(response.Body);
-                        int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video);
-                        _nodeMonitorService[response.Header.To.ToURI.User].AckRequest(response.Header.To.ToTag, ip, port);
+                        // string ip = GetReceiveIP(response.Body);
+                        // int port = GetReceivePort(response.Body, SDPMediaTypesEnum.video)
+                        _nodeMonitorService[response.Header.To.ToURI.User].AckRequest(response);
+                        //  _nodeMonitorService[response.Header.To.ToURI.User].AckRequest(response.Header.To.ToTag, ip, port);
 
                     }
                 }
@@ -568,33 +569,24 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="catalog">目录结构体</param>
         private void CatalogHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request, Catalog catalog)
         {
-            foreach (var cata in catalog.DeviceList.Items)
+            catalog.DeviceList.Items.FindAll(item => item != null).ForEach(catalogItem =>
             {
-                if (cata == null)
-                {
-                    continue;
-                }
-                cata.RemoteEP = remoteEP.ToHost();
-                DevCataType devCata = DevType.GetCataType(cata.DeviceID);
+                catalogItem.RemoteEP = remoteEP.ToHost();
+                var devCata = DevType.GetCataType(catalogItem.DeviceID);
                 if (devCata != DevCataType.Device)
                 {
-                    continue;
-                }
-                for (int i = 0; i < 2; i++)
-                {
-                    //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-
-                    lock (_nodeMonitorService)
-                    {
-                        if (_nodeMonitorService.ContainsKey(cata.DeviceID))
+                        if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                         {
-                            continue;
+                            remoteEP.Port = _account.KeepaliveInterval;
+                            _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, _account));
                         }
-                        remoteEP.Port = _account.KeepaliveInterval;
-                        _nodeMonitorService.Add(cata.DeviceID, new SIPMonitorCore(this, cata.DeviceID, remoteEP, _account));
-                    }
+                    
                 }
-            }
+
+                //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
+
+
+            });
 
             OnCatalogReceived?.Invoke(catalog);
         }
@@ -814,7 +806,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #region SDP消息处理
 
-        private string GetReceiveIP(string sdpStr)
+        public string GetReceiveIP(string sdpStr)
         {
             string[] sdpLines = sdpStr.Split('\n');
 
@@ -833,7 +825,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// </summary>
         /// <param name="sdpStr">SDP</param>
         /// <returns></returns>
-        private int GetReceivePort(string sdpStr, SDPMediaTypesEnum mediaType)
+        public int GetReceivePort(string sdpStr, SDPMediaTypesEnum mediaType)
         {
             string[] sdpLines = sdpStr.Split('\n');
 

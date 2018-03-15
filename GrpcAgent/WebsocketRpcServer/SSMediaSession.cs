@@ -1,19 +1,19 @@
 ﻿using Grpc.Core;
 using MediaContract;
-using SIPSorcery.GB28181.Servers.SIPMessage;
 using System.Threading.Tasks;
+using SIPSorcery.GB28181.Servers;
 namespace GrpcAgent.WebsocketRpcServer
 {
     public class SSMediaSessionImpl : VideoSession.VideoSessionBase
     {
 
         private MediaEventSource _eventSource = null;
-        private SIPCoreMessageService _sipCoreMessageService = null;
+        private ISIPServiceDirector _sipServiceDirector = null;
 
-        public SSMediaSessionImpl(MediaEventSource eventSource, SIPCoreMessageService sipCoreMessageService)
+        public SSMediaSessionImpl(MediaEventSource eventSource, ISIPServiceDirector sipServiceDirector)
         {
             _eventSource = eventSource;
-            _sipCoreMessageService = sipCoreMessageService;
+            _sipServiceDirector = sipServiceDirector;
         }
 
         public override Task<KeepAliveReply> KeepAlive(KeepAliveRequest request, ServerCallContext context)
@@ -26,35 +26,28 @@ namespace GrpcAgent.WebsocketRpcServer
 
         public override Task<StartLiveReply> StartLive(StartLiveRequest request, ServerCallContext context)
         {
+
+            var restult = _sipServiceDirector.CreateVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
+
+           
+
             _eventSource?.FireLivePlayRequestEvent(request, context);
 
-            if (_sipCoreMessageService == null)
-            {
-                throw new System.Exception("instance not exist!");
-            }
 
-            if (_sipCoreMessageService.NodeMonitorService.ContainsKey(request.Gbid))
-            {
-                var targetService = _sipCoreMessageService.NodeMonitorService[request.Gbid];
-                // make the real request
-                targetService.RealVideoReq(new int[] { request.Port }, request.Ipaddr);
-
-            }
-
-            var result = Task.Factory.StartNew(() =>
+            var res = Task.Factory.StartNew(() =>
                         {
                             //get the response .
-                            var res = new StartLiveReply()
+                            var resReply = new StartLiveReply()
                             {
                                 Ipaddr = "127.0.0.1",
                                 Port = 50005
                             };
 
-                            return res;
+                            return resReply;
 
 
                         });
-            return result;
+            return res;
 
             //_sipCoreMessageService.MonitorService[request.Gbid]
             // return base.StartLive(request, context);

@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIPSorcery.GB28181.Servers.Cores
+﻿
+using System;
+using System.Threading.Tasks;
+namespace SIPSorcery.GB28181.Servers
 {
-    interface ISIPServiceDirector
+    public interface ISIPServiceDirector
     {
+        ISIPMonitorService GetTargetMonitorService(string gbid);
+
+
+        //ip/port/protocol/ 
+         Task<Tuple<string, int, int>> CreateVideoRequest(string gbid, int[] mediaPort, string receiveIP);
 
 
     }

@@ -1,5 +1,7 @@
 ﻿using SIPSorcery.GB28181.Net;
+using SIPSorcery.GB28181.SIP;
 using System;
+using System.Threading.Tasks;
 
 namespace SIPSorcery.GB28181.Servers
 {
@@ -8,7 +10,10 @@ namespace SIPSorcery.GB28181.Servers
         /// <summary>
         /// 实时视频请求
         /// </summary>
-        void RealVideoReq(int [] mediaPort, string receiveIP);
+        void RealVideoReq(int[] mediaPort, string receiveIP, bool needSync);
+
+        //if an operation need Result you can wait the Result by WaitRequestResult
+        Task<IAsyncResult> WaitRequestResult();
 
         /// <summary>
         /// 取消实时视频请求
@@ -20,7 +25,7 @@ namespace SIPSorcery.GB28181.Servers
         /// </summary>
         /// <param name="toTag">ToTag</param>
         /// <returns>sip请求</returns>
-        void AckRequest(string toTag, string ip, int port);
+        void AckRequest(SIPResponse response);
 
 
         /// <summary>
