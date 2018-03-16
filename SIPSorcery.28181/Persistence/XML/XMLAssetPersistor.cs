@@ -602,10 +602,10 @@ namespace SIPSorcery.GB28181.Persistence.XML
         {
             try
             {
-                Dictionary<Guid, object> assets = new Dictionary<Guid, object>();
+                var assets = new Dictionary<Guid, object>();
 
                 DataSet sipAssetSet = new DataSet();
-                XmlTextReader xmlReader = new XmlTextReader(dom.OuterXml, XmlNodeType.Document, null);
+                var xmlReader = new XmlTextReader(dom.OuterXml, XmlNodeType.Document, null);
                 sipAssetSet.ReadXml(xmlReader);
 
                 if (sipAssetSet != null && sipAssetSet.Tables != null && sipAssetSet.Tables.Count > 0)

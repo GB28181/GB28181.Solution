@@ -7,7 +7,7 @@
     <LocalIP>192.168.1.21</LocalIP>
     <LocalPort>5060</LocalPort>
     <RemotePort>0</RemotePort>
-    <Authentication>true</Authentication>
+    <Authentication>false</Authentication>
     <SIPUsername>admin</SIPUsername>
     <SIPPassword>34010000001360000001</SIPPassword>
     <MsgProtocol>Udp</MsgProtocol>

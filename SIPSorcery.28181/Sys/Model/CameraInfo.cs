@@ -20,7 +20,7 @@ namespace SIPSorcery.GB28181.Sys.Model
         public string Latitude { get; set; }
         public string Adddress { get; set; }
         public long IsPTZ { get; set; }
-        public System.DateTime EndTime { get; set; }
+        public DateTime EndTime { get; set; }
         public string Manufacturer { get; set; }
         public string Model { get; set; }
         public string Owner { get; set; }

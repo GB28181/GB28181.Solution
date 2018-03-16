@@ -289,8 +289,6 @@ namespace SIPSorcery.GB28181.Servers
                     return RegisterResultEnum.DomainNotServiced;
                 }
 
-
-
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser && s.SIPDomain == canonicalDomain);
                 SIPAccount sipAccount = new SIPAccount
                 {
@@ -362,10 +360,8 @@ namespace SIPSorcery.GB28181.Servers
                         SIPEndPoint uacRemoteEndPoint = SIPEndPoint.TryParse(sipRequest.Header.ProxyReceivedFrom) ?? registerTransaction.RemoteEndPoint;
                         SIPEndPoint proxySIPEndPoint = SIPEndPoint.TryParse(sipRequest.Header.ProxyReceivedOn);
                         SIPEndPoint registrarEndPoint = registerTransaction.LocalSIPEndPoint;
-
                         SIPResponseStatusCodesEnum updateResult = SIPResponseStatusCodesEnum.Ok;
                         // string updateMessage = null;
-
                         DateTime startTime = DateTime.Now;
 
                         //List<SIPRegistrarBinding> bindingsList = m_registrarBindingsManager.UpdateBindings(
@@ -382,7 +378,6 @@ namespace SIPSorcery.GB28181.Servers
                         //    sipRequest.Header.UserAgent,
                         //    out updateResult,
                         //    out updateMessage);
-
                         //int bindingExpiry = GetBindingExpiry(bindingsList, sipRequest.Header.Contact[0].ContactURI.ToString());
                         TimeSpan duration = DateTime.Now.Subtract(startTime);
                         FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegistrarTiming, "Binding update time for " + toUser + "@" + canonicalDomain + " took " + duration.TotalMilliseconds + "ms.", null));

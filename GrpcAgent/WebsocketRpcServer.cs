@@ -1,12 +1,14 @@
 ﻿using Grpc.Core;
+using Logger4Net;
 using MediaContract;
 using System;
-
 namespace GrpcAgent
 {
     public class RpcServer : IRpcService, IDisposable
     {
-        private int _port = 0;
+        private static ILog logger = LogManager.GetLogger("RpcServer");
+
+        private int _port = 50050;
         private string _ipaddress = "localhost";
         private Server _server = null;
         private string _name = "DefaultName";
@@ -34,11 +36,26 @@ namespace GrpcAgent
             };
             _server.Start();
 
+          //  var threadId = Thread.CurrentThread.ManagedThreadId;
+            logger.Debug("RPC Server for StreamSever, successfully started at " + _ipaddress + ":" + _port);
+
             _server.ShutdownAsync().Wait();
         }
 
         public void Dispose()
         {
+        }
+
+        public void AddIPAdress(string ipaddress)
+        {
+            _ipaddress = ipaddress;
+        }
+
+        public void AddPort(int port)
+        {
+
+            _port = port;
+            //throw new NotImplementedException();
         }
     }
 }

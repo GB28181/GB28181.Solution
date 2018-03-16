@@ -35,6 +35,10 @@ namespace SIPSorcery.GB28181.Servers
         {
             var target = GetTargetMonitorService(gbid);
 
+            if (target == null)
+            {
+                return null;
+            }
 
             var taskResult = await Task.Factory.StartNew(() =>
            {

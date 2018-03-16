@@ -26,10 +26,7 @@ namespace GrpcAgent.WebsocketRpcServer
 
         public override Task<StartLiveReply> StartLive(StartLiveRequest request, ServerCallContext context)
         {
-
             // var restult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
-
-
             _eventSource?.FireLivePlayRequestEvent(request, context);
             var reqeustProcessResult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
 

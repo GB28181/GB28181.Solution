@@ -147,11 +147,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + account.LocalIP.ToString() + ":" + account.LocalPort);
             LocalSIPId = account.LocalID;
             // init the camera info for connetctions
-            cameraList?.ForEach(deviceChannel =>
+            cameraList?.ForEach(deviceItem =>
             {
-                var ipaddress = IPAddress.Parse(deviceChannel.IPAddress);
-                var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceChannel.Port);
-                _nodeMonitorService.TryAdd(deviceChannel.ChannelID, new SIPMonitorCore(this, deviceChannel.ChannelID, remoteEP, account));
+                var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
+                var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, account));
             });
         }
 
@@ -424,9 +424,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <returns></returns>
         private string SetMediaAudio(string localIp, int port, string audioId)
         {
-            SDPConnectionInformation sdpConn = new SDPConnectionInformation(localIp);
+            var sdpConn = new SDPConnectionInformation(localIp);
 
-            SDP sdp = new SDP
+            var sdp = new SDP
             {
                 Version = 0,
                 SessionId = "0",
@@ -437,12 +437,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 Address = localIp
             };
 
-            SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
+            var psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
             {
                 IsStandardAttribute = false
             };
 
-            SDPMediaAnnouncement media = new SDPMediaAnnouncement
+            var media = new SDPMediaAnnouncement
             {
                 Media = SDPMediaTypesEnum.audio
             };
@@ -468,6 +468,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="response">sip响应</param>
         public void AddMessageResponse(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPResponse response)
         {
+            if (response == null)
+            {
+                logger.Error("对方回复为空(response == null)");
+                return;
+            }
             if (response.Status == SIPResponseStatusCodesEnum.Ok)
             {
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
@@ -478,7 +483,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 else if (response.Header.ContentType.ToLower() == SIPHeader.ContentTypes.Application_SDP)
                 {
 
-                    string sessionName = GetSessionName(response.Body);
+                    var sessionName = GetSessionName(response.Body);
                     if (!Enum.TryParse(sessionName, out CommandType cmdType))
                     {
                         OnResponseCodeReceived(response.Status, "接收到未知的SIP消息(application/sdp)", remoteEP);
@@ -575,12 +580,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 var devCata = DevType.GetCataType(catalogItem.DeviceID);
                 if (devCata != DevCataType.Device)
                 {
-                        if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
-                        {
-                            remoteEP.Port = _account.KeepaliveInterval;
-                            _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, _account));
-                        }
-                    
+                    if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
+                    {
+                        remoteEP.Port = _account.KeepaliveInterval;
+                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, _account));
+                    }
+
                 }
 
                 //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;

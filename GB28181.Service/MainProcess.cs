@@ -48,7 +48,16 @@ namespace GB28181Service
         private readonly ServiceCollection servicesContainer = new ServiceCollection();
 
         private ServiceProvider _serviceProvider = null;
-        public MainProcess() { }
+        public MainProcess()
+        {
+            _cameras.Add(new CameraInfo()
+            {
+                DeviceID = "00151001031003000001",
+                IPAddress = "127.0.0.1",
+                Port = 5060
+
+            });
+        }
 
         #region IDisposable interface
 
@@ -107,8 +116,6 @@ namespace GB28181Service
 
         }
 
-
-
         private void ConfigServices()
         {
             //we should initialize resource here then use them.
@@ -162,8 +169,19 @@ namespace GB28181Service
                     _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                     {
                         var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
+
+                        _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
+                        _mainWebSocketRpcServer.AddPort(50051);
                         _mainWebSocketRpcServer.Run();
                     });
+
+                    //mock a request here for invite operation.
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+
+                    var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
+
+                    mockCaller.MakeVideoRequest("00151001031003000001", new int[] { 50000 }, "192.168.20.21");
+
 
                 }
                 else

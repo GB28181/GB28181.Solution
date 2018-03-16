@@ -30,17 +30,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
+using SIPSorcery.GB28181.Sys;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using SIPSorcery.GB28181.Sys;
-using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -48,7 +44,7 @@ using NUnit.Framework;
 
 namespace SIPSorcery.GB28181.SIP
 {
-	public class SIPUDPChannel : SIPChannel
+    public class SIPUDPChannel : SIPChannel
 	{
         private const string THREAD_NAME = "sipchanneludp-";
 
@@ -68,7 +64,7 @@ namespace SIPSorcery.GB28181.SIP
             try {
                 m_sipConn = new UdpClient(m_localSIPEndPoint.GetIPEndPoint());
 
-                Thread listenThread = new Thread(new ThreadStart(Listen))
+                var listenThread = new Thread(new ThreadStart(Listen))
                 {
                     Name = THREAD_NAME + Crypto.GetRandomString(4)
                 };
