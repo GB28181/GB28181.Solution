@@ -22,27 +22,33 @@ namespace SIPSorcery.GB28181.Sys.Config
 
         private static SipStorage _instance;
 
-        private List<SIPAccount> _accounts;
+        private List<SIPAccount> _accountsCache = null;
 
         public List<SIPAccount> Accounts
         {
-            get => _accounts;
-            set => _accounts = value;
-        }
-
-        public SIPAssetPersistor<SIPAccount> SipAccount { get; private set; }
-
-        public static SipStorage Instance
-        {
             get
             {
-                if (_instance == null)
+                if (_accountsCache == null)
                 {
-                    _instance = new SipStorage();
+                    Read();
                 }
-                return _instance;
+                return _accountsCache;
             }
         }
+
+        public SIPAssetPersistor<SIPAccount> SipAccountDataStorage { get; private set; }
+
+        //public static SipStorage Instance
+        //{
+        //    get
+        //    {
+        //        if (_instance == null)
+        //        {
+        //            _instance = new SipStorage();
+        //        }
+        //        return _instance;
+        //    }
+        //}
 
 
         // here init the gb28181.xml file setting from app.config
@@ -62,14 +68,14 @@ namespace SIPSorcery.GB28181.Sys.Config
             }
         }
 
-        public  void Read()
+        public void Read()
         {
             var accounts = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
 
             accounts.Added += Account_Added;
 
-            SipAccount = accounts;
-            _accounts = accounts.Get();
+            SipAccountDataStorage = accounts;
+            _accountsCache = accounts.Get();
         }
 
         private void Account_Added(SIPAccount asset)
@@ -77,19 +83,19 @@ namespace SIPSorcery.GB28181.Sys.Config
             throw new NotImplementedException();
         }
 
-        public  void Save(SIPAccount account)
+        public void Save(SIPAccount account)
         {
-            if (_accounts.Any(d => d.SIPUsername == account.SIPUsername || d.SIPDomain == account.SIPDomain))
+            if (_accountsCache.Any(d => d.SIPUsername == account.SIPUsername || d.SIPDomain == account.SIPDomain))
             {
-                SipAccount.Update(account);
+                SipAccountDataStorage.Update(account);
             }
             else
             {
-                SipAccount.Add(account);
-                _accounts.Add(account);
+                SipAccountDataStorage.Add(account);
+                _accountsCache.Add(account);
             }
         }
 
-      
+
     }
 }

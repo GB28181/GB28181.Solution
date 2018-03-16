@@ -86,19 +86,9 @@ namespace GB28181Service
             _eventThreadExit.Reset();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            //we should initialize resource here then use them.
-            servicesContainer.AddSingleton(servicesContainer); // add itself 
-            servicesContainer.AddSingleton<ILog, Logger>();
-            servicesContainer.AddSingleton(this);
-            servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
-            servicesContainer.AddSingleton<MediaEventSource>();
-            servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
-            servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
-            servicesContainer.AddSingleton<IRpcService, RpcServer>();
-            servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
-            servicesContainer.AddSingleton<MessageCenter>();
 
-            _serviceProvider = servicesContainer.BuildServiceProvider();
+            //Config Service & and run
+            ConfigServices();
 
             //Start the main serice
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
@@ -117,13 +107,32 @@ namespace GB28181Service
 
         }
 
+
+
+        private void ConfigServices()
+        {
+            //we should initialize resource here then use them.
+            servicesContainer.AddSingleton(servicesContainer); // add itself 
+            servicesContainer.AddSingleton<ILog, Logger>();
+            servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
+            servicesContainer.AddSingleton<MediaEventSource>();
+            servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
+            servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
+            servicesContainer.AddSingleton<IRpcService, RpcServer>();
+            servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
+            servicesContainer.AddSingleton<MessageCenter>();
+
+            _serviceProvider = servicesContainer.BuildServiceProvider();
+
+        }
+
+
         private void MainServiceProcessing()
         {
             _keepaliveTime = DateTime.Now;
             try
             {
-                var sipStorage = _serviceProvider.GetService<SipStorage>();
-                sipStorage.Read();
+                var sipStorage = _serviceProvider.GetService<IStorageConfig>();
                 var account = sipStorage.Accounts.First();
                 if (account != null)
                 {
@@ -133,7 +142,6 @@ namespace GB28181Service
                         var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
                         _mainWebSocketRpcServer.Run();
                     });
-
                     // start the Listening SipService in main Service
                     _mainSipTask = Task.Factory.StartNew(() =>
                     {
