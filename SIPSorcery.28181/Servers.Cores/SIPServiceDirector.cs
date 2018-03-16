@@ -9,8 +9,8 @@ namespace SIPSorcery.GB28181.Servers
     public class SIPServiceDirector : ISIPServiceDirector
     {
 
-        private SIPCoreMessageService _sipCoreMessageService;
-        public SIPServiceDirector(SIPCoreMessageService sipCoreMessageService)
+        private ISipCoreService _sipCoreMessageService;
+        public SIPServiceDirector(ISipCoreService sipCoreMessageService)
         {
             _sipCoreMessageService = sipCoreMessageService;
         }

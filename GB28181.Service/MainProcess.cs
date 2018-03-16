@@ -136,17 +136,10 @@ namespace GB28181Service
                 var account = sipStorage.Accounts.First();
                 if (account != null)
                 {
-                    //Run the Rpc Server End
-                    _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
-                    {
-                        var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
-                        _mainWebSocketRpcServer.Run();
-                    });
                     // start the Listening SipService in main Service
                     _mainSipTask = Task.Factory.StartNew(() =>
                     {
-
-                        var _mainSipService = _serviceProvider.GetService<ISipCoreService>();
+                        var _mainSipService = _serviceProvider.GetRequiredService<ISipCoreService>();
                         //Get meassage Handler
                         var messageHandler = _serviceProvider.GetService<MessageCenter>();
                         _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
@@ -165,6 +158,13 @@ namespace GB28181Service
 
                     });
 
+                    //Run the Rpc Server End
+                    _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
+                    {
+                        var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
+                        _mainWebSocketRpcServer.Run();
+                    });
+
                 }
                 else
                 {
@@ -177,8 +177,9 @@ namespace GB28181Service
                 //signal main process exit
                 _eventExitMainProcess.Set();
             }
-            catch (Exception)
+            catch (Exception exMsg)
             {
+                logger.Error(exMsg.Message);
                 _eventExitMainProcess.Set();
             }
             finally

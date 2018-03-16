@@ -4,6 +4,8 @@ using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
+using SIPSorcery.GB28181.Net;
+using System.Collections.Concurrent;
 
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
@@ -13,6 +15,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         void Initialize(List<CameraInfo> cameraList, SIPAccount account);
         void Start();
         void Stop();
+
+        ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService { get; }
+
+        string GetReceiveIP(string content);
+
+        int GetReceivePort(string content, SDPMediaTypesEnum sDPMediaTypes);
 
         void AddMessageRequest(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request);
 
