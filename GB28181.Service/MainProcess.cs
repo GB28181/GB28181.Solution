@@ -19,7 +19,6 @@ namespace GB28181Service
 {
     public class MainProcess : IDisposable
     {
-
         private static ILog logger = AppState.GetLogger("Startup");
         //interface IDisposable implementation
         private bool _already_disposed = false;
@@ -40,7 +39,6 @@ namespace GB28181Service
         private DateTime _keepaliveTime;
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
 
-
         private List<CameraInfo> _cameras = new List<CameraInfo>();
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
@@ -55,7 +53,6 @@ namespace GB28181Service
                 DeviceID = "00151001031003000001",
                 IPAddress = "127.0.0.1",
                 Port = 5060
-
             });
         }
 
@@ -169,7 +166,6 @@ namespace GB28181Service
                     _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                     {
                         var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
-
                         _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
                         _mainWebSocketRpcServer.AddPort(50051);
                         _mainWebSocketRpcServer.Run();
@@ -181,7 +177,6 @@ namespace GB28181Service
                     var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
 
                     mockCaller.MakeVideoRequest("00151001031003000001", new int[] { 50000 }, "192.168.20.21");
-
 
                 }
                 else

@@ -90,7 +90,6 @@ namespace SIPSorcery.GB28181.SIP
     //        ParseDuration = parseDuration;
     //    }
     //}
-
     public class SIPTransport
     {
         private const string RECEIVE_THREAD_NAME = "siptransport-receive";

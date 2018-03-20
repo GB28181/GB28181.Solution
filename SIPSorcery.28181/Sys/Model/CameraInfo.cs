@@ -48,9 +48,9 @@ namespace SIPSorcery.GB28181.Sys.Model
         public string BusinessGroupID { get; set; }
         public string DownloadSpeed { get; set; }
         public long? SVCSpaceSupportMode { get; set; }
+        public long? SVCTimeSupportMode { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public long? SVCTimeSupportMode { get; set; }
         public string Rtsp_Main { get; set; }
         public string Rtsp_Sub { get; set; }
         public string SubordinatePlatform { get; set; }
