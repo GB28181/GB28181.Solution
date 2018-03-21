@@ -94,10 +94,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (UACInviteTransactionTimedOut != null)
-                {
-                    UACInviteTransactionTimedOut(sipTransaction);
-                }
+                UACInviteTransactionTimedOut?.Invoke(sipTransaction);
 
                 if (CDR != null)
                 {
@@ -115,10 +112,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (UACInviteTransactionInformationResponseReceived != null)
-                {
-                    UACInviteTransactionInformationResponseReceived(localSIPEndPoint, remoteEndPoint, sipTransaction, sipResponse);
-                }
+                UACInviteTransactionInformationResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, sipTransaction, sipResponse);
 
                 if (CDR != null)
                 {
@@ -152,10 +146,7 @@ namespace SIPSorcery.GB28181.SIP
                     base.SendRequest(RemoteEndPoint, ackRequest);
                 }
 
-                if (UACInviteTransactionFinalResponseReceived != null)
-                {
-                    UACInviteTransactionFinalResponseReceived(localSIPEndPoint, remoteEndPoint, sipTransaction, sipResponse);
-                }
+                UACInviteTransactionFinalResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, sipTransaction, sipResponse);
 
                 if (CDR != null)
                 {
@@ -252,13 +243,17 @@ namespace SIPSorcery.GB28181.SIP
         /// </remarks>
         private SIPRequest GetNewTransactionACKRequest(SIPResponse sipResponse, SIPURI ackURI, SIPEndPoint localSIPEndPoint)
         {
-            SIPRequest ackRequest = new SIPRequest(SIPMethodsEnum.ACK, ackURI.ToString());
-            ackRequest.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest ackRequest = new SIPRequest(SIPMethodsEnum.ACK, ackURI.ToString())
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
-            SIPHeader header = new SIPHeader(TransactionRequest.Header.From, sipResponse.Header.To, sipResponse.Header.CSeq, sipResponse.Header.CallId);
-            header.CSeqMethod = SIPMethodsEnum.ACK;
-            header.AuthenticationHeader = TransactionRequest.Header.AuthenticationHeader;
-            header.ProxySendFrom = base.TransactionRequest.Header.ProxySendFrom;
+            SIPHeader header = new SIPHeader(TransactionRequest.Header.From, sipResponse.Header.To, sipResponse.Header.CSeq, sipResponse.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.ACK,
+                AuthenticationHeader = TransactionRequest.Header.AuthenticationHeader,
+                ProxySendFrom = base.TransactionRequest.Header.ProxySendFrom
+            };
 
             // If the UAS supplies a desired Record-Route list use that first. Otherwise fall back to any Route list used in the original transaction.
             if (sipResponse.Header.RecordRoutes != null)
@@ -283,14 +278,18 @@ namespace SIPSorcery.GB28181.SIP
         /// </summary>
         private SIPRequest GetInTransactionACKRequest(SIPResponse sipResponse, SIPURI ackURI, SIPEndPoint localSIPEndPoint)
         {
-            SIPRequest ackRequest = new SIPRequest(SIPMethodsEnum.ACK, ackURI.ToString());
-            ackRequest.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest ackRequest = new SIPRequest(SIPMethodsEnum.ACK, ackURI.ToString())
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
-            SIPHeader header = new SIPHeader(TransactionRequest.Header.From, sipResponse.Header.To, sipResponse.Header.CSeq, sipResponse.Header.CallId);
-            header.CSeqMethod = SIPMethodsEnum.ACK;
-            header.AuthenticationHeader = TransactionRequest.Header.AuthenticationHeader;
-            header.Routes = base.TransactionRequest.Header.Routes;
-            header.ProxySendFrom = base.TransactionRequest.Header.ProxySendFrom;
+            SIPHeader header = new SIPHeader(TransactionRequest.Header.From, sipResponse.Header.To, sipResponse.Header.CSeq, sipResponse.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.ACK,
+                AuthenticationHeader = TransactionRequest.Header.AuthenticationHeader,
+                Routes = base.TransactionRequest.Header.Routes,
+                ProxySendFrom = base.TransactionRequest.Header.ProxySendFrom
+            };
 
             ackRequest.Header = header;
 

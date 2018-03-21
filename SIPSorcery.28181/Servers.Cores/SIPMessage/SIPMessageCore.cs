@@ -482,14 +482,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 }
                 else if (response.Header.ContentType.ToLower() == SIPHeader.ContentTypes.Application_SDP)
                 {
+                    var cmdType = GetCmdTypeFromSDP(response.Body);
 
-                    var sessionName = GetSessionName(response.Body);
-                    if (!Enum.TryParse(sessionName, out CommandType cmdType))
+                    if (cmdType == CommandType.Unknown)
                     {
                         OnResponseCodeReceived(response.Status, "接收到未知的SIP消息(application/sdp)", remoteEP);
-                        return;
-                    }
 
+                    }
                     if (cmdType == CommandType.Download)
                     {
                         cmdType = CommandType.Playback;
@@ -858,6 +857,45 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             }
             return 0;
         }
+
+
+        private CommandType GetCmdTypeFromSDP(string body)
+        {
+
+            var targetCmdType = CommandType.Unknown;
+            var textLines = body.Replace("\r", "").Split('\n');
+
+            foreach (var item in textLines)
+            {
+                var values = item.Split('=');
+                if (values.Contains("s"))
+                {
+                    var tmpstr = values[1].ToLower();
+                    if (tmpstr.Contains("back"))
+                    {
+                        targetCmdType = CommandType.Playback;
+                    }
+                    else if (tmpstr.Contains("play") || tmpstr.Contains("ipc"))
+                    {
+                        targetCmdType = CommandType.Play;
+                    }
+
+                }
+                else if (values.Contains("t"))
+                {
+                    if (values[1].Replace(" ", "") == "00")
+                    {
+                        targetCmdType = CommandType.Play;
+                    }
+                    else
+                    {
+                        targetCmdType = CommandType.Playback;
+                    }
+                }
+            }
+            return targetCmdType;
+        }
+
         /// <summary>
         /// 获取SDP协议中SessionName字段值
         /// </summary>
@@ -865,31 +903,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <returns></returns>
         private string GetSessionName(string body)
         {
-            body = body.Replace("\r", "");
-            string[] text = body.Split('\n');//
-            foreach (string item in text)
-            {
-                string[] values = item.Split('=');
-                if (values.Contains("s"))
-                {
-                    if (values[1] == "Play" || values[1] == "Playback" || values[1] == "Embedded IPC" || values[1] == "Download")
-                    {
-                        return values[1].Replace(" ", "");
-                    }
-                }
-                else if (values.Contains("t"))
-                {
-                    if (values[1] == "0 0")
-                    {
-                        return CommandType.Play.ToString();
-                    }
-                    else
-                    {
-                        return CommandType.Playback.ToString();
-                    }
-                }
-            }
-            return null;
+            var textLines = body.Replace("\r", "").Split('\n');
+            var targetline = textLines.FirstOrDefault(item =>
+             {
+                 var values = item.Split('=');
+                 var tmpstr = values[1].ToLower();
+                 return tmpstr.Contains("play") || tmpstr.Contains("download") || tmpstr.Contains("ipc");
+             });
+            return targetline?.Replace(" ", "");
         }
         #endregion
 

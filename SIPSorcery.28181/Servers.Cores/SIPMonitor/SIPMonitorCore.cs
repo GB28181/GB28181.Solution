@@ -36,6 +36,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <summary>
         /// rtp数据通道
         /// </summary>
+        // RTP wil be established from other place 
         private Channel _channel;
         private string _deviceId;
         private SIPRequest _reqSession;
@@ -118,32 +119,34 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         //   public void AckRequest(string toTag, string ip, int port)
         public void AckRequest(SIPResponse response)
         {
-            var ip = _msgCore.GetReceiveIP(response.Body);
-            var port = _msgCore.GetReceivePort(response.Body, SDPMediaTypesEnum.video);
+            #region unused rtp handler 
+            //var ip = _msgCore.GetReceiveIP(response.Body);
+            //var port = _msgCore.GetReceivePort(response.Body, SDPMediaTypesEnum.video);
 
-            if (ip == null)
-            {
-                return;
-            }
-            IPAddress recvIP = IPAddress.Parse(ip);
-            if (_account.StreamProtocol == ProtocolType.Tcp)
-            {
-                _channel = new TCPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
-            }
-            else
-            {
-                _channel = new UDPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
-            }
+            // if (ip == null)
+            // {
+            //      return;
+            //  }
+            //  IPAddress recvIP = IPAddress.Parse(ip);
+            //if (_account.StreamProtocol == ProtocolType.Tcp)
+            //{
+            //    _channel = new TCPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
+            //}
+            //else
+            //{
+            //    _channel = new UDPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
+            //}
             //   _channel.OnFrameReady += RtpChannel_OnFrameReady;
-            _channel.Start();
+            //_channel.Start();
 
+            #endregion
             SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
             SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
             SIPRequest ackReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.ACK, remoteUri);
             SIPFromHeader from = _reqSession.Header.From;
             SIPToHeader to = _reqSession.Header.To;
             to.ToTag = response.Header.To.ToTag;
-            SIPHeader header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId)
+            var header = new SIPHeader(from, to, _reqSession.Header.CSeq, _reqSession.Header.CallId)
             {
                 CSeqMethod = SIPMethodsEnum.ACK,
                 Contact = _reqSession.Header.Contact,

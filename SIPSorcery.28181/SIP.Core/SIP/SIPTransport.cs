@@ -1463,13 +1463,10 @@ namespace SIPSorcery.GB28181.SIP
             catch (Exception excp)
             {
                 FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "Exception SIPTransport. " + excp.Message, SIPValidationFieldsEnum.Unknown, rawSIPMessage);
-
-#if !SILVERLIGHT
                 if (PerformanceMonitorPrefix != null)
                 {
                     SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                 }
-#endif
             }
         }
 

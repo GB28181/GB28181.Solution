@@ -124,10 +124,7 @@ namespace SIPSorcery.GB28181.SIP
         public bool HasTimedOut { get; set; }
 
         private string m_transactionId;
-        public string TransactionId
-        {
-            get { return m_transactionId; }
-        }
+        public string TransactionId => m_transactionId;
 
         private string m_sentBy;                        // The contact address from the top Via header that created the transaction. This is used for matching requests to server transactions.
 
@@ -137,10 +134,7 @@ namespace SIPSorcery.GB28181.SIP
         public DateTime TimedOutAt;                     // If the transaction times out this holds the value it timed out at.
 
         protected string m_branchId;
-        public string BranchId
-        {
-            get { return m_branchId; }
-        }
+        public string BranchId => m_branchId;
 
         protected string m_callId;
         protected string m_localTag;
@@ -152,20 +146,15 @@ namespace SIPSorcery.GB28181.SIP
         {
             get { return m_transactionRequest.URI; }
         }
-        public SIPUserField TransactionRequestFrom
-        {
-            get { return m_transactionRequest.Header.From.FromUserField; }
-        }
+        public SIPUserField TransactionRequestFrom => m_transactionRequest?.Header.From.FromUserField;
+
         public SIPEndPoint RemoteEndPoint;                  // The remote socket that caused the transaction to be created or the socket a newly created transaction request was sent to.             
         public SIPEndPoint LocalSIPEndPoint;                // The local SIP endpoint the remote request was received on the if created by this stack the local SIP end point used to send the transaction.
         public SIPEndPoint OutboundProxy;                   // If not null this value is where ALL transaction requests should be sent to.
         public SIPCDR CDR;
 
         private SIPTransactionStatesEnum m_transactionState = SIPTransactionStatesEnum.Calling;
-        public SIPTransactionStatesEnum TransactionState
-        {
-            get { return m_transactionState; }
-        }
+        public SIPTransactionStatesEnum TransactionState => m_transactionState;
 
         protected SIPRequest m_transactionRequest;          // This is the request which started the transaction and on which it is based.
         public SIPRequest TransactionRequest
@@ -275,7 +264,7 @@ namespace SIPSorcery.GB28181.SIP
 
         public void GotResponse(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPResponse sipResponse)
         {
-            if (TransactionState == SIPTransactionStatesEnum.Completed || TransactionState == SIPTransactionStatesEnum.Confirmed)
+            if (m_transactionState == SIPTransactionStatesEnum.Completed || m_transactionState == SIPTransactionStatesEnum.Confirmed)
             {
                 FireTransactionTraceMessage("Received Duplicate Response " + localSIPEndPoint.ToString() + "<-" + remoteEndPoint + m_crLF + sipResponse.ToString());
 
@@ -299,14 +288,16 @@ namespace SIPSorcery.GB28181.SIP
 
                 if (sipResponse.StatusCode >= 100 && sipResponse.StatusCode <= 199)
                 {
-                    UpdateTransactionState(SIPTransactionStatesEnum.Proceeding);
-                    TransactionInformationResponseReceived(localSIPEndPoint, remoteEndPoint, this, sipResponse);
+                    //  UpdateTransactionState(SIPTransactionStatesEnum.Proceeding);
+                    //  TransactionInformationResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipResponse);
+                    //ignore the respose 
+
                 }
                 else
                 {
                     m_transactionFinalResponse = sipResponse;
                     UpdateTransactionState(SIPTransactionStatesEnum.Completed);
-                    TransactionFinalResponseReceived(localSIPEndPoint, remoteEndPoint, this, sipResponse);
+                    TransactionFinalResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipResponse);
                 }
             }
         }
@@ -324,7 +315,7 @@ namespace SIPSorcery.GB28181.SIP
                 CompletedAt = DateTime.Now;
             }
 
-            if (TransactionStateChanged != null && transactionState != SIPTransactionStatesEnum.Calling)
+            if (TransactionStateChanged != null && transactionState != SIPTransactionStatesEnum.Proceeding && transactionState != SIPTransactionStatesEnum.Calling)
             {
                 FireTransactionStateChangedEvent();
             }
@@ -368,7 +359,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                if (TransactionFinalResponse != null && TransactionState != SIPTransactionStatesEnum.Confirmed)
+                if (TransactionFinalResponse != null && m_transactionState != SIPTransactionStatesEnum.Confirmed)
                 {
                     m_sipTransport.SendResponse(TransactionFinalResponse);
                     Retransmits += 1;
@@ -534,7 +525,7 @@ namespace SIPSorcery.GB28181.SIP
             }
             catch (Exception excp)
             {
-                logger.Error("Exception FireTransactionTimedOut (" + TransactionId + " " + TransactionRequest.URI.ToString() + ", callid=" + TransactionRequest.Header.CallId + ", " + this.GetType().ToString() + "). " + excp.Message);
+                logger.Error("Exception FireTransactionTimedOut (" + m_transactionId + " " + TransactionRequest.URI.ToString() + ", callid=" + TransactionRequest.Header.CallId + ", " + this.GetType().ToString() + "). " + excp.Message);
             }
         }
 
@@ -557,7 +548,7 @@ namespace SIPSorcery.GB28181.SIP
 
         private void FireTransactionStateChangedEvent()
         {
-            FireTransactionTraceMessage("Transaction state changed to " + TransactionState + ".");
+            FireTransactionTraceMessage("Transaction state changed to " + m_transactionState + ".");
             TransactionStateChanged?.Invoke(this);
         }
 
