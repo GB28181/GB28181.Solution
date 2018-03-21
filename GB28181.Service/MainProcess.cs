@@ -50,8 +50,8 @@ namespace GB28181Service
         {
             _cameras.Add(new CameraInfo()
             {
-                DeviceID = "00151001031003000001",
-                IPAddress = "127.0.0.1",
+                DeviceID = "34010000001310000001",
+                IPAddress = "192.168.230.100",
                 Port = 5060
             });
         }
@@ -97,7 +97,7 @@ namespace GB28181Service
             ConfigServices();
 
             //Start the main serice
-            _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
+            _mainTask = Task.Factory.StartNew(() => MainServiceProcessingAsync());
 
             //wait the process exit of main
             _eventExitMainProcess.WaitOne();
@@ -131,7 +131,7 @@ namespace GB28181Service
         }
 
 
-        private void MainServiceProcessing()
+        private async Task MainServiceProcessingAsync()
         {
             _keepaliveTime = DateTime.Now;
             try
@@ -171,12 +171,9 @@ namespace GB28181Service
                         _mainWebSocketRpcServer.Run();
                     });
 
-                    //mock a request here for invite operation.
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
 
-                    var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
+                    await WaitUserCmd();
 
-                    mockCaller.MakeVideoRequest("00151001031003000001", new int[] { 50000 }, "192.168.20.21");
 
                 }
                 else
@@ -203,7 +200,41 @@ namespace GB28181Service
         }
 
 
+        private async Task WaitUserCmd()
+        {
+            await Task.Run(() =>
+             {
+                 while (true)
+                 {
+                     Console.WriteLine("\ninput command : I -Invite, E -Exit");
+                     var inputkey = Console.ReadKey();
+                     switch (inputkey.Key)
+                     {
+                         case ConsoleKey.I:
+                             {
+                                 var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
+                                 mockCaller.MakeVideoRequest("34010000001310000001", new int[] { 50000 }, "192.168.20.21");
+                             }
+                             break;
 
+                         case ConsoleKey.E:
+                             Console.WriteLine("\nexit Process!");
+                             break;
+                         default:
+                             break;
+                     }
+                     if (inputkey.Key == ConsoleKey.E)
+                     {
+                         return 0;
+                     }
+                     else
+                     {
+                         continue;
+                     }
+                 }
+
+             });
+        }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {

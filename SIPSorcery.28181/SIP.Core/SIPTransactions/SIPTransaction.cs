@@ -31,11 +31,6 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using SIPSorcery.GB28181.Sys;
 using Logger4Net;
 
@@ -329,7 +324,7 @@ namespace SIPSorcery.GB28181.SIP
                 CompletedAt = DateTime.Now;
             }
 
-            if (TransactionStateChanged != null)
+            if (TransactionStateChanged != null && transactionState != SIPTransactionStatesEnum.Calling)
             {
                 FireTransactionStateChangedEvent();
             }
@@ -430,7 +425,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             FireTransactionTraceMessage("Send Request reliable " + LocalSIPEndPoint.ToString() + "->" + RemoteEndPoint + m_crLF + TransactionRequest.ToString());
 
-            if (TransactionType == SIPTransactionTypesEnum.Invite && this.TransactionRequest.Method == SIPMethodsEnum.INVITE)
+            if (TransactionType == SIPTransactionTypesEnum.Invite && TransactionRequest.Method == SIPMethodsEnum.INVITE)
             {
                 UpdateTransactionState(SIPTransactionStatesEnum.Calling);
             }
@@ -564,7 +559,6 @@ namespace SIPSorcery.GB28181.SIP
         {
             FireTransactionTraceMessage("Transaction state changed to " + TransactionState + ".");
             TransactionStateChanged?.Invoke(this);
-
         }
 
         private void FireTransactionTraceMessage(string message)
