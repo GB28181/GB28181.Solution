@@ -91,7 +91,7 @@ namespace SIPSorcery.GB28181.Servers
     ///    persistence class. Of those threads there will be one that runs calling the SIPRegistrations.IdentifyDirtyContacts. This call identifies
     ///    expired contacts and initiates the sending of any keep alive and OPTIONs requests.
     /// </summary>
-    public class RegistrarCore
+    public class SIPRegistrarCore : ISIPRegistrarCore
     {
         private const int MAX_REGISTER_QUEUE_SIZE = 1000;
         private const int MAX_PROCESS_REGISTER_SLEEP = 10000;
@@ -101,7 +101,7 @@ namespace SIPSorcery.GB28181.Servers
 
         private int m_minimumBindingExpiry = SIPRegistrarBindingsManager.MINIMUM_EXPIRY_SECONDS;
 
-        private SIPTransport m_sipTransport;
+        private ISIPTransport m_sipTransport;
         private SIPAuthenticateRequestDelegate SIPRequestAuthenticator_External = null;
         //private SIPAssetPersistor<Customer> CustomerPersistor_External;
 
@@ -125,8 +125,8 @@ namespace SIPSorcery.GB28181.Servers
 
         public bool _needAuthentication;
 
-        public RegistrarCore(
-            SIPTransport sipTransport,
+        public SIPRegistrarCore(
+            ISIPTransport sipTransport,
             bool mangleUACContact,
             bool strictRealmHandling,
             SIPAuthenticateRequestDelegate sipRequestAuthenticator)
@@ -189,7 +189,7 @@ namespace SIPSorcery.GB28181.Servers
                     {
                         if (m_registerQueue.Count < MAX_REGISTER_QUEUE_SIZE)
                         {
-                            SIPNonInviteTransaction registrarTransaction = m_sipTransport.CreateNonInviteTransaction(registerRequest, remoteEndPoint, localSIPEndPoint, null);
+                            var registrarTransaction = m_sipTransport.CreateNonInviteTransaction(registerRequest, remoteEndPoint, localSIPEndPoint, null);
                             lock (m_registerQueue)
                             {
                                 m_registerQueue.Enqueue(registrarTransaction);

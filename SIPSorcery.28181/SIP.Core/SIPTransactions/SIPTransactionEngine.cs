@@ -71,22 +71,22 @@ namespace SIPSorcery.GB28181.SIP
                 return null;
             }
 
-            SIPMethodsEnum transactionMethod = (sipRequest.Method != SIPMethodsEnum.ACK) ? sipRequest.Method : SIPMethodsEnum.INVITE;
-            string transactionId = SIPTransaction.GetRequestTransactionId(sipRequest.Header.Vias.TopViaHeader.Branch, transactionMethod);
-            string contactAddress = (sipRequest.Header.Contact != null && sipRequest.Header.Contact.Count > 0) ? sipRequest.Header.Contact[0].ToString() : "no contact";
+            var transactionMethod = (sipRequest.Method != SIPMethodsEnum.ACK) ? sipRequest.Method : SIPMethodsEnum.INVITE;
+            var transactionId = SIPTransaction.GetRequestTransactionId(sipRequest.Header.Vias.TopViaHeader.Branch, transactionMethod);
+            var contactAddress = (sipRequest.Header.Contact != null && sipRequest.Header.Contact.Count > 0) ? sipRequest.Header.Contact[0].ToString() : "no contact";
 
             lock (m_transactions)
             {
                 //if (transactionMethod == SIPMethodsEnum.ACK)
                 //{
-                    //logger.Info("Matching ACK with contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + ".");
+                //logger.Info("Matching ACK with contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + ".");
                 //}
 
                 if (transactionId != null && m_transactions.ContainsKey(transactionId))
                 {
                     //if (transactionMethod == SIPMethodsEnum.ACK)
                     //{
-                        //logger.Info("ACK for contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + " was matched by branchid.");
+                    //logger.Info("ACK for contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + " was matched by branchid.");
                     //}
 
                     return m_transactions[transactionId];
@@ -128,7 +128,7 @@ namespace SIPSorcery.GB28181.SIP
 
                                     return transaction;
                                 }
-                                else if (transaction.TransactionRequest.Header.CallId == sipRequest.Header.CallId && 
+                                else if (transaction.TransactionRequest.Header.CallId == sipRequest.Header.CallId &&
                                     transaction.TransactionFinalResponse.Header.CSeq == sipRequest.Header.CSeq &&
                                     IsCallIdUniqueForPending(sipRequest.Header.CallId))
                                 {
@@ -290,14 +290,14 @@ namespace SIPSorcery.GB28181.SIP
         }
 
         public void PrintPendingTransactions()
-         {
-             logger.Debug("=== Pending Transactions ===");
+        {
+            logger.Debug("=== Pending Transactions ===");
 
-             foreach (SIPTransaction transaction in m_transactions.Values)
-             {
-                 logger.Debug(" Pending tansaction " + transaction.TransactionRequest.Method + " " + transaction.TransactionState + " " + DateTime.Now.Subtract(transaction.Created).TotalSeconds.ToString("0.##") + "s " + transaction.TransactionRequestURI.ToString() + " (" + transaction.TransactionId + ").");
-             }
-         }
+            foreach (SIPTransaction transaction in m_transactions.Values)
+            {
+                logger.Debug(" Pending tansaction " + transaction.TransactionRequest.Method + " " + transaction.TransactionState + " " + DateTime.Now.Subtract(transaction.Created).TotalSeconds.ToString("0.##") + "s " + transaction.TransactionRequestURI.ToString() + " (" + transaction.TransactionId + ").");
+            }
+        }
 
         /// <summary>
         /// Should not normally be used as transactions will time out after the retransmit window has expired. This method is 
@@ -342,13 +342,13 @@ namespace SIPSorcery.GB28181.SIP
         private bool IsCallIdUniqueForPending(string callId)
         {
             bool match = false;
-            
+
             lock (m_transactions)
             {
                 foreach (SIPTransaction transaction in m_transactions.Values)
                 {
-                    if (transaction.TransactionType == SIPTransactionTypesEnum.Invite && 
-                        transaction.TransactionFinalResponse != null && 
+                    if (transaction.TransactionType == SIPTransactionTypesEnum.Invite &&
+                        transaction.TransactionFinalResponse != null &&
                         transaction.TransactionState == SIPTransactionStatesEnum.Completed &&
                         transaction.TransactionRequest.Header.CallId == callId)
                     {
@@ -369,7 +369,7 @@ namespace SIPSorcery.GB28181.SIP
 
         #region Unit testing.
 
-       #if UNITTEST
+#if UNITTEST
        
         [TestFixture]
         public class SIPTransactionEngineUnitTest
@@ -580,7 +580,7 @@ namespace SIPSorcery.GB28181.SIP
                 return inviteRequest;
             }
 
-            #region Logging
+        #region Logging
 
             void SetTransportTraceEvents(SIPTransport transport)
             {
@@ -655,10 +655,10 @@ namespace SIPSorcery.GB28181.SIP
                 Console.WriteLine("Bad Request: " + localEndPoint + "<-" + fromEndPoint.ToString() + " " + errorField + "." + message + "\n" + rawMessage);
             }
 
-            #endregion
+        #endregion
         }
 
-        #endif
+#endif
 
         #endregion
     }

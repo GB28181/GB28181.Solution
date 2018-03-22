@@ -90,7 +90,7 @@ namespace SIPSorcery.GB28181.SIP
     //        ParseDuration = parseDuration;
     //    }
     //}
-    public class SIPTransport
+    public class SIPTransport : ISIPTransport
     {
         private const string RECEIVE_THREAD_NAME = "siptransport-receive";
         private const string RELIABLES_THREAD_NAME = "siptransport-reliables";

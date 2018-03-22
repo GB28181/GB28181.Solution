@@ -31,7 +31,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
-        private RegistrarCore _registrarCore;
+        private SIPRegistrarCore _registrarCore;
         private SIPAccount _account;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
@@ -151,7 +151,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
                 var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, account));
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, _account));
             });
         }
 
@@ -176,12 +176,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 Transport.SIPTransportRequestReceived += AddMessageRequest;
                 Transport.SIPTransportResponseReceived += AddMessageResponse;
 
-                _registrarCore = new RegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
+                _registrarCore = new SIPRegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
                 {
                     _needAuthentication = _account.Authentication
                 };
 
                 logger.Debug("SIPRegistrarCore thread started ");
+                //  m_registrarCore.Start(1);
                 Task.Factory.StartNew(() => _registrarCore.ProcessRegisterRequest());
 
                 logger.Debug("SIP Registrar successfully started at " + _account.LocalIP + ":" + _account.LocalPort);
