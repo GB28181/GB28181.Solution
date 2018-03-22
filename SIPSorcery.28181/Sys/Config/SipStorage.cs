@@ -20,7 +20,7 @@ namespace SIPSorcery.GB28181.Sys.Config
         //连接字符串
         private static string m_connStr;
 
-        private static SipStorage _instance;
+     //   private static SipStorage _instance;
 
         private List<SIPAccount> _accountsCache = null;
 

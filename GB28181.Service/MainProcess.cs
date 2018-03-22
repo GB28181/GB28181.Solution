@@ -14,6 +14,8 @@ using GrpcAgent;
 using GrpcAgent.WebsocketRpcServer;
 using MediaContract;
 using SIPSorcery.GB28181.Servers;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace GB28181Service
 {
@@ -93,11 +95,19 @@ namespace GB28181Service
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            // config info for .net core https://www.cnblogs.com/Leo_wl/p/5745772.html#_label3
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
+            var config = builder.Build();//// Console.WriteLine(config["sipaccount:ID"]);
+
+            var sect =  config.GetSection("sipaccounts");
+
             //Config Service & and run
-            ConfigServices();
+            ConfigServices(config);
 
             //Start the main serice
-            _mainTask = Task.Factory.StartNew(() => MainServiceProcessingAsync());
+            _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
             //wait the process exit of main
             _eventExitMainProcess.WaitOne();
@@ -113,10 +123,11 @@ namespace GB28181Service
 
         }
 
-        private void ConfigServices()
+        private void ConfigServices(IConfigurationRoot iconfig)
         {
             //we should initialize resource here then use them.
             servicesContainer.AddSingleton(servicesContainer); // add itself 
+            servicesContainer.AddSingleton(iconfig); // add itself 
             servicesContainer.AddSingleton<ILog, Logger>();
             servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
             servicesContainer.AddSingleton<MediaEventSource>();
@@ -131,7 +142,7 @@ namespace GB28181Service
         }
 
 
-        private async Task MainServiceProcessingAsync()
+        private void MainServiceProcessing()
         {
             _keepaliveTime = DateTime.Now;
             try
@@ -172,9 +183,9 @@ namespace GB28181Service
                     });
 
 
-                    await WaitUserCmd();
+                    var abc = WaitUserCmd();
 
-
+                    abc.Wait();
                 }
                 else
                 {

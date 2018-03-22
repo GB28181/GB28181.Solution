@@ -114,15 +114,9 @@ namespace SIPSorcery.GB28181.SIP
 
         private void UASInviteTransaction_TransactionTimedOut(SIPTransaction sipTransaction)
         {
-            if (UASInviteTransactionTimedOut != null)
-            {
-                UASInviteTransactionTimedOut(this);
-            }
+            UASInviteTransactionTimedOut?.Invoke(this);
+            CDR?.TimedOut();
 
-            if (CDR != null)
-            {
-                CDR.TimedOut();
-            }
         }
 
         private void UASInviteTransaction_TransactionResponseReceived(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPTransaction sipTransaction, SIPResponse sipResponse)
@@ -221,10 +215,7 @@ namespace SIPSorcery.GB28181.SIP
                     SIPResponse cancelResponse = SIPTransport.GetResponse(TransactionRequest, SIPResponseStatusCodesEnum.RequestTerminated, null);
                     SendFinalResponse(cancelResponse);
 
-                    if (UASInviteTransactionCancelled != null)
-                    {
-                        UASInviteTransactionCancelled(this);
-                    }
+                    UASInviteTransactionCancelled?.Invoke(this);
                 }
                 else
                 {

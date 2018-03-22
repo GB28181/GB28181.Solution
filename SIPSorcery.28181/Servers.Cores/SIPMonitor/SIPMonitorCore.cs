@@ -37,7 +37,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// rtp数据通道
         /// </summary>
         // RTP wil be established from other place 
-        private Channel _channel;
+      //  private Channel _channel;
         private string _deviceId;
         private SIPRequest _reqSession;
         private int[] _mediaPort;
@@ -226,11 +226,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// </summary>
         public void Stop()
         {
-            if (_channel != null)
-            {
-                _channel.OnFrameReady -= RtpChannel_OnFrameReady;
-                _channel.Stop();
-            }
+            //if (_channel != null)
+            //{
+            //    _channel.OnFrameReady -= RtpChannel_OnFrameReady;
+            //    _channel.Stop();
+            //}
             if (m_fs != null)
             {
                 m_fs.Close();

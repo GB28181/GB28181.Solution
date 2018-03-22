@@ -49,7 +49,6 @@ namespace SIPSorcery.GB28181.SIP
         Proceeding = 4,
         Terminated = 5,
         Trying = 6,
-
         Cancelled = 7,      // This state is not in the SIP RFC but is deemed the most practical way to record that an INVITE has been cancelled. Other states will have ramifications for the transaction lifetime.
     }
 
@@ -288,9 +287,17 @@ namespace SIPSorcery.GB28181.SIP
 
                 if (sipResponse.StatusCode >= 100 && sipResponse.StatusCode <= 199)
                 {
-                    //  UpdateTransactionState(SIPTransactionStatesEnum.Proceeding);
-                    //  TransactionInformationResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipResponse);
-                    //ignore the respose 
+                    UpdateTransactionState(SIPTransactionStatesEnum.Proceeding);
+
+                    if (sipResponse.Header.CSeqMethod == SIPMethodsEnum.INVITE)
+                    {
+                        //ignore the respose of 100 trying 
+                    }
+                    else
+                    {
+                        TransactionInformationResponseReceived?.Invoke(localSIPEndPoint, remoteEndPoint, this, sipResponse);
+                    }
+
 
                 }
                 else
