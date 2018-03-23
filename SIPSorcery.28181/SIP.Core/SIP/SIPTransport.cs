@@ -119,7 +119,7 @@ namespace SIPSorcery.GB28181.SIP
 
         private Dictionary<string, SIPChannel> m_sipChannels = new Dictionary<string, SIPChannel>();    // List of the physical channels that have been opened and are under management by this instance.
 
-        private SIPTransactionEngine m_transactionEngine;
+        private ISIPTransactionEngine _transactionEngine;
 
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
@@ -133,7 +133,7 @@ namespace SIPSorcery.GB28181.SIP
         public event SIPTransportSIPBadMessageDelegate SIPBadRequestInTraceEvent;
         public event SIPTransportSIPBadMessageDelegate SIPBadResponseInTraceEvent;
 
-        public string PerformanceMonitorPrefix;                              // Allows an application to set the prefix for the performance monitor counter it wants to use for tracking the SIP transport metrics.
+        public string PerformanceMonitorPrefix { get; set; }                            // Allows an application to set the prefix for the performance monitor counter it wants to use for tracking the SIP transport metrics.
         public string MsgEncode { get; set; }
 
         public IPAddress ContactIPAddress;          // If set this address will be passed to the UAS Invite transaction so it can be used as the Contact address in Ok responses.
@@ -148,23 +148,23 @@ namespace SIPSorcery.GB28181.SIP
             get { return m_reliableTransmissions.Count; }
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine)
+        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine)
         {
             ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            m_transactionEngine = transactionEngine;
+            _transactionEngine = transactionEngine;
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, bool queueIncoming)
+        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine, bool queueIncoming)
         {
             ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            m_transactionEngine = transactionEngine;
+            _transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
+        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
         {
             ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            m_transactionEngine = transactionEngine;
+            _transactionEngine = transactionEngine;
             AddSIPChannel(sipChannel);
 
             m_queueIncoming = queueIncoming;
@@ -835,7 +835,7 @@ namespace SIPSorcery.GB28181.SIP
             {
                 while (!m_closed)
                 {
-                    m_transactionEngine.RemoveExpiredTransactions();
+                    _transactionEngine.RemoveExpiredTransactions();
 
                     while (m_inMessageQueue.Count > 0)
                     {
@@ -1300,9 +1300,9 @@ namespace SIPSorcery.GB28181.SIP
                                             FireSIPResponseInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipResponse);
                                         }
 
-                                        if (m_transactionEngine != null && m_transactionEngine.Exists(sipResponse))
+                                        if (_transactionEngine != null && _transactionEngine.Exists(sipResponse))
                                         {
-                                            SIPTransaction transaction = m_transactionEngine.GetTransaction(sipResponse);
+                                            var transaction = _transactionEngine.GetTransaction(sipResponse);
 
                                             if (transaction.TransactionState != SIPTransactionStatesEnum.Completed)
                                             {
@@ -1357,7 +1357,7 @@ namespace SIPSorcery.GB28181.SIP
 
                                         // Stateful cores will create transactions once they get the request and the transport layer will use those transactions.
                                         // Stateless cores will not be affected by this step as the transaction layer will always return false.
-                                        SIPTransaction requestTransaction = m_transactionEngine?.GetTransaction(sipRequest);
+                                        SIPTransaction requestTransaction = _transactionEngine?.GetTransaction(sipRequest);
                                         if (requestTransaction != null)
                                         {
                                             if (requestTransaction.TransactionState == SIPTransactionStatesEnum.Completed && sipRequest.Method != SIPMethodsEnum.ACK)
@@ -1531,11 +1531,11 @@ namespace SIPSorcery.GB28181.SIP
 
         public bool DoesTransactionExist(SIPRequest sipRequest)
         {
-            if (m_transactionEngine == null)
+            if (_transactionEngine == null)
             {
                 return false;
             }
-            else if (m_transactionEngine.GetTransaction(sipRequest) != null)
+            else if (_transactionEngine.GetTransaction(sipRequest) != null)
             {
                 return true;
             }
@@ -1756,13 +1756,13 @@ namespace SIPSorcery.GB28181.SIP
         public SIPTransaction GetTransaction(string transactionId)
         {
             CheckTransactionEngineExists();
-            return m_transactionEngine.GetTransaction(transactionId);
+            return _transactionEngine.GetTransaction(transactionId);
         }
 
         public SIPTransaction GetTransaction(SIPRequest sipRequest)
         {
             CheckTransactionEngineExists();
-            return m_transactionEngine.GetTransaction(sipRequest);
+            return _transactionEngine.GetTransaction(sipRequest);
         }
 
         public SIPNonInviteTransaction CreateNonInviteTransaction(SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy)
@@ -1776,7 +1776,7 @@ namespace SIPSorcery.GB28181.SIP
 
                 CheckTransactionEngineExists();
                 SIPNonInviteTransaction nonInviteTransaction = new SIPNonInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy);
-                m_transactionEngine.AddTransaction(nonInviteTransaction);
+                _transactionEngine.AddTransaction(nonInviteTransaction);
                 return nonInviteTransaction;
             }
             catch (Exception excp)
@@ -1797,7 +1797,7 @@ namespace SIPSorcery.GB28181.SIP
 
                 CheckTransactionEngineExists();
                 UACInviteTransaction uacInviteTransaction = new UACInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy, sendOkAckManually);
-                m_transactionEngine.AddTransaction(uacInviteTransaction);
+                _transactionEngine.AddTransaction(uacInviteTransaction);
                 return uacInviteTransaction;
             }
             catch (Exception excp)
@@ -1818,7 +1818,7 @@ namespace SIPSorcery.GB28181.SIP
 
                 CheckTransactionEngineExists();
                 UASInviteTransaction uasInviteTransaction = new UASInviteTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy, ContactIPAddress, noCDR);
-                m_transactionEngine.AddTransaction(uasInviteTransaction);
+                _transactionEngine.AddTransaction(uasInviteTransaction);
                 return uasInviteTransaction;
             }
             catch (Exception excp)
@@ -1839,7 +1839,7 @@ namespace SIPSorcery.GB28181.SIP
 
                 CheckTransactionEngineExists();
                 SIPCancelTransaction cancelTransaction = new SIPCancelTransaction(this, sipRequest, dstEndPoint, localSIPEndPoint, inviteTransaction);
-                m_transactionEngine.AddTransaction(cancelTransaction);
+                _transactionEngine.AddTransaction(cancelTransaction);
                 return cancelTransaction;
             }
             catch (Exception excp)
@@ -1851,7 +1851,7 @@ namespace SIPSorcery.GB28181.SIP
 
         private void CheckTransactionEngineExists()
         {
-            if (m_transactionEngine == null)
+            if (_transactionEngine == null)
             {
                 throw new ApplicationException("A transaction engine is required for this operation but one has not been provided.");
             }

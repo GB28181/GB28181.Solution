@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace SIPSorcery.GB28181.SIP
 {
-    public class SIPTransactionEngine
+    public class SIPTransactionEngine : ISIPTransactionEngine
     {
         protected static ILog logger = AssemblyState.logger;
 

@@ -31,7 +31,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
-        private SIPRegistrarCore _registrarCore;
+        private ISIPRegistrarCore _registrarCore;
         private SIPAccount _account;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
@@ -53,7 +53,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// sip传输请求
         /// </summary>
-        internal SIPTransport Transport;
+        private ISIPTransport _transport;
         /// <summary>
         /// 本地域的sip编码
         /// </summary>
@@ -134,10 +134,16 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #endregion
 
-        #region 初始化
 
+        public SIPCoreMessageService(ISIPTransport transport, ISIPRegistrarCore registrarCore)
+        {
 
-        #endregion
+            _registrarCore = registrarCore;
+
+            _transport = transport;
+            _transport.SIPTransportRequestReceived += AddMessageRequest;
+            _transport.SIPTransportResponseReceived += AddMessageResponse;
+        }
 
         #region 初始化资源，缓存注册上来的设备信息
         public void Initialize(List<CameraInfo> cameraList, SIPAccount account)
@@ -153,6 +159,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
                 _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, _account));
             });
+
+
+
         }
 
         #endregion
@@ -165,18 +174,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 logger.Debug("SIP Registrar daemon starting...");
 
                 // Configure the SIP transport layer.
-                Transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false)
-                {
-                    PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX,
-                    MsgEncode = _account.MsgEncode
-                };
+                _transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
-                Transport.AddSIPChannel(sipChannels);
 
-                Transport.SIPTransportRequestReceived += AddMessageRequest;
-                Transport.SIPTransportResponseReceived += AddMessageResponse;
+                _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
+                _transport.MsgEncode = _account.MsgEncode;
+                _transport.AddSIPChannel(sipChannels);
 
-                _registrarCore = new SIPRegistrarCore(Transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
+
+                _registrarCore = new SIPRegistrarCore(_transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
                 {
                     _needAuthentication = _account.Authentication
                 };
@@ -213,8 +219,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 logger.Debug("SIP Registrar daemon stopping...");
                 logger.Debug("Shutting down SIP Transport.");
 
-                Transport.Shutdown();
-                Transport = null;
+                _transport.Shutdown();
+                _transport = null;
 
                 logger.Debug("sip message service stopped.");
                 logger.Debug("SIP Registrar daemon stopped.");
@@ -295,7 +301,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             _byeRemoteEP = remoteEP;
             int[] port = SetMediaPort();
             var trying = GetResponse(localEP, remoteEP, SIPResponseStatusCodesEnum.Trying, "", request);
-            Transport.SendResponse(trying);
+            _transport.SendResponse(trying);
             //Thread.Sleep(200);
             SIPResponse audioOK = GetResponse(localEP, remoteEP, SIPResponseStatusCodesEnum.Ok, "", request);
             audioOK.Header.ContentType = "application/sdp";
@@ -308,7 +314,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             //SDP
             audioOK.Body = SetMediaAudio(localEP.Address.ToString(), port[0], request.URI.User);
             _audioResponse = audioOK;
-            Transport.SendResponse(audioOK);
+            _transport.SendResponse(audioOK);
             int recvPort = GetReceivePort(request.Body, SDPMediaTypesEnum.audio);
             string ip = GetReceiveIP(request.Body);
             _audioRemoteEP = new IPEndPoint(IPAddress.Parse(ip), recvPort);
@@ -768,7 +774,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 return;
             }
             SIPResponse res = GetResponse(localEP, remoteEP, SIPResponseStatusCodesEnum.Ok, "", request);
-            Transport.SendResponse(res);
+            _transport.SendResponse(res);
         }
 
         /// <summary>
@@ -783,7 +789,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Wait);
                 return;
             }
-            Transport.SendRequest(remoteEP, request);
+            _transport.SendRequest(remoteEP, request);
         }
 
         /// <summary>
@@ -798,9 +804,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 OnSIPServiceChange(remoteEP.ToHost(), ServiceStatus.Wait);
                 return;
             }
-            var trans = Transport.CreateUASTransaction(request, remoteEP, LocalEP, null);
-            trans.TransactionStateChanged += Trans_TransactionStateChanged;
-            trans.SendReliableRequest();
+            var transaction = _transport.CreateUASTransaction(request, remoteEP, LocalEP, null);
+            transaction.TransactionStateChanged += Trans_TransactionStateChanged;
+            transaction.SendReliableRequest();
         }
 
         private void Trans_TransactionStateChanged(SIPTransaction transaction)
@@ -989,7 +995,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             SIPURI localUri = new SIPURI(LocalSIPId, LocalEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, null);
-            SIPRequest catalogReq = Transport.GetRequest(SIPMethodsEnum.MESSAGE, remoteUri);
+            SIPRequest catalogReq = _transport.GetRequest(SIPMethodsEnum.MESSAGE, remoteUri);
             catalogReq.Header.From = from;
             catalogReq.Header.Contact = null;
             catalogReq.Header.Allow = null;
@@ -1036,7 +1042,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             SIPURI localUri = new SIPURI(LocalSIPId, LocalEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, null);
-            SIPRequest catalogReq = Transport.GetRequest(SIPMethodsEnum.SUBSCRIBE, remoteUri);
+            SIPRequest catalogReq = _transport.GetRequest(SIPMethodsEnum.SUBSCRIBE, remoteUri);
 
             catalogReq.Header.From = from;
             //catalogReq.Header.Contact = null;
