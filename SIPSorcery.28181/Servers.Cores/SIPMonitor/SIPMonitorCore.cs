@@ -26,7 +26,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         //concurent requet/reply
         private ConcurrentDictionary<int, SIPRequest> _syncRequestContext = new ConcurrentDictionary<int, SIPRequest>();
         private ConcurrentQueue<Tuple<SIPRequest, SIPResponse>> _syncResponseContext = new ConcurrentQueue<Tuple<SIPRequest, SIPResponse>>();
-        private SIPCoreMessageService _msgCore;
+        private ISipCoreService _msgCore;
         /// <summary>
         /// 远程终结点
         /// </summary>
@@ -55,7 +55,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         #endregion
 
         #region 初始化监控
-        public SIPMonitorCore(SIPCoreMessageService msgCore, string deviceId,
+        public SIPMonitorCore(ISipCoreService msgCore, string deviceId,
             SIPEndPoint remoteEP, SIPAccount account)
         {
             _msgCore = msgCore;

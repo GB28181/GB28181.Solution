@@ -49,15 +49,21 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <summary>
         /// 本地sip终结点
         /// </summary>
-        internal SIPEndPoint LocalEP;
+        public SIPEndPoint LocalEP { get; set; }
         /// <summary>
         /// sip传输请求
         /// </summary>
         private ISIPTransport _transport;
+
+
+        public ISIPTransport Transport => _transport;
+
         /// <summary>
         /// 本地域的sip编码
         /// </summary>
-        internal string LocalSIPId;
+        public string LocalSIPId { get; set; }
+
+
         public ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService => _nodeMonitorService;
 
         private Stream _g711Stream;
@@ -140,6 +146,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
             _registrarCore = registrarCore;
 
+            // Configure the SIP transport layer.
             _transport = transport;
             _transport.SIPTransportRequestReceived += AddMessageRequest;
             _transport.SIPTransportResponseReceived += AddMessageResponse;
@@ -173,19 +180,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 logger.Debug("SIP Registrar daemon starting...");
 
-                // Configure the SIP transport layer.
-                _transport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
 
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 _transport.MsgEncode = _account.MsgEncode;
                 _transport.AddSIPChannel(sipChannels);
-
-
-                _registrarCore = new SIPRegistrarCore(_transport, true, true, SIPRequestAuthenticator.AuthenticateSIPRequest)
-                {
-                    _needAuthentication = _account.Authentication
-                };
+                _registrarCore.NeedAuthentication = _account.Authentication;
 
                 logger.Debug("SIPRegistrarCore thread started ");
                 //  m_registrarCore.Start(1);

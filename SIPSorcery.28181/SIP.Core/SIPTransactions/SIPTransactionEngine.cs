@@ -21,9 +21,6 @@ namespace SIPSorcery.GB28181.SIP
             get { return m_transactions.Count; }
         }
 
-        public SIPTransactionEngine()
-        { }
-
         public void AddTransaction(SIPTransaction sipTransaction)
         {
             RemoveExpiredTransactions();

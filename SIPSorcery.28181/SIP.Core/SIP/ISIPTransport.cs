@@ -8,7 +8,7 @@ namespace SIPSorcery.GB28181.SIP
         event SIPTransportRequestDelegate SIPTransportRequestReceived;
         event SIPTransportResponseDelegate SIPTransportResponseReceived;
 
-        string PerformanceMonitorPrefix { get; set; };                              // Allows an application to set the prefix for the performance monitor counter it wants to use for tracking the SIP transport metrics.
+        string PerformanceMonitorPrefix { get; set; }                              // Allows an application to set the prefix for the performance monitor counter it wants to use for tracking the SIP transport metrics.
         string MsgEncode { get; set; }
 
         void Shutdown();

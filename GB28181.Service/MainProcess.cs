@@ -16,6 +16,7 @@ using MediaContract;
 using SIPSorcery.GB28181.Servers;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using SIPSorcery.GB28181.SIP;
 
 namespace GB28181Service
 {
@@ -101,7 +102,7 @@ namespace GB28181Service
                 .AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
             var config = builder.Build();//// Console.WriteLine(config["sipaccount:ID"]);
 
-            var sect =  config.GetSection("sipaccounts");
+            var sect = config.GetSection("sipaccounts");
 
             //Config Service & and run
             ConfigServices(config);
@@ -134,9 +135,10 @@ namespace GB28181Service
             servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
             servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
             servicesContainer.AddSingleton<IRpcService, RpcServer>();
+            servicesContainer.AddTransient<ISIPTransactionEngine, SIPTransactionEngine>();
+            servicesContainer.AddSingleton<ISIPTransport, SIPTransport>();
             servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
             servicesContainer.AddSingleton<MessageCenter>();
-
             _serviceProvider = servicesContainer.BuildServiceProvider();
 
         }

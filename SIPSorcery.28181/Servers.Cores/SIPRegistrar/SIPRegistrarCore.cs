@@ -101,10 +101,10 @@ namespace SIPSorcery.GB28181.Servers
 
         private int m_minimumBindingExpiry = SIPRegistrarBindingsManager.MINIMUM_EXPIRY_SECONDS;
 
-        private ISIPTransport m_sipTransport;
-        private SIPAuthenticateRequestDelegate SIPRequestAuthenticator_External = null;
-        //private SIPAssetPersistor<Customer> CustomerPersistor_External;
+        private ISIPTransport _sipTransport;
 
+        private SIPAuthenticateRequestDelegate _sipRequestAuthenticator_External = SIPRequestAuthenticator.AuthenticateSIPRequest;
+        //private SIPAssetPersistor<Customer> CustomerPersistor_External;
         private string m_serverAgent = SIPConstants.SIP_USERAGENT_STRING;
         private bool m_mangleUACContact = false;            // Whether or not to adjust contact URIs that contain private hosts to the value of the bottom via received socket.
         private bool m_strictRealmHandling = false;         // If true the registrar will only accept registration requests for domains it is configured for, otherwise any realm is accepted.
@@ -116,26 +116,17 @@ namespace SIPSorcery.GB28181.Servers
 
         public event Action<double, bool> RegisterComplete;     // Event to allow hook into get notifications about the processing time for registrations. The boolean parameter is true of the request contained an authentication header.
 
-        public int BacklogLength
-        {
-            get { return m_registerQueue.Count; }
-        }
+        public int BacklogLength => m_registerQueue.Count;
 
         public bool Stop;
 
-        public bool _needAuthentication;
+        public bool NeedAuthentication { get; set; }
 
-        public SIPRegistrarCore(
-            ISIPTransport sipTransport,
-            bool mangleUACContact,
-            bool strictRealmHandling,
-            SIPAuthenticateRequestDelegate sipRequestAuthenticator)
+        public SIPRegistrarCore(ISIPTransport sipTransport, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
-            m_sipTransport = sipTransport;
+            _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;
-            SIPRequestAuthenticator_External = sipRequestAuthenticator;
-            m_serverAgent = SIPConstants.SIP_SERVER_STRING;
         }
 
         //public void Start(int threadCount)
@@ -164,32 +155,32 @@ namespace SIPSorcery.GB28181.Servers
                     {
                         logger.Debug("Bad register request, no To header from " + remoteEndPoint + ".");
                         SIPResponse badReqResponse = SIPTransport.GetResponse(registerRequest, SIPResponseStatusCodesEnum.BadRequest, "Missing To header");
-                        m_sipTransport.SendResponse(badReqResponse);
+                        _sipTransport.SendResponse(badReqResponse);
                     }
                     else if (registerRequest.Header.To.ToURI.User.IsNullOrBlank())
                     {
                         logger.Debug("Bad register request, no To user from " + remoteEndPoint + ".");
                         SIPResponse badReqResponse = SIPTransport.GetResponse(registerRequest, SIPResponseStatusCodesEnum.BadRequest, "Missing username on To header");
-                        m_sipTransport.SendResponse(badReqResponse);
+                        _sipTransport.SendResponse(badReqResponse);
                     }
                     else if (registerRequest.Header.Contact == null || registerRequest.Header.Contact.Count == 0)
                     {
                         logger.Debug("Bad register request, no Contact header from " + remoteEndPoint + ".");
                         SIPResponse badReqResponse = SIPTransport.GetResponse(registerRequest, SIPResponseStatusCodesEnum.BadRequest, "Missing Contact header");
-                        m_sipTransport.SendResponse(badReqResponse);
+                        _sipTransport.SendResponse(badReqResponse);
                     }
                     else if (requestedExpiry > 0 && requestedExpiry < m_minimumBindingExpiry)
                     {
                         logger.Debug("Bad register request, no expiry of " + requestedExpiry + " to small from " + remoteEndPoint + ".");
                         SIPResponse tooFrequentResponse = GetErrorResponse(registerRequest, SIPResponseStatusCodesEnum.IntervalTooBrief, null);
                         tooFrequentResponse.Header.MinExpires = m_minimumBindingExpiry;
-                        m_sipTransport.SendResponse(tooFrequentResponse);
+                        _sipTransport.SendResponse(tooFrequentResponse);
                     }
                     else
                     {
                         if (m_registerQueue.Count < MAX_REGISTER_QUEUE_SIZE)
                         {
-                            var registrarTransaction = m_sipTransport.CreateNonInviteTransaction(registerRequest, remoteEndPoint, localSIPEndPoint, null);
+                            var registrarTransaction = _sipTransport.CreateNonInviteTransaction(registerRequest, remoteEndPoint, localSIPEndPoint, null);
                             lock (m_registerQueue)
                             {
                                 m_registerQueue.Enqueue(registrarTransaction);
@@ -200,7 +191,7 @@ namespace SIPSorcery.GB28181.Servers
                         {
                             logger.Error("Register queue exceeded max queue size " + MAX_REGISTER_QUEUE_SIZE + ", overloaded response sent.");
                             SIPResponse overloadedResponse = SIPTransport.GetResponse(registerRequest, SIPResponseStatusCodesEnum.TemporarilyUnavailable, "Registrar overloaded, please try again shortly");
-                            m_sipTransport.SendResponse(overloadedResponse);
+                            _sipTransport.SendResponse(overloadedResponse);
                         }
 
                         m_registerARE.Set();
@@ -298,9 +289,9 @@ namespace SIPSorcery.GB28181.Servers
                     SIPDomain = canonicalDomain
                 };
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser);
-                SIPRequestAuthenticationResult authenticationResult = SIPRequestAuthenticator_External?.Invoke(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
+                SIPRequestAuthenticationResult authenticationResult = _sipRequestAuthenticator_External?.Invoke(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
 
-                if (!_needAuthentication)
+                if (!NeedAuthentication)
                 {
                     SIPResponse okRes = GetOkResponse(sipRequest);
                     registerTransaction.SendFinalResponse(okRes);

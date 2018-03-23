@@ -33,6 +33,7 @@
 //-----------------------------------------------------------------------------
 
 using Logger4Net;
+using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,7 @@ namespace SIPSorcery.GB28181.SIP
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
-        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External;
+        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = SIPDNSManager.ResolveSIPService;
 
         public event SIPTransportRequestDelegate SIPRequestInTraceEvent;
         public event SIPTransportRequestDelegate SIPRequestOutTraceEvent;
@@ -148,22 +149,22 @@ namespace SIPSorcery.GB28181.SIP
             get { return m_reliableTransmissions.Count; }
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine)
+        public SIPTransport(ISIPTransactionEngine transactionEngine)
         {
-            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
+            //  ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine, bool queueIncoming)
+        public SIPTransport(ISIPTransactionEngine transactionEngine, bool queueIncoming = false)
         {
-            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
+            //ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
+        public SIPTransport(ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
         {
-            ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
+            //  ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
             AddSIPChannel(sipChannel);
 

@@ -12,11 +12,24 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     public interface ISipCoreService
     {
 
+        SIPEndPoint LocalEP { get; set; }
+
+        string LocalSIPId { get; set; }
+
+        ISIPTransport Transport { get; }
+
+        ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService { get; }
+
         void Initialize(List<CameraInfo> cameraList, SIPAccount account);
+
         void Start();
         void Stop();
 
-        ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService { get; }
+        int[] SetMediaPort();
+
+        void SendReliableRequest(SIPEndPoint remoteEP, SIPRequest request);
+
+        void SendRequest(SIPEndPoint remoteEP, SIPRequest request);
 
         string GetReceiveIP(string content);
 
