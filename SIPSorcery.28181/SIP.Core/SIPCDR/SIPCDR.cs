@@ -30,16 +30,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Serialization;
-using SIPSorcery.GB28181.Sys;
 using Logger4Net;
+using SIPSorcery.GB28181.Sys;
+using System;
+using System.Runtime.Serialization;
 
 #if !SILVERLIGHT
-using System.Data;
 #endif
 
 namespace SIPSorcery.GB28181.SIP
@@ -249,7 +245,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             try
             {
-                HangupReason = (cancelReason != null) ? cancelReason : "Client cancelled";
+                HangupReason = cancelReason ?? "Client cancelled";
                 CDRAnswered(this);
             }
             catch (Exception excp)

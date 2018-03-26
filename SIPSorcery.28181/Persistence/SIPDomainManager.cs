@@ -36,24 +36,14 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
+using Logger4Net;
+using SIPSorcery.GB28181.Persistence;
+using SIPSorcery.GB28181.Sys;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml;
-using System.Xml.Serialization;
-using SIPSorcery.GB28181.Persistence;
-using SIPSorcery.GB28181.Sys;
-using Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -73,9 +63,9 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private ILog logger = AppState.logger;
 
-    //    private static readonly string m_storageFileName = AssemblyState.XML_DOMAINS_FILENAME;
+        //    private static readonly string m_storageFileName = AssemblyState.XML_DOMAINS_FILENAME;
 
-        private Dictionary<string, SIPDomain> m_domains = new Dictionary<string, SIPDomain>();  // Records the domains that are being maintained.
+        private static Dictionary<string, SIPDomain> m_domains = new Dictionary<string, SIPDomain>();  // Records the domains that are being maintained.
         private SIPAssetPersistor<SIPDomain> m_sipDomainPersistor;
         private SIPDomain m_wildCardDomain;
 
@@ -97,19 +87,16 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             try
             {
-                List<SIPDomain> sipDomains = m_sipDomainPersistor.Get(null, null, 0, Int32.MaxValue);
-                
-                if(sipDomains == null || sipDomains.Count == 0)
+                var sipDomainList = m_sipDomainPersistor.Get(null, null, 0, Int32.MaxValue);
+
+                if (sipDomainList == null || sipDomainList.Count == 0)
                 {
                     throw new ApplicationException("No SIP domains could be loaded from the persistence store. There needs to be at least one domain.");
                 }
                 else
                 {
                     m_domains.Clear();
-                    foreach (SIPDomain sipDomain in sipDomains)
-                    {
-                        AddDomain(sipDomain);
-                    }
+                    sipDomainList.ForEach(sipDomain => AddDomain(sipDomain));
                 }
             }
             catch (Exception excp)
@@ -123,22 +110,26 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             if (sipDomain == null)
             {
-                throw new ArgumentException("The SIPDomainManager cannot add a null SIPDomain object.");
+                //throw new ArgumentException("The SIPDomainManager cannot add a null SIPDomain object.");
+                logger.Error("The SIPDomainManager cannot add a null SIPDomain object.");
             }
             else
             {
                 if (!m_domains.ContainsKey(sipDomain.Domain.ToLower()))
                 {
                     logger.Debug(" SIPDomainManager added domain: " + sipDomain.Domain + ".");
-                    sipDomain.Aliases.ForEach(a => Console.WriteLine(" added domain alias " + a + "."));
+                    sipDomain.Aliases.ForEach(a => logger.Debug(" added domain alias " + a + "."));
                     m_domains.Add(sipDomain.Domain.ToLower(), sipDomain);
 
-                    foreach (string alias in sipDomain.Aliases) {
-                        if (alias == WILDCARD_DOMAIN_ALIAS && m_wildCardDomain == null) {
+                    sipDomain.Aliases.ForEach(aliasItem =>
+                    {
+                        if (aliasItem == WILDCARD_DOMAIN_ALIAS && m_wildCardDomain == null)
+                        {
                             m_wildCardDomain = sipDomain;
                             logger.Debug(" SIPDomainManager wildcard domain set to " + sipDomain.Domain + ".");
                         }
-                    }
+                    });
+
                 }
                 else
                 {
@@ -154,7 +145,7 @@ namespace SIPSorcery.GB28181.SIP.App
                 if (m_domains.ContainsKey(sipDomain.Domain.ToLower()))
                 {
                     m_domains.Remove(sipDomain.Domain.ToLower());
-                } 
+                }
             }
         }
 
@@ -163,7 +154,8 @@ namespace SIPSorcery.GB28181.SIP.App
         /// </summary>
         /// <param name="host">The hostname to check for a serviced domain for.</param>
         /// <returns>The canconical domain name for the host if found or null if not.</returns>
-        public string GetDomain(string host, bool wilcardOk) {
+        public string GetDomain(string host, bool wilcardOk)
+        {
             SIPDomain domain = GetSIPDomain(host, wilcardOk);
             return domain?.Domain.ToLower();
         }
@@ -178,27 +170,32 @@ namespace SIPSorcery.GB28181.SIP.App
             }
             else
             {
-                if(m_domains.ContainsKey(host.ToLower()))
+                if (m_domains.ContainsKey(host.ToLower()))
                 {
                     return m_domains[host.ToLower()];
                 }
                 else
                 {
-                    foreach(SIPDomain sipDomain in m_domains.Values)
+                    foreach (SIPDomain sipDomain in m_domains.Values)
                     {
-                        if (sipDomain.Aliases != null) {
-                            foreach (string alias in sipDomain.Aliases) {
-                                if (alias.ToLower() == host.ToLower()) {
+                        if (sipDomain.Aliases != null)
+                        {
+                            foreach (string alias in sipDomain.Aliases)
+                            {
+                                if (alias.ToLower() == host.ToLower())
+                                {
                                     return sipDomain;
                                 }
                             }
                         }
                     }
 
-                    if (wildcardOk) {
+                    if (wildcardOk)
+                    {
                         return m_wildCardDomain;
                     }
-                    else {
+                    else
+                    {
                         return null;
                     }
                 }
@@ -212,7 +209,7 @@ namespace SIPSorcery.GB28181.SIP.App
         /// <returns>True if the host is present as a domain or an alias, false otherwise.</returns>
         public bool HasDomain(string host, bool wildcardOk)
         {
-           return GetDomain(host, wildcardOk) != null;
+            return GetDomain(host, wildcardOk) != null;
         }
 
         public List<SIPDomain> Get(Expression<Func<SIPDomain, bool>> whereClause, int offset, int count)
@@ -222,11 +219,11 @@ namespace SIPSorcery.GB28181.SIP.App
                 List<SIPDomain> subList = null;
                 if (whereClause == null)
                 {
-                    subList = m_domains.Values.ToList<SIPDomain>();
+                    subList = m_domains.Values.ToList();
                 }
                 else
                 {
-                    subList = m_domains.Values.Where(a => whereClause.Compile()(a)).ToList<SIPDomain>();
+                    subList = m_domains.Values.Where(a => whereClause.Compile()(a)).ToList();
                 }
 
                 if (subList != null)
@@ -235,16 +232,16 @@ namespace SIPSorcery.GB28181.SIP.App
                     {
                         if (count == 0 || count == Int32.MaxValue)
                         {
-                            return subList.OrderBy(x => x.Domain).Skip(offset).ToList<SIPDomain>();
+                            return subList.OrderBy(x => x.Domain).Skip(offset).ToList();
                         }
                         else
                         {
-                            return subList.OrderBy(x => x.Domain).Skip(offset).Take(count).ToList<SIPDomain>();
+                            return subList.OrderBy(x => x.Domain).Skip(offset).Take(count).ToList();
                         }
                     }
                     else
                     {
-                        return subList.OrderBy(x => x.Domain).ToList<SIPDomain>(); ;
+                        return subList.OrderBy(x => x.Domain).ToList(); ;
                     }
                 }
 
@@ -257,47 +254,62 @@ namespace SIPSorcery.GB28181.SIP.App
             }
         }
 
-        public void AddAlias(string domain, string alias) {
-            try {
-                if(domain.IsNullOrBlank() || alias.IsNullOrBlank()) {
+        public void AddAlias(string domain, string alias)
+        {
+            try
+            {
+                if (domain.IsNullOrBlank() || alias.IsNullOrBlank())
+                {
                     logger.Warn("AddAlias was passed a null alias or domain.");
                 }
-                else if (!HasDomain(alias.ToLower(), false) && HasDomain(domain.ToLower(), false)) {
+                else if (!HasDomain(alias.ToLower(), false) && HasDomain(domain.ToLower(), false))
+                {
                     SIPDomain sipDomain = GetSIPDomain(domain.ToLower(), false);
-                    if (alias == WILDCARD_DOMAIN_ALIAS) {
-                        if (m_wildCardDomain != null) {
+                    if (alias == WILDCARD_DOMAIN_ALIAS)
+                    {
+                        if (m_wildCardDomain != null)
+                        {
                             m_wildCardDomain = sipDomain;
                             logger.Debug(" SIPDomainManager wildcard domain set to " + sipDomain.Domain + ".");
                         }
                     }
-                    else {
+                    else
+                    {
                         sipDomain.Aliases.Add(alias.ToLower());
                         logger.Debug(" SIPDomainManager added alias to " + sipDomain.Domain + " of " + alias.ToLower() + ".");
                     }
                 }
-                else {
+                else
+                {
                     logger.Warn("Could not add alias " + alias + " to domain " + domain + ".");
                 }
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 logger.Error("Exception SIPDomainManager AddAlias. " + excp.Message);
             }
         }
 
-        public void RemoveAlias(string alias) {
-            try {
-                if (alias.IsNullOrBlank()) {
+        public void RemoveAlias(string alias)
+        {
+            try
+            {
+                if (alias.IsNullOrBlank())
+                {
                     logger.Warn("RemoveAlias was passed a null alias.");
                 }
-                else if (HasDomain(alias.ToLower(), false)) {
+                else if (HasDomain(alias.ToLower(), false))
+                {
                     SIPDomain sipDomain = GetSIPDomain(alias.ToLower(), false);
                     sipDomain.Aliases.Remove(alias.ToLower());
                 }
-                else {
+                else
+                {
                     logger.Warn("Could not remove alias " + alias + ".");
                 }
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 logger.Error("Exception SIPDomainManager RemoveAlias. " + excp.Message);
             }
         }

@@ -41,6 +41,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SIPSorcery.GB28181.Sys;
 using Logger4Net;
+using System.Linq;
 
 #if !SILVERLIGHT
 using System.Data;
@@ -53,7 +54,7 @@ namespace SIPSorcery.GB28181.SIP.App
     /// are hierarchical the XML stores the records in a nested node structure. With SQL the nested structure is not possible 
     /// and instead a flat table is used where the domain alias are stored as a delimited list in a single column field.
     /// </remarks>
-    [DataContractAttribute]
+    [DataContract]
     // // // [Column(Name = "sipdomains")]
     public class SIPDomain : ISIPAsset
     {
@@ -103,8 +104,15 @@ namespace SIPSorcery.GB28181.SIP.App
                 {
                     string aliasList = null;
 
-                    Aliases.ForEach(a => aliasList += a + ALIAS_SEPERATOR_CHAR);
+                    // Aliases.ForEach(item => aliasList = aliasList + item + ALIAS_SEPERATOR_CHAR);
+
+                    aliasList = Aliases.Aggregate((stringist, item) => stringist + item + ALIAS_SEPERATOR_CHAR);
+
                     return aliasList;
+
+
+
+
                 }
                 else
                 {
@@ -131,8 +139,6 @@ namespace SIPSorcery.GB28181.SIP.App
             Inserted = DateTime.UtcNow;
         }
 
-#if !SILVERLIGHT
-
         public SIPDomain(DataRow row)
         {
             Load(row);
@@ -140,7 +146,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         public DataTable GetTable()
         {
-            DataTable table = new DataTable();
+            var table = new DataTable();
             table.Columns.Add(new DataColumn("id", typeof(String)));
             table.Columns.Add(new DataColumn("domain", typeof(String)));
             table.Columns.Add(new DataColumn("owner", typeof(String)));
@@ -196,7 +202,6 @@ namespace SIPSorcery.GB28181.SIP.App
         //    }
         //}
 
-#endif
 
         public string ToXML()
         {
@@ -244,7 +249,6 @@ namespace SIPSorcery.GB28181.SIP.App
 
             return aliasList;
         }
-
 
         public Dictionary<Guid, object> Load(System.Xml.XmlDocument dom)
         {
