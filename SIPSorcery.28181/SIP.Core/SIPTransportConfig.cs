@@ -58,20 +58,24 @@ namespace SIPSorcery.GB28181.SIP
 
         private const string m_allIPAddresses = LocalIPConfig.ALL_LOCAL_IPADDRESSES_KEY;
 
-        public static List<SIPChannel> ParseSIPChannelsNode(IPAddress localIP, ushort localPort, ProtocolType msgProtocol)
+        public static List<SIPChannel> ParseSIPChannelsNode(SIPAccount sipAccount)
         {
-            List<SIPChannel> channels = new List<SIPChannel>();
+
+            var channels = new List<SIPChannel>();
+
+            var ipEndPoint = new IPEndPoint(sipAccount.LocalIP, sipAccount.LocalPort);
+
             SIPChannel channel = null;
-            if (msgProtocol == ProtocolType.Udp)
+            if (sipAccount.MsgProtocol == ProtocolType.Udp)
             {
-                channel = new SIPUDPChannel(new IPEndPoint(localIP, localPort));
+                channel = new SIPUDPChannel(ipEndPoint);
                 channels.Add(channel);
             }
-            else if (msgProtocol == ProtocolType.Tcp)
+            else if (sipAccount.MsgProtocol == ProtocolType.Tcp)
             {
-                channel = new SIPUDPChannel(new IPEndPoint(localIP, localPort));
+                channel = new SIPUDPChannel(ipEndPoint);
                 channels.Add(channel);
-                channel = new SIPTCPChannel(new IPEndPoint(localIP, localPort));
+                channel = new SIPTCPChannel(ipEndPoint);
                 channels.Add(channel);
             }
             return channels;

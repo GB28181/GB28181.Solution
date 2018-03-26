@@ -3,8 +3,8 @@ using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
+using SIPSorcery.GB28181.Sys.Config;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
@@ -32,7 +32,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
         private ISIPRegistrarCore _registrarCore;
-        private SIPAccount _account;
+        private ISipAccount _sipAccount;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
         private SIPEndPoint _byeRemoteEP;
@@ -141,11 +141,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         #endregion
 
 
-        public SIPCoreMessageService(ISIPTransport transport, ISIPRegistrarCore registrarCore)
+        public SIPCoreMessageService(ISipAccount sipAccoutConfig, ISIPTransport transport, ISIPRegistrarCore registrarCore)
         {
 
             _registrarCore = registrarCore;
-
+            _sipAccount = sipAccoutConfig;
             // Configure the SIP transport layer.
             _transport = transport;
             _transport.SIPTransportRequestReceived += AddMessageRequest;
@@ -153,18 +153,20 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         }
 
         #region 初始化资源，缓存注册上来的设备信息
-        public void Initialize(List<CameraInfo> cameraList, SIPAccount account)
+        public void Initialize(List<CameraInfo> cameraList)
         {
             _serviceState = ServiceStatus.Wait;
-            _account = account;
-            LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + account.LocalIP.ToString() + ":" + account.LocalPort);
-            LocalSIPId = account.LocalID;
+
+            var localAccount = _sipAccount.GetLocalSipAccout();
+
+            LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + localAccount.LocalIP.ToString() + ":" + localAccount.LocalPort);
+            LocalSIPId = localAccount.LocalID;
             // init the camera info for connetctions
             cameraList?.ForEach(deviceItem =>
             {
                 var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
                 var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, _account));
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, localAccount));
             });
 
 
@@ -180,18 +182,20 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             {
                 logger.Debug("SIP Registrar daemon starting...");
 
-                var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_account.LocalIP, _account.LocalPort, _account.MsgProtocol);
+                var localAccount = _sipAccount.GetLocalSipAccout();
+
+                var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(localAccount); // (localAccount.LocalIP, localAccount.LocalPort, localAccount.MsgProtocol);
 
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
-                _transport.MsgEncode = _account.MsgEncode;
+                _transport.MsgEncode = localAccount.MsgEncode;
                 _transport.AddSIPChannel(sipChannels);
-                _registrarCore.NeedAuthentication = _account.Authentication;
+                _registrarCore.NeedAuthentication = localAccount.Authentication;
 
                 logger.Debug("SIPRegistrarCore thread started ");
                 //  m_registrarCore.Start(1);
                 Task.Factory.StartNew(() => _registrarCore.ProcessRegisterRequest());
 
-                logger.Debug("SIP Registrar successfully started at " + _account.LocalIP + ":" + _account.LocalPort);
+                logger.Debug("SIP Registrar successfully started at " + localAccount.LocalIP + ":" + localAccount.LocalPort);
 
             }
             catch (Exception excp)
@@ -367,7 +371,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
             _audioChannel.Stop();
             _audioChannel = null;
-            SIPURI localUri = new SIPURI(_account.SIPPassword, LocalEP.ToHost(), "");
+
+            var localAccount = _sipAccount.GetLocalSipAccout();
+
+            SIPURI localUri = new SIPURI(localAccount.SIPPassword, LocalEP.ToHost(), "");
             SIPURI remoteUri = new SIPURI(_ackRequest.Header.From.FromURI.User, _byeRemoteEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, _ackRequest.Header.To.ToTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, _ackRequest.Header.From.FromTag);
@@ -588,8 +595,9 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 {
                     if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                     {
-                        remoteEP.Port = _account.KeepaliveInterval;
-                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, _account));
+                        var localAccount = _sipAccount.GetLocalSipAccout();
+                        remoteEP.Port = localAccount.KeepaliveInterval;
+                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, localAccount));
                     }
 
                 }

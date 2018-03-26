@@ -176,28 +176,37 @@ namespace SIPSorcery.GB28181.SIP.App
                 }
                 else
                 {
-                    foreach (SIPDomain sipDomain in m_domains.Values)
-                    {
-                        if (sipDomain.Aliases != null)
-                        {
-                            foreach (string alias in sipDomain.Aliases)
-                            {
-                                if (alias.ToLower() == host.ToLower())
-                                {
-                                    return sipDomain;
-                                }
-                            }
-                        }
-                    }
 
-                    if (wildcardOk)
+                    #region comment
+                    //foreach (SIPDomain sipDomain in m_domains.Values)
+                    //{
+                    //    if (sipDomain.Aliases != null)
+                    //    {
+                    //        foreach (string alias in sipDomain.Aliases)
+                    //        {
+                    //            if (alias.ToLower() == host.ToLower())
+                    //            {
+                    //                return sipDomain;
+                    //            }
+                    //        }
+                    //    }
+                    //} 
+                    #endregion
+
+                    var allAliases = m_domains.Values.Where(domainItem => domainItem.Aliases != null);
+
+                    var targetDomain = allAliases?.FirstOrDefault(domainItem => domainItem.Aliases.Exists(aliasItem => aliasItem.ToLower() == host.ToLower()));
+
+                    if (targetDomain  == null && wildcardOk)
                     {
-                        return m_wildCardDomain;
+                         targetDomain = m_wildCardDomain;
                     }
                     else
                     {
-                        return null;
+                        targetDomain = targetDomain ?? null;
                     }
+
+                    return targetDomain;
                 }
             }
         }

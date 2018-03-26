@@ -124,13 +124,13 @@ namespace GB28181Service
 
         }
 
-        private void ConfigServices(IConfigurationRoot iconfig)
+        private void ConfigServices(IConfigurationRoot configuration)
         {
             //we should initialize resource here then use them.
             servicesContainer.AddSingleton(servicesContainer); // add itself 
-            servicesContainer.AddSingleton(iconfig); // add itself 
+            servicesContainer.AddSingleton(configuration); // add configuration 
             servicesContainer.AddSingleton<ILog, Logger>();
-            servicesContainer.AddSingleton<IStorageConfig, SipStorage>();
+            servicesContainer.AddSingleton<ISipAccount, SipAccountStorage>();
             servicesContainer.AddSingleton<MediaEventSource>();
             servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
             servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
@@ -149,50 +149,42 @@ namespace GB28181Service
             _keepaliveTime = DateTime.Now;
             try
             {
-                var sipStorage = _serviceProvider.GetService<IStorageConfig>();
-                var account = sipStorage.Accounts.First();
-                if (account != null)
+                var sipStorage = _serviceProvider.GetService<ISipAccount>();
+
+                // start the Listening SipService in main Service
+                _mainSipTask = Task.Factory.StartNew(() =>
                 {
-                    // start the Listening SipService in main Service
-                    _mainSipTask = Task.Factory.StartNew(() =>
-                    {
-                        var _mainSipService = _serviceProvider.GetRequiredService<ISipCoreService>();
+                    var _mainSipService = _serviceProvider.GetRequiredService<ISipCoreService>();
                         //Get meassage Handler
                         var messageHandler = _serviceProvider.GetService<MessageCenter>();
-                        _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
-                        _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
-                        _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
-                        _mainSipService.OnNotifyCatalogReceived += messageHandler.OnNotifyCatalogReceived;
-                        _mainSipService.OnAlarmReceived += messageHandler.OnAlarmReceived;
-                        _mainSipService.OnRecordInfoReceived += messageHandler.OnRecordInfoReceived;
-                        _mainSipService.OnDeviceStatusReceived += messageHandler.OnDeviceStatusReceived;
-                        _mainSipService.OnDeviceInfoReceived += messageHandler.OnDeviceInfoReceived;
-                        _mainSipService.OnMediaStatusReceived += messageHandler.OnMediaStatusReceived;
-                        _mainSipService.OnPresetQueryReceived += messageHandler.OnPresetQueryReceived;
-                        _mainSipService.OnDeviceConfigDownloadReceived += messageHandler.OnDeviceConfigDownloadReceived;
-                        _mainSipService.Initialize(_cameras, account);
-                        _mainSipService.Start();
+                    _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
+                    _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
+                    _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
+                    _mainSipService.OnNotifyCatalogReceived += messageHandler.OnNotifyCatalogReceived;
+                    _mainSipService.OnAlarmReceived += messageHandler.OnAlarmReceived;
+                    _mainSipService.OnRecordInfoReceived += messageHandler.OnRecordInfoReceived;
+                    _mainSipService.OnDeviceStatusReceived += messageHandler.OnDeviceStatusReceived;
+                    _mainSipService.OnDeviceInfoReceived += messageHandler.OnDeviceInfoReceived;
+                    _mainSipService.OnMediaStatusReceived += messageHandler.OnMediaStatusReceived;
+                    _mainSipService.OnPresetQueryReceived += messageHandler.OnPresetQueryReceived;
+                    _mainSipService.OnDeviceConfigDownloadReceived += messageHandler.OnDeviceConfigDownloadReceived;
+                    _mainSipService.Initialize(_cameras);
+                    _mainSipService.Start();
 
-                    });
+                });
 
-                    //Run the Rpc Server End
-                    _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
-                    {
-                        var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
-                        _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
-                        _mainWebSocketRpcServer.AddPort(50051);
-                        _mainWebSocketRpcServer.Run();
-                    });
-
-
-                    var abc = WaitUserCmd();
-
-                    abc.Wait();
-                }
-                else
+                //Run the Rpc Server End
+                _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-                    throw new ApplicationException("Account Config NULL,SIP not started");
-                }
+                    var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
+                    _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
+                    _mainWebSocketRpcServer.AddPort(50051);
+                    _mainWebSocketRpcServer.Run();
+                });
+
+                var abc = WaitUserCmd();
+
+                abc.Wait();
 
                 //wait main service exit
                 _eventStopService.WaitOne();

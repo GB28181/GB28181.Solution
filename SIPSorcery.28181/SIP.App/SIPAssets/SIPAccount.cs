@@ -71,8 +71,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         // Only non-printable non-alphanumeric ASCII characters missing are ; \ and space. The semi-colon isn't accepted by 
         // Netgears and the space has the potential to create too much confusion with the users and \ with the system.
-        public static readonly char[] NONAPLPHANUM_ALLOWED_PASSWORD_CHARS = new char[]{'!','"','$','%','&','(',')','*',
-                                           '+',',','.','/',':','<','=','>','?','@','[',']','^','_','`','{','|','}','~'};
+        public static readonly char[] NONAPLPHANUM_ALLOWED_PASSWORD_CHARS = new char[]{'!','"','$','%','&','(',')','*','+',',','.','/',':','<','=','>','?','@','[',']','^','_','`','{','|','}','~'};
         public static readonly string USERNAME_ALLOWED_CHARS = @"a-zA-Z0-9_\-\.";
 
         private static ILog logger = AppState.logger;
@@ -105,8 +104,6 @@ namespace SIPSorcery.GB28181.SIP.App
         private ProtocolType _msgProtocol;
         private ProtocolType _streamProtocol;
         private TcpConnectMode _tcpMode;
-
-
         private bool m_packetOutOrder;
         private ushort m_keepaliveInterval;
         private byte m_keepaliveNumber;

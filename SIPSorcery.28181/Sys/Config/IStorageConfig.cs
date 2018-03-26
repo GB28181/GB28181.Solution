@@ -3,12 +3,17 @@ using System.Collections.Generic;
 
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public interface IStorageConfig
+    public interface ISipAccount
     {
         void Read();
 
         void Save(SIPAccount account);
 
         List<SIPAccount> Accounts { get; }
+
+
+        //Get Local Default SipDomain Info
+        SIPAccount GetLocalSipAccout();
+
     }
 }

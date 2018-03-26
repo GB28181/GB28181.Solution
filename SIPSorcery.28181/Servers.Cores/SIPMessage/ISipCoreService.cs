@@ -20,7 +20,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService { get; }
 
-        void Initialize(List<CameraInfo> cameraList, SIPAccount account);
+        void Initialize(List<CameraInfo> cameraList);
 
         void Start();
         void Stop();

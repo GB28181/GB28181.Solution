@@ -42,6 +42,7 @@ using System.Runtime.Serialization;
 using SIPSorcery.GB28181.Sys;
 using Logger4Net;
 using System.Linq;
+using System.Xml;
 
 #if !SILVERLIGHT
 using System.Data;
@@ -109,10 +110,6 @@ namespace SIPSorcery.GB28181.SIP.App
                     aliasList = Aliases.Aggregate((stringist, item) => stringist + item + ALIAS_SEPERATOR_CHAR);
 
                     return aliasList;
-
-
-
-
                 }
                 else
                 {
@@ -230,27 +227,24 @@ namespace SIPSorcery.GB28181.SIP.App
 
         private List<string> ParseAliases(string aliasString)
         {
-            List<string> aliasList = new List<string>();
+            if (aliasString.IsNullOrBlank()) return null;
 
-            if (!aliasString.IsNullOrBlank())
-            {
-                string[] aliases = aliasString.Split(ALIAS_SEPERATOR_CHAR);
-                if (aliases != null && aliases.Length > 0)
-                {
-                    foreach (string alias in aliases)
-                    {
-                        if (!alias.IsNullOrBlank() && !aliasList.Contains(alias.ToLower()))
-                        {
-                            aliasList.Add(alias.ToLower());
-                        }
-                    }
-                }
-            }
+            var aliases = aliasString.Split(ALIAS_SEPERATOR_CHAR);
+            if (aliases == null || aliases.Length <= 0) return null;
 
-            return aliasList;
+            return aliases.Where(alias => !alias.IsNullOrBlank())
+                     .Aggregate(new List<string>(), (resultList, alias) =>
+              {
+                  if (!resultList.Contains(alias.ToLower()))
+                  {
+                      resultList.Add(alias);
+                  }
+                  return resultList;
+              });
+
         }
 
-        public Dictionary<Guid, object> Load(System.Xml.XmlDocument dom)
+        public Dictionary<Guid, object> Load(XmlDocument dom)
         {
             throw new NotImplementedException();
         }

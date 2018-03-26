@@ -110,8 +110,8 @@ namespace SIPSorcery.GB28181.Persistence
             m_dialPlanPersistor = SIPAssetPersistorFactory<SIPDialPlan>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipDialplansXMLFilename);
             m_sipProvidersPersistor = SIPAssetPersistorFactory<SIPProvider>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipProvidersXMLFilename);
             m_sipProviderBindingsPersistor = SIPAssetPersistorFactory<SIPProviderBinding>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipProviderBindingsXMLFilename);
-            var sipDomain = SIPAssetPersistorFactory<SIPDomain>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipProvidersXMLFilename);
-            m_sipDomainManager = new SIPDomainManager(sipDomain);
+            var sipDomainAssetPersistor = SIPAssetPersistorFactory<SIPDomain>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipProvidersXMLFilename);
+            m_sipDomainManager = new SIPDomainManager(sipDomainAssetPersistor);
             m_sipRegistrarBindingPersistor = SIPAssetPersistorFactory<SIPRegistrarBinding>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipRegistrarBindingsXMLFilename);
             m_sipDialoguePersistor = SIPAssetPersistorFactory<SIPDialogueAsset>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipDialoguesXMLFilename);
             m_sipCDRPersistor = SIPAssetPersistorFactory<SIPCDRAsset>.CreateSIPAssetPersistor(storageType, storageConnectionStr, m_sipCDRsXMLFilename);

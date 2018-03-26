@@ -9,7 +9,7 @@ using System.IO;
 /// </summary>
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public class SipStorage : IStorageConfig
+    public class SipAccountStorage : ISipAccount
     {
         private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
@@ -20,7 +20,7 @@ namespace SIPSorcery.GB28181.Sys.Config
         //连接字符串
         private static string m_connStr;
 
-     //   private static SipStorage _instance;
+        //   private static SipStorage _instance;
 
         private List<SIPAccount> _accountsCache = null;
 
@@ -52,7 +52,7 @@ namespace SIPSorcery.GB28181.Sys.Config
 
 
         // here init the gb28181.xml file setting from app.config
-        static SipStorage()
+        static SipAccountStorage()
         {
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : StorageTypes.Unknown;
 
@@ -67,6 +67,20 @@ namespace SIPSorcery.GB28181.Sys.Config
                 throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
             }
         }
+
+        public SIPAccount GetLocalSipAccout()
+        {
+
+            var defaultAccount = Accounts.First();
+
+            if (defaultAccount == null)
+            {
+                throw new ApplicationException("Account Config NULL,SIP not started");
+            }
+
+            return defaultAccount;
+        }
+
 
         public void Read()
         {

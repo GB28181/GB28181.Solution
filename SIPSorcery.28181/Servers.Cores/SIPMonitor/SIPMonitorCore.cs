@@ -35,7 +35,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// rtp数据通道
         /// </summary>
         // RTP wil be established from other place 
-      //  private Channel _channel;
+        //  private Channel _channel;
         private string _deviceId;
         private SIPRequest _reqSession;
         private int[] _mediaPort;
@@ -51,12 +51,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <summary>
         /// 视频流回调
         /// </summary>
-        public event Action<RTPFrame> OnStreamReady;
+       // public event Action<RTPFrame> OnStreamReady;
         #endregion
 
         #region 初始化监控
-        public SIPMonitorCore(ISipCoreService msgCore, string deviceId,
-            SIPEndPoint remoteEP, SIPAccount account)
+        public SIPMonitorCore(ISipCoreService msgCore, string deviceId, SIPEndPoint remoteEP, SIPAccount account)
         {
             _msgCore = msgCore;
             _deviceId = deviceId;
@@ -174,23 +173,23 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         }
 
         private FileStream m_fs;
-        private void RtpChannel_OnFrameReady(RTPFrame frame)
-        {
-            OnStreamReady?.Invoke(frame);
-            //foreach (var item in frame.FramePackets)
-            //{
-            //    logger.Debug("Seq:" + item.Header.SequenceNumber + "----Timestamp:" + item.Header.Timestamp + "-----Length:" + item.Payload.Length);
-            //}
-            //byte[] buffer = frame.GetFramePayload();
-            //if (this.m_fs == null)
-            //{
-            //    this.m_fs = new FileStream("D:\\" + _deviceId + ".h264", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite, 8 * 1024);
-            //}
-            //m_fs.Write(buffer, 0, buffer.Length);
-            //m_fs.Flush();
+        //private void RtpChannel_OnFrameReady(RTPFrame frame)
+        //{
+        //    OnStreamReady?.Invoke(frame);
+        //    //foreach (var item in frame.FramePackets)
+        //    //{
+        //    //    logger.Debug("Seq:" + item.Header.SequenceNumber + "----Timestamp:" + item.Header.Timestamp + "-----Length:" + item.Payload.Length);
+        //    //}
+        //    //byte[] buffer = frame.GetFramePayload();
+        //    //if (this.m_fs == null)
+        //    //{
+        //    //    this.m_fs = new FileStream("D:\\" + _deviceId + ".h264", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite, 8 * 1024);
+        //    //}
+        //    //m_fs.Write(buffer, 0, buffer.Length);
+        //    //m_fs.Flush();
 
-            //PsToH264(buffer);
-        }
+        //    //PsToH264(buffer);
+        //}
 
         /// <summary>
         /// 结束实时视频请求

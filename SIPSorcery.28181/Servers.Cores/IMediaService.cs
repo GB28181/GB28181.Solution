@@ -30,7 +30,7 @@ namespace SIPSorcery.GB28181.Servers
         /// <summary>
         /// 视频流回调完成
         /// </summary>
-        event Action<RTPFrame> OnStreamReady;
+       // event Action<RTPFrame> OnStreamReady;
 
 
         #region 录像点播
