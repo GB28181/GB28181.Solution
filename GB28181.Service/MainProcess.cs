@@ -6,7 +6,6 @@ using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +16,7 @@ using SIPSorcery.GB28181.Servers;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.Servers.SIPMonitor;
 
 namespace GB28181Service
 {
@@ -136,6 +136,7 @@ namespace GB28181Service
             servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
             servicesContainer.AddSingleton<IRpcService, RpcServer>();
             servicesContainer.AddTransient<ISIPTransactionEngine, SIPTransactionEngine>();
+            servicesContainer.AddTransient<ISIPMonitorService, SIPMonitorNodeService>();
             servicesContainer.AddSingleton<ISIPTransport, SIPTransport>();
             servicesContainer.AddSingleton<ISipCoreService, SIPCoreMessageService>();
             servicesContainer.AddSingleton<MessageCenter>();

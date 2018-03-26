@@ -1,4 +1,5 @@
 ﻿using Logger4Net;
+using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
@@ -74,6 +75,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private UInt32 src = 0;//算s64CurPts
         private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
 
+        private ServiceProvider _serviceProvider;
         #endregion
 
         #region 事件
@@ -141,13 +143,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         #endregion
 
 
-        public SIPCoreMessageService(ISipAccount sipAccoutConfig, ISIPTransport transport, ISIPRegistrarCore registrarCore)
+        public SIPCoreMessageService(IServiceCollection serviceCollection)
         {
-
-            _registrarCore = registrarCore;
-            _sipAccount = sipAccoutConfig;
+            var _serviceCollection = serviceCollection;
+            _serviceProvider = _serviceCollection.BuildServiceProvider();
+            _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
+            _sipAccount = _serviceProvider.GetRequiredService<ISipAccount>();
             // Configure the SIP transport layer.
-            _transport = transport;
+            _transport = _serviceProvider.GetRequiredService<ISIPTransport>();
             _transport.SIPTransportRequestReceived += AddMessageRequest;
             _transport.SIPTransportResponseReceived += AddMessageResponse;
         }
@@ -165,8 +168,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             cameraList?.ForEach(deviceItem =>
             {
                 var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-                var remoteEP = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCore(this, deviceItem.DeviceID, remoteEP, localAccount));
+                var sipNodeService = _serviceProvider.GetService<ISIPMonitorService>();
+                sipNodeService.RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
+                sipNodeService.DeviceId = deviceItem.DeviceID;
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, sipNodeService);
             });
 
 
@@ -597,7 +602,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     {
                         var localAccount = _sipAccount.GetLocalSipAccout();
                         remoteEP.Port = localAccount.KeepaliveInterval;
-                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, catalogItem.DeviceID, remoteEP, localAccount));
+                        var sipNodeService = _serviceProvider.GetService<ISIPMonitorService>();
+                        sipNodeService.RemoteEndPoint = remoteEP;
+                        sipNodeService.DeviceId = catalogItem.DeviceID;
+                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, sipNodeService);
                     }
 
                 }

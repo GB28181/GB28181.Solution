@@ -11,6 +11,9 @@ namespace SIPSorcery.GB28181.Servers
     public interface ISIPMonitorService :IMediaService
     {
 
+        string DeviceId { get; set; }
+        SIPEndPoint RemoteEndPoint { get; set; }
+
         void Subscribe(SIPResponse ponse);
 
         /// <summary>
