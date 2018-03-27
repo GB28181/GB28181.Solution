@@ -9,7 +9,7 @@ using System.IO;
 /// </summary>
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public class SipAccountStorage : ISipAccount
+    public class SipAccountStorage : ISipAccountStorage
     {
         private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;

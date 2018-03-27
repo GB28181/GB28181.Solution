@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace SIPSorcery.GB28181.Sys.Config
 {
-    public interface ISipAccount
+    public interface ISipAccountStorage
     {
 
         void Read();

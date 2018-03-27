@@ -33,7 +33,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
         private ISIPRegistrarCore _registrarCore;
-        private ISipAccount _sipAccount;
+        private ISipAccountStorage _sipAccount;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
         private SIPEndPoint _byeRemoteEP;
@@ -148,7 +148,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             var _serviceCollection = serviceCollection;
             _serviceProvider = _serviceCollection.BuildServiceProvider();
             _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
-            _sipAccount = _serviceProvider.GetRequiredService<ISipAccount>();
+            _sipAccount = _serviceProvider.GetRequiredService<ISipAccountStorage>();
             // Configure the SIP transport layer.
             _transport = _serviceProvider.GetRequiredService<ISIPTransport>();
             _transport.SIPTransportRequestReceived += AddMessageRequest;

@@ -68,11 +68,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         //    _account = account;
         //}
 
-        public SIPMonitorNodeService(ISipCoreService sipMsgCoreService, ISIPTransport sipTransport, ISipAccount sipAccount)
+        public SIPMonitorNodeService(ISipCoreService sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
         {
             _sipMsgCoreService = sipMsgCoreService;
             _sipTransport = sipTransport;
-            _sipAccount = sipAccount.GetLocalSipAccout();
+            _sipAccount = sipAccountStorage.GetLocalSipAccout();
         }
 
         #endregion

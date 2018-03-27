@@ -130,7 +130,7 @@ namespace GB28181Service
             servicesContainer.AddSingleton(servicesContainer); // add itself 
             servicesContainer.AddSingleton(configuration); // add configuration 
             servicesContainer.AddSingleton<ILog, Logger>();
-            servicesContainer.AddSingleton<ISipAccount, SipAccountStorage>();
+            servicesContainer.AddSingleton<ISipAccountStorage, SipAccountStorage>();
             servicesContainer.AddSingleton<MediaEventSource>();
             servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
             servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
@@ -150,7 +150,7 @@ namespace GB28181Service
             _keepaliveTime = DateTime.Now;
             try
             {
-                var sipStorage = _serviceProvider.GetService<ISipAccount>();
+                var sipStorage = _serviceProvider.GetService<ISipAccountStorage>();
 
                 // start the Listening SipService in main Service
                 _mainSipTask = Task.Factory.StartNew(() =>
