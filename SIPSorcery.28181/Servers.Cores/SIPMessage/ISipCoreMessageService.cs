@@ -1,15 +1,14 @@
-﻿using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
+﻿using SIPSorcery.GB28181.Net;
+using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
-using System.Collections.Generic;
-using SIPSorcery.GB28181.Net;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
-    public interface ISipMessageCoreService
+    public interface ISipMessageCore
     {
 
         SIPEndPoint LocalEP { get; set; }
@@ -18,7 +17,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         ISIPTransport Transport { get; }
 
-        ConcurrentDictionary<string, ISIPMonitorService> NodeMonitorService { get; }
+        ConcurrentDictionary<string, ISIPMonitorCore> NodeMonitorService { get; }
 
         void Initialize(List<CameraInfo> cameraList);
 

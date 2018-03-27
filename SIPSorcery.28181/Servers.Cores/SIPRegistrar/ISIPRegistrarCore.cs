@@ -5,7 +5,7 @@ namespace SIPSorcery.GB28181.Servers
     public interface ISIPRegistrarCore
     {
 
-        bool NeedAuthentication { get; set; }
+        bool IsNeedAuthentication { get; }
         void ProcessRegisterRequest();
 
         void AddRegisterRequest(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPRequest registerRequest);

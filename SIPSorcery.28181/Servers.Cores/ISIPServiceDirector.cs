@@ -6,7 +6,7 @@ namespace SIPSorcery.GB28181.Servers
 {
     public interface ISIPServiceDirector
     {
-        ISIPMonitorService GetTargetMonitorService(string gbid);
+        ISIPMonitorCore GetTargetMonitorService(string gbid);
 
 
         //ip/port/protocol/ 

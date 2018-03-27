@@ -39,6 +39,7 @@ using Logger4Net;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
+using SIPSorcery.GB28181.Sys.Config;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -91,7 +92,7 @@ namespace SIPSorcery.GB28181.Servers
     ///    persistence class. Of those threads there will be one that runs calling the SIPRegistrations.IdentifyDirtyContacts. This call identifies
     ///    expired contacts and initiates the sending of any keep alive and OPTIONs requests.
     /// </summary>
-    public class SIPRegistrarCore : ISIPRegistrarCore
+    public class SIPRegistrarCoreService : ISIPRegistrarCore
     {
         private const int MAX_REGISTER_QUEUE_SIZE = 1000;
         private const int MAX_PROCESS_REGISTER_SLEEP = 10000;
@@ -120,26 +121,20 @@ namespace SIPSorcery.GB28181.Servers
 
         public bool Stop;
 
-        public bool NeedAuthentication { get; set; }
+        private bool _needAuthentication = false;
+        public bool IsNeedAuthentication => _needAuthentication;
 
-        public SIPRegistrarCore(ISIPTransport sipTransport, bool mangleUACContact = true, bool strictRealmHandling = true)
+        private SIPAccount _localSipAccount;
+
+
+        public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;
+            _localSipAccount = sipAccountStorage.GetLocalSipAccout();
+            _needAuthentication = _localSipAccount.Authentication;
         }
-
-        //public void Start(int threadCount)
-        //{
-        //    logger.Debug("SIPRegistrarCore thread started with " + threadCount + " threads.");
-
-        //    //for (int index = 1; index <= threadCount; index++)
-        //    //{
-        //    //    string threadSuffix = index.ToString();
-        //    //    ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(REGISTRAR_THREAD_NAME_PREFIX + threadSuffix); });
-        //    //}
-        //    ThreadPool.QueueUserWorkItem(delegate { ProcessRegisterRequest(); });
-        //}
 
         public void AddRegisterRequest(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPRequest registerRequest)
         {
@@ -206,6 +201,7 @@ namespace SIPSorcery.GB28181.Servers
 
         public void ProcessRegisterRequest()
         {
+            logger.Debug("SIPRegistrarCoreService successfully Running at :" + _localSipAccount.LocalIP + ":" + _localSipAccount.LocalPort);
             try
             {
                 while (!Stop)
@@ -223,8 +219,8 @@ namespace SIPSorcery.GB28181.Servers
                             if (registrarTransaction != null)
                             {
                                 DateTime startTime = DateTime.Now;
-                                RegisterResultEnum result = Register(registrarTransaction);
-                                TimeSpan duration = DateTime.Now.Subtract(startTime);
+                                var result = Register(registrarTransaction);
+                                var duration = DateTime.Now.Subtract(startTime);
                                 FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegistrarTiming, "register result=" + result.ToString() + ", time=" + duration.TotalMilliseconds + "ms, user=" + registrarTransaction.TransactionRequest.Header.To.ToURI.User + ".", null));
 
                                 RegisterComplete?.Invoke(duration.TotalMilliseconds, registrarTransaction.TransactionRequest.Header.AuthenticationHeader != null);
@@ -291,7 +287,7 @@ namespace SIPSorcery.GB28181.Servers
                 //SIPAccount sipAccount = GetSIPAccount_External(s => s.SIPUsername == toUser);
                 SIPRequestAuthenticationResult authenticationResult = _sipRequestAuthenticator_External?.Invoke(registerTransaction.LocalSIPEndPoint, registerTransaction.RemoteEndPoint, sipRequest, sipAccount, FireProxyLogEvent);
 
-                if (!NeedAuthentication)
+                if (!_needAuthentication)
                 {
                     SIPResponse okRes = GetOkResponse(sipRequest);
                     registerTransaction.SendFinalResponse(okRes);

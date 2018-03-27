@@ -4,7 +4,7 @@ using System;
 
 namespace SIPSorcery.GB28181.Servers
 {
-    public interface IMediaService
+    public interface IMediaAction
     {
         /// <summary>
         /// 实时视频请求

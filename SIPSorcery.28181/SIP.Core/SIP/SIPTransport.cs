@@ -121,7 +121,6 @@ namespace SIPSorcery.GB28181.SIP
         private Dictionary<string, SIPChannel> m_sipChannels = new Dictionary<string, SIPChannel>();    // List of the physical channels that have been opened and are under management by this instance.
 
         private ISIPTransactionEngine _transactionEngine;
-
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
@@ -144,10 +143,7 @@ namespace SIPSorcery.GB28181.SIP
         private Dictionary<string, SIPTransaction> m_reliableTransmissions = new Dictionary<string, SIPTransaction>();
         private bool m_reliablesThreadRunning = false;   // Only gets started when a request is made to send a reliable request.
 
-        public int ReliableTrasmissionsCount
-        {
-            get { return m_reliableTransmissions.Count; }
-        }
+        public int ReliableTrasmissionsCount => m_reliableTransmissions.Count;
 
         public SIPTransport(ISIPTransactionEngine transactionEngine)
         {

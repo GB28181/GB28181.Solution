@@ -9,12 +9,12 @@ namespace SIPSorcery.GB28181.Servers
     public class SIPServiceDirector : ISIPServiceDirector
     {
 
-        private ISipMessageCoreService _sipCoreMessageService;
-        public SIPServiceDirector(ISipMessageCoreService sipCoreMessageService)
+        private ISipMessageCore _sipCoreMessageService;
+        public SIPServiceDirector(ISipMessageCore sipCoreMessageService)
         {
             _sipCoreMessageService = sipCoreMessageService;
         }
-        public ISIPMonitorService GetTargetMonitorService(string gbid)
+        public ISIPMonitorCore GetTargetMonitorService(string gbid)
         {
             if (_sipCoreMessageService == null)
             {

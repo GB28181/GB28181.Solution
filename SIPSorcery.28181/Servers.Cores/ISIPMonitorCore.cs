@@ -8,7 +8,7 @@ namespace SIPSorcery.GB28181.Servers
     /// <summary>
     /// 监控服务统一接口
     /// </summary>
-    public interface ISIPMonitorService :IMediaService
+    public interface ISIPMonitorCore :IMediaAction
     {
 
         string DeviceId { get; set; }

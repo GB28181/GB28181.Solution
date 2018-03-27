@@ -18,7 +18,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
     /// <summary>
     /// sip监控核心服务，每一个接入节点都有一个监控服务实例
     /// </summary>
-    public class SIPMonitorNodeService : ISIPMonitorService
+    public class SIPMonitorCoreService : ISIPMonitorCore
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
@@ -27,7 +27,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         //concurent requet/reply
         private ConcurrentDictionary<int, SIPRequest> _syncRequestContext = new ConcurrentDictionary<int, SIPRequest>();
         private ConcurrentQueue<Tuple<SIPRequest, SIPResponse>> _syncResponseContext = new ConcurrentQueue<Tuple<SIPRequest, SIPResponse>>();
-        private ISipMessageCoreService _sipMsgCoreService;
+        private ISipMessageCore _sipMsgCoreService;
         /// <summary>
         /// 远程终结点
         /// </summary>
@@ -60,15 +60,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         #endregion
 
         #region 初始化监控
-        //public SIPMonitorNodeService(ISipCoreService msgCore, string deviceId, SIPEndPoint remoteEP, SIPAccount account)
-        //{
-        //    _sipMsgCoreService = msgCore;
-        //    DeviceId = deviceId;
-        //    RemoteEndPoint = remoteEP;
-        //    _account = account;
-        //}
-
-        public SIPMonitorNodeService(ISipMessageCoreService sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        public SIPMonitorCoreService(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
         {
             _sipMsgCoreService = sipMsgCoreService;
             _sipTransport = sipTransport;

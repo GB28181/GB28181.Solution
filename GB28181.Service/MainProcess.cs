@@ -37,6 +37,9 @@ namespace GB28181Service
 
         private Task _mainTask = null;
         private Task _mainSipTask = null;
+
+        private Task _registerTask = null;
+
         private Task _mainWebSocketRpcTask = null;
 
         private DateTime _keepaliveTime;
@@ -127,19 +130,20 @@ namespace GB28181Service
         private void ConfigServices(IConfigurationRoot configuration)
         {
             //we should initialize resource here then use them.
-            servicesContainer.AddSingleton(servicesContainer); // add itself 
-            servicesContainer.AddSingleton(configuration); // add configuration 
-            servicesContainer.AddSingleton<ILog, Logger>();
-            servicesContainer.AddSingleton<ISipAccountStorage, SipAccountStorage>();
-            servicesContainer.AddSingleton<MediaEventSource>();
-            servicesContainer.AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>();
-            servicesContainer.AddScoped<ISIPServiceDirector, SIPServiceDirector>();
-            servicesContainer.AddSingleton<IRpcService, RpcServer>();
-            servicesContainer.AddTransient<ISIPTransactionEngine, SIPTransactionEngine>();
-            servicesContainer.AddTransient<ISIPMonitorService, SIPMonitorNodeService>();
-            servicesContainer.AddSingleton<ISIPTransport, SIPTransport>();
-            servicesContainer.AddSingleton<ISipMessageCoreService, SIPMessageCoreService>();
-            servicesContainer.AddSingleton<MessageCenter>();
+            servicesContainer.AddSingleton<IServiceCollection>(servicesContainer) // add itself 
+                             .AddSingleton(configuration)  // add configuration 
+                             .AddSingleton<ILog, Logger>()
+                             .AddSingleton<ISipAccountStorage, SipAccountStorage>()
+                             .AddSingleton<MediaEventSource>()
+                             .AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>()
+                             .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
+                             .AddSingleton<IRpcService, RpcServer>()
+                             .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
+                             .AddTransient<ISIPMonitorCore, SIPMonitorCoreService>()
+                             .AddSingleton<ISIPTransport, SIPTransport>()
+                             .AddSingleton<ISIPRegistrarCore, SIPRegistrarCoreService>()
+                             .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
+                             .AddSingleton<MessageCenter>();
             _serviceProvider = servicesContainer.BuildServiceProvider();
 
         }
@@ -150,14 +154,12 @@ namespace GB28181Service
             _keepaliveTime = DateTime.Now;
             try
             {
-                var sipStorage = _serviceProvider.GetService<ISipAccountStorage>();
-
                 // start the Listening SipService in main Service
                 _mainSipTask = Task.Factory.StartNew(() =>
                 {
-                    var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCoreService>();
-                        //Get meassage Handler
-                        var messageHandler = _serviceProvider.GetService<MessageCenter>();
+                    var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
+                    //Get meassage Handler
+                    var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
                     _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
                     _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
                     _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
@@ -174,10 +176,20 @@ namespace GB28181Service
 
                 });
 
+                // run the register service
+                _registerTask = Task.Factory.StartNew(() =>
+                {
+                    logger.Debug("SIP Registrar daemon is running...");
+                    var _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
+                    _registrarCore.ProcessRegisterRequest();
+                });
+                logger.Debug("SIPRegistrarCore thread started ");
+
                 //Run the Rpc Server End
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-                    var _mainWebSocketRpcServer = _serviceProvider.GetService<IRpcService>();
+
+                    var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                     _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
                     _mainWebSocketRpcServer.AddPort(50051);
                     _mainWebSocketRpcServer.Run();

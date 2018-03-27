@@ -71,7 +71,7 @@ namespace SIPSorcery.GB28181.SIP.App
 
         // Only non-printable non-alphanumeric ASCII characters missing are ; \ and space. The semi-colon isn't accepted by 
         // Netgears and the space has the potential to create too much confusion with the users and \ with the system.
-        public static readonly char[] NONAPLPHANUM_ALLOWED_PASSWORD_CHARS = new char[]{'!','"','$','%','&','(',')','*','+',',','.','/',':','<','=','>','?','@','[',']','^','_','`','{','|','}','~'};
+        public static readonly char[] NONAPLPHANUM_ALLOWED_PASSWORD_CHARS = new char[] { '!', '"', '$', '%', '&', '(', ')', '*', '+', ',', '.', '/', ':', '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~' };
         public static readonly string USERNAME_ALLOWED_CHARS = @"a-zA-Z0-9_\-\.";
 
         private static ILog logger = AppState.logger;
@@ -549,13 +549,12 @@ namespace SIPSorcery.GB28181.SIP.App
         {
             try
             {
-                Dictionary<Guid, object> assets = new Dictionary<Guid, object>();
-
-                DataSet sipAssetSet = new DataSet();
-                XmlTextReader xmlReader = new XmlTextReader(dom.OuterXml, XmlNodeType.Document, null);
+                var assets = new Dictionary<Guid, object>();
+                var sipAssetSet = new DataSet();
+                var xmlReader = new XmlTextReader(dom.OuterXml, XmlNodeType.Document, null);
                 sipAssetSet.ReadXml(xmlReader);
 
-                if (sipAssetSet != null && sipAssetSet.Tables != null && sipAssetSet.Tables.Count > 0)
+                if (sipAssetSet.Tables != null && sipAssetSet.Tables.Count > 0)
                 {
                     try
                     {
