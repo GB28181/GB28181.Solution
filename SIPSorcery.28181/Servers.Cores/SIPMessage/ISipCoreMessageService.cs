@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
-    public interface ISipCoreMessageService
+    public interface ISipMessageCoreService
     {
 
         SIPEndPoint LocalEP { get; set; }

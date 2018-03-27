@@ -138,7 +138,7 @@ namespace GB28181Service
             servicesContainer.AddTransient<ISIPTransactionEngine, SIPTransactionEngine>();
             servicesContainer.AddTransient<ISIPMonitorService, SIPMonitorNodeService>();
             servicesContainer.AddSingleton<ISIPTransport, SIPTransport>();
-            servicesContainer.AddSingleton<ISipCoreMessageService, SIPCoreMessageService>();
+            servicesContainer.AddSingleton<ISipMessageCoreService, SIPMessageCoreService>();
             servicesContainer.AddSingleton<MessageCenter>();
             _serviceProvider = servicesContainer.BuildServiceProvider();
 
@@ -155,7 +155,7 @@ namespace GB28181Service
                 // start the Listening SipService in main Service
                 _mainSipTask = Task.Factory.StartNew(() =>
                 {
-                    var _mainSipService = _serviceProvider.GetRequiredService<ISipCoreMessageService>();
+                    var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCoreService>();
                         //Get meassage Handler
                         var messageHandler = _serviceProvider.GetService<MessageCenter>();
                     _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;

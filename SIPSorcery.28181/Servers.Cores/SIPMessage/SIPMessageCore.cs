@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Sys.Config;
@@ -25,7 +24,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     /// <summary>
     /// sip消息核心处理
     /// </summary>
-    public class SIPCoreMessageService : ISipCoreMessageService
+    public class SIPMessageCoreService : ISipMessageCoreService
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
@@ -143,7 +142,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         #endregion
 
 
-        public SIPCoreMessageService(IServiceCollection serviceCollection)
+        public SIPMessageCoreService(IServiceCollection serviceCollection)
         {
             var _serviceCollection = serviceCollection;
             _serviceProvider = _serviceCollection.BuildServiceProvider();
