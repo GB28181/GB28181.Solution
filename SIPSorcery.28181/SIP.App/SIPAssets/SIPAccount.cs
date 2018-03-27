@@ -68,7 +68,6 @@ namespace SIPSorcery.GB28181.SIP.App
         private const string BANNED_SIPACCOUNT_NAMES = "dispatcher";
 
         //public static readonly string SelectQuery = "select * from sipaccounts where sipusername = ?1 and sipdomain = ?2";
-
         // Only non-printable non-alphanumeric ASCII characters missing are ; \ and space. The semi-colon isn't accepted by 
         // Netgears and the space has the potential to create too much confusion with the users and \ with the system.
         public static readonly char[] NONAPLPHANUM_ALLOWED_PASSWORD_CHARS = new char[] { '!', '"', '$', '%', '&', '(', ')', '*', '+', ',', '.', '/', ':', '<', '=', '>', '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~' };
@@ -531,7 +530,6 @@ namespace SIPSorcery.GB28181.SIP.App
                 byte.TryParse(row["KeepaliveNumber"].ToString(), out m_keepaliveNumber);
                 //IPAddress.TryParse(row["OutputIP"].ToString(), out m_OutputIP);
                 MsgEncode = row["MsgEncode"].ToString();
-
             }
             catch (Exception excp)
             {

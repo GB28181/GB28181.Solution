@@ -45,7 +45,7 @@ namespace GB28181Service
         private DateTime _keepaliveTime;
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
 
-        private List<CameraInfo> _cameras = new List<CameraInfo>();
+
 
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
@@ -54,12 +54,7 @@ namespace GB28181Service
         private ServiceProvider _serviceProvider = null;
         public MainProcess()
         {
-            _cameras.Add(new CameraInfo()
-            {
-                DeviceID = "34010000001310000001",
-                IPAddress = "192.168.230.100",
-                Port = 5060
-            });
+ 
         }
 
         #region IDisposable interface
@@ -171,7 +166,6 @@ namespace GB28181Service
                     _mainSipService.OnMediaStatusReceived += messageHandler.OnMediaStatusReceived;
                     _mainSipService.OnPresetQueryReceived += messageHandler.OnPresetQueryReceived;
                     _mainSipService.OnDeviceConfigDownloadReceived += messageHandler.OnDeviceConfigDownloadReceived;
-                    _mainSipService.Initialize(_cameras);
                     _mainSipService.Start();
 
                 });
@@ -179,11 +173,9 @@ namespace GB28181Service
                 // run the register service
                 _registerTask = Task.Factory.StartNew(() =>
                 {
-                    logger.Debug("SIP Registrar daemon is running...");
                     var _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
                     _registrarCore.ProcessRegisterRequest();
                 });
-                logger.Debug("SIPRegistrarCore thread started ");
 
                 //Run the Rpc Server End
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>

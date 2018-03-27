@@ -157,14 +157,19 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             _transport.SIPTransportResponseReceived += AddMessageResponse;
         }
 
-        #region 初始化资源，缓存注册上来的设备信息
-        public void Initialize(List<CameraInfo> cameraList)
+
+        private List<CameraInfo> _cameras = new List<CameraInfo>();
+
+        private void Initialize(List<CameraInfo> cameraList)
         {
-            _serviceState = ServiceStatus.Wait;
 
+            _cameras.Add(new CameraInfo()
+            {
+                DeviceID = "34010000001310000001",
+                IPAddress = "192.168.230.100",
+                Port = 5060
+            });
 
-            LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
-            LocalSIPId = _LocalSipAccount.LocalID;
             // init the camera info for connetctions
             cameraList?.ForEach(deviceItem =>
             {
@@ -175,15 +180,18 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 _nodeMonitorService.TryAdd(deviceItem.DeviceID, sipNodeService);
             });
 
-
-
         }
-
-        #endregion
 
         #region 启动/停止消息主服务(监听注册链接)
         public void Start()
         {
+            _serviceState = ServiceStatus.Wait;
+
+            LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
+            LocalSIPId = _LocalSipAccount.LocalID;
+
+            Initialize(_cameras);
+
             try
             {
                logger.Debug("SIPMessageCoreService daemon is runing...");

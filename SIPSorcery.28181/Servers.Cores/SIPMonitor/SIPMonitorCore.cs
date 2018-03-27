@@ -121,27 +121,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         //   public void AckRequest(string toTag, string ip, int port)
         public void AckRequest(SIPResponse response)
         {
-            #region unused rtp handler 
-            //var ip = _msgCore.GetReceiveIP(response.Body);
-            //var port = _msgCore.GetReceivePort(response.Body, SDPMediaTypesEnum.video);
-
-            // if (ip == null)
-            // {
-            //      return;
-            //  }
-            //  IPAddress recvIP = IPAddress.Parse(ip);
-            //if (_account.StreamProtocol == ProtocolType.Tcp)
-            //{
-            //    _channel = new TCPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
-            //}
-            //else
-            //{
-            //    _channel = new UDPChannel(_account.TcpMode, recvIP, _mediaPort, _account.StreamProtocol, _account.PacketOutOrder, port);
-            //}
-            //   _channel.OnFrameReady += RtpChannel_OnFrameReady;
-            //_channel.Start();
-
-            #endregion
             SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
             SIPRequest ackReq = _sipTransport.GetRequest(SIPMethodsEnum.ACK, remoteUri);
