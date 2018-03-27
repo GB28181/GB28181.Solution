@@ -16,10 +16,10 @@ namespace GB28181Service
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
 
-        private ISipCoreService _sipCoreMessageService;
+        private ISipCoreMessageService _sipCoreMessageService;
 
 
-        public MessageCenter(ISipCoreService sipCoreMessageService)
+        public MessageCenter(ISipCoreMessageService sipCoreMessageService)
         {
             _sipCoreMessageService = sipCoreMessageService;
 

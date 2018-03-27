@@ -25,7 +25,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
     /// <summary>
     /// sip消息核心处理
     /// </summary>
-    public class SIPCoreMessageService : ISipCoreService
+    public class SIPCoreMessageService : ISipCoreMessageService
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
