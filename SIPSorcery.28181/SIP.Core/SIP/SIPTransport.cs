@@ -1258,7 +1258,7 @@ namespace SIPSorcery.GB28181.SIP
 
                                 if (PerformanceMonitorPrefix != null)
                                 {
-                                    // SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
+                                    SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                                 }
 
                                 return;
@@ -1446,12 +1446,11 @@ namespace SIPSorcery.GB28181.SIP
                             {
                                 FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "Not parseable as SIP message.", SIPValidationFieldsEnum.Unknown, rawSIPMessage);
 
-#if !SILVERLIGHT
                                 if (PerformanceMonitorPrefix != null)
                                 {
                                     SIPSorceryPerformanceMonitor.IncrementCounter(PerformanceMonitorPrefix + SIPSorceryPerformanceMonitor.SIP_TRANSPORT_SIP_BAD_MESSAGES_PER_SECOND_SUFFIX);
                                 }
-#endif
+
                             }
                         }
                     }

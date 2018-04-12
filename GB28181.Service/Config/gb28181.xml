@@ -4,10 +4,10 @@
     <Name>上级平台</Name>
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34010000002000000001</LocalID>
-    <LocalIP>192.168.230.53</LocalIP>
+    <LocalIP>10.77.37.137</LocalIP>
     <LocalPort>7777</LocalPort>
     <RemotePort>0</RemotePort>
-    <Authentication>true</Authentication>
+    <Authentication>false</Authentication>
     <SIPUsername>admin</SIPUsername>
     <SIPPassword>12345678</SIPPassword>
     <MsgProtocol>UDP</MsgProtocol>
