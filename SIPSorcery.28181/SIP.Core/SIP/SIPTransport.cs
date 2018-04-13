@@ -31,7 +31,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
-
 using Logger4Net;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
@@ -218,7 +217,7 @@ namespace SIPSorcery.GB28181.SIP
             {
                 m_transportThreadStarted = true;
 
-                Thread inMessageThread = new Thread(new ThreadStart(ProcessInMessage))
+                var inMessageThread = new Thread(() => ProcessInMessage())
                 {
                     Name = RECEIVE_THREAD_NAME
                 };
@@ -235,7 +234,7 @@ namespace SIPSorcery.GB28181.SIP
         {
             m_reliablesThreadRunning = true;
 
-            var reliableTransmissionsThread = new Thread(new ThreadStart(ProcessPendingReliableTransactions))
+            var reliableTransmissionsThread = new Thread(() => ProcessPendingReliableTransactions())
             {
                 Name = RELIABLES_THREAD_NAME
             };
@@ -252,7 +251,7 @@ namespace SIPSorcery.GB28181.SIP
                 }
                 else
                 {
-                    IncomingMessage incomingMessage = new IncomingMessage(sipChannel, remoteEndPoint, buffer);
+                    var incomingMessage = new IncomingMessage(sipChannel, remoteEndPoint, buffer);
 
                     // Keep the queue within size limits 
                     if (m_inMessageQueue.Count >= MAX_INMESSAGE_QUEUECOUNT)
@@ -360,7 +359,6 @@ namespace SIPSorcery.GB28181.SIP
                     }
                 }
             }
-
             return null;
         }
 
@@ -1429,7 +1427,7 @@ namespace SIPSorcery.GB28181.SIP
                                             sipRequest.Header.Vias.UpateTopViaHeader(remoteEndPoint.GetIPEndPoint());
 
                                             // Stateful cores should create a transaction once they receive this event, stateless cores should not.
-                                            SIPTransportRequestReceived(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipRequest);
+                                            SIPTransportRequestReceived?.Invoke(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipRequest);
                                         }
                                     }
                                     catch (SIPValidationException sipRequestExcp)

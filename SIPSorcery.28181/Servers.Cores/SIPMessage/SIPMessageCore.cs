@@ -74,7 +74,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private UInt32 src = 0;//算s64CurPts
         private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
 
-        private ServiceProvider _serviceProvider;
+        private IServiceProvider _serviceProvider;
         #endregion
 
         #region 事件
@@ -141,14 +141,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #endregion
 
+        private Guid instanceId = Guid.Empty;
 
         public SIPMessageCoreService(IServiceCollection serviceCollection)
         {
-            var _serviceCollection = serviceCollection;
-            _serviceProvider = _serviceCollection.BuildServiceProvider();
+            instanceId = Guid.NewGuid();
+            _serviceProvider = serviceCollection.BuildServiceProvider();
             _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
             var sipAccountStorage = _serviceProvider.GetRequiredService<ISipAccountStorage>();
-
 
             _LocalSipAccount = sipAccountStorage.GetLocalSipAccout();
             // Configure the SIP transport layer.
@@ -166,7 +166,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             _cameras.Add(new CameraInfo()
             {
                 DeviceID = "34010000001310000001",
-                IPAddress = "192.168.230.100",
+                IPAddress = "10.78.115.153",
                 Port = 5060
             });
 

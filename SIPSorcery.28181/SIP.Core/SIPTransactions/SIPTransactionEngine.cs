@@ -93,7 +93,7 @@ namespace SIPSorcery.GB28181.SIP
                     // No normal match found so look fo a 2xx INVITE response waiting for an ACK.
                     if (sipRequest.Method == SIPMethodsEnum.ACK)
                     {
-                        //logger.Debug("Looking for ACK transaction, branchid=" + sipRequest.Header.Via.TopViaHeader.Branch + ".");
+                        logger.Debug("Looking for ACK transaction, branchid=" + sipRequest.Header.Vias.TopViaHeader.Branch + ".");
 
                         foreach (SIPTransaction transaction in m_transactions.Values)
                         {
@@ -136,7 +136,7 @@ namespace SIPSorcery.GB28181.SIP
                             }
                         }
 
-                        //logger.Info("ACK for contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + " was not matched.");
+                        logger.Info("ACK for contact=" + contactAddress + ", cseq=" + sipRequest.Header.CSeq + " was not matched.");
                     }
 
                     return null;

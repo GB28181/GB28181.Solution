@@ -1,4 +1,5 @@
 ﻿using Logger4Net;
+using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;
@@ -60,11 +61,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         #endregion
 
         #region 初始化监控
-        public SIPMonitorCoreService(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        //public SIPMonitorCoreService(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        public SIPMonitorCoreService(IServiceCollection serviceCollection)
         {
-            _sipMsgCoreService = sipMsgCoreService;
-            _sipTransport = sipTransport;
-            _sipAccount = sipAccountStorage.GetLocalSipAccout();
+            var _serviceProvider = serviceCollection.BuildServiceProvider();
+            _sipMsgCoreService = _serviceProvider.GetRequiredService<ISipMessageCore>();
+            _sipTransport = _serviceProvider.GetRequiredService<ISIPTransport>();
+            _sipAccount = _serviceProvider.GetRequiredService<ISipAccountStorage>().GetLocalSipAccout();
         }
 
         #endregion

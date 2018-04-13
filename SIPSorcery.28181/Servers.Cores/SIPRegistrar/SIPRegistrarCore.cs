@@ -126,9 +126,11 @@ namespace SIPSorcery.GB28181.Servers
 
         private SIPAccount _localSipAccount;
 
+        private Guid instanceId = Guid.Empty;
 
         public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
+            instanceId = Guid.NewGuid();
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;

@@ -2,7 +2,6 @@
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.Sys;
 using SIPSorcery.GB28181.Sys.Config;
-using SIPSorcery.GB28181.Sys.Model;
 using SIPSorcery.GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
@@ -54,7 +53,7 @@ namespace GB28181Service
         private ServiceProvider _serviceProvider = null;
         public MainProcess()
         {
- 
+
         }
 
         #region IDisposable interface
@@ -140,7 +139,6 @@ namespace GB28181Service
                              .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
                              .AddSingleton<MessageCenter>();
             _serviceProvider = servicesContainer.BuildServiceProvider();
-
         }
 
 
@@ -149,12 +147,12 @@ namespace GB28181Service
             _keepaliveTime = DateTime.Now;
             try
             {
+                var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
+                //Get meassage Handler
+                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
                 // start the Listening SipService in main Service
                 _mainSipTask = Task.Factory.StartNew(() =>
                 {
-                    var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
-                    //Get meassage Handler
-                    var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
                     _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
                     _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;
                     _mainSipService.OnCatalogReceived += messageHandler.OnCatalogReceived;
@@ -171,22 +169,22 @@ namespace GB28181Service
                 });
 
                 // run the register service
+                var _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
                 _registerTask = Task.Factory.StartNew(() =>
                 {
-                    var _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
                     _registrarCore.ProcessRegisterRequest();
                 });
 
                 //Run the Rpc Server End
+                var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-
-                    var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                     _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
                     _mainWebSocketRpcServer.AddPort(50051);
                     _mainWebSocketRpcServer.Run();
                 });
 
+                //test code will be removed
                 var abc = WaitUserCmd();
 
                 abc.Wait();
