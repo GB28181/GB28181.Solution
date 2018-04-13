@@ -62,12 +62,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
         #region 初始化监控
         //public SIPMonitorCoreService(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
-        public SIPMonitorCoreService(IServiceCollection serviceCollection)
+        public SIPMonitorCoreService(ISipMessageCore sipMessageCore, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
         {
-            var _serviceProvider = serviceCollection.BuildServiceProvider();
-            _sipMsgCoreService = _serviceProvider.GetRequiredService<ISipMessageCore>();
-            _sipTransport = _serviceProvider.GetRequiredService<ISIPTransport>();
-            _sipAccount = _serviceProvider.GetRequiredService<ISipAccountStorage>().GetLocalSipAccout();
+            _sipMsgCoreService = sipMessageCore;
+            _sipTransport = sipTransport;
+            _sipAccount = sipAccountStorage.GetLocalSipAccout();
         }
 
         #endregion

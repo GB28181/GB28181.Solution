@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
+using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
@@ -32,6 +33,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
         private ISIPRegistrarCore _registrarCore;
+        private ISipAccountStorage _sipAccountStorage;
         private SIPAccount _LocalSipAccount;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
@@ -74,7 +76,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private UInt32 src = 0;//算s64CurPts
         private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
 
-        private IServiceProvider _serviceProvider;
         #endregion
 
         #region 事件
@@ -143,16 +144,20 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         private Guid instanceId = Guid.Empty;
 
-        public SIPMessageCoreService(IServiceCollection serviceCollection)
+        //   public SIPMessageCoreService(IServiceCollection serviceCollection)
+        public SIPMessageCoreService(
+            ISIPRegistrarCore sipRegistrarCore,
+            ISIPTransport sipTransport,
+            ISipAccountStorage sipAccountStorage)
         {
             instanceId = Guid.NewGuid();
-            _serviceProvider = serviceCollection.BuildServiceProvider();
-            _registrarCore = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
-            var sipAccountStorage = _serviceProvider.GetRequiredService<ISipAccountStorage>();
+            _registrarCore = sipRegistrarCore;
+            _transport = sipTransport;
+            _sipAccountStorage = sipAccountStorage;
 
-            _LocalSipAccount = sipAccountStorage.GetLocalSipAccout();
+            _LocalSipAccount = _sipAccountStorage.GetLocalSipAccout();
+
             // Configure the SIP transport layer.
-            _transport = _serviceProvider.GetRequiredService<ISIPTransport>();
             _transport.SIPTransportRequestReceived += AddMessageRequest;
             _transport.SIPTransportResponseReceived += AddMessageResponse;
         }
@@ -174,10 +179,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             cameraList?.ForEach(deviceItem =>
             {
                 var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-                var sipNodeService = _serviceProvider.GetService<ISIPMonitorCore>();
-                sipNodeService.RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port);
-                sipNodeService.DeviceId = deviceItem.DeviceID;
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, sipNodeService);
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                {
+                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
+                    DeviceId = deviceItem.DeviceID
+                });
             });
 
         }
@@ -194,8 +200,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
             try
             {
-               logger.Debug("SIPMessageCoreService daemon is runing...");
-                var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_LocalSipAccount); 
+                logger.Debug("SIPMessageCoreService daemon is runing...");
+                var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_LocalSipAccount);
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 _transport.MsgEncode = _LocalSipAccount.MsgEncode;
                 _transport.AddSIPChannel(sipChannels);
@@ -596,10 +602,11 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                     if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                     {
                         remoteEP.Port = _LocalSipAccount.KeepaliveInterval;
-                        var sipNodeService = _serviceProvider.GetService<ISIPMonitorCore>();
-                        sipNodeService.RemoteEndPoint = remoteEP;
-                        sipNodeService.DeviceId = catalogItem.DeviceID;
-                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, sipNodeService);
+                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCoreService(this, _transport, _sipAccountStorage)
+                        {
+                            RemoteEndPoint = remoteEP,
+                            DeviceId = catalogItem.DeviceID
+                        });
                     }
 
                 }
