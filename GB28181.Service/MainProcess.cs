@@ -44,8 +44,6 @@ namespace GB28181Service
         private DateTime _keepaliveTime;
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
 
-
-
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
 
         private readonly ServiceCollection servicesContainer = new ServiceCollection();
