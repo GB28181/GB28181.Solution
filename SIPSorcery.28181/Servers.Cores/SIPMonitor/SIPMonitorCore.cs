@@ -1,5 +1,4 @@
 ﻿using Logger4Net;
-using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;

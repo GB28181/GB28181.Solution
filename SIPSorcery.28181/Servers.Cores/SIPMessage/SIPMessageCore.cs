@@ -142,15 +142,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         #endregion
 
-        private Guid instanceId = Guid.Empty;
-
         //   public SIPMessageCoreService(IServiceCollection serviceCollection)
         public SIPMessageCoreService(
             ISIPRegistrarCore sipRegistrarCore,
             ISIPTransport sipTransport,
             ISipAccountStorage sipAccountStorage)
         {
-            instanceId = Guid.NewGuid();
             _registrarCore = sipRegistrarCore;
             _transport = sipTransport;
             _sipAccountStorage = sipAccountStorage;
