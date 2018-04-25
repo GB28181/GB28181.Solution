@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
-namespace SIPSorcery.GB28181.Persistence {
+namespace SIPSorcery.GB28181.Persistence
+{
 
     public static class Evaluator {
 
@@ -43,7 +42,7 @@ namespace SIPSorcery.GB28181.Persistence {
             }
 
             internal Expression Eval(Expression exp) {
-                return this.Visit(exp);
+                return Visit(exp);
             }
 
             protected override Expression Visit(Expression exp) {
@@ -51,8 +50,8 @@ namespace SIPSorcery.GB28181.Persistence {
                     return null;
                 }
 
-                if (this.candidates.Contains(exp)) {
-                    return this.Evaluate(exp);
+                if (candidates.Contains(exp)) {
+                    return Evaluate(exp);
                 }
                 return base.Visit(exp);
             }
@@ -81,25 +80,25 @@ namespace SIPSorcery.GB28181.Persistence {
             }
 
             internal HashSet<Expression> Nominate(Expression expression) {
-                this.candidates = new HashSet<Expression>();
-                this.Visit(expression);
-                return this.candidates;
+                candidates = new HashSet<Expression>();
+                Visit(expression);
+                return candidates;
             }
 
             protected override Expression Visit(Expression expression) {
                 if (expression != null) {
-                    bool saveCannotBeEvaluated = this.cannotBeEvaluated;
-                    this.cannotBeEvaluated = false;
+                    bool saveCannotBeEvaluated = cannotBeEvaluated;
+                    cannotBeEvaluated = false;
                     base.Visit(expression);
-                    if (!this.cannotBeEvaluated) {
-                        if (this.fnCanBeEvaluated(expression)) {
-                            this.candidates.Add(expression);
+                    if (!cannotBeEvaluated) {
+                        if (fnCanBeEvaluated(expression)) {
+                            candidates.Add(expression);
                         }
                         else {
-                            this.cannotBeEvaluated = true;
+                            cannotBeEvaluated = true;
                         }
                     }
-                    this.cannotBeEvaluated |= saveCannotBeEvaluated;
+                    cannotBeEvaluated |= saveCannotBeEvaluated;
                 }
                 return expression;
             }

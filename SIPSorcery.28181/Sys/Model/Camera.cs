@@ -2,7 +2,7 @@
 
 namespace SIPSorcery.GB28181.Sys.Model
 {
-    public class CameraInfo
+    public class Camera
     {
         public long ID { get; set; }
         public string ChannelID { get; set; }

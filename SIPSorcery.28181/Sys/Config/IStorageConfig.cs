@@ -12,7 +12,6 @@ namespace SIPSorcery.GB28181.Sys.Config
 
         List<SIPAccount> Accounts { get; }
 
-
         //Get Local Default SipDomain Info
         SIPAccount GetLocalSipAccout();
 

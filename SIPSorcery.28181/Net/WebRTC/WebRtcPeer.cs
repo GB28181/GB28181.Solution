@@ -106,10 +106,8 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
         public IceConnectionStatesEnum IceConnectionState = IceConnectionStatesEnum.None;
 
         private List<IceCandidate> _remoteIceCandidates = new List<IceCandidate>();
-        public List<IceCandidate> RemoteIceCandidates
-        {
-            get { return _remoteIceCandidates; }
-        }
+        public List<IceCandidate> RemoteIceCandidates => _remoteIceCandidates;
+
 
         private string _dtlsCertificateFingerprint;
         private IPEndPoint _turnServerEndPoint;
@@ -242,10 +240,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
 
                     logger.Debug("Sending SDP offer for WebRTC call " + CallID + ".");
 
-                    if (OnSdpOfferReady != null)
-                    {
-                        OnSdpOfferReady(offer);
-                    }
+                    OnSdpOfferReady?.Invoke(offer);
                 }
             }
             catch (Exception excp)
@@ -303,10 +298,8 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
             {
                 logger.Debug("Attempting to create RTP socket with IP address " + address.Address + ".");
 
-                Socket rtpSocket = null;
-                Socket controlSocket = null;
 
-                NetServices.CreateRtpSocket(address.Address, WEBRTC_START_PORT, WEBRTC_END_PORT, false, out rtpSocket, out controlSocket);
+                NetServices.CreateRtpSocket(address.Address, WEBRTC_START_PORT, WEBRTC_END_PORT, false, out Socket rtpSocket, out Socket controlSocket);
 
                 if (rtpSocket != null)
                 {
@@ -478,8 +471,10 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                 logger.Debug("Starting WebRTC RTP listener for call " + CallID + " on socket " + localEndPoint + ".");
 
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                UdpClient localSocket = new UdpClient();
-                localSocket.Client = iceCandidate.LocalRtpSocket;
+                UdpClient localSocket = new UdpClient
+                {
+                    Client = iceCandidate.LocalRtpSocket
+                };
 
                 while (!IsClosed)
                 {
@@ -496,10 +491,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                         if (buffer[0] >= 20 && buffer[0] <= 64)
                         {
                             //OnMediaPacket(iceCandidate, buffer, remoteEndPoint);
-                            if (OnDtlsPacket != null)
-                            {
-                                OnDtlsPacket(iceCandidate, buffer, remoteEndPoint);
-                            }
+                            OnDtlsPacket?.Invoke(iceCandidate, buffer, remoteEndPoint);
                         }
                         //else if ((buffer[0] & 0x80) == 0)
                         else if (buffer[0] == 0 || buffer[0] == 1)
@@ -509,10 +501,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                         }
                         else
                         {
-                            if (OnMediaPacket != null)
-                            {
-                                OnMediaPacket(iceCandidate, buffer, remoteEndPoint);
-                            }
+                            OnMediaPacket?.Invoke(iceCandidate, buffer, remoteEndPoint);
                         }
                     }
                     catch (Exception sockExcp)
@@ -594,9 +583,8 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                 {
                     if (iceCandidate.IsGatheringComplete == false)
                     {
-                        var reflexAddressAttribute = stunMessage.Attributes.FirstOrDefault(y => y.AttributeType == STUNv2AttributeTypesEnum.XORMappedAddress) as STUNv2XORAddressAttribute;
 
-                        if (reflexAddressAttribute != null)
+                        if (stunMessage.Attributes.FirstOrDefault(y => y.AttributeType == STUNv2AttributeTypesEnum.XORMappedAddress) is STUNv2XORAddressAttribute reflexAddressAttribute)
                         {
                             iceCandidate.StunRflxIPEndPoint = new IPEndPoint(reflexAddressAttribute.Address, reflexAddressAttribute.Port);
                             iceCandidate.IsGatheringComplete = true;
@@ -698,10 +686,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
             {
                 IceConnectionState = iceConnectionState;
 
-                if (OnIceStateChange != null)
-                {
-                    OnIceStateChange(iceConnectionState);
-                }
+                OnIceStateChange?.Invoke(iceConnectionState);
             }
             catch (Exception excp)
             {

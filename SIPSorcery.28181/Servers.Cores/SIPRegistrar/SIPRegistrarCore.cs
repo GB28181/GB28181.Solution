@@ -288,6 +288,10 @@ namespace SIPSorcery.GB28181.Servers
                 if (!_needAuthentication)
                 {
                     SIPResponse okRes = GetOkResponse(sipRequest);
+
+                    //Cache the Camera Info for the register Object
+
+
                     registerTransaction.SendFinalResponse(okRes);
                     return RegisterResultEnum.AuthenticationRequired;
                 }

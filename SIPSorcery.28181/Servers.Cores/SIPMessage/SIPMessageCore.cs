@@ -160,12 +160,12 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         }
 
 
-        private List<CameraInfo> _cameras = new List<CameraInfo>();
+        private List<Camera> _cameras = new List<Camera>();
 
-        private void Initialize(List<CameraInfo> cameraList)
+        private void Initialize(List<Camera> cameraList)
         {
 
-            _cameras.Add(new CameraInfo()
+            _cameras.Add(new Camera()
             {
                 DeviceID = "34010000001310000001",
                 IPAddress = "10.78.115.153",
