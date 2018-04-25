@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SIPSorcery.GB28181.Sys.Cache
 {
@@ -11,25 +9,55 @@ namespace SIPSorcery.GB28181.Sys.Cache
     public interface IMemoCache<T>
     {
         /// <summary>
+        /// triggered when Item Placed in
+        /// </summary>
+        event Action<object, T> OnItemAdded;
+
+        /// <summary>
+        /// triggered when Item Removed out
+        /// </summary>
+        event Action<object, T> OnItemRemoved;
+
+        /// <summary>
         /// string Identity 
         /// </summary>
         string Name { get; set; }
 
         /// <summary>
-        /// put some data into 
+        /// put data into it
         /// </summary>
         /// <param name="deviceKey"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        string PlaceIn(string deviceKey, T value);
+        T PlaceIn(string deviceKey, T value);
 
         /// <summary>
         /// retrive objectfrom cache
         /// </summary>
         /// <param name="deviceKey"></param>
         /// <returns></returns>
-        T FetchOut(string deviceKey);
+        T FindOut(string deviceKey);
 
+
+        /// <summary>
+        /// Remove some item
+        /// </summary>
+        /// <param name="deviceKey"></param>
+        /// <returns></returns>
+        bool Remove(string deviceKey);
+
+        /// <summary>
+        /// Empty all Data
+        /// </summary>
+        /// <returns></returns>
+        void Clear();
+
+        /// <summary>
+        /// retrive objectfrom and remove it from cache
+        /// </summary>
+        /// <param name="deviceKey"></param>
+        /// <returns></returns>
+        T TakeOut(string deviceKey);
 
 
     }

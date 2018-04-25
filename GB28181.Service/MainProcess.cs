@@ -16,6 +16,8 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
+using SIPSorcery.GB28181.Sys.Cache;
+using SIPSorcery.GB28181.Sys.Model;
 
 namespace GB28181Service
 {
@@ -35,8 +37,7 @@ namespace GB28181Service
         private readonly AutoResetEvent _eventExitMainProcess = new AutoResetEvent(false);
 
         private Task _mainTask = null;
-        private Task _mainSipTask = null;
-
+        private Task _sipTask = null;
         private Task _registerTask = null;
 
         private Task _mainWebSocketRpcTask = null;
@@ -122,20 +123,21 @@ namespace GB28181Service
         private void ConfigServices(IConfigurationRoot configuration)
         {
             //we should initialize resource here then use them.
-            servicesContainer.AddSingleton<IServiceCollection>(servicesContainer) // add itself 
-                             .AddSingleton(configuration)  // add configuration 
-                             .AddSingleton<ILog, Logger>()
-                             .AddSingleton<ISipAccountStorage, SipAccountStorage>()
-                             .AddSingleton<MediaEventSource>()
-                             .AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>()
-                             .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
-                             .AddSingleton<IRpcService, RpcServer>()
-                             .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
-                             .AddTransient<ISIPMonitorCore, SIPMonitorCoreService>()
-                             .AddSingleton<ISIPTransport, SIPTransport>()
-                             .AddSingleton<ISIPRegistrarCore, SIPRegistrarCoreService>()
-                             .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
-                             .AddSingleton<MessageCenter>();
+            servicesContainer.AddSingleton(configuration)  // add configuration 
+                            .AddSingleton<ILog, Logger>()
+                            .AddSingleton<ISipAccountStorage, SipAccountStorage>()
+                            .AddSingleton<MediaEventSource>()
+                            .AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>()
+                            .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
+                            .AddSingleton<IRpcService, RpcServer>()
+                            .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
+                            .AddTransient<ISIPMonitorCore, SIPMonitorCoreService>()
+                            .AddSingleton<ISIPTransport, SIPTransport>()
+                            .AddSingleton<ISIPRegistrarCore, SIPRegistrarCoreService>()
+                            .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
+                            .AddSingleton<MessageCenter>()
+                            .AddSingleton<IMemoCache<Camera>, DeviceObjectCache>()
+                            .AddSingleton<IServiceCollection>(servicesContainer); // add itself 
             _serviceProvider = servicesContainer.BuildServiceProvider();
         }
 
@@ -149,7 +151,7 @@ namespace GB28181Service
                 //Get meassage Handler
                 var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
                 // start the Listening SipService in main Service
-                _mainSipTask = Task.Factory.StartNew(() =>
+                _sipTask = Task.Factory.StartNew(() =>
                 {
                     _mainSipService.OnKeepaliveReceived += messageHandler.OnKeepaliveReceived;
                     _mainSipService.OnServiceChanged += messageHandler.OnServiceChanged;

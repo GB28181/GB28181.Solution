@@ -1,5 +1,4 @@
 ﻿using Logger4Net;
-using Microsoft.Extensions.DependencyInjection;
 using SIPSorcery.GB28181.Net;
 using SIPSorcery.GB28181.Net.RTP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
@@ -19,6 +18,9 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using SIPSorcery.GB28181.Sys.Cache;
+using System.Threading.Tasks;
+
 namespace SIPSorcery.GB28181.Servers.SIPMessage
 {
 
@@ -75,6 +77,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private Data_Info_s packer = new Data_Info_s();
         private UInt32 src = 0;//算s64CurPts
         private UInt32 timestamp_increse = (UInt32)(90000.0 / 25);
+
+        private IMemoCache<Camera> _cameraCache = null;
 
         #endregion
 
@@ -146,7 +150,8 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         public SIPMessageCoreService(
             ISIPRegistrarCore sipRegistrarCore,
             ISIPTransport sipTransport,
-            ISipAccountStorage sipAccountStorage)
+            ISipAccountStorage sipAccountStorage,
+            IMemoCache<Camera> cameraCache)
         {
             _registrarCore = sipRegistrarCore;
             _transport = sipTransport;
@@ -157,31 +162,47 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             // Configure the SIP transport layer.
             _transport.SIPTransportRequestReceived += AddMessageRequest;
             _transport.SIPTransportResponseReceived += AddMessageResponse;
+            _cameraCache = cameraCache;
+
+            _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
         }
 
+
+        private void _cameraCache_OnItemAdded(object arg1, Camera camera)
+        {
+
+            var ipaddress = IPAddress.Parse(camera.IPAddress);
+            _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+            {
+                RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, camera.Port),
+                DeviceId = camera.DeviceID
+            });
+
+            // throw new NotImplementedException();
+        }
 
         private List<Camera> _cameras = new List<Camera>();
 
         private void Initialize(List<Camera> cameraList)
         {
 
-            _cameras.Add(new Camera()
-            {
-                DeviceID = "34010000001310000001",
-                IPAddress = "10.78.115.153",
-                Port = 5060
-            });
+            //_cameras.Add(new Camera()
+            //{
+            //    DeviceID = "34010000001310000001",
+            //    IPAddress = "10.78.115.153",
+            //    Port = 5060
+            //});
 
-            // init the camera info for connetctions
-            cameraList?.ForEach(deviceItem =>
-            {
-                var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
-                {
-                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
-                    DeviceId = deviceItem.DeviceID
-                });
-            });
+            //// init the camera info for connetctions
+            //cameraList?.ForEach(deviceItem =>
+            //{
+            //    var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
+            //    _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+            //    {
+            //        RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
+            //        DeviceId = deviceItem.DeviceID
+            //    });
+            //});
 
         }
 
@@ -189,7 +210,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         public void Start()
         {
             _serviceState = ServiceStatus.Wait;
-
             LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
             LocalSIPId = _LocalSipAccount.LocalID;
 

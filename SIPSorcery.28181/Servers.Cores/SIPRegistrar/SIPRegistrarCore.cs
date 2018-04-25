@@ -39,8 +39,11 @@ using Logger4Net;
 using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Sys;
+using SIPSorcery.GB28181.Sys.Cache;
 using SIPSorcery.GB28181.Sys.Config;
+using SIPSorcery.GB28181.Sys.Model;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -126,13 +129,16 @@ namespace SIPSorcery.GB28181.Servers
 
         private SIPAccount _localSipAccount;
 
-        public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, bool mangleUACContact = true, bool strictRealmHandling = true)
+        private IMemoCache<Camera> _cameraCache = null;
+
+        public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;
             _localSipAccount = sipAccountStorage.GetLocalSipAccout();
             _needAuthentication = _localSipAccount.Authentication;
+            _cameraCache = cameraCache;
         }
 
         public void AddRegisterRequest(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPRequest registerRequest)
@@ -254,6 +260,22 @@ namespace SIPSorcery.GB28181.Servers
             return (contactHeaderExpiry == -1) ? registerRequest.Header.Expires : contactHeaderExpiry;
         }
 
+
+        private void CacheDeviceItem(SIPRequest sipRequest)
+        {
+
+            //Add Camera Item Into Cache
+            _cameraCache.PlaceIn(sipRequest.URI.Host, new Camera()
+            {
+                DeviceID = sipRequest.Header.From.FromURI.User,
+                IPAddress = sipRequest.Header.Vias.TopViaHeader.Host,
+                Port = sipRequest.Header.Vias.TopViaHeader.Port
+
+            });
+
+        }
+
+
         private RegisterResultEnum Register(SIPTransaction registerTransaction)
         {
             try
@@ -289,10 +311,11 @@ namespace SIPSorcery.GB28181.Servers
                 {
                     SIPResponse okRes = GetOkResponse(sipRequest);
 
-                    //Cache the Camera Info for the register Object
-
-
                     registerTransaction.SendFinalResponse(okRes);
+
+                    //Add Camera Item Into Cache
+                    CacheDeviceItem(sipRequest);
+
                     return RegisterResultEnum.AuthenticationRequired;
                 }
 
@@ -341,7 +364,12 @@ namespace SIPSorcery.GB28181.Servers
                         //}
 
                         SIPResponse okResponse = GetOkResponse(sipRequest);
+
                         registerTransaction.SendFinalResponse(okResponse);
+
+                        //Add Camera Item Into Cache
+                        CacheDeviceItem(sipRequest);
+
                         FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegisterSuccess, "Empty registration request successful for " + toUser + "@" + canonicalDomain + " from " + sipRequest.Header.ProxyReceivedFrom + ".", toUser));
                     }
                     else
@@ -416,6 +444,9 @@ namespace SIPSorcery.GB28181.Servers
                             //}
 
                             registerTransaction.SendFinalResponse(okResponse);
+
+                            //Add Camera Item Into Cache
+                            CacheDeviceItem(sipRequest);
                         }
                         else
                         {
@@ -426,6 +457,9 @@ namespace SIPSorcery.GB28181.Servers
                             sipRequest.Header.Contact[0].Expires = m_minimumBindingExpiry;
                             SIPResponse okResponse = GetOkResponse(sipRequest);
                             registerTransaction.SendFinalResponse(okResponse);
+
+       
+
                         }
                     }
 
@@ -451,21 +485,16 @@ namespace SIPSorcery.GB28181.Servers
 
         private int GetBindingExpiry(List<SIPRegistrarBinding> bindings, string bindingURI)
         {
-            if (bindings == null || bindings.Count == 0)
+            if (bindings != null || bindings.Count > 0)
             {
-                return -1;
-            }
-            else
-            {
-                foreach (SIPRegistrarBinding binding in bindings)
+                var target = bindings.FirstOrDefault(item => item.ContactURI == bindingURI);
+
+                if (target != null)
                 {
-                    if (binding.ContactURI == bindingURI)
-                    {
-                        return binding.Expiry;
-                    }
+                    return target.Expiry;
                 }
-                return -1;
             }
+            return -1;
         }
 
         /// <summary>
