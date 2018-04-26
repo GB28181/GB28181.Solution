@@ -18,8 +18,17 @@ namespace GrpcAgent.WebsocketRpcServer
 
         public override Task<KeepAliveReply> KeepAlive(KeepAliveRequest request, ServerCallContext context)
         {
-            ///TODO ....
-            return base.KeepAlive(request, context);
+            var keepAliveReply = new KeepAliveReply()
+            {
+                Status = new MediaContract.Status()
+                {
+                    Code = 200,
+                    Msg = "KeepAlive Successful!"
+                }
+
+            };
+
+            return Task.FromResult(keepAliveReply);
         }
 
 
@@ -29,13 +38,15 @@ namespace GrpcAgent.WebsocketRpcServer
             _eventSource?.FireLivePlayRequestEvent(request, context);
             var reqeustProcessResult = _sipServiceDirector.MakeVideoRequest(request.Gbid, new int[] { request.Port }, request.Ipaddr);
 
-            reqeustProcessResult.Wait(System.TimeSpan.FromSeconds(2));
+            reqeustProcessResult?.Wait(System.TimeSpan.FromSeconds(1));
 
             //get the response .
             var resReply = new StartLiveReply()
             {
-                Ipaddr = reqeustProcessResult.Result.Item1,
-                Port = reqeustProcessResult.Result.Item2,
+                // Ipaddr = reqeustProcessResult.Result.Item1,
+                //Port = reqeustProcessResult.Result.Item2,
+                Ipaddr = "0000000",
+                Port = 000000,
                 Hdr = request.Hdr,
 
                 Status = new MediaContract.Status()
@@ -51,7 +62,6 @@ namespace GrpcAgent.WebsocketRpcServer
             //  reqeustProcessResult.Wait(System.TimeSpan.FromSeconds(2));
 
             //  return reqeustProcessRsult;
-
             //_sipCoreMessageService.MonitorService[request.Gbid]
             // return base.StartLive(request, context);
         }
@@ -72,7 +82,19 @@ namespace GrpcAgent.WebsocketRpcServer
 
         public override Task<StopReply> Stop(StopRequest request, ServerCallContext context)
         {
-            return base.Stop(request, context);
+            // return base.Stop(request, context);
+
+            var stopReply = new StopReply()
+            {
+                Status = new MediaContract.Status()
+                {
+                    Code = 200,
+                    Msg = "Stop Successful!"
+                }
+
+            };
+
+            return Task.FromResult(stopReply);
         }
     }
 }

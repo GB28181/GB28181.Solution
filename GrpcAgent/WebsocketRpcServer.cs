@@ -39,6 +39,7 @@ namespace GrpcAgent
           //  var threadId = Thread.CurrentThread.ManagedThreadId;
             logger.Debug("RPC Server for StreamSever, successfully started at " + _ipaddress + ":" + _port);
 
+            Console.ReadKey();
             _server.ShutdownAsync().Wait();
         }
 

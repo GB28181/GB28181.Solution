@@ -164,7 +164,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             _transport.SIPTransportResponseReceived += AddMessageResponse;
             _cameraCache = cameraCache;
 
-            _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
+            //   _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
         }
 
 
@@ -186,23 +186,23 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         private void Initialize(List<Camera> cameraList)
         {
 
-            //_cameras.Add(new Camera()
-            //{
-            //    DeviceID = "34010000001310000001",
-            //    IPAddress = "10.78.115.153",
-            //    Port = 5060
-            //});
+            _cameras.Add(new Camera()
+            {
+                DeviceID = "34010000001310000001",
+                IPAddress = "10.78.115.153",
+                Port = 5060
+            });
 
-            //// init the camera info for connetctions
-            //cameraList?.ForEach(deviceItem =>
-            //{
-            //    var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-            //    _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
-            //    {
-            //        RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
-            //        DeviceId = deviceItem.DeviceID
-            //    });
-            //});
+            // init the camera info for connetctions
+            cameraList?.ForEach(deviceItem =>
+            {
+                var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                {
+                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
+                    DeviceId = deviceItem.DeviceID
+                });
+            });
 
         }
 
