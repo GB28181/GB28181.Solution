@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  gb28181_platform2016_test:
+    image: gb28181_platform2016_test
+    build: .
+    ports:
+      - 3000:3000
