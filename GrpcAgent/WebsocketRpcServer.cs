@@ -1,7 +1,11 @@
 ﻿using Grpc.Core;
+using Grpc.HealthCheck;
 using Logger4Net;
 using MediaContract;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace GrpcAgent
 {
     public class RpcServer : IRpcService, IDisposable
@@ -19,7 +23,7 @@ namespace GrpcAgent
         //RPC Server Name to describe its properties.
         public string Name { get => _name; set => _name = value; }
 
-
+        private readonly TaskCompletionSource<bool> tokenSource = new TaskCompletionSource<bool>();
 
         public RpcServer(VideoSession.VideoSessionBase videoSessionImp)
         {
@@ -29,19 +33,25 @@ namespace GrpcAgent
 
         public void Run()
         {
+            var healthService = new HealthServiceImpl();
             _server = new Server
             {
                 Services = { VideoSession.BindService(_videoSession) },
                 Ports = { new ServerPort(_ipaddress, _port, ServerCredentials.Insecure) }
             };
+
             _server.Start();
 
-          //  var threadId = Thread.CurrentThread.ManagedThreadId;
+            healthService.SetStatus("GB28181", Grpc.Health.V1.HealthCheckResponse.Types.ServingStatus.Serving);
+            //  var threadId = Thread.CurrentThread.ManagedThreadId;
             logger.Debug("RPC Server for StreamSever, successfully started at " + _ipaddress + ":" + _port);
 
-            Console.ReadKey();
+            tokenSource.Task.Wait();
             _server.ShutdownAsync().Wait();
         }
+
+
+
 
         public void Dispose()
         {
