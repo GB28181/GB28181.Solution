@@ -1,14 +1,16 @@
-# RegisterService :GB28181_Platform2016_MicroService
+#  GB28181_Platform2016
 
-## part 1 :# RegisterService
+## features
+~~~
+running in docker
+running on Linux 
+running on .net core 2.0+
+~~~
+
+## function
 
 ~~~
 Device Registering And managemment
-~~~
-
-## part 2 :# DeviceControl
-
-~~~
 Device Controlling Service such as :PTZ 
 ~~~
 
