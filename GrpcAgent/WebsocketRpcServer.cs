@@ -5,6 +5,7 @@ using MediaContract;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GrpcPtzControl;
 
 namespace GrpcAgent
 {
@@ -17,6 +18,7 @@ namespace GrpcAgent
         private Server _server = null;
         private string _name = "DefaultName";
         private VideoSession.VideoSessionBase _videoSession;
+        private PtzControl.PtzControlBase _ptzControlService;
         public string Ipaddress { get => _ipaddress; set => _ipaddress = value; }
         public int Port { get => _port; set => _port = value; }
 
@@ -25,9 +27,10 @@ namespace GrpcAgent
 
         private readonly TaskCompletionSource<bool> tokenSource = new TaskCompletionSource<bool>();
 
-        public RpcServer(VideoSession.VideoSessionBase videoSessionImp)
+        public RpcServer(VideoSession.VideoSessionBase videoSessionImp, PtzControl.PtzControlBase ptzControlService)
         {
             _videoSession = videoSessionImp;
+            _ptzControlService = ptzControlService;
         }
 
 
@@ -36,7 +39,7 @@ namespace GrpcAgent
             var healthService = new HealthServiceImpl();
             _server = new Server
             {
-                Services = { VideoSession.BindService(_videoSession) },
+                Services = { VideoSession.BindService(_videoSession), PtzControl.BindService(_ptzControlService)},
                 Ports = { new ServerPort(_ipaddress, _port, ServerCredentials.Insecure) }
             };
 

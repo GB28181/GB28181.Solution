@@ -18,6 +18,7 @@ using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.Servers.SIPMonitor;
 using SIPSorcery.GB28181.Sys.Cache;
 using SIPSorcery.GB28181.Sys.Model;
+using GrpcPtzControl;
 
 namespace GB28181Service
 {
@@ -64,7 +65,6 @@ namespace GB28181Service
             Dispose(true);
         }
 
-
         protected virtual void Dispose(bool disposing)
         {
 
@@ -109,9 +109,7 @@ namespace GB28181Service
             //wait the process exit of main
             _eventExitMainProcess.WaitOne();
         }
-
-
-
+        
         public void Stop()
         {
             // signal main service exit
@@ -132,6 +130,7 @@ namespace GB28181Service
                             .AddSingleton<IRpcService, RpcServer>()
                             .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
                             .AddTransient<ISIPMonitorCore, SIPMonitorCoreService>()
+                            .AddScoped<PtzControl.PtzControlBase, PtzControlImpl>()
                             .AddSingleton<ISIPTransport, SIPTransport>()
                             .AddSingleton<ISIPRegistrarCore, SIPRegistrarCoreService>()
                             .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
@@ -140,8 +139,7 @@ namespace GB28181Service
                             .AddSingleton<IServiceCollection>(servicesContainer); // add itself 
             _serviceProvider = servicesContainer.BuildServiceProvider();
         }
-
-
+        
         private void MainServiceProcessing()
         {
             _keepaliveTime = DateTime.Now;
@@ -149,7 +147,7 @@ namespace GB28181Service
             {
                 var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
                 //Get meassage Handler
-                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
+                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();                
                 // start the Listening SipService in main Service
                 _sipTask = Task.Factory.StartNew(() =>
                 {
@@ -179,14 +177,13 @@ namespace GB28181Service
                 var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-                    _mainWebSocketRpcServer.AddIPAdress("0.0.0.0");
+                    _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
                     _mainWebSocketRpcServer.AddPort(50051);
                     _mainWebSocketRpcServer.Run();
                 });
 
                 //test code will be removed
                 var abc = WaitUserCmd();
-
                 abc.Wait();
 
                 //wait main service exit
@@ -206,8 +203,7 @@ namespace GB28181Service
             }
 
         }
-
-
+        
         private async Task WaitUserCmd()
         {
             await Task.Run(() =>
@@ -221,7 +217,7 @@ namespace GB28181Service
                          case ConsoleKey.I:
                              {
                                  var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
-                                 mockCaller.MakeVideoRequest("34010000001310000001", new int[] { 50000 }, "192.168.20.21");
+                                 mockCaller.MakeVideoRequest("42010000001310000184", new int[] { 5060 }, "10.78.115.156");
                              }
                              break;
 

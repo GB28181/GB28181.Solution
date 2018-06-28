@@ -925,7 +925,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 CommandType = CommandType.DeviceControl,
                 DeviceID = DeviceId,
-                SN = 1,//new Random().Next(9999),
+                SN = 11,//new Random().Next(9999),
                 PTZCmd = cmdStr
             };
             string xmlBody = PTZControl.Instance.Save<PTZControl>(ptz);

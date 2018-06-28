@@ -574,6 +574,27 @@ namespace SIPSorcery.GB28181.SIP
                     //else
 
                     //{
+
+//                    x = "MESSAGE sip:42010000001310000184@10.78.115.156:5060 SIP/2.0 \r\n" +
+//"Via: SIP/2.0/UDP 10.77.38.86:5061; rport; branch=z9hG4bK482193844 \r\n" +
+//"From: <sip:42010000002100000002@10.77.38.86:5061>;tag=2703471197 \r\n" +
+//"To: <sip:42010000001310000184@10.78.115.156:5060> \r\n" +
+//"Call-ID: 3421919803 \r\n" +
+//"CSeq: 20 MESSAGE \r\n" +
+//"Content-Type: Application/MANSCDP+xml \r\n" +
+//"Max-Forwards: 70 \r\n" +
+//"User-Agent: eXosip/4.0.0 \r\n" +
+//"Content-Length: 173 \r\n" +
+
+//"<?xml version = \"1.0\"?> \r\n" +
+//"<Control> \r\n" +
+//"<CmdType>DeviceControl</CmdType> \r\n" +
+//"<SN>10</SN> \r\n" +
+//"<DeviceID>42010000001310000184</DeviceID> \r\n" +
+//"<PTZCmd>A50F0101050500C0</PTZCmd> \r\n" +
+//"</Control>";
+//                    sipChannel.Send(dstEndPoint.GetIPEndPoint(), Encoding.UTF8.GetBytes(x));
+
                     sipChannel.Send(dstEndPoint.GetIPEndPoint(), Encoding.UTF8.GetBytes(sipRequest.ToString()));
 
                     //sipChannel.Send(dstEndPoint.GetIPEndPoint(), ConvertUnicodeToUTF8(sipRequest.ToString()));

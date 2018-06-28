@@ -221,8 +221,8 @@ namespace SIPSorcery.GB28181.Sys.XML
         /// <returns></returns>
         private T Deserialize(string xmlBody)
         {
-            MemoryStream stream = new MemoryStream(Encoding.GetEncoding("GB2312").GetBytes(xmlBody));
-            StreamReader sr = new StreamReader(stream, Encoding.GetEncoding("GB2312"));
+            MemoryStream stream = new MemoryStream(Encoding.GetEncoding("utf-8").GetBytes(xmlBody));
+            StreamReader sr = new StreamReader(stream, Encoding.GetEncoding("utf-8"));
 
             //TextReader sr = new StringReader(xmlBody);
             XmlSerializer s = new XmlSerializer(typeof(T));

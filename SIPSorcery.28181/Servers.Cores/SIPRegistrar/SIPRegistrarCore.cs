@@ -133,6 +133,7 @@ namespace SIPSorcery.GB28181.Servers
 
         public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
+
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;
@@ -228,6 +229,8 @@ namespace SIPSorcery.GB28181.Servers
                                 var duration = DateTime.Now.Subtract(startTime);
                                 FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegistrarTiming, "register result=" + result.ToString() + ", time=" + duration.TotalMilliseconds + "ms, user=" + registrarTransaction.TransactionRequest.Header.To.ToURI.User + ".", null));
                                 RegisterComplete?.Invoke(duration.TotalMilliseconds, registrarTransaction.TransactionRequest.Header.AuthenticationHeader != null);
+                                
+                                //CacheDeviceItem(registrarTransaction.TransactionRequest);
                             }
                         }
                         catch (InvalidOperationException invalidOpExcp)

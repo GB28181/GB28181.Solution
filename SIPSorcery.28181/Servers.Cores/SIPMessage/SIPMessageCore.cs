@@ -164,7 +164,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             _transport.SIPTransportResponseReceived += AddMessageResponse;
             _cameraCache = cameraCache;
 
-            //   _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
+            _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
         }
 
 
@@ -183,13 +183,21 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         private List<Camera> _cameras = new List<Camera>();
 
+        public SIPMonitorCoreService sipMonitorcore;
+
         private void Initialize(List<Camera> cameraList)
         {
+            //_cameras.Add(new Camera()
+            //{
+            //    DeviceID = "42010000002100000002",
+            //    IPAddress = "10.78.115.156",
+            //    Port = 5060
+            //});
 
             _cameras.Add(new Camera()
             {
-                DeviceID = "34010000001310000001",
-                IPAddress = "10.78.115.153",
+                DeviceID = "42010000001310000184",
+                IPAddress = "10.78.115.156",
                 Port = 5060
             });
 
@@ -197,13 +205,20 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             cameraList?.ForEach(deviceItem =>
             {
                 var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                sipMonitorcore = new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
                 {
                     RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
                     DeviceId = deviceItem.DeviceID
-                });
-            });
+                };
+                _nodeMonitorService.TryAdd(deviceItem.DeviceID, sipMonitorcore);
+                //_nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                //{
+                //    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
+                //    DeviceId = deviceItem.DeviceID
+                //});
 
+            });
+            
         }
 
         #region 启动/停止消息主服务(监听注册链接)
@@ -214,7 +229,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             LocalSIPId = _LocalSipAccount.LocalID;
 
             Initialize(_cameras);
-
+            
             try
             {
                 logger.Debug("SIPMessageCoreService daemon is runing...");
@@ -222,6 +237,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 _transport.MsgEncode = _LocalSipAccount.MsgEncode;
                 _transport.AddSIPChannel(sipChannels);
+
+                ////PTZ Listen
+                //var PTZListenThread = new Thread(new ThreadStart(PTZListen))
+                //{
+                //    Name = "listenThread" + Crypto.GetRandomString(4)
+                //};
+                //PTZListenThread.Start();
             }
             catch (Exception excp)
             {
@@ -257,6 +279,47 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             catch (Exception excp)
             {
                 logger.Error("Exception SIPRegistrarDaemon Stop. " + excp.Message);
+            }
+        }
+
+        /// <summary>
+        /// PTZ Listen
+        /// </summary>
+        protected bool Closed;
+        private void PTZListen()
+        {
+            try
+            {                
+                logger.Debug("PTZ listening started.");
+                while (!Closed)
+                {
+                    //PTZ request
+                    PTZCommand ptzcmd = PTZCommand.Right;
+                    int dwSpeed = 5;
+                    Closed = true;
+                    Thread.Sleep(1000);
+                    sipMonitorcore.PtzContrl(ptzcmd, dwSpeed);
+                }
+                logger.Debug("PTZ listening halted.");
+            }
+            catch (Exception excp)
+            {
+                logger.Error("ptzListen(). " + excp.Message);
+                //throw excp;
+            }
+        }
+        public void PtzControl(PTZCommand ptzcmd, int dwSpeed)
+        {
+            try
+            {
+                logger.Debug("PTZ Controlling started.");
+                Initialize(_cameras);
+                sipMonitorcore.PtzContrl(ptzcmd, dwSpeed);
+                logger.Debug("PTZ Controlling halted.");
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Error: PtzContrl(): " + excp.Message);
             }
         }
         #endregion
@@ -618,7 +681,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 {
                     if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                     {
-                        remoteEP.Port = _LocalSipAccount.KeepaliveInterval;
+                        remoteEP.Port = _LocalSipAccount.RemotePort;
                         _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCoreService(this, _transport, _sipAccountStorage)
                         {
                             RemoteEndPoint = remoteEP,
