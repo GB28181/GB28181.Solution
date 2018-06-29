@@ -1,19 +1,10 @@
 
-FROM microsoft/aspnetcore:2.1
-LABEL Name=GB28181.Service Version=6.0.0
-ARG source=.
-
-ADD ./ /usr/local/src
+FROM microsoft/aspnetcore
 
 WORKDIR /usr/local/src/app
 
-RUN cd /usr/local/src/
+COPY . /usr/local/src/app
 
-RUN dotnet restore
+EXPOSE 50051
 
-RUN dotnet build
-
-EXPOSE 3000
-COPY $source .
-
-ENTRYPOINT dotnet GB28181.Service.dll
+ENTRYPOINT ["dotnet", "GB28181.Service.dll"]

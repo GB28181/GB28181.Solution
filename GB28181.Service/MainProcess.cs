@@ -177,7 +177,7 @@ namespace GB28181Service
                 var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-                    _mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
+                    _mainWebSocketRpcServer.AddIPAdress("10.78.115.152");
                     _mainWebSocketRpcServer.AddPort(50051);
                     _mainWebSocketRpcServer.Run();
                 });
