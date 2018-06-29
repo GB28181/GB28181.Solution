@@ -1,6 +1,6 @@
 
-FROM microsoft/aspnetcore:2
-LABEL Name=gb28181_platform2016_test Version=0.0.1
+FROM microsoft/aspnetcore:2.1
+LABEL Name=GB28181.Service Version=6.0.0
 ARG source=.
 
 ADD ./ /usr/local/src
@@ -16,4 +16,4 @@ RUN dotnet build
 EXPOSE 3000
 COPY $source .
 
-ENTRYPOINT dotnet gb28181_platform2016_test.dll
+ENTRYPOINT dotnet GB28181.Service.dll
