@@ -1,9 +1,9 @@
 
-FROM microsoft/aspnetcore
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
 
-WORKDIR /usr/local/src/app
+WORKDIR /app
 
-COPY . /usr/local/src/app
+COPY . .
 
 EXPOSE 50051
 EXPOSE 5061
