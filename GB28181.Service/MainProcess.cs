@@ -177,9 +177,9 @@ namespace GB28181Service
                 var _mainWebSocketRpcServer = _serviceProvider.GetRequiredService<IRpcService>();
                 _mainWebSocketRpcTask = Task.Factory.StartNew(() =>
                 {
-                    _mainWebSocketRpcServer.AddIPAdress("10.78.115.152");
+                    _mainWebSocketRpcServer.AddIPAdress("10.77.38.86");
                     //_mainWebSocketRpcServer.AddIPAdress("127.0.0.1");
-                    _mainWebSocketRpcServer.AddPort(50051);
+                    _mainWebSocketRpcServer.AddPort(5061);
                     _mainWebSocketRpcServer.Run();
                 });
 
@@ -218,7 +218,7 @@ namespace GB28181Service
                          case ConsoleKey.I:
                              {
                                  var mockCaller = _serviceProvider.GetService<ISIPServiceDirector>();
-                                 mockCaller.MakeVideoRequest("42010000001310000184", new int[] { 5060 }, "10.78.115.156");
+                                 mockCaller.MakeVideoRequest("42010000001310000184", new int[] { 5060 }, "10.78.115.155");
                              }
                              break;
 
