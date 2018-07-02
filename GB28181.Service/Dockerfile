@@ -3,7 +3,7 @@ FROM microsoft/dotnet:2.1-aspnetcore-runtime
 
 WORKDIR /app
 
-COPY . .
+COPY . /app
 
 EXPOSE 50051
 EXPOSE 5061
