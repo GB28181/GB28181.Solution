@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes
+name: GB28181.platform2016.service
+version: v0.1.0

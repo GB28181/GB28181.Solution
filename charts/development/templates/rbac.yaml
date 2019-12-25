@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.rbac.name }}-role
+  namespace: {{ .Values.rbac.targetNamespace }}
+rules:
+- apiGroups: [""]
+  resources: ["pods","pods/log","configMap","secret"]
+  verbs: ["get","list","patch","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.rbac.name }}-role-binding
+  namespace: {{ .Values.rbac.targetNamespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Values.rbac.name }}-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: {{ .Values.rbac.targetNamespace }}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  {{- template "GB28181.platform2016.service.serviceAccountName" . }}
+data:
+  apiVersion: "v6.0"
+  {{- range $key, $val := .Values.versions }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end}}
+  release: {{ .Release.Name }}
+  {{- range $key, $val := .Values.dataBase }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end}}

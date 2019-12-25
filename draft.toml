@@ -1,0 +1,23 @@
+[environments]
+  [environments.development]
+    name = "GB28181.platform2016.service"
+    registry  = "10.78.115.234/draft"
+    custom-tags = ["develop"]
+    namespace = "video"
+    wait = true
+    watch = false
+    watch-delay = 2
+    auto-connect = false
+    dockerfile = "Dockerfile.dev"
+    chart = "charts/development"
+  [environments.development-pre]
+    name = "GB28181.platform2016.service"
+    registry  = "10.78.115.234/draft"
+    namespace = "video-pre"
+    wait = true
+    watch = false
+    watch-delay = 2
+    auto-connect = false
+    dockerfile = "Dockerfile.dev"
+    custom-tags = ["develop-pre"]
+    chart = "charts/development-pre"

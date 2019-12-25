@@ -1,0 +1,90 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    field.cattle.io/creatorId: user-92bwv
+    field.cattle.io/publicEndpoints: '[{"nodeName":"c-znx99:m-f03bde11d261","addresses":["10.78.115.149"],"port":5060,"protocol":"TCP","podName":"video:gb-gataway-dc4469467-hsmcg","allNodes":false},{"nodeName":"c-znx99:m-f03bde11d261","addresses":["10.78.115.149"],"port":5061,"protocol":"TCP","podName":"video:gb-gataway-dc4469467-hsmcg","allNodes":false}]'
+  creationTimestamp: 2018-07-25T07:26:34Z
+  generation: 2
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-video-gb-gataway
+  name: gb-gataway
+  namespace: video
+  resourceVersion: "106084"
+  selfLink: /apis/apps/v1beta2/namespaces/video/deployments/gb-gataway
+  uid: 0f13fea2-8fdc-11e8-8050-d09466067c4d
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-video-gb-gataway
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        field.cattle.io/ports: '[[{"containerPort":5060,"dnsName":"gb-gataway-hostport","hostPort":5060,"kind":"HostPort","name":"5060tcp50600","protocol":"TCP","sourcePort":5060},{"containerPort":5061,"dnsName":"gb-gataway-hostport","hostPort":5061,"kind":"HostPort","name":"5061tcp50610","protocol":"TCP","sourcePort":5061}]]'
+        workload.cattle.io/state: '{"bWFzdGVy":"c-znx99:m-f03bde11d261"}'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-video-gb-gataway
+    spec:
+      affinity: {}
+      containers:
+      - env:
+        - name: MICRO_REGISTRY_ADDRESS
+          value: 10.78.115.149:8500
+        image: 10.78.115.234/hus/gbservice:latest
+        imagePullPolicy: Always
+        name: gb-gataway
+        ports:
+        - containerPort: 5060
+          hostPort: 5060
+          name: 5060tcp50600
+          protocol: TCP
+        - containerPort: 5061
+          hostPort: 5061
+          name: 5061tcp50610
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      nodeName: master
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2018-07-25T15:30:08Z
+    lastUpdateTime: 2018-07-25T15:30:08Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: 2018-07-25T15:30:07Z
+    lastUpdateTime: 2018-07-25T15:30:28Z
+    message: ReplicaSet "gb-gataway-dc4469467" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+
