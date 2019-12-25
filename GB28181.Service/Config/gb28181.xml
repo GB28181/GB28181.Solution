@@ -4,7 +4,7 @@
     <Name>上级平台</Name>
     <GbVersion>GB-2016</GbVersion>
     <LocalID>42010000002100000002</LocalID>
-    <LocalIP>10.77.38.86</LocalIP>
+    <LocalIP>10.78.115.182</LocalIP>
     <LocalPort>5061</LocalPort>
     <RemotePort>5060</RemotePort>
     <Authentication>false</Authentication>
@@ -17,5 +17,7 @@
     <PacketOutOrder>true</PacketOutOrder>
     <KeepaliveInterval>5000</KeepaliveInterval>
     <KeepaliveNumber>3</KeepaliveNumber>
+    <!--<ServiceType>GBToGB</ServiceType>-->
+    <!--<ServiceType>GBToDevice</ServiceType>-->
   </sipaccount>
 </sipaccounts>

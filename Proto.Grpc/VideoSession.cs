@@ -25,53 +25,65 @@ namespace MediaContract {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChN2aWRlb19zZXNzaW9uLnByb3RvEg1NZWRpYUNvbnRyYWN0Ij4KBkhlYWRl",
-            "chIPCgdWZXJzaW9uGAEgASgFEhAKCHNlcXVlbmNlGAIgASgFEhEKCXNlc3Np",
-            "b25pZBgDIAEoBSIjCgZTdGF0dXMSDAoEY29kZRgBIAEoBRILCgNtc2cYAiAB",
+            "chIPCgdWZXJzaW9uGAEgASgJEhAKCHNlcXVlbmNlGAIgASgFEhEKCXNlc3Np",
+            "b25pZBgDIAEoCSIjCgZTdGF0dXMSDAoEY29kZRgBIAEoBRILCgNtc2cYAiAB",
             "KAkimQEKEFN0YXJ0TGl2ZVJlcXVlc3QSIgoDaGRyGAEgASgLMhUuTWVkaWFD",
             "b250cmFjdC5IZWFkZXISNQoLdHJhbnNfcHJvdG8YAiABKA4yIC5NZWRpYUNv",
             "bnRyYWN0LlRyYW5zcG9ydFByb3RvY29sEgwKBGdiaWQYAyABKAkSDgoGaXBh",
             "ZGRyGAQgASgJEgwKBHBvcnQYBSABKAUieQoOU3RhcnRMaXZlUmVwbHkSIgoD",
             "aGRyGAEgASgLMhUuTWVkaWFDb250cmFjdC5IZWFkZXISJQoGc3RhdHVzGAIg",
             "ASgLMhUuTWVkaWFDb250cmFjdC5TdGF0dXMSDgoGaXBhZGRyGAMgASgJEgwK",
-            "BHBvcnQYBCABKAUisgEKFFN0YXJ0UGxheWJhY2tSZXF1ZXN0EiIKA2hkchgB",
+            "BHBvcnQYBCABKAUiwwEKFFN0YXJ0UGxheWJhY2tSZXF1ZXN0EiIKA2hkchgB",
             "IAEoCzIVLk1lZGlhQ29udHJhY3QuSGVhZGVyEjUKC3RyYW5zX3Byb3RvGAIg",
-            "ASgOMiAuTWVkaWFDb250cmFjdC5UcmFuc3BvcnRQcm90b2NvbBITCgtpc19k",
-            "b3dubG9hZBgDIAEoCBIMCgRwb3J0GAQgASgFEg4KBmlwYWRkchgFIAEoCRIM",
-            "CgRnYmlkGAYgASgJIn0KElN0YXJ0UGxheWJhY2tSZXBseRIiCgNoZHIYASAB",
-            "KAsyFS5NZWRpYUNvbnRyYWN0LkhlYWRlchIlCgZzdGF0dXMYAiABKAsyFS5N",
-            "ZWRpYUNvbnRyYWN0LlN0YXR1cxIOCgZpcGFkZHIYAyABKAkSDAoEcG9ydBgE",
-            "IAEoBSJzCgtTdG9wUmVxdWVzdBIiCgNoZHIYASABKAsyFS5NZWRpYUNvbnRy",
-            "YWN0LkhlYWRlchIMCgRnYmlkGAIgASgJEjIKDWJ1c2luZXNzX3R5cGUYAyAB",
-            "KA4yGy5NZWRpYUNvbnRyYWN0LkJ1c2luZXNzVHlwZSJWCglTdG9wUmVwbHkS",
+            "ASgOMiAuTWVkaWFDb250cmFjdC5UcmFuc3BvcnRQcm90b2NvbBIMCgRwb3J0",
+            "GAMgASgFEg4KBmlwYWRkchgEIAEoCRIMCgRnYmlkGAUgASgJEhIKCmJlZ2lu",
+            "X3RpbWUYByABKAkSEAoIZW5kX3RpbWUYCCABKAkifQoSU3RhcnRQbGF5YmFj",
+            "a1JlcGx5EiIKA2hkchgBIAEoCzIVLk1lZGlhQ29udHJhY3QuSGVhZGVyEiUK",
+            "BnN0YXR1cxgCIAEoCzIVLk1lZGlhQ29udHJhY3QuU3RhdHVzEg4KBmlwYWRk",
+            "chgDIAEoCRIMCgRwb3J0GAQgASgFInMKC1N0b3BSZXF1ZXN0EiIKA2hkchgB",
+            "IAEoCzIVLk1lZGlhQ29udHJhY3QuSGVhZGVyEgwKBGdiaWQYAiABKAkSMgoN",
+            "YnVzaW5lc3NfdHlwZRgDIAEoDjIbLk1lZGlhQ29udHJhY3QuQnVzaW5lc3NU",
+            "eXBlIlYKCVN0b3BSZXBseRIiCgNoZHIYASABKAsyFS5NZWRpYUNvbnRyYWN0",
+            "LkhlYWRlchIlCgZzdGF0dXMYAiABKAsyFS5NZWRpYUNvbnRyYWN0LlN0YXR1",
+            "cyJEChBLZWVwQWxpdmVSZXF1ZXN0EiIKA2hkchgBIAEoCzIVLk1lZGlhQ29u",
+            "dHJhY3QuSGVhZGVyEgwKBGdiaWQYAiABKAkiWwoOS2VlcEFsaXZlUmVwbHkS",
             "IgoDaGRyGAEgASgLMhUuTWVkaWFDb250cmFjdC5IZWFkZXISJQoGc3RhdHVz",
-            "GAIgASgLMhUuTWVkaWFDb250cmFjdC5TdGF0dXMiNgoQS2VlcEFsaXZlUmVx",
-            "dWVzdBIiCgNoZHIYASABKAsyFS5NZWRpYUNvbnRyYWN0LkhlYWRlciJbCg5L",
-            "ZWVwQWxpdmVSZXBseRIiCgNoZHIYASABKAsyFS5NZWRpYUNvbnRyYWN0Lkhl",
-            "YWRlchIlCgZzdGF0dXMYAiABKAsyFS5NZWRpYUNvbnRyYWN0LlN0YXR1cypN",
-            "CgxCdXNpbmVzc1R5cGUSDwoLQlRfTElWRVBMQVkQABIPCgtCVF9QTEFZQkFD",
-            "SxABEg8KC0JUX0RPV05MT0FEEAISCgoGQlRfTUFYEAMqLgoRVHJhbnNwb3J0",
-            "UHJvdG9jb2wSBwoDVENQEAASBwoDVURQEAESBwoDTUFYEAIyxwIKDFZpZGVv",
-            "U2Vzc2lvbhJNCglTdGFydExpdmUSHy5NZWRpYUNvbnRyYWN0LlN0YXJ0TGl2",
-            "ZVJlcXVlc3QaHS5NZWRpYUNvbnRyYWN0LlN0YXJ0TGl2ZVJlcGx5IgASWQoN",
-            "U3RhcnRQbGF5YmFjaxIjLk1lZGlhQ29udHJhY3QuU3RhcnRQbGF5YmFja1Jl",
-            "cXVlc3QaIS5NZWRpYUNvbnRyYWN0LlN0YXJ0UGxheWJhY2tSZXBseSIAEj4K",
-            "BFN0b3ASGi5NZWRpYUNvbnRyYWN0LlN0b3BSZXF1ZXN0GhguTWVkaWFDb250",
-            "cmFjdC5TdG9wUmVwbHkiABJNCglLZWVwQWxpdmUSHy5NZWRpYUNvbnRyYWN0",
-            "LktlZXBBbGl2ZVJlcXVlc3QaHS5NZWRpYUNvbnRyYWN0LktlZXBBbGl2ZVJl",
-            "cGx5IgBCBaICAm1zYgZwcm90bzM="));
+            "GAIgASgLMhUuTWVkaWFDb250cmFjdC5TdGF0dXMiqAEKFlBsYXliYWNrQ29u",
+            "dHJvbFJlcXVlc3QSIgoDaGRyGAEgASgLMhUuTWVkaWFDb250cmFjdC5IZWFk",
+            "ZXISDAoEZ2JpZBgCIAEoCRI5Cg1wbGF5YmFja190eXBlGAMgASgOMiIuTWVk",
+            "aWFDb250cmFjdC5QbGF5YmFja0NvbnRyb2xUeXBlEg0KBXNjYWxlGAQgASgC",
+            "EhIKCnN0YXJ0X3RpbWUYBSABKAMiYQoUUGxheWJhY2tDb250cm9sUmVwbHkS",
+            "IgoDaGRyGAEgASgLMhUuTWVkaWFDb250cmFjdC5IZWFkZXISJQoGc3RhdHVz",
+            "GAIgASgLMhUuTWVkaWFDb250cmFjdC5TdGF0dXMqTQoMQnVzaW5lc3NUeXBl",
+            "Eg8KC0JUX0xJVkVQTEFZEAASDwoLQlRfUExBWUJBQ0sQARIPCgtCVF9ET1dO",
+            "TE9BRBACEgoKBkJUX01BWBADKi4KEVRyYW5zcG9ydFByb3RvY29sEgcKA1RD",
+            "UBAAEgcKA1VEUBABEgcKA01BWBACKkMKE1BsYXliYWNrQ29udHJvbFR5cGUS",
+            "CQoFUGF1c2UQABIKCgZSZXN1bWUQARIKCgZNb3ZldG8QAhIJCgVTY2FsZRAD",
+            "MqgDCgxWaWRlb1Nlc3Npb24STQoJU3RhcnRMaXZlEh8uTWVkaWFDb250cmFj",
+            "dC5TdGFydExpdmVSZXF1ZXN0Gh0uTWVkaWFDb250cmFjdC5TdGFydExpdmVS",
+            "ZXBseSIAElkKDVN0YXJ0UGxheWJhY2sSIy5NZWRpYUNvbnRyYWN0LlN0YXJ0",
+            "UGxheWJhY2tSZXF1ZXN0GiEuTWVkaWFDb250cmFjdC5TdGFydFBsYXliYWNr",
+            "UmVwbHkiABI+CgRTdG9wEhouTWVkaWFDb250cmFjdC5TdG9wUmVxdWVzdBoY",
+            "Lk1lZGlhQ29udHJhY3QuU3RvcFJlcGx5IgASXwoPUGxheWJhY2tDb250cm9s",
+            "EiUuTWVkaWFDb250cmFjdC5QbGF5YmFja0NvbnRyb2xSZXF1ZXN0GiMuTWVk",
+            "aWFDb250cmFjdC5QbGF5YmFja0NvbnRyb2xSZXBseSIAEk0KCUtlZXBBbGl2",
+            "ZRIfLk1lZGlhQ29udHJhY3QuS2VlcEFsaXZlUmVxdWVzdBodLk1lZGlhQ29u",
+            "dHJhY3QuS2VlcEFsaXZlUmVwbHkiAEIFogICbXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MediaContract.BusinessType), typeof(global::MediaContract.TransportProtocol), }, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MediaContract.BusinessType), typeof(global::MediaContract.TransportProtocol), typeof(global::MediaContract.PlaybackControlType), }, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.Header), global::MediaContract.Header.Parser, new[]{ "Version", "Sequence", "Sessionid" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.Status), global::MediaContract.Status.Parser, new[]{ "Code", "Msg" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StartLiveRequest), global::MediaContract.StartLiveRequest.Parser, new[]{ "Hdr", "TransProto", "Gbid", "Ipaddr", "Port" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StartLiveReply), global::MediaContract.StartLiveReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StartPlaybackRequest), global::MediaContract.StartPlaybackRequest.Parser, new[]{ "Hdr", "TransProto", "IsDownload", "Port", "Ipaddr", "Gbid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StartPlaybackRequest), global::MediaContract.StartPlaybackRequest.Parser, new[]{ "Hdr", "TransProto", "Port", "Ipaddr", "Gbid", "BeginTime", "EndTime" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StartPlaybackReply), global::MediaContract.StartPlaybackReply.Parser, new[]{ "Hdr", "Status", "Ipaddr", "Port" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StopRequest), global::MediaContract.StopRequest.Parser, new[]{ "Hdr", "Gbid", "BusinessType" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.StopReply), global::MediaContract.StopReply.Parser, new[]{ "Hdr", "Status" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.KeepAliveRequest), global::MediaContract.KeepAliveRequest.Parser, new[]{ "Hdr" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.KeepAliveReply), global::MediaContract.KeepAliveReply.Parser, new[]{ "Hdr", "Status" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.KeepAliveRequest), global::MediaContract.KeepAliveRequest.Parser, new[]{ "Hdr", "Gbid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.KeepAliveReply), global::MediaContract.KeepAliveReply.Parser, new[]{ "Hdr", "Status" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.PlaybackControlRequest), global::MediaContract.PlaybackControlRequest.Parser, new[]{ "Hdr", "Gbid", "PlaybackType", "Scale", "StartTime" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MediaContract.PlaybackControlReply), global::MediaContract.PlaybackControlReply.Parser, new[]{ "Hdr", "Status" }, null, null, null)
           }));
     }
     #endregion
@@ -89,6 +101,13 @@ namespace MediaContract {
     [pbr::OriginalName("TCP")] Tcp = 0,
     [pbr::OriginalName("UDP")] Udp = 1,
     [pbr::OriginalName("MAX")] Max = 2,
+  }
+
+  public enum PlaybackControlType {
+    [pbr::OriginalName("Pause")] Pause = 0,
+    [pbr::OriginalName("Resume")] Resume = 1,
+    [pbr::OriginalName("Moveto")] Moveto = 2,
+    [pbr::OriginalName("Scale")] Scale = 3,
   }
 
   #endregion
@@ -132,12 +151,12 @@ namespace MediaContract {
 
     /// <summary>Field number for the "Version" field.</summary>
     public const int VersionFieldNumber = 1;
-    private int version_;
+    private string version_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Version {
+    public string Version {
       get { return version_; }
       set {
-        version_ = value;
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -154,12 +173,12 @@ namespace MediaContract {
 
     /// <summary>Field number for the "sessionid" field.</summary>
     public const int SessionidFieldNumber = 3;
-    private int sessionid_;
+    private string sessionid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Sessionid {
+    public string Sessionid {
       get { return sessionid_; }
       set {
-        sessionid_ = value;
+        sessionid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -185,9 +204,9 @@ namespace MediaContract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Version != 0) hash ^= Version.GetHashCode();
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
       if (Sequence != 0) hash ^= Sequence.GetHashCode();
-      if (Sessionid != 0) hash ^= Sessionid.GetHashCode();
+      if (Sessionid.Length != 0) hash ^= Sessionid.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -201,17 +220,17 @@ namespace MediaContract {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Version != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(Version);
+      if (Version.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Version);
       }
       if (Sequence != 0) {
         output.WriteRawTag(16);
         output.WriteInt32(Sequence);
       }
-      if (Sessionid != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(Sessionid);
+      if (Sessionid.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Sessionid);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -221,14 +240,14 @@ namespace MediaContract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Version != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Version);
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
       }
       if (Sequence != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Sequence);
       }
-      if (Sessionid != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Sessionid);
+      if (Sessionid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Sessionid);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -241,13 +260,13 @@ namespace MediaContract {
       if (other == null) {
         return;
       }
-      if (other.Version != 0) {
+      if (other.Version.Length != 0) {
         Version = other.Version;
       }
       if (other.Sequence != 0) {
         Sequence = other.Sequence;
       }
-      if (other.Sessionid != 0) {
+      if (other.Sessionid.Length != 0) {
         Sessionid = other.Sessionid;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -261,16 +280,16 @@ namespace MediaContract {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            Version = input.ReadInt32();
+          case 10: {
+            Version = input.ReadString();
             break;
           }
           case 16: {
             Sequence = input.ReadInt32();
             break;
           }
-          case 24: {
-            Sessionid = input.ReadInt32();
+          case 26: {
+            Sessionid = input.ReadString();
             break;
           }
         }
@@ -436,9 +455,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The request message containing StartLiveRequest.
-  /// </summary>
   public sealed partial class StartLiveRequest : pb::IMessage<StartLiveRequest> {
     private static readonly pb::MessageParser<StartLiveRequest> _parser = new pb::MessageParser<StartLiveRequest>(() => new StartLiveRequest());
     private pb::UnknownFieldSet _unknownFields;
@@ -686,9 +702,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The response message containing the StartLiveReply.
-  /// </summary>
   public sealed partial class StartLiveReply : pb::IMessage<StartLiveReply> {
     private static readonly pb::MessageParser<StartLiveReply> _parser = new pb::MessageParser<StartLiveReply>(() => new StartLiveReply());
     private pb::UnknownFieldSet _unknownFields;
@@ -914,9 +927,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The request message containing StartPlaybackRequest/download.
-  /// </summary>
   public sealed partial class StartPlaybackRequest : pb::IMessage<StartPlaybackRequest> {
     private static readonly pb::MessageParser<StartPlaybackRequest> _parser = new pb::MessageParser<StartPlaybackRequest>(() => new StartPlaybackRequest());
     private pb::UnknownFieldSet _unknownFields;
@@ -944,10 +954,11 @@ namespace MediaContract {
     public StartPlaybackRequest(StartPlaybackRequest other) : this() {
       Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
       transProto_ = other.transProto_;
-      isDownload_ = other.isDownload_;
       port_ = other.port_;
       ipaddr_ = other.ipaddr_;
       gbid_ = other.gbid_;
+      beginTime_ = other.beginTime_;
+      endTime_ = other.endTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -978,19 +989,8 @@ namespace MediaContract {
       }
     }
 
-    /// <summary>Field number for the "is_download" field.</summary>
-    public const int IsDownloadFieldNumber = 3;
-    private bool isDownload_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool IsDownload {
-      get { return isDownload_; }
-      set {
-        isDownload_ = value;
-      }
-    }
-
     /// <summary>Field number for the "port" field.</summary>
-    public const int PortFieldNumber = 4;
+    public const int PortFieldNumber = 3;
     private int port_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Port {
@@ -1001,7 +1001,7 @@ namespace MediaContract {
     }
 
     /// <summary>Field number for the "ipaddr" field.</summary>
-    public const int IpaddrFieldNumber = 5;
+    public const int IpaddrFieldNumber = 4;
     private string ipaddr_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Ipaddr {
@@ -1012,13 +1012,35 @@ namespace MediaContract {
     }
 
     /// <summary>Field number for the "gbid" field.</summary>
-    public const int GbidFieldNumber = 6;
+    public const int GbidFieldNumber = 5;
     private string gbid_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Gbid {
       get { return gbid_; }
       set {
         gbid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "begin_time" field.</summary>
+    public const int BeginTimeFieldNumber = 7;
+    private string beginTime_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string BeginTime {
+      get { return beginTime_; }
+      set {
+        beginTime_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "end_time" field.</summary>
+    public const int EndTimeFieldNumber = 8;
+    private string endTime_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string EndTime {
+      get { return endTime_; }
+      set {
+        endTime_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1037,10 +1059,11 @@ namespace MediaContract {
       }
       if (!object.Equals(Hdr, other.Hdr)) return false;
       if (TransProto != other.TransProto) return false;
-      if (IsDownload != other.IsDownload) return false;
       if (Port != other.Port) return false;
       if (Ipaddr != other.Ipaddr) return false;
       if (Gbid != other.Gbid) return false;
+      if (BeginTime != other.BeginTime) return false;
+      if (EndTime != other.EndTime) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1049,10 +1072,11 @@ namespace MediaContract {
       int hash = 1;
       if (hdr_ != null) hash ^= Hdr.GetHashCode();
       if (TransProto != 0) hash ^= TransProto.GetHashCode();
-      if (IsDownload != false) hash ^= IsDownload.GetHashCode();
       if (Port != 0) hash ^= Port.GetHashCode();
       if (Ipaddr.Length != 0) hash ^= Ipaddr.GetHashCode();
       if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
+      if (BeginTime.Length != 0) hash ^= BeginTime.GetHashCode();
+      if (EndTime.Length != 0) hash ^= EndTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1074,21 +1098,25 @@ namespace MediaContract {
         output.WriteRawTag(16);
         output.WriteEnum((int) TransProto);
       }
-      if (IsDownload != false) {
-        output.WriteRawTag(24);
-        output.WriteBool(IsDownload);
-      }
       if (Port != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(24);
         output.WriteInt32(Port);
       }
       if (Ipaddr.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(34);
         output.WriteString(Ipaddr);
       }
       if (Gbid.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(42);
         output.WriteString(Gbid);
+      }
+      if (BeginTime.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(BeginTime);
+      }
+      if (EndTime.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(EndTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1104,9 +1132,6 @@ namespace MediaContract {
       if (TransProto != 0) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TransProto);
       }
-      if (IsDownload != false) {
-        size += 1 + 1;
-      }
       if (Port != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
       }
@@ -1115,6 +1140,12 @@ namespace MediaContract {
       }
       if (Gbid.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
+      }
+      if (BeginTime.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BeginTime);
+      }
+      if (EndTime.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(EndTime);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1136,9 +1167,6 @@ namespace MediaContract {
       if (other.TransProto != 0) {
         TransProto = other.TransProto;
       }
-      if (other.IsDownload != false) {
-        IsDownload = other.IsDownload;
-      }
       if (other.Port != 0) {
         Port = other.Port;
       }
@@ -1147,6 +1175,12 @@ namespace MediaContract {
       }
       if (other.Gbid.Length != 0) {
         Gbid = other.Gbid;
+      }
+      if (other.BeginTime.Length != 0) {
+        BeginTime = other.BeginTime;
+      }
+      if (other.EndTime.Length != 0) {
+        EndTime = other.EndTime;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1171,19 +1205,23 @@ namespace MediaContract {
             break;
           }
           case 24: {
-            IsDownload = input.ReadBool();
-            break;
-          }
-          case 32: {
             Port = input.ReadInt32();
             break;
           }
-          case 42: {
+          case 34: {
             Ipaddr = input.ReadString();
             break;
           }
-          case 50: {
+          case 42: {
             Gbid = input.ReadString();
+            break;
+          }
+          case 58: {
+            BeginTime = input.ReadString();
+            break;
+          }
+          case 66: {
+            EndTime = input.ReadString();
             break;
           }
         }
@@ -1192,9 +1230,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The response message containing the StartPlaybackReply/download.
-  /// </summary>
   public sealed partial class StartPlaybackReply : pb::IMessage<StartPlaybackReply> {
     private static readonly pb::MessageParser<StartPlaybackReply> _parser = new pb::MessageParser<StartPlaybackReply>(() => new StartPlaybackReply());
     private pb::UnknownFieldSet _unknownFields;
@@ -1420,9 +1455,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The request message containing StopLiveRequest.
-  /// </summary>
   public sealed partial class StopRequest : pb::IMessage<StopRequest> {
     private static readonly pb::MessageParser<StopRequest> _parser = new pb::MessageParser<StopRequest>(() => new StopRequest());
     private pb::UnknownFieldSet _unknownFields;
@@ -1614,9 +1646,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The response message containing the StopLiveReply.
-  /// </summary>
   public sealed partial class StopReply : pb::IMessage<StopReply> {
     private static readonly pb::MessageParser<StopReply> _parser = new pb::MessageParser<StopReply>(() => new StopReply());
     private pb::UnknownFieldSet _unknownFields;
@@ -1786,9 +1815,6 @@ namespace MediaContract {
 
   }
 
-  /// <summary>
-  /// The request message containing ParametersRequest.
-  /// </summary>
   public sealed partial class KeepAliveRequest : pb::IMessage<KeepAliveRequest> {
     private static readonly pb::MessageParser<KeepAliveRequest> _parser = new pb::MessageParser<KeepAliveRequest>(() => new KeepAliveRequest());
     private pb::UnknownFieldSet _unknownFields;
@@ -1815,6 +1841,7 @@ namespace MediaContract {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public KeepAliveRequest(KeepAliveRequest other) : this() {
       Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
+      gbid_ = other.gbid_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1834,6 +1861,17 @@ namespace MediaContract {
       }
     }
 
+    /// <summary>Field number for the "gbid" field.</summary>
+    public const int GbidFieldNumber = 2;
+    private string gbid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Gbid {
+      get { return gbid_; }
+      set {
+        gbid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as KeepAliveRequest);
@@ -1848,6 +1886,7 @@ namespace MediaContract {
         return true;
       }
       if (!object.Equals(Hdr, other.Hdr)) return false;
+      if (Gbid != other.Gbid) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1855,6 +1894,7 @@ namespace MediaContract {
     public override int GetHashCode() {
       int hash = 1;
       if (hdr_ != null) hash ^= Hdr.GetHashCode();
+      if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1872,6 +1912,10 @@ namespace MediaContract {
         output.WriteRawTag(10);
         output.WriteMessage(Hdr);
       }
+      if (Gbid.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Gbid);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1882,6 +1926,9 @@ namespace MediaContract {
       int size = 0;
       if (hdr_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
+      }
+      if (Gbid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1899,6 +1946,9 @@ namespace MediaContract {
           hdr_ = new global::MediaContract.Header();
         }
         Hdr.MergeFrom(other.Hdr);
+      }
+      if (other.Gbid.Length != 0) {
+        Gbid = other.Gbid;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1918,15 +1968,16 @@ namespace MediaContract {
             input.ReadMessage(hdr_);
             break;
           }
+          case 18: {
+            Gbid = input.ReadString();
+            break;
+          }
         }
       }
     }
 
   }
 
-  /// <summary>
-  /// The response message containing the ParametersReply.
-  /// </summary>
   public sealed partial class KeepAliveReply : pb::IMessage<KeepAliveReply> {
     private static readonly pb::MessageParser<KeepAliveReply> _parser = new pb::MessageParser<KeepAliveReply>(() => new KeepAliveReply());
     private pb::UnknownFieldSet _unknownFields;
@@ -2050,6 +2101,422 @@ namespace MediaContract {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(KeepAliveReply other) {
+      if (other == null) {
+        return;
+      }
+      if (other.hdr_ != null) {
+        if (hdr_ == null) {
+          hdr_ = new global::MediaContract.Header();
+        }
+        Hdr.MergeFrom(other.Hdr);
+      }
+      if (other.status_ != null) {
+        if (status_ == null) {
+          status_ = new global::MediaContract.Status();
+        }
+        Status.MergeFrom(other.Status);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (hdr_ == null) {
+              hdr_ = new global::MediaContract.Header();
+            }
+            input.ReadMessage(hdr_);
+            break;
+          }
+          case 18: {
+            if (status_ == null) {
+              status_ = new global::MediaContract.Status();
+            }
+            input.ReadMessage(status_);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlaybackControlRequest : pb::IMessage<PlaybackControlRequest> {
+    private static readonly pb::MessageParser<PlaybackControlRequest> _parser = new pb::MessageParser<PlaybackControlRequest>(() => new PlaybackControlRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlaybackControlRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::MediaContract.VideoSessionReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlRequest(PlaybackControlRequest other) : this() {
+      Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
+      gbid_ = other.gbid_;
+      playbackType_ = other.playbackType_;
+      scale_ = other.scale_;
+      startTime_ = other.startTime_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlRequest Clone() {
+      return new PlaybackControlRequest(this);
+    }
+
+    /// <summary>Field number for the "hdr" field.</summary>
+    public const int HdrFieldNumber = 1;
+    private global::MediaContract.Header hdr_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::MediaContract.Header Hdr {
+      get { return hdr_; }
+      set {
+        hdr_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gbid" field.</summary>
+    public const int GbidFieldNumber = 2;
+    private string gbid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Gbid {
+      get { return gbid_; }
+      set {
+        gbid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "playback_type" field.</summary>
+    public const int PlaybackTypeFieldNumber = 3;
+    private global::MediaContract.PlaybackControlType playbackType_ = 0;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::MediaContract.PlaybackControlType PlaybackType {
+      get { return playbackType_; }
+      set {
+        playbackType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "scale" field.</summary>
+    public const int ScaleFieldNumber = 4;
+    private float scale_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Scale {
+      get { return scale_; }
+      set {
+        scale_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "start_time" field.</summary>
+    public const int StartTimeFieldNumber = 5;
+    private long startTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long StartTime {
+      get { return startTime_; }
+      set {
+        startTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlaybackControlRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlaybackControlRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Hdr, other.Hdr)) return false;
+      if (Gbid != other.Gbid) return false;
+      if (PlaybackType != other.PlaybackType) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Scale, other.Scale)) return false;
+      if (StartTime != other.StartTime) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (hdr_ != null) hash ^= Hdr.GetHashCode();
+      if (Gbid.Length != 0) hash ^= Gbid.GetHashCode();
+      if (PlaybackType != 0) hash ^= PlaybackType.GetHashCode();
+      if (Scale != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Scale);
+      if (StartTime != 0L) hash ^= StartTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (hdr_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Hdr);
+      }
+      if (Gbid.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Gbid);
+      }
+      if (PlaybackType != 0) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlaybackType);
+      }
+      if (Scale != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(Scale);
+      }
+      if (StartTime != 0L) {
+        output.WriteRawTag(40);
+        output.WriteInt64(StartTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (hdr_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
+      }
+      if (Gbid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Gbid);
+      }
+      if (PlaybackType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlaybackType);
+      }
+      if (Scale != 0F) {
+        size += 1 + 4;
+      }
+      if (StartTime != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(StartTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlaybackControlRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.hdr_ != null) {
+        if (hdr_ == null) {
+          hdr_ = new global::MediaContract.Header();
+        }
+        Hdr.MergeFrom(other.Hdr);
+      }
+      if (other.Gbid.Length != 0) {
+        Gbid = other.Gbid;
+      }
+      if (other.PlaybackType != 0) {
+        PlaybackType = other.PlaybackType;
+      }
+      if (other.Scale != 0F) {
+        Scale = other.Scale;
+      }
+      if (other.StartTime != 0L) {
+        StartTime = other.StartTime;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (hdr_ == null) {
+              hdr_ = new global::MediaContract.Header();
+            }
+            input.ReadMessage(hdr_);
+            break;
+          }
+          case 18: {
+            Gbid = input.ReadString();
+            break;
+          }
+          case 24: {
+            playbackType_ = (global::MediaContract.PlaybackControlType) input.ReadEnum();
+            break;
+          }
+          case 37: {
+            Scale = input.ReadFloat();
+            break;
+          }
+          case 40: {
+            StartTime = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PlaybackControlReply : pb::IMessage<PlaybackControlReply> {
+    private static readonly pb::MessageParser<PlaybackControlReply> _parser = new pb::MessageParser<PlaybackControlReply>(() => new PlaybackControlReply());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PlaybackControlReply> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::MediaContract.VideoSessionReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlReply() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlReply(PlaybackControlReply other) : this() {
+      Hdr = other.hdr_ != null ? other.Hdr.Clone() : null;
+      Status = other.status_ != null ? other.Status.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PlaybackControlReply Clone() {
+      return new PlaybackControlReply(this);
+    }
+
+    /// <summary>Field number for the "hdr" field.</summary>
+    public const int HdrFieldNumber = 1;
+    private global::MediaContract.Header hdr_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::MediaContract.Header Hdr {
+      get { return hdr_; }
+      set {
+        hdr_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 2;
+    private global::MediaContract.Status status_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::MediaContract.Status Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PlaybackControlReply);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PlaybackControlReply other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Hdr, other.Hdr)) return false;
+      if (!object.Equals(Status, other.Status)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (hdr_ != null) hash ^= Hdr.GetHashCode();
+      if (status_ != null) hash ^= Status.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (hdr_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Hdr);
+      }
+      if (status_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Status);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (hdr_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Hdr);
+      }
+      if (status_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Status);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PlaybackControlReply other) {
       if (other == null) {
         return;
       }

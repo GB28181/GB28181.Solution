@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
+    <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
+    <ProjectReference Include="..\NATS.Client\NATS.Client.csproj" />
     <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
   </ItemGroup>
 
@@ -36,7 +38,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Consul">
+      <HintPath>..\packages\Consul\Consul.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package GrpcVideoOnDemand;
+
+service VideoOnDemand {
+  rpc RecordFileQuery (RecordFileQueryRequest) returns (RecordFileQueryReply) {}
+}
+
+// The request message.
+message RecordFileQueryRequest {
+    string deviceid = 1;
+	string start_time = 2;
+	string end_time = 3;
+	string type = 4;
+}
+
+// The response message.
+message RecordFileQueryReply {
+  Instance RecordInfo = 1;
+}
+
+message Instance {
+  CommandType CmdType = 1;
+  int32 SN = 2;
+  string DeviceID = 3;
+  string Name = 4;
+  int32 SumNum = 5;
+  repeated Item RecordItems = 6;
+}
+
+enum CommandType {
+  Unknown = 0;
+  Keepalive = 1;
+  Catalog = 2;
+  Play = 3;
+  Playback = 4;
+  DeviceControl = 5;
+  Alarm = 6;
+  DeviceInfo = 7;
+  DeviceStatus = 8;
+  RecordInfo = 9;
+  Download = 10;
+  ConfigDownload = 11;
+  Broadcast = 12;
+  PresetQuery = 13;
+  MobilePosition = 14;
+  DeviceConfig = 15;
+  MediaStatus = 16;
+}
+
+message Item{
+  string DeviceID = 1;
+  string Name = 2;
+  string FilePath = 3;
+  string Address = 4;
+  string StartTime = 5;
+  string EndTime = 6;
+  int32 Secrecy = 7;
+  string Type = 8;
+  string RecorderID = 9;
+}
+

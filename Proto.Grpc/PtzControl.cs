@@ -22,52 +22,24 @@ namespace GrpcPtzControl {
     static PtzControlReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFwdHpfY29udHJvbC5wcm90bxIOR3JwY1B0ekNvbnRyb2wiYwoQUHR6RGly",
-            "ZWN0UmVxdWVzdBIsCgh1Y29tbWFuZBgBIAEoDjIaLkdycGNQdHpDb250cm9s",
-            "LlBUWkNvbW1hbmQSDwoHZHdTcGVlZBgCIAEoBRIQCghkZXZpY2VpZBgDIAEo",
-            "CSIhCg5QdHpEaXJlY3RSZXBseRIPCgdtZXNzYWdlGAEgASgJKucBCgpQVFpD",
-            "b21tYW5kEggKBFN0b3AQABIGCgJVcBABEgoKBlVwTGVmdBACEgsKB1VwUmln",
-            "aHQQAxIICgREb3duEAQSDAoIRG93bkxlZnQQBRINCglEb3duUmlnaHQQBhII",
-            "CgRMZWZ0EAcSCQoFUmlnaHQQCBIKCgZGb2N1czEQCRIKCgZGb2N1czIQChIJ",
-            "CgVab29tMRALEgkKBVpvb20yEAwSCQoFSXJpczEQDRIJCgVJcmlzMhAOEg0K",
-            "CVNldFByZXNldBAPEg0KCUdldFByZXNldBAQEhAKDFJlbW92ZVByZXNldBAR",
-            "Ml0KClB0ekNvbnRyb2wSTwoJUHR6RGlyZWN0EiAuR3JwY1B0ekNvbnRyb2wu",
-            "UHR6RGlyZWN0UmVxdWVzdBoeLkdycGNQdHpDb250cm9sLlB0ekRpcmVjdFJl",
-            "cGx5IgBiBnByb3RvMw=="));
+            "ChFwdHpfY29udHJvbC5wcm90bxIOR3JwY1B0ekNvbnRyb2wiWAoQUHR6RGly",
+            "ZWN0UmVxdWVzdBIjCgN4eXoYASABKAsyFi5HcnBjUHR6Q29udHJvbC5QdHpY",
+            "WVoSDQoFc3BlZWQYAiABKAUSEAoIZGV2aWNlaWQYAyABKAkiIQoOUHR6RGly",
+            "ZWN0UmVwbHkSDwoHbWVzc2FnZRgBIAEoCSIpCgZQdHpYWVoSCQoBWBgBIAEo",
+            "BRIJCgFZGAIgASgFEgkKAVoYAyABKAUyXQoKUHR6Q29udHJvbBJPCglQdHpE",
+            "aXJlY3QSIC5HcnBjUHR6Q29udHJvbC5QdHpEaXJlY3RSZXF1ZXN0Gh4uR3Jw",
+            "Y1B0ekNvbnRyb2wuUHR6RGlyZWN0UmVwbHkiAGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::GrpcPtzControl.PTZCommand), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcPtzControl.PtzDirectRequest), global::GrpcPtzControl.PtzDirectRequest.Parser, new[]{ "Ucommand", "DwSpeed", "Deviceid" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcPtzControl.PtzDirectReply), global::GrpcPtzControl.PtzDirectReply.Parser, new[]{ "Message" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcPtzControl.PtzDirectRequest), global::GrpcPtzControl.PtzDirectRequest.Parser, new[]{ "Xyz", "Speed", "Deviceid" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcPtzControl.PtzDirectReply), global::GrpcPtzControl.PtzDirectReply.Parser, new[]{ "Message" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcPtzControl.PtzXYZ), global::GrpcPtzControl.PtzXYZ.Parser, new[]{ "X", "Y", "Z" }, null, null, null)
           }));
     }
     #endregion
 
   }
-  #region Enums
-  public enum PTZCommand {
-    [pbr::OriginalName("Stop")] Stop = 0,
-    [pbr::OriginalName("Up")] Up = 1,
-    [pbr::OriginalName("UpLeft")] UpLeft = 2,
-    [pbr::OriginalName("UpRight")] UpRight = 3,
-    [pbr::OriginalName("Down")] Down = 4,
-    [pbr::OriginalName("DownLeft")] DownLeft = 5,
-    [pbr::OriginalName("DownRight")] DownRight = 6,
-    [pbr::OriginalName("Left")] Left = 7,
-    [pbr::OriginalName("Right")] Right = 8,
-    [pbr::OriginalName("Focus1")] Focus1 = 9,
-    [pbr::OriginalName("Focus2")] Focus2 = 10,
-    [pbr::OriginalName("Zoom1")] Zoom1 = 11,
-    [pbr::OriginalName("Zoom2")] Zoom2 = 12,
-    [pbr::OriginalName("Iris1")] Iris1 = 13,
-    [pbr::OriginalName("Iris2")] Iris2 = 14,
-    [pbr::OriginalName("SetPreset")] SetPreset = 15,
-    [pbr::OriginalName("GetPreset")] GetPreset = 16,
-    [pbr::OriginalName("RemovePreset")] RemovePreset = 17,
-  }
-
-  #endregion
-
   #region Messages
   /// <summary>
   /// The request message.
@@ -96,8 +68,8 @@ namespace GrpcPtzControl {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PtzDirectRequest(PtzDirectRequest other) : this() {
-      ucommand_ = other.ucommand_;
-      dwSpeed_ = other.dwSpeed_;
+      Xyz = other.xyz_ != null ? other.Xyz.Clone() : null;
+      speed_ = other.speed_;
       deviceid_ = other.deviceid_;
     }
 
@@ -106,25 +78,25 @@ namespace GrpcPtzControl {
       return new PtzDirectRequest(this);
     }
 
-    /// <summary>Field number for the "ucommand" field.</summary>
-    public const int UcommandFieldNumber = 1;
-    private global::GrpcPtzControl.PTZCommand ucommand_ = 0;
+    /// <summary>Field number for the "xyz" field.</summary>
+    public const int XyzFieldNumber = 1;
+    private global::GrpcPtzControl.PtzXYZ xyz_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::GrpcPtzControl.PTZCommand Ucommand {
-      get { return ucommand_; }
+    public global::GrpcPtzControl.PtzXYZ Xyz {
+      get { return xyz_; }
       set {
-        ucommand_ = value;
+        xyz_ = value;
       }
     }
 
-    /// <summary>Field number for the "dwSpeed" field.</summary>
-    public const int DwSpeedFieldNumber = 2;
-    private int dwSpeed_;
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 2;
+    private int speed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int DwSpeed {
-      get { return dwSpeed_; }
+    public int Speed {
+      get { return speed_; }
       set {
-        dwSpeed_ = value;
+        speed_ = value;
       }
     }
 
@@ -152,8 +124,8 @@ namespace GrpcPtzControl {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Ucommand != other.Ucommand) return false;
-      if (DwSpeed != other.DwSpeed) return false;
+      if (!object.Equals(Xyz, other.Xyz)) return false;
+      if (Speed != other.Speed) return false;
       if (Deviceid != other.Deviceid) return false;
       return true;
     }
@@ -161,8 +133,8 @@ namespace GrpcPtzControl {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Ucommand != 0) hash ^= Ucommand.GetHashCode();
-      if (DwSpeed != 0) hash ^= DwSpeed.GetHashCode();
+      if (xyz_ != null) hash ^= Xyz.GetHashCode();
+      if (Speed != 0) hash ^= Speed.GetHashCode();
       if (Deviceid.Length != 0) hash ^= Deviceid.GetHashCode();
       return hash;
     }
@@ -174,13 +146,13 @@ namespace GrpcPtzControl {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Ucommand != 0) {
-        output.WriteRawTag(8);
-        output.WriteEnum((int) Ucommand);
+      if (xyz_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Xyz);
       }
-      if (DwSpeed != 0) {
+      if (Speed != 0) {
         output.WriteRawTag(16);
-        output.WriteInt32(DwSpeed);
+        output.WriteInt32(Speed);
       }
       if (Deviceid.Length != 0) {
         output.WriteRawTag(26);
@@ -191,11 +163,11 @@ namespace GrpcPtzControl {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Ucommand != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Ucommand);
+      if (xyz_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Xyz);
       }
-      if (DwSpeed != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DwSpeed);
+      if (Speed != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Speed);
       }
       if (Deviceid.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Deviceid);
@@ -208,11 +180,14 @@ namespace GrpcPtzControl {
       if (other == null) {
         return;
       }
-      if (other.Ucommand != 0) {
-        Ucommand = other.Ucommand;
+      if (other.xyz_ != null) {
+        if (xyz_ == null) {
+          xyz_ = new global::GrpcPtzControl.PtzXYZ();
+        }
+        Xyz.MergeFrom(other.Xyz);
       }
-      if (other.DwSpeed != 0) {
-        DwSpeed = other.DwSpeed;
+      if (other.Speed != 0) {
+        Speed = other.Speed;
       }
       if (other.Deviceid.Length != 0) {
         Deviceid = other.Deviceid;
@@ -227,12 +202,15 @@ namespace GrpcPtzControl {
           default:
             input.SkipLastField();
             break;
-          case 8: {
-            ucommand_ = (global::GrpcPtzControl.PTZCommand) input.ReadEnum();
+          case 10: {
+            if (xyz_ == null) {
+              xyz_ = new global::GrpcPtzControl.PtzXYZ();
+            }
+            input.ReadMessage(xyz_);
             break;
           }
           case 16: {
-            DwSpeed = input.ReadInt32();
+            Speed = input.ReadInt32();
             break;
           }
           case 26: {
@@ -357,6 +335,179 @@ namespace GrpcPtzControl {
             break;
           case 10: {
             Message = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class PtzXYZ : pb::IMessage<PtzXYZ> {
+    private static readonly pb::MessageParser<PtzXYZ> _parser = new pb::MessageParser<PtzXYZ>(() => new PtzXYZ());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PtzXYZ> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::GrpcPtzControl.PtzControlReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PtzXYZ() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PtzXYZ(PtzXYZ other) : this() {
+      x_ = other.x_;
+      y_ = other.y_;
+      z_ = other.z_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PtzXYZ Clone() {
+      return new PtzXYZ(this);
+    }
+
+    /// <summary>Field number for the "X" field.</summary>
+    public const int XFieldNumber = 1;
+    private int x_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int X {
+      get { return x_; }
+      set {
+        x_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Y" field.</summary>
+    public const int YFieldNumber = 2;
+    private int y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Y {
+      get { return y_; }
+      set {
+        y_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Z" field.</summary>
+    public const int ZFieldNumber = 3;
+    private int z_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Z {
+      get { return z_; }
+      set {
+        z_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PtzXYZ);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PtzXYZ other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (X != other.X) return false;
+      if (Y != other.Y) return false;
+      if (Z != other.Z) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (X != 0) hash ^= X.GetHashCode();
+      if (Y != 0) hash ^= Y.GetHashCode();
+      if (Z != 0) hash ^= Z.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (X != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(X);
+      }
+      if (Y != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Y);
+      }
+      if (Z != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Z);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (X != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(X);
+      }
+      if (Y != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Y);
+      }
+      if (Z != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Z);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PtzXYZ other) {
+      if (other == null) {
+        return;
+      }
+      if (other.X != 0) {
+        X = other.X;
+      }
+      if (other.Y != 0) {
+        Y = other.Y;
+      }
+      if (other.Z != 0) {
+        Z = other.Z;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            X = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Y = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            Z = input.ReadInt32();
             break;
           }
         }

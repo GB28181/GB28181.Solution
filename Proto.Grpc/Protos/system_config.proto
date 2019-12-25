@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package systemConfig;
+
+//service and action definition
+service Manage {
+    rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){}
+
+    rpc QueryReserveConfig(QueryConfigRequest) returns(QueryReserveConfigResponse){}
+
+    rpc QueryAvaliableLanguages(QueryConfigRequest) returns (QueryConfigResponse){}
+
+    rpc QueryResources(QueryRequest) returns(QueryResponse){}
+
+    rpc QueryProductionData(QueryRequest) returns(QueryResponse){}
+
+    rpc ImportLanguageResource(ImportLanguageResourceRequest) returns (ImportLanguageResourceResponse){}
+
+    rpc SetIntegratedPlatformConfig (SetIntegratedPlatformConfigRequest) returns (SetIntegratedPlatformConfigResponse){}
+
+    rpc GetIntegratedPlatformConfig (GetIntegratedPlatformConfigRequest) returns (GetIntegratedPlatformConfigResponse){}
+}
+
+message SetIntegratedPlatformConfigRequest{
+    GBPlatformConfig config = 1;
+}
+
+message SetIntegratedPlatformConfigResponse{
+
+}
+
+message GetIntegratedPlatformConfigRequest{
+
+}
+message GetIntegratedPlatformConfigResponse{
+    GBPlatformConfig config =1;
+}
+
+message GBPlatformConfig{
+    string Id = 1;//标识符，例如：6a1da008-e7ba-4f3b-90f2-e43073fd1ea8
+    string Name = 2;//名称，例如：GB28181
+    string GbVersion = 3;//版本，例如：GB-2018
+    string LocalID = 4;//SIP服务器编号*，例如：42010000002100000002
+    string LocalIP = 5;//SIP服务器IP*，例如：10.78.115.182
+    string LocalPort = 6;//SIP服务器端口号*，例如：5061
+    string RemotePort = 7;//Device本地端口*，例如：5060
+    string Authentication = 8;//授权，例如：false
+    string SIPUsername = 9;//帐号*，例如：admin
+    string SIPPassword = 10;//密码*，例如：123456
+    string MsgProtocol = 11;//协议类型*，例如：Udp
+    string StreamProtocol = 12;//协议流类型*，例如：Udp
+    string TcpMode = 13;//协议连接模式，例如：passive
+    string MsgEncode = 14;//编码格式，例如：GB2312
+    string PacketOutOrder = 15;//输出序，例如：true
+    string KeepaliveInterval = 16;//心跳周期（秒）*，例如：3600
+    string KeepaliveNumber = 17;//最大心跳超时次数*，例如：3
+}
+
+message ImportLanguageResourceRequest{
+    repeated Resource static_resources=1;
+    repeated Resource prodution_resources =2;
+    string language=3;
+}
+
+message ImportLanguageResourceResponse{
+
+}
+
+message Resource{
+    string key= 1;
+    string value =2;
+}
+
+message QueryRequest{
+    string language = 1;
+}
+
+message QueryResponse{
+    repeated Resource resources =1;
+}
+
+message SaveReserveDurationRequest{
+    string reserve_alarm_duration = 1;
+    string reserve_log_duration=2;
+}
+
+message SaveReserveDurationResponse{
+
+}
+
+message QueryConfigRequest{}
+
+message QueryConfigResponse{
+    repeated string value=1;
+}
+
+message QueryReserveConfigResponse{
+    string reserve_alarm_duration = 1;
+    string reserve_log_duration =2;
+}

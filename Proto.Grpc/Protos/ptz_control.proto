@@ -9,8 +9,8 @@ service PtzControl {
 
 // The request message.
 message PtzDirectRequest {
-	PTZCommand ucommand = 1;
-	int32 dwSpeed = 2;
+	PtzXYZ xyz = 1;
+	int32 speed = 2;
 	string deviceid = 3;
 }
 
@@ -19,23 +19,8 @@ message PtzDirectReply {
   string message = 1;
 }
 
-enum PTZCommand {
-	Stop = 0;
-	Up = 1;
-	UpLeft = 2;
-	UpRight = 3;
-	Down = 4;
-	DownLeft = 5;
-	DownRight = 6;
-	Left = 7;
-	Right = 8;
-	Focus1 = 9;
-	Focus2 = 10;
-	Zoom1 = 11;
-	Zoom2 = 12;
-	Iris1 = 13;
-	Iris2 = 14;
-	SetPreset = 15;
-	GetPreset = 16;
-	RemovePreset = 17;
+message PtzXYZ {
+	int32 X = 1;
+	int32 Y = 2;
+	int32 Z = 3;
 }
