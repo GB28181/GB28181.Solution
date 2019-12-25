@@ -1,9 +1,9 @@
 
-FROM microsoft/dotnet:latest
+FROM microsoft/dotnet:3.1
 
 WORKDIR /opt/bin
 
-COPY Build/netcoreapp2.1/publish /opt/bin 
+COPY Build/netcoreapp3.1/publish /opt/bin
 
 EXPOSE 5061
 

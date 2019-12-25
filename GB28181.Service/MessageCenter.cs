@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Logger4Net;
+using NATS.Client;
 using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.Sys.XML;
-using NATS.Client;
 //using System.Diagnostics;
 using SIPSorcery.GB28181.Sys;
+using SIPSorcery.GB28181.Sys.XML;
+using System;
+using System.Collections.Generic;
 using System.Text;
-using Logger4Net;
-using Newtonsoft.Json;
-using Google.Protobuf;
 //using SIPSorcery.GB28181.SIP.App;
-using Manage;
-using Grpc.Core;
 //using GrpcDeviceCatalog;
 
 namespace GB28181Service
@@ -180,11 +176,11 @@ namespace GB28181Service
                 string keyDeviceAlarmSubscribe = sIPTransaction.RemoteEndPoint.ToString() + " - " + sIPTransaction.TransactionRequestFrom.URI.User;
                 //if (!_deviceAlarmSubscribed.Contains(keyDeviceAlarmSubscribe))
                 //{
-                    //_sIPMonitorCore.DeviceControlResetAlarm(sIPTransaction.RemoteEndPoint, sIPTransaction.TransactionRequestFrom.URI.User);
-                    //logger.Debug("Device Alarm Reset: " + keyDeviceAlarmSubscribe);
-                    //_sIPMonitorCore.DeviceAlarmSubscribe(sIPTransaction.RemoteEndPoint, sIPTransaction.TransactionRequestFrom.URI.User);
-                    //logger.Debug("Device Alarm Subscribe: " + keyDeviceAlarmSubscribe);
-                    //_deviceAlarmSubscribed.Add(keyDeviceAlarmSubscribe);
+                //_sIPMonitorCore.DeviceControlResetAlarm(sIPTransaction.RemoteEndPoint, sIPTransaction.TransactionRequestFrom.URI.User);
+                //logger.Debug("Device Alarm Reset: " + keyDeviceAlarmSubscribe);
+                //_sIPMonitorCore.DeviceAlarmSubscribe(sIPTransaction.RemoteEndPoint, sIPTransaction.TransactionRequestFrom.URI.User);
+                //logger.Debug("Device Alarm Subscribe: " + keyDeviceAlarmSubscribe);
+                //_deviceAlarmSubscribed.Add(keyDeviceAlarmSubscribe);
                 //}
             }
             catch (Exception ex)
@@ -202,7 +198,7 @@ namespace GB28181Service
             {
                 //logger.Debug("OnAlarmReceived started.");
                 Event.Alarm alm = new Event.Alarm();
-                alm.AlarmType = alm.AlarmType = Event.Alarm.Types.AlarmType.CrossingLine ;
+                alm.AlarmType = alm.AlarmType = Event.Alarm.Types.AlarmType.CrossingLine;
                 //switch (alarm.AlarmMethod)
                 //{
                 //    case "1":

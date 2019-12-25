@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
-MinimumVisualStudioVersion = 10.0.40219.1
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIPSorcery.28181", "SIPSorcery.28181\SIPSorcery.28181.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.Service", "GB28181.Service\GB28181.Service.csproj", "{8B8C600D-69D3-4B80-8143-DAF58A251754}"

@@ -1,35 +1,32 @@
-﻿using Logger4Net;
-using SIPSorcery.GB28181.Servers.SIPMessage;
-using SIPSorcery.GB28181.Sys;
-using SIPSorcery.GB28181.Sys.Config;
-using SIPSorcery.GB28181.Sys.XML;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Consul;
+using Grpc.Core;
 using GrpcAgent;
 using GrpcAgent.WebsocketRpcServer;
-using MediaContract;
-using SIPSorcery.GB28181.Servers;
-using System.IO;
-using Microsoft.Extensions.Configuration;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
-using SIPSorcery.GB28181.Sys.Cache;
-using SIPSorcery.GB28181.Sys.Model;
-using GrpcPtzControl;
 using GrpcDeviceCatalog;
-using Grpc.Core;
-//using GrpcGb28181Config;
 using GrpcDeviceFeature;
-using Consul;
-using System.Net;
+using GrpcPtzControl;
 using GrpcVideoOnDemand;
+using Logger4Net;
+using MediaContract;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using SIPSorcery.GB28181.Servers;
+using SIPSorcery.GB28181.Servers.SIPMessage;
+using SIPSorcery.GB28181.Servers.SIPMonitor;
+using SIPSorcery.GB28181.SIP;
+using SIPSorcery.GB28181.Sys;
+using SIPSorcery.GB28181.Sys.Cache;
+using SIPSorcery.GB28181.Sys.Config;
+using SIPSorcery.GB28181.Sys.Model;
+using System;
+using System.Collections.Generic;
+//using GrpcGb28181Config;
+using System.Net;
 //using Manage;
-using Newtonsoft.Json;
-using SystemConfig;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using SystemConfig;
 
 namespace GB28181Service
 {
@@ -108,8 +105,8 @@ namespace GB28181Service
 
             // config info for .net core https://www.cnblogs.com/Leo_wl/p/5745772.html#_label3
             var builder = new ConfigurationBuilder();
-                //.SetBasePath(Directory.GetCurrentDirectory())
-                //.AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
+            //.SetBasePath(Directory.GetCurrentDirectory())
+            //.AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
             var config = builder.Build();//Console.WriteLine(config["sipaccount:ID"]);
             //var sect = config.GetSection("sipaccounts");
 
@@ -127,7 +124,7 @@ namespace GB28181Service
             //wait the process exit of main
             _eventExitMainProcess.WaitOne();
         }
-        
+
         public void Stop()
         {
             // signal main service exit
@@ -160,7 +157,7 @@ namespace GB28181Service
                             .AddSingleton<IServiceCollection>(servicesContainer); // add itself 
             _serviceProvider = servicesContainer.BuildServiceProvider();
         }
-        
+
         private void MainServiceProcessing()
         {
             _keepaliveTime = DateTime.Now;
@@ -168,7 +165,7 @@ namespace GB28181Service
             {
                 var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
                 //Get meassage Handler
-                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();                
+                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
                 // start the Listening SipService in main Service
                 _sipTask = Task.Factory.StartNew(() =>
                 {
