@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,79 +8,16 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SLW.MeidaNetEngine</RootNamespace>
     <AssemblyName>SLW.MeidaNetEngine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GLib">
-      <HintPath>..\packages\GLib.dll</HintPath>
+      <HintPath>..\Libs\GLib.dll</HintPath>
     </Reference>
-    <Reference Include="StarEye.VideoConver">
-      <HintPath>..\packages\StarEye.VideoConver.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\_DebugEx.cs" />
-    <Compile Include="Media\AAC_ADTS.cs" />
-    <Compile Include="Media\AVCodecCfg.cs" />
-    <Compile Include="Media\MediaFrame.cs" />
-    <Compile Include="Media\PATPMT.cs" />
-    <Compile Include="Media\PES.cs" />
-    <Compile Include="Media\StreamFileHelper.cs" />
-    <Compile Include="Media\TSPacket.cs" />
-    <Compile Include="Media\TSProgramManage.cs" />
-    <Compile Include="Media\TS\mp4parser\AspectRatio.cs" />
-    <Compile Include="Media\TS\mp4parser\BitstreamReader.cs" />
-    <Compile Include="Media\TS\mp4parser\BitstreamWriter.cs" />
-    <Compile Include="Media\TS\mp4parser\BTree.cs" />
-    <Compile Include="Media\TS\mp4parser\CAVLCReader.cs" />
-    <Compile Include="Media\TS\mp4parser\CAVLCWriter.cs" />
-    <Compile Include="Media\TS\mp4parser\CharCache.cs" />
-    <Compile Include="Media\TS\mp4parser\ChromaFormat.cs" />
-    <Compile Include="Media\TS\mp4parser\HRDParameters.cs" />
-    <Compile Include="Media\TS\mp4parser\PictureParameterSet.cs" />
-    <Compile Include="Media\TS\mp4parser\ScalingList.cs" />
-    <Compile Include="Media\TS\mp4parser\ScalingMatrix.cs" />
-    <Compile Include="Media\TS\mp4parser\SeqParameterSet.cs" />
-    <Compile Include="Media\TS\mp4parser\SliceHeader.cs" />
-    <Compile Include="Media\TS\mp4parser\VUIParameters.cs" />
-    <Compile Include="Media\TS\PSAnalyze.cs" />
-    <Compile Include="Media\TS\TSStreamInput\GB28181TSStreamInput.cs" />
-    <Compile Include="Media\TS\TSStreamInput\TSStreamInput.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

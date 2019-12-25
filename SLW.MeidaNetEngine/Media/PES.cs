@@ -35,7 +35,8 @@ namespace SLW.MediaServer.Media.TS
         private MediaFrame _MediaFrame = null;
         private bool _isVideo = false;
 
-        public unsafe MediaFrame MediaFrame {
+        public unsafe MediaFrame MediaFrame
+        {
             get { return _MediaFrame; }
             set {
                 try {
