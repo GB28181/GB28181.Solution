@@ -131,9 +131,14 @@ namespace SIPSorcery.GB28181.Servers
 
         private IMemoCache<Camera> _cameraCache = null;
 
+        /// <summary>
+        /// Éè±¸×¢²áµ½DMS
+        /// </summary>
+        public event RPCDmsRegisterDelegate RPCDmsRegisterReceived;
+        public event DeviceAlarmSubscribeDelegate DeviceAlarmSubscribe;
+
         public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
-
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
             m_strictRealmHandling = strictRealmHandling;
@@ -186,6 +191,7 @@ namespace SIPSorcery.GB28181.Servers
                             {
                                 m_registerQueue.Enqueue(registrarTransaction);
                             }
+                            logger.Debug("m_registerQueue.Enqueue Counts: " + m_registerQueue.Count);
                             FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.BindingInProgress, "Register queued for " + registerRequest.Header.To.ToURI.ToString() + ".", null));
                         }
                         else
@@ -207,7 +213,7 @@ namespace SIPSorcery.GB28181.Servers
 
         public void ProcessRegisterRequest()
         {
-            logger.Debug("SIPRegistrarCoreService successfully Running at :" + _localSipAccount.LocalIP + ":" + _localSipAccount.LocalPort);
+            logger.Debug("SIPRegistrarCoreService is running at " + _localSipAccount.MsgProtocol + ":" + _localSipAccount.LocalIP + ":" + _localSipAccount.LocalPort);
             try
             {
                 while (!Stop)
@@ -229,8 +235,12 @@ namespace SIPSorcery.GB28181.Servers
                                 var duration = DateTime.Now.Subtract(startTime);
                                 FireProxyLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Registrar, SIPMonitorEventTypesEnum.RegistrarTiming, "register result=" + result.ToString() + ", time=" + duration.TotalMilliseconds + "ms, user=" + registrarTransaction.TransactionRequest.Header.To.ToURI.User + ".", null));
                                 RegisterComplete?.Invoke(duration.TotalMilliseconds, registrarTransaction.TransactionRequest.Header.AuthenticationHeader != null);
-                                
+
+                                logger.Debug("Camera[" + registrarTransaction.RemoteEndPoint + "] have completed registering GB service.");
                                 //CacheDeviceItem(registrarTransaction.TransactionRequest);
+
+                                //device alarm subscribe
+                                DeviceAlarmSubscribe?.Invoke(registrarTransaction);
                             }
                         }
                         catch (InvalidOperationException invalidOpExcp)
@@ -263,7 +273,6 @@ namespace SIPSorcery.GB28181.Servers
             return (contactHeaderExpiry == -1) ? registerRequest.Header.Expires : contactHeaderExpiry;
         }
 
-
         private void CacheDeviceItem(SIPRequest sipRequest)
         {
 
@@ -273,11 +282,8 @@ namespace SIPSorcery.GB28181.Servers
                 DeviceID = sipRequest.Header.From.FromURI.User,
                 IPAddress = sipRequest.Header.Vias.TopViaHeader.Host,
                 Port = sipRequest.Header.Vias.TopViaHeader.Port
-
             });
-
         }
-
 
         private RegisterResultEnum Register(SIPTransaction registerTransaction)
         {
@@ -318,6 +324,7 @@ namespace SIPSorcery.GB28181.Servers
 
                     //Add Camera Item Into Cache
                     CacheDeviceItem(sipRequest);
+                    RPCDmsRegisterReceived?.Invoke(registerTransaction, _localSipAccount);
 
                     return RegisterResultEnum.AuthenticationRequired;
                 }
@@ -460,8 +467,6 @@ namespace SIPSorcery.GB28181.Servers
                             sipRequest.Header.Contact[0].Expires = m_minimumBindingExpiry;
                             SIPResponse okResponse = GetOkResponse(sipRequest);
                             registerTransaction.SendFinalResponse(okResponse);
-
-       
 
                         }
                     }

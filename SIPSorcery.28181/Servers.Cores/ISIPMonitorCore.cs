@@ -48,6 +48,12 @@ namespace SIPSorcery.GB28181.Servers
         /// 事件订阅
         /// </summary>
         void DeviceEventSubscribe();
+        /// <summary>
+        /// 报警订阅
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
+        /// <param name="deviceid"></param>
+        void DeviceAlarmSubscribe(SIPEndPoint remoteEndPoint, string deviceid);
 
         /// <summary>
         /// 目录订阅
@@ -68,6 +74,7 @@ namespace SIPSorcery.GB28181.Servers
         /// 报警复位
         /// </summary>
         void DeviceControlResetAlarm();
+        void DeviceControlResetAlarm(SIPEndPoint remoteEndPoint, string deviceid);
 
         /// <summary>
         /// 报警应答

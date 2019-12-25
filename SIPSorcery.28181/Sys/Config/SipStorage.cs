@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using SIPSorcery.GB28181.SIP;
+using Logger4Net;
+
 /// <summary>
 /// read configuraton and config the data storage
 /// </summary>
@@ -11,6 +14,7 @@ namespace SIPSorcery.GB28181.Sys.Config
 {
     public class SipAccountStorage : ISipAccountStorage
     {
+        private static ILog logger = AppState.logger;
         private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private static readonly string m_XMLFilename = "gb28181.xml"; //default storage filename
@@ -23,11 +27,29 @@ namespace SIPSorcery.GB28181.Sys.Config
         //   private static SipStorage _instance;
 
         private static List<SIPAccount> _sipAccountsCache = null;
+        private static bool _haveGBConfig = false;
+        /// <summary>
+        /// 获取 GB Server Config
+        /// </summary>
+        public static event RPCGBServerConfigDelegate RPCGBServerConfigReceived;
 
         public List<SIPAccount> Accounts
         {
             get
             {
+                if (RPCGBServerConfigReceived != null && !_haveGBConfig)
+                {
+                    List<SIPAccount> lstSIPAccount = RPCGBServerConfigReceived?.Invoke();
+                    if (lstSIPAccount != null && lstSIPAccount.Count > 0)
+                    {
+                        _sipAccountsCache = lstSIPAccount;
+                        _haveGBConfig = true;
+                    }
+                    else if (_sipAccountsCache == null)
+                    {
+                        logger.Debug("Get GB server config failed, but it's running with xml config.");
+                    }
+                }
                 if (_sipAccountsCache == null)
                 {
                     Read();
@@ -58,7 +80,16 @@ namespace SIPSorcery.GB28181.Sys.Config
         public SIPAccount GetLocalSipAccout()
         {
 
-            var defaultAccount = Accounts.First();
+            if (Accounts == null)
+            {
+                throw new ApplicationException("Accounts is NULL,SIP not started");
+            }
+            //else
+            //{
+            //    throw new ApplicationException("Accounts is not NULL:" + Accounts.Count);
+            //}
+
+            var defaultAccount = Accounts.FirstOrDefault();
 
             if (defaultAccount == null)
             {

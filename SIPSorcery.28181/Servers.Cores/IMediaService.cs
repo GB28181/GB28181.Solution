@@ -18,6 +18,7 @@ namespace SIPSorcery.GB28181.Servers
         /// 取消实时视频请求
         /// </summary>
         void ByeVideoReq();
+        void ByeVideoReq(string sessionid);
 
         /// <summary>
         /// 确认接收实时视频请求
@@ -53,6 +54,7 @@ namespace SIPSorcery.GB28181.Servers
         /// <param name="beginTime">开始时间</param>
         /// <param name="endTime">结束时间</param>
         void BackVideoReq(DateTime beginTime, DateTime endTime);
+        int BackVideoReq(ulong beginTime, ulong endTime, int[] mediaPort, string receiveIP, bool needResult = false);
 
         /// <summary>
         /// 录像文件下载请求
@@ -60,6 +62,7 @@ namespace SIPSorcery.GB28181.Servers
         /// <param name="beginTime">开始时间</param>
         /// <param name="endTime">结束时间</param>
         void VideoDownloadReq(DateTime beginTime, DateTime endTime);
+        int VideoDownloadReq(DateTime beginTime, DateTime endTime, int[] mediaPort, string receiveIP, bool needResult = false);
 
         /// <summary>
         /// 录像点播视频播放速度控制请求
@@ -67,24 +70,29 @@ namespace SIPSorcery.GB28181.Servers
         /// <param name="scale">播放快进比例</param>
         /// <param name="range">视频播放时间段</param>
         bool BackVideoPlaySpeedControlReq(string range);
+        bool BackVideoPlaySpeedControlReq(string sessionid, float scale);
 
         /// <summary>
         /// 控制录像随机拖拽
         /// </summary>
         /// <param name="range">时间范围</param>
         bool BackVideoPlayPositionControlReq(int range);
+        bool BackVideoPlayPositionControlReq(string sessionid, long time);
         /// <summary>
         /// 录像点播视频继续播放控制请求
         /// </summary>
         void BackVideoContinuePlayingControlReq();
+        bool BackVideoContinuePlayingControlReq(string sessionid);
         /// <summary>
         /// 录像点播视频暂停控制请求
         /// </summary>
         void BackVideoPauseControlReq();
+        bool BackVideoPauseControlReq(string sessionid);
         /// <summary>
         /// 录像点播视频停止播放控制请求
         /// </summary>
         void BackVideoStopPlayingControlReq();
+        bool BackVideoStopPlayingControlReq(string sessionid);
         #endregion
 
 

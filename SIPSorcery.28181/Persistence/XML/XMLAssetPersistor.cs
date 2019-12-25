@@ -487,7 +487,7 @@ namespace SIPSorcery.GB28181.Persistence.XML
             {
                 var dir = Path.GetDirectoryName(m_xmlAssetFilePath);
                 var file = Path.GetFileName(m_xmlAssetFilePath);
-                logger.Debug("Starting file watch on " + dir + " and " + file + ".");
+                logger.Debug("Starting file watch on " + dir + "\\" + file + ".");
                 m_xmlFileWatcher = new FileSystemWatcher(dir, file);
                 m_xmlFileWatcher.Changed += new FileSystemEventHandler(AssetXMLFileChanged);
                 m_xmlFileWatcher.EnableRaisingEvents = true;
@@ -516,14 +516,14 @@ namespace SIPSorcery.GB28181.Persistence.XML
         private XmlDocument LoadSIPAssetsDOM(string filePath)
         {
 
-            var copyFilename = filePath + ".copy";
-            if (!File.Exists(copyFilename))
-            {
-                File.Copy(filePath, copyFilename, true);
-            }
+            //var copyFilename = filePath + ".copy";
+            //if (!File.Exists(copyFilename))
+            //{
+            //    File.Copy(filePath, copyFilename, true);
+            //}
 
             var sipAssetDOM = new XmlDocument();
-            sipAssetDOM.Load(copyFilename);
+            sipAssetDOM.Load(filePath);
             if (sipAssetDOM == null || sipAssetDOM.DocumentElement == null)
             {
                 throw new ApplicationException("Could not load SIP Assets XML.");
@@ -625,12 +625,12 @@ namespace SIPSorcery.GB28181.Persistence.XML
                         }
                     }
 
-                    logger.Debug(" " + assets.Count + " " + (new T()).GetType().ToString() + " assets loaded from XML record set.");
+                    logger.Debug(assets.Count + " " + (new T()).GetType().ToString() + " assets loaded from XML record set.");
                 }
                 else
                 {
                     //logger.Warn("The XML supplied to LoadAssetsFromXMLRecordSet for asset type " + (new T()).GetType().ToString() + " did not contain any assets.");
-                    logger.Debug(" no " + (new T()).GetType().ToString() + " assets loaded from XML record set.");
+                    logger.Debug("No" + (new T()).GetType().ToString() + " assets loaded from XML record set.");
                 }
 
                 xmlReader.Close();

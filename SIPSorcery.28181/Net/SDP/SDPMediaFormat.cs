@@ -16,7 +16,8 @@ namespace SIPSorcery.GB28181.Net
         JPEG = 26,  // Video.
         H263 = 34,  // Video.
         PS = 96,    // Video.
-        H264 = 98   // Video.
+        //MPEG4 = 97,  // video.
+        H264 = 98  // Video.
     }
 
     public class SDPMediaFormat

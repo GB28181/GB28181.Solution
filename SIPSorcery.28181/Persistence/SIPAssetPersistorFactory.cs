@@ -54,9 +54,9 @@ namespace SIPSorcery.GB28181.Persistence
             {
                 if (storageType == StorageTypes.XML)
                 {
-                    if (!storageConnectionStr.EndsWith(@"\"))
+                    if (!storageConnectionStr.EndsWith(@"/"))
                     {
-                        storageConnectionStr += @"\";
+                        storageConnectionStr += @"/";
                     }
                     return new XMLAssetPersistor<T>(storageConnectionStr + filename);
                 }

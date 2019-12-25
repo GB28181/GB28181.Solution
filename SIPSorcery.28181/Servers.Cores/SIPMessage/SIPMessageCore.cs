@@ -49,6 +49,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// Monitor Service For all Remote Node
         /// </summary>
         private ConcurrentDictionary<string, ISIPMonitorCore> _nodeMonitorService = new ConcurrentDictionary<string, ISIPMonitorCore>();
+        public ConcurrentDictionary<string, ISIPMonitorCore> NodeMonitorService => _nodeMonitorService;
 
         /// <summary>
         /// 本地sip终结点
@@ -58,18 +59,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// sip传输请求
         /// </summary>
         private ISIPTransport _transport;
-
-
         public ISIPTransport Transport => _transport;
 
         /// <summary>
         /// 本地域的sip编码
         /// </summary>
         public string LocalSIPId { get; set; }
-
-
-        public ConcurrentDictionary<string, ISIPMonitorCore> NodeMonitorService => _nodeMonitorService;
-
+        
         private Stream _g711Stream;
         private Channel _audioChannel;
         private IPEndPoint _audioRemoteEP;
@@ -170,84 +166,42 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         private void _cameraCache_OnItemAdded(object arg1, Camera camera)
         {
-
-            var ipaddress = IPAddress.Parse(camera.IPAddress);
-            _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+            try
             {
-                RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, camera.Port),
-                DeviceId = camera.DeviceID
-            });
-
-            // throw new NotImplementedException();
-        }
-
-        private List<Camera> _cameras = new List<Camera>();
-
-        public SIPMonitorCoreService sipMonitorcore;
-
-        private void Initialize(List<Camera> cameraList)
-        {
-            //_cameras.Add(new Camera()
-            //{
-            //    DeviceID = "42010000002100000002",
-            //    IPAddress = "10.78.115.156",
-            //    Port = 5060
-            //});
-
-            _cameras.Add(new Camera()
-            {
-                DeviceID = "42010000001310000184",
-                IPAddress = "10.78.115.155",
-                Port = 5060
-            });
-
-            // init the camera info for connetctions
-            cameraList?.ForEach(deviceItem =>
-            {
-                var ipaddress = IPAddress.Parse(deviceItem.IPAddress);
-                sipMonitorcore = new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                var ipaddress = IPAddress.Parse(camera.IPAddress);
+                _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
                 {
-                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
-                    DeviceId = deviceItem.DeviceID
-                };
-                _nodeMonitorService.TryAdd(deviceItem.DeviceID, sipMonitorcore);
-                //_nodeMonitorService.TryAdd(deviceItem.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
-                //{
-                //    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, deviceItem.Port),
-                //    DeviceId = deviceItem.DeviceID
-                //});
-
-            });
-            
+                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, camera.Port),
+                    DeviceId = camera.DeviceID
+                });
+                //logger.Debug("nodeMonitorService divces counts: " + _nodeMonitorService.Count);
+                logger.Debug("_cameraCache_OnItemAdded: [" + camera.DeviceID + "," + camera.IPAddress.ToString() + ":" + camera.Port + "] item initialized.");
+            }
+            catch(Exception ex)
+            {
+                logger.Debug("Exception _cameraCache_OnItemAdded: " + ex.Message);
+            }
         }
-
+        
         #region 启动/停止消息主服务(监听注册链接)
         public void Start()
         {
             _serviceState = ServiceStatus.Wait;
-            LocalEP = SIPEndPoint.ParseSIPEndPoint("udp:" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
+            LocalEP = SIPEndPoint.ParseSIPEndPoint(_LocalSipAccount.MsgProtocol + ":" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
             LocalSIPId = _LocalSipAccount.LocalID;
-
-            Initialize(_cameras);
             
             try
             {
-                logger.Debug("SIPMessageCoreService daemon is runing...");
+                logger.Debug("SIPMessageCoreService is runing at " + LocalEP.ToString());
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_LocalSipAccount);
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 _transport.MsgEncode = _LocalSipAccount.MsgEncode;
                 _transport.AddSIPChannel(sipChannels);
 
-                ////PTZ Listen
-                //var PTZListenThread = new Thread(new ThreadStart(PTZListen))
-                //{
-                //    Name = "listenThread" + Crypto.GetRandomString(4)
-                //};
-                //PTZListenThread.Start();
             }
             catch (Exception excp)
             {
-                logger.Error("Exception SIPMessageCoreService Start. " + excp.Message);
+                logger.Error("Exception Start: " + excp.Message);
             }
         }
 
@@ -278,49 +232,74 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             }
             catch (Exception excp)
             {
-                logger.Error("Exception SIPRegistrarDaemon Stop. " + excp.Message);
+                logger.Error("Exception Stop: " + excp.Message);
             }
         }
 
-        /// <summary>
-        /// PTZ Listen
-        /// </summary>
-        protected bool Closed;
-        private void PTZListen()
+        public void PtzControl(PTZCommand ptzcmd, int dwSpeed, string deviceId)
         {
             try
-            {                
-                logger.Debug("PTZ listening started.");
-                while (!Closed)
+            {
+                //logger.Debug("PtzControl started.");
+
+                foreach (var item in _nodeMonitorService.ToArray())
                 {
-                    //PTZ request
-                    PTZCommand ptzcmd = PTZCommand.Right;
-                    int dwSpeed = 5;
-                    Closed = true;
-                    Thread.Sleep(1000);
-                    sipMonitorcore.PtzContrl(ptzcmd, dwSpeed);
+                    if (item.Key.Equals(deviceId))
+                    {
+                        item.Value.PtzContrl(ptzcmd, dwSpeed);
+                    }
                 }
-                logger.Debug("PTZ listening halted.");
+                //logger.Debug("PtzControl halted.");
             }
             catch (Exception excp)
             {
-                logger.Error("ptzListen(). " + excp.Message);
-                //throw excp;
+                logger.Error("Exception PtzControl: " + excp.Message);
             }
         }
-        public void PtzControl(PTZCommand ptzcmd, int dwSpeed)
+        public void DeviceStateQuery(string deviceId)
         {
             try
             {
-                logger.Debug("PTZ Controlling started.");
-                Initialize(_cameras);
-                sipMonitorcore.PtzContrl(ptzcmd, dwSpeed);
-                logger.Debug("PTZ Controlling halted.");
+                //logger.Debug("DeviceStateQuery started.");
+
+                foreach (var item in _nodeMonitorService.ToArray())
+                {
+                    if (item.Key.Equals(deviceId))
+                    {
+                        item.Value.DeviceStateQuery();
+                    }
+                }
+
+                //logger.Debug("DeviceStateQuery halted.");
             }
             catch (Exception excp)
             {
-                logger.Error("Error: PtzContrl(): " + excp.Message);
+                logger.Error("Exception DeviceStateQuery: " + excp.Message);
             }
+        }
+
+        public int RecordFileQuery(string deviceId, DateTime startTime, DateTime endTime, string type)
+        {
+            int RecordTotal = 0;
+            try
+            {
+                logger.Debug("RecordFileQuery started.");
+
+                foreach (var item in _nodeMonitorService.ToArray())
+                {
+                    if (item.Key.Equals(deviceId))
+                    {
+                        RecordTotal = item.Value.RecordFileQuery(startTime, endTime, type);
+                    }
+                }
+
+                logger.Debug("RecordFileQuery halted.");
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Exception RecordFileQuery: " + excp.Message);
+            }
+            return RecordTotal;
         }
         #endregion
 
@@ -575,6 +554,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             }
             if (response.Status == SIPResponseStatusCodesEnum.Ok)
             {
+                //add by zohn on 20180711
+                if (response.Header.ContentType == null)
+                {
+                    //logger.Debug("Received response.Header.ContentType == null, response.Status: " + response.Status + "," + remoteEP);
+                    return;
+                }
+
                 if (response.Header.CSeqMethod == SIPMethodsEnum.SUBSCRIBE)
                 {
                     //订阅消息
@@ -673,30 +659,37 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// <param name="catalog">目录结构体</param>
         private void CatalogHandle(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPRequest request, Catalog catalog)
         {
-            catalog.DeviceList.Items.FindAll(item => item != null).ForEach(catalogItem =>
+            try
             {
-                catalogItem.RemoteEP = remoteEP.ToHost();
-                var devCata = DevType.GetCataType(catalogItem.DeviceID);
-                if (devCata != DevCataType.Device)
+                catalog.DeviceList.Items.FindAll(item => item != null).ForEach(catalogItem =>
                 {
-                    if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
+                    catalogItem.RemoteEP = remoteEP.ToHost();
+                    var devCata = DevType.GetCataType(catalogItem.DeviceID);
+                    //logger.Debug("CatalogHandle: DevCataType=" + devCata);
+                    if (devCata == DevCataType.Device)
                     {
-                        remoteEP.Port = _LocalSipAccount.RemotePort;
-                        _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCoreService(this, _transport, _sipAccountStorage)
+                        if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                         {
-                            RemoteEndPoint = remoteEP,
-                            DeviceId = catalogItem.DeviceID
-                        });
+                            //remoteEP.Port = _LocalSipAccount.RemotePort;
+                            _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCoreService(this, _transport, _sipAccountStorage)
+                            {
+                                RemoteEndPoint = remoteEP,
+                                DeviceId = catalogItem.DeviceID
+                            });
+                            logger.Debug("CatalogHandle: nodeMonitorService.Count=" + _nodeMonitorService.Count);
+                            logger.Debug("CatalogHandle: nodeMonitorService.TryAdd DeviceId=" + catalogItem.DeviceID);
+                        }
+
                     }
+                    //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
+                });
 
-                }
-
-                //   CommandType cmdType = i == 0 ? CommandType.Play : CommandType.Playback;
-
-
-            });
-
-            OnCatalogReceived?.Invoke(catalog);
+                OnCatalogReceived?.Invoke(catalog);
+            }
+            catch (Exception ex)
+            {
+                logger.Warn("CatalogHandle Exception: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -1078,6 +1071,34 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         }
 
         /// <summary>
+        /// 设备目录查询
+        /// </summary>
+        /// <param name="deviceId">目的设备编码</param>
+        public void DeviceCatalogQuery(string deviceId)
+        {
+            lock (_remoteTransEPs)
+            {
+                foreach (var item in _remoteTransEPs)
+                {
+                    if (item.Value == deviceId)
+                    {
+                        SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
+                        SIPRequest catalogReq = QueryItems(remoteEP, item.Value);
+                        CatalogQuery catalog = new CatalogQuery()
+                        {
+                            CommandType = CommandType.Catalog,
+                            DeviceID = item.Value,
+                            SN = new Random().Next(1, ushort.MaxValue)
+                        };
+                        string xmlBody = CatalogQuery.Instance.Save<CatalogQuery>(catalog);
+                        catalogReq.Body = xmlBody;
+                        SendRequest(remoteEP, catalogReq);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 查询设备目录请求
         /// </summary>
         /// <returns></returns>
@@ -1109,6 +1130,25 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
         /// 目录订阅
         /// </summary>
         /// <param name="deviceId">目的设备编码</param>
+        public void DeviceCatalogSubscribe(string deviceId)
+        {
+            lock (_remoteTransEPs)
+            {
+                foreach (var item in _remoteTransEPs)
+                {
+                    if (item.Value == deviceId)
+                    {
+                        SIPEndPoint remoteEP = SIPEndPoint.ParseSIPEndPoint("udp:" + item.Key);
+                        DeviceCatalogSubscribe(remoteEP, deviceId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 目录订阅
+        /// </summary>
+        /// <param name="deviceId">目的设备编码</param>
         public void DeviceCatalogSubscribe(SIPEndPoint remoteEP, string remoteID)
         {
             SIPRequest catalogReq = SubscribeCatalog(remoteEP, remoteID);
@@ -1117,6 +1157,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
                 CommandType = CommandType.Catalog,
                 DeviceID = remoteID,
                 SN = new Random().Next(1, ushort.MaxValue)
+                //,
                 //StartTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
                 //EndTime = DateTime.Now.AddYears(1).ToString("yyyy-MM-ddTHH:mm:ss")
             };
@@ -1142,15 +1183,18 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
             SIPRequest catalogReq = _transport.GetRequest(SIPMethodsEnum.SUBSCRIBE, remoteUri);
 
             catalogReq.Header.From = from;
-            //catalogReq.Header.Contact = null;
+            catalogReq.Header.Contact = new List<SIPContactHeader>
+            {
+                new SIPContactHeader(null, localUri)
+            };
             catalogReq.Header.Allow = null;
             catalogReq.Header.To = to;
             catalogReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-            catalogReq.Header.Event = "Catalog";//"Catalog;id=1894";
-            catalogReq.Header.Expires = 600;
+            catalogReq.Header.Event = "Catalog";//"presence";//"Catalog;id=1894";
+            catalogReq.Header.Expires = 60000;
             catalogReq.Header.CSeq = cSeq;
             catalogReq.Header.CallId = callId;
-            catalogReq.Header.ContentType = "application/MANSCDP+xml";
+            catalogReq.Header.ContentType = "application/MANSCDP+xml";//"Application/MANSCDP+xml"
 
             return catalogReq;
         }

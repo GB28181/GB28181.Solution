@@ -25,7 +25,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         private AutoResetEvent _autoResetEventForRpc = new AutoResetEvent(false);
 
         //concurent requet/reply
-        private ConcurrentDictionary<int, SIPRequest> _syncRequestContext = new ConcurrentDictionary<int, SIPRequest>();
+        private ConcurrentDictionary<string, SIPRequest> _syncRequestContext = new ConcurrentDictionary<string, SIPRequest>();
         private ConcurrentQueue<Tuple<SIPRequest, SIPResponse>> _syncResponseContext = new ConcurrentQueue<Tuple<SIPRequest, SIPResponse>>();
         private ISipMessageCore _sipMsgCoreService;
         /// <summary>
@@ -84,7 +84,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             string fromTag = CallProperties.CreateNewTag();
             int cSeq = CallProperties.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
-
+            logger.Debug("RealVideoReq: DeviceId=" + DeviceId);
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
             SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
@@ -107,7 +107,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             _reqSession = sipRequest;
             if (needResult)
             {
-                _syncRequestContext.TryAdd(cSeq, sipRequest);
+                _syncRequestContext.TryAdd(callId, sipRequest);
             }
             return cSeq;
         }
@@ -139,10 +139,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             ackReq.Header = header;
             _toTag = response.Header.To.ToTag;
 
-            if (_syncRequestContext.ContainsKey(response.Header.CSeq))
+            if (_syncRequestContext.ContainsKey(response.Header.CallId))
             {
 
-                SIPRequest request = _syncRequestContext[response.Header.CSeq];
+                SIPRequest request = _syncRequestContext[response.Header.CallId];
 
                 var targetValue = new Tuple<SIPRequest, SIPResponse>(request, response);
                 //update the collection
@@ -185,7 +185,6 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 return;
             }
-
             SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
             SIPFromHeader from = _reqSession.Header.From;
@@ -201,6 +200,38 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             byeReq.Header = header;
             Stop();
             _sipMsgCoreService.SendReliableRequest(RemoteEndPoint, byeReq);
+        }
+        public void ByeVideoReq(string sessionid)
+        {
+            try
+            {
+                if (!_syncRequestContext.Keys.Contains(sessionid)) return;
+                SIPRequest reqSession = _syncRequestContext[sessionid];
+                if (reqSession == null)
+                {
+                    return;
+                }
+                SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+                SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+                SIPFromHeader from = reqSession.Header.From;
+                SIPToHeader to = reqSession.Header.To; to.ToTag = _toTag;
+                SIPRequest byeReq = _sipTransport.GetRequest(SIPMethodsEnum.BYE, remoteUri);
+                SIPHeader header = new SIPHeader(from, to, reqSession.Header.CSeq + 1, reqSession.Header.CallId)
+                {
+                    CSeqMethod = SIPMethodsEnum.BYE,
+                    Vias = reqSession.Header.Vias,
+                    UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                    Contact = reqSession.Header.Contact
+                };
+                byeReq.Header = header;
+                Stop();
+                _sipMsgCoreService.SendReliableRequest(RemoteEndPoint, byeReq);
+                _syncRequestContext.TryRemove(sessionid, out reqSession);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("ByeVideoReq: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -349,7 +380,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             return _recordTotal;
         }
         /// <summary>
-        /// 录像点播视频请求
+        /// 录像点播视频请求(回放)
         /// </summary>
         /// <param name="beginTime">开始时间</param>
         /// <param name="endTime">结束时间</param>
@@ -361,6 +392,40 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             uint stopTime = TimeConvert.DateToTimeStamp(endTime);
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+            string fromTag = CallProperties.CreateNewTag();
+            int cSeq = CallProperties.CreateNewCSeq();
+            string callId = CallProperties.CreateNewCallId();
+            logger.Debug("BackVideoReq: DeviceId=" + DeviceId);
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, null);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.CSeq = cSeq;
+            backReq.Header.CallId = callId;
+            backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = "application/sdp";
+
+            backReq.Body = SetMediaReq(localIp, _mediaPort, startTime, stopTime);
+            _sipMsgCoreService.SendRequest(RemoteEndPoint, backReq);
+            _reqSession = backReq;
+        }
+        public int BackVideoReq(ulong beginTime, ulong endTime, int[] mediaPort, string receiveIP, bool needResult = false)
+        {
+            //_mediaPort = _sipMsgCoreService.SetMediaPort();
+
+            ulong startTime = beginTime;
+            ulong stopTime = endTime;
+
+            //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
             int cSeq = CallProperties.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
@@ -383,9 +448,15 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             backReq.Header.Subject = SetSubject();
             backReq.Header.ContentType = "application/sdp";
 
-            backReq.Body = SetMediaReq(localIp, _mediaPort, startTime, stopTime);
+            backReq.Body = SetMediaReq(receiveIP, mediaPort, startTime, stopTime);
             _sipMsgCoreService.SendRequest(RemoteEndPoint, backReq);
             _reqSession = backReq;
+
+            if (needResult)
+            {
+                _syncRequestContext.TryAdd(callId, backReq);
+            }
+            return cSeq;
         }
 
         /// <summary>
@@ -436,7 +507,48 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             //_realTask.OnCloseRTPChannel += Task_OnCloseRTPChannel;
             //_realTask.Start();
         }
+        public int VideoDownloadReq(DateTime beginTime, DateTime endTime, int[] mediaPort, string receiveIP, bool needResult = false)
+        {
+            //_mediaPort = _sipMsgCoreService.SetMediaPort();
 
+            uint startTime = (UInt32)(beginTime - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
+            uint stopTime = (UInt32)(endTime - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
+
+
+            //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+            string fromTag = CallProperties.CreateNewTag();
+            int cSeq = CallProperties.CreateNewCSeq();
+            string callId = CallProperties.CreateNewCallId();
+
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, null);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.CSeq = cSeq;
+            backReq.Header.CallId = callId;
+            backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = "application/sdp";
+
+
+            backReq.Body = SetMediaDownloadReq(receiveIP, mediaPort, startTime, stopTime);
+            _sipMsgCoreService.SendRequest(RemoteEndPoint, backReq);
+            _reqSession = backReq;
+
+            if (needResult)
+            {
+                _syncRequestContext.TryAdd(callId, backReq);
+            }
+            return cSeq;
+        }
 
 
         /// <summary>
@@ -447,7 +559,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
         /// <param name="startTime">录像开始时间</param>
         /// <param name="stopTime">录像结束数据</param>
         /// <returns></returns>
-        private string SetMediaReq(string localIp, int[] mediaPort, uint startTime, uint stopTime)
+        private string SetMediaReq(string localIp, int[] mediaPort, ulong startTime, ulong stopTime)
         {
 
             var sdpConn = new SDPConnectionInformation(localIp);
@@ -461,7 +573,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 Connection = sdpConn,
                 Timing = startTime + " " + stopTime,
                 Address = localIp,
-                URI = DeviceId + ":" + 1
+                URI = DeviceId + ":" + 3
             };
 
             SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
@@ -472,6 +584,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 IsStandardAttribute = false
             };
+            //SDPMediaFormat mpeg4Format = new SDPMediaFormat(SDPMediaFormatsEnum.MPEG4)
+            //{
+            //    IsStandardAttribute = false
+            //};
             SDPMediaAnnouncement media = new SDPMediaAnnouncement
             {
                 Media = SDPMediaTypesEnum.video
@@ -479,6 +595,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
             media.MediaFormats.Add(psFormat);
             media.MediaFormats.Add(h264Format);
+            //media.MediaFormats.Add(mpeg4Format);
             media.AddExtra("a=recvonly");
             if (_sipAccount.StreamProtocol == ProtocolType.Tcp)
             {
@@ -516,7 +633,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 Connection = sdpConn,
                 Timing = startTime + " " + stopTime,
                 Address = localIp,
-                URI = DeviceId + ":" + 1
+                URI = DeviceId + ":" + 3
             };
 
             SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
@@ -527,6 +644,10 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             {
                 IsStandardAttribute = false
             };
+            //SDPMediaFormat mpeg4Format = new SDPMediaFormat(SDPMediaFormatsEnum.MPEG4)
+            //{
+            //    IsStandardAttribute = false
+            //};
             SDPMediaAnnouncement media = new SDPMediaAnnouncement
             {
                 Media = SDPMediaTypesEnum.video
@@ -534,6 +655,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
 
             media.MediaFormats.Add(psFormat);
             media.MediaFormats.Add(h264Format);
+            //media.MediaFormats.Add(mpeg4Format);
             media.AddExtra("a=recvonly");
             if (_sipAccount.StreamProtocol == ProtocolType.Tcp)
             {
@@ -583,6 +705,41 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             this.Stop();
             _sipMsgCoreService.SendRequest(RemoteEndPoint, byeReq);
         }
+        public bool BackVideoStopPlayingControlReq(string sessionid)
+        {
+            try
+            {
+                if (!_syncRequestContext.Keys.Contains(sessionid)) return false;
+                SIPRequest reqSession = _syncRequestContext[sessionid];
+                if (reqSession == null)
+                {
+                    return false;
+                }
+                SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+                SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+                SIPFromHeader from = new SIPFromHeader(null, localUri, reqSession.Header.From.FromTag);
+                SIPToHeader to = new SIPToHeader(null, remoteUri, reqSession.Header.To.ToTag);
+                SIPRequest byeReq = _sipTransport.GetRequest(SIPMethodsEnum.BYE, remoteUri);
+                SIPHeader header = new SIPHeader(from, to, reqSession.Header.CSeq, reqSession.Header.CallId)
+                {
+                    CSeqMethod = byeReq.Header.CSeqMethod,
+                    Vias = byeReq.Header.Vias,
+                    MaxForwards = byeReq.Header.MaxForwards,
+                    UserAgent = SIPConstants.SIP_USERAGENT_STRING
+                };
+                byeReq.Header.From = from;
+                byeReq.Header = header;
+                this.Stop();
+                _sipMsgCoreService.SendRequest(RemoteEndPoint, byeReq);
+                _syncRequestContext.TryRemove(sessionid, out reqSession);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("BackVideoStopPlayingControlReq: " + ex.Message);
+                return false;
+            }
+        }
 
         /// <summary>
         /// 控制录像点播播放速度
@@ -601,6 +758,26 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPRequest realReq = BackVideoPlaySpeedControlReq(localIp, _mediaPort, range, fromTag, cSeq, callId);
             _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
             return true;
+        }
+        public bool BackVideoPlaySpeedControlReq(string sessionid, float scale)
+        {
+            try
+            {
+                //_mediaPort = _sipMsgCoreService.SetMediaPort();
+                //uint time = TimeConvert.DateToTimeStamp(range);
+                //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+                string fromTag = CallProperties.CreateNewTag();
+                int cSeq = CallProperties.CreateNewCSeq();
+                string callId = CallProperties.CreateNewCallId();
+                SIPRequest realReq = BackVideoPlaySpeedControlReq(sessionid, scale, fromTag, cSeq, callId);
+                _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("BackVideoPlaySpeedControlReq: " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -639,7 +816,34 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             _reqSession = backReq;
             return backReq;
         }
-
+        private SIPRequest BackVideoPlaySpeedControlReq(string sessionid, float scale, string fromTag, int cSeq, string callId)
+        {
+            if (!_syncRequestContext.Keys.Contains(sessionid)) return null;
+            SIPRequest reqSession = _syncRequestContext[sessionid];
+            if (reqSession == null)
+            {
+                return null;
+            }
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, reqSession.Header.From.FromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, reqSession.Header.To.ToTag);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INFO, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.CSeq = cSeq;
+            backReq.Header.CallId = callId;
+            backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = "Application/MANSRTSP";
+            backReq.Body = SetMediaSpeedReq(scale, cSeq);
+            _reqSession = backReq;
+            return backReq;
+        }
         /// <summary>
         /// 设置媒体参数请求(快放/慢放)
         /// </summary>
@@ -655,7 +859,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 "Scale: " + scale + "\r\n";
             return str;
         }
-
+        private string SetMediaSpeedReq(float scale, int cseq)
+        {
+            string str =
+                "PLAY MANSRTSP/1.0\r\n" +
+                "CSeq: " + cseq + "\r\n" +
+                "Scale: " + scale + "\r\n";
+            return str;
+        }
 
         /// <summary>
         /// 设置媒体参数请求(回放 播放速率)
@@ -701,6 +912,29 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPRequest realReq = BackVideoContinuePlayingControlReq(localIp, _mediaPort, fromTag, cSeq, callId);
             _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
         }
+        public bool BackVideoContinuePlayingControlReq(string sessionid)
+        {
+            try
+            {
+                //if (_mediaPort == null)
+                //{
+                //    _mediaPort = _sipMsgCoreService.SetMediaPort();
+                //}
+                string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+                string fromTag = CallProperties.CreateNewTag();
+                int cSeq = CallProperties.CreateNewCSeq();
+                string callId = CallProperties.CreateNewCallId();
+                //this.Stop();
+                SIPRequest realReq = BackVideoContinuePlayingControlReq(sessionid, fromTag, cSeq, callId);
+                _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("BackVideoContinuePlayingControlReq: " + ex.Message);
+                return true;
+            }
+        }
         /// <summary>
         /// 恢复录像播放
         /// </summary>
@@ -730,6 +964,34 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             //backReq.Header.Subject = SetSubject();
             backReq.Header.ContentType = "Application/MANSRTSP";
 
+            backReq.Body = SetMediaResumeReq(cSeq);
+            _reqSession = backReq;
+            return backReq;
+        }
+        public SIPRequest BackVideoContinuePlayingControlReq(string sessionid, string fromTag, int cSeq, string callId)
+        {
+            if (!_syncRequestContext.Keys.Contains(sessionid)) return null;
+            SIPRequest reqSession = _syncRequestContext[sessionid];
+            if (reqSession == null)
+            {
+                return null;
+            }
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, reqSession.Header.From.FromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, reqSession.Header.To.ToTag);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INFO, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.CSeq = reqSession.Header.CSeq + 1;
+            backReq.Header.CallId = reqSession.Header.CallId;
+            //backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = "Application/MANSRTSP";
             backReq.Body = SetMediaResumeReq(cSeq);
             _reqSession = backReq;
             return backReq;
@@ -764,6 +1026,28 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             string callId = CallProperties.CreateNewCallId();
             SIPRequest realReq = BackVideoPauseControlReq(localIp, _mediaPort, fromTag, cSeq, callId);
             _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
+        }
+        public bool BackVideoPauseControlReq(string sessionid)
+        {
+            try
+            {
+                //if (_mediaPort == null)
+                //{
+                //    _mediaPort = _sipMsgCoreService.SetMediaPort();
+                //}
+                //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+                string fromTag = CallProperties.CreateNewTag();
+                int cSeq = CallProperties.CreateNewCSeq();
+                string callId = CallProperties.CreateNewCallId();
+                SIPRequest realReq = BackVideoPauseControlReq(sessionid, fromTag, cSeq, callId);
+                _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("BackVideoPauseControlReq: " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -800,6 +1084,36 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             _reqSession = backReq;
             return backReq;
         }
+        public SIPRequest BackVideoPauseControlReq(string sessionid, string fromTag, int cSeq, string callId)
+        {
+            if (!_syncRequestContext.Keys.Contains(sessionid)) return null;
+            SIPRequest reqSession = _syncRequestContext[sessionid];
+            if (reqSession == null)
+            {
+                return null;
+            }
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, reqSession.Header.From.FromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, reqSession.Header.To.ToTag);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INFO, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            //backReq.Header.Vias = _reqSession.Header.Vias;
+            backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
+            backReq.Header.CallId = _reqSession.Header.CallId;
+            //backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = "Application/MANSRTSP";
+            backReq.Body = SetMediaPauseReq(reqSession.Header.CSeq);
+            _reqSession = backReq;
+            return backReq;
+        }
+
         /// <summary>
         /// 设置录像暂停包体信息
         /// </summary>
@@ -851,6 +1165,27 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
             return true;
         }
+        public bool BackVideoPlayPositionControlReq(string sessionid, long time)
+        {
+            try
+            {
+                //_mediaPort = _sipMsgCoreService.SetMediaPort();
+                //uint time = TimeConvert.DateToTimeStamp(range);
+                string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
+                string fromTag = CallProperties.CreateNewTag();
+                int cSeq = CallProperties.CreateNewCSeq();
+                string callId = CallProperties.CreateNewCallId();
+
+                SIPRequest realReq = BackVideoPlayPositionControlReq(sessionid, time, fromTag, cSeq, callId);
+                _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("BackVideoPlayPositionControlReq: " + ex.Message);
+                return false;
+            }
+        }
 
         /// <summary>
         /// 控制录像随机拖拽
@@ -887,6 +1222,34 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             _reqSession = backReq;
             return backReq;
         }
+        private SIPRequest BackVideoPlayPositionControlReq(string sessionid, long time, string fromTag, int cSeq, string callId)
+        {
+            if (!_syncRequestContext.Keys.Contains(sessionid)) return null;
+            SIPRequest reqSession = _syncRequestContext[sessionid];
+            if (reqSession == null)
+            {
+                return null;
+            }
+            SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, reqSession.Header.From.FromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, reqSession.Header.To.ToTag);
+            SIPRequest backReq = _sipTransport.GetRequest(SIPMethodsEnum.INFO, remoteUri);
+            SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            backReq.Header.Contact.Clear();
+            backReq.Header.Contact.Add(contactHeader);
+            backReq.Header.Allow = null;
+            backReq.Header.From = from;
+            backReq.Header.To = to;
+            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.CSeq = reqSession.Header.CSeq + 1;
+            backReq.Header.CallId = reqSession.Header.CallId;
+            backReq.Header.Subject = SetSubject();
+            backReq.Header.ContentType = SIPHeader.ContentTypes.Application_MANSRTSP;
+            backReq.Body = SetMediaPositionReq(time, cSeq);
+            _reqSession = backReq;
+            return backReq;
+        }
 
         /// <summary>
         /// 控制录像随机拖拽
@@ -901,6 +1264,14 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
                 "PLAY MANSRTSP/1.0\r\n" +
                 "CSeq: " + cseq + "\r\n" +
                 "Range: npt=" + Time + "-\r\n";
+            return str;
+        }
+        private string SetMediaPositionReq(long time, int cseq)
+        {
+            string str =
+                "PLAY MANSRTSP/1.0\r\n" +
+                "CSeq: " + cseq + "\r\n" +
+                "Range: npt=" + time + "-\r\n";
             return str;
         }
 
@@ -918,6 +1289,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             string toTag = CallProperties.CreateNewTag();
             int cSeq = CallProperties.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
+            logger.Debug("PtzContrl() start to PTZRequest.");
             SIPRequest ptzReq = PTZRequest(fromTag, toTag, cSeq, callId);
             string cmdStr = GetPtzCmd(ucommand, dwSpeed);
 
@@ -930,6 +1302,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             };
             string xmlBody = PTZControl.Instance.Save<PTZControl>(ptz);
             ptzReq.Body = xmlBody;
+            //logger.Debug("PtzContrl() start to SendRequest...");
             _sipMsgCoreService.SendRequest(RemoteEndPoint, ptzReq);
 
         }
@@ -945,6 +1318,7 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
             SIPToHeader to = new SIPToHeader(null, remoteUri, toTag);
             SIPRequest ptzReq = _sipTransport.GetRequest(SIPMethodsEnum.MESSAGE, remoteUri);
+            //logger.Debug("PtzContrl() .PTZRequest() .GetRequest() ended.");
             ptzReq.Header.From = from;
             ptzReq.Header.Contact = null;
             ptzReq.Header.Allow = null;
@@ -1331,6 +1705,30 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             eventSubscribeReq.Body = xmlBody;
             _sipMsgCoreService.SendRequest(RemoteEndPoint, eventSubscribeReq);
         }
+        /// <summary>
+        /// 报警订阅
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
+        /// <param name="deviceid"></param>
+        public void DeviceAlarmSubscribe(SIPEndPoint remoteEndPoint, string deviceid)
+        {
+            SIPRequest eventSubscribeReq = QueryItemsSubscribe(remoteEndPoint, deviceid);
+            eventSubscribeReq.Method = SIPMethodsEnum.SUBSCRIBE;
+            CatalogQuery catalog = new CatalogQuery()
+            {
+                CommandType = CommandType.Alarm,
+                DeviceID = deviceid,
+                SN = new Random().Next(1, ushort.MaxValue),
+                StartAlarmPriority = "1",
+                EndAlarmPriority = "4",
+                AlarmMethod = "0",
+                StartTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+                EndTime = DateTime.Now.AddHours(10).ToString("yyyy-MM-ddTHH:mm:ss")
+            };
+            string xmlBody = CatalogQuery.Instance.Save<CatalogQuery>(catalog);
+            eventSubscribeReq.Body = xmlBody;
+            _sipMsgCoreService.SendRequest(remoteEndPoint, eventSubscribeReq);
+        }
 
         /// <summary>
         /// 目录订阅
@@ -1414,6 +1812,25 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             catalogReq.Body = xmlBody;
             _sipMsgCoreService.SendRequest(RemoteEndPoint, catalogReq);
         }
+        /// <summary>
+        /// 报警复位
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
+        /// <param name="deviceid"></param>
+        public void DeviceControlResetAlarm(SIPEndPoint remoteEndPoint, string deviceid)
+        {
+            SIPRequest catalogReq = QueryItems(remoteEndPoint, deviceid);
+            Control catalog = new Control()
+            {
+                CommandType = CommandType.DeviceControl,
+                DeviceID = DeviceId,
+                SN = new Random().Next(1, ushort.MaxValue),
+                AlarmCmd = "ResetAlarm"
+            };
+            string xmlBody = Control.Instance.Save<Control>(catalog);
+            catalogReq.Body = xmlBody;
+            _sipMsgCoreService.SendRequest(remoteEndPoint, catalogReq);
+        }
 
         /// <summary>
         /// 查询请求
@@ -1438,6 +1855,40 @@ namespace SIPSorcery.GB28181.Servers.SIPMonitor
             queryReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
             queryReq.Header.CSeq = cSeq;
             queryReq.Header.CallId = callId;//_reqSession.Header.CallId; //
+            queryReq.Header.ContentType = "Application/MANSCDP+xml";
+
+            return queryReq;
+        }
+        /// <summary>
+        /// 订阅请求
+        /// </summary>
+        /// <param name="remoteEndPoint"></param>
+        /// <param name="remoteSIPId"></param>
+        /// <returns></returns>
+        private SIPRequest QueryItemsSubscribe(SIPEndPoint remoteEndPoint, string remoteSIPId)
+        {
+            string fromTag = CallProperties.CreateNewTag();
+            string toTag = CallProperties.CreateNewTag();
+            int cSeq = CallProperties.CreateNewCSeq();
+            string callId = CallProperties.CreateNewCallId();
+
+            SIPURI remoteUri = new SIPURI(remoteSIPId, remoteEndPoint.ToHost(), "");
+            SIPURI localUri = new SIPURI(_sipMsgCoreService.LocalSIPId, _sipMsgCoreService.LocalEP.ToHost(), "");
+            SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
+            SIPToHeader to = new SIPToHeader(null, remoteUri, null);
+            SIPRequest queryReq = _sipTransport.GetRequest(SIPMethodsEnum.SUBSCRIBE, remoteUri);
+            queryReq.Header.From = from;
+            queryReq.Header.Contact = new List<SIPContactHeader>
+            {
+                new SIPContactHeader(null, localUri)
+            };
+            queryReq.Header.Allow = null;
+            queryReq.Header.To = to;
+            queryReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            queryReq.Header.CSeq = cSeq;
+            queryReq.Header.Expires = 90;
+            queryReq.Header.Event = "presence";
+            queryReq.Header.CallId = callId;
             queryReq.Header.ContentType = "Application/MANSCDP+xml";
 
             return queryReq;

@@ -63,7 +63,7 @@ namespace SIPSorcery.GB28181.SIP
                     return null;
                 }
 
-                if (sipEndPointStr.StartsWith("udp") || sipEndPointStr.StartsWith("tcp") || sipEndPointStr.StartsWith("tls"))
+                if (sipEndPointStr.ToLower().StartsWith("udp") || sipEndPointStr.ToLower().StartsWith("tcp") || sipEndPointStr.ToLower().StartsWith("tls"))
                 {
                     return ParseSerialisedSIPEndPoint(sipEndPointStr);
                 }

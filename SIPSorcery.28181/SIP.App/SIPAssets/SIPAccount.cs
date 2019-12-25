@@ -559,6 +559,10 @@ namespace SIPSorcery.GB28181.SIP.App
                         foreach (DataRow row in sipAssetSet.Tables[0].Rows)
                         {
                             var sipAsset = new SIPAccount();
+                            logger.Debug("Load assets from xml with local ip&port is " + row["LocalIp"] + ":" + row["LocalPort"]);
+                            row["LocalId"] = EnvironmentVariables.GbServiceLocalId ?? row["LocalId"];
+                            row["LocalIp"] = EnvironmentVariables.GbServiceLocalIp ?? row["LocalIp"];
+                            //row["LocalPort"] = EnvironmentVariables.GbServiceLocalPort;
                             sipAsset.Load(row);
                             assets.Add(sipAsset.Id, sipAsset);
                         }
@@ -568,12 +572,12 @@ namespace SIPSorcery.GB28181.SIP.App
                         logger.Error("Exception loading SIP asset record in LoadAssetsFromXMLRecordSet (" + (new SIPAccount()).GetType().ToString() + "). " + excp.Message);
                     }
 
-                    logger.Debug(" " + assets.Count + " " + (new SIPAccount()).GetType().ToString() + " assets loaded from XML record set.");
+                    logger.Debug(assets.Count + " " + (new SIPAccount()).GetType().ToString() + " assets loaded from XML record set.");
                 }
                 else
                 {
                     //logger.Warn("The XML supplied to LoadAssetsFromXMLRecordSet for asset type " + (new T()).GetType().ToString() + " did not contain any assets.");
-                    logger.Debug(" no " + (new SIPAccount()).GetType().ToString() + " assets loaded from XML record set.");
+                    logger.Debug("No" + (new SIPAccount()).GetType().ToString() + " assets loaded from XML record set.");
                 }
 
                 xmlReader.Close();

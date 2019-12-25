@@ -62,7 +62,7 @@ namespace SIPSorcery.GB28181.Sys.XML
         /// 保密属性 0不涉密 1涉密
         /// </summary>
         [XmlElement("Secrecy")]
-        public byte Secrecy { get; set; }
+        public int Secrecy { get; set; }
 
         /// <summary>
         /// 录像产生类型 time alarm manual all
@@ -198,7 +198,7 @@ namespace SIPSorcery.GB28181.Sys.XML
             /// 保密属性 0不涉密 1涉密
             /// </summary>
             [XmlElement("Secrecy")]
-            public byte Secrecy { get; set; }
+            public int Secrecy { get; set; }
 
             /// <summary>
             /// 录像产生类型 time alarm manual all

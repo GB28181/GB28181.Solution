@@ -35,7 +35,13 @@ namespace SIPSorcery.GB28181.Servers.SIPMessage
 
         void AddMessageResponse(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPResponse response);
 
-        void PtzControl(PTZCommand ptzcmd, int dwSpeed);
+        void PtzControl(PTZCommand ptzcmd, int dwSpeed, string deviceId);
+        void DeviceStateQuery(string deviceId);
+
+        void DeviceCatalogQuery();
+        void DeviceCatalogQuery(string deviceId);
+        void DeviceCatalogSubscribe(string deviceId);
+        int RecordFileQuery(string deviceId, DateTime startTime, DateTime endTime, string type);
 
 
         #region 事件
