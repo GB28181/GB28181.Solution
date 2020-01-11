@@ -1,9 +1,6 @@
 ﻿using SLW.ClientBase.Codec;
 using System.Drawing;
 using System;
-using System.Windows.Media;
-using GLib.AXLib.Utility;
-using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 

@@ -19,9 +19,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
     <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
     <ProjectReference Include="..\SLW.MeidaNetEngine\SLW.MeidaNetEngine.csproj" />
   </ItemGroup>
@@ -40,6 +38,9 @@
     </Reference>
     <Reference Include="DirectShowLib-2005">
       <HintPath>..\Libs\DirectShowLib-2005.dll</HintPath>
+    </Reference>
+    <Reference Include="GLib">
+      <HintPath>..\Libs\GLib.dll</HintPath>
     </Reference>
     <Reference Include="StarEye.VideoConver">
       <HintPath>..\Libs\StarEye.VideoConver.dll</HintPath>

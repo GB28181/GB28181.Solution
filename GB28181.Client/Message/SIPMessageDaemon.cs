@@ -47,7 +47,7 @@ using SIPSorcery.GB28181.SIP;
 using SIPSorcery.GB28181.SIP.App;
 using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Sys;
-using log4net;
+using Logger4Net;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.Sys.Config;
 
@@ -63,7 +63,7 @@ namespace Gb28181_Client.Message
         private SIPAuthenticateRequestDelegate SIPAuthenticateRequest_External;
         private Dictionary<string, PlatformConfig> _platformList;
         private SIPAccount _account;
-        public SIPMessageCore MessageCore;
+        public SIPMessageCoreService MessageCore;
 
         public SIPMessageDaemon(
             SIPAccount account,
@@ -85,12 +85,12 @@ namespace Gb28181_Client.Message
                 // Configure the SIP transport layer.
                 m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
                 m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
-                SIPAccount account = SIPSqlite.Instance.Accounts.FirstOrDefault();
+                SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
                 List<SIPChannel> sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
                 m_sipTransport.AddSIPChannel(sipChannels);
 
 
-                MessageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+              //  MessageCore = new SIPMessageCoreService(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
                 MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList,_account);
                 GB28181Catalog.Instance.MessageCore = MessageCore;
                 m_sipTransport.SIPTransportRequestReceived += MessageCore.AddMessageRequest;

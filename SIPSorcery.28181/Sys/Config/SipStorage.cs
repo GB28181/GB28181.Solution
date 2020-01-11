@@ -19,6 +19,7 @@ namespace SIPSorcery.GB28181.Sys.Config
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private static readonly string m_XMLFilename = "gb28181.xml"; //default storage filename
 
+        public static readonly SipAccountStorage Instance = new SipAccountStorage();
         //数据存储类型，比如xml,json,sqlite.postgresql
         private static StorageTypes m_storageType;
         //连接字符串
