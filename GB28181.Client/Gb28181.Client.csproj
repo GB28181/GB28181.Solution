@@ -12,6 +12,7 @@
     <RootNamespace>Gb28181.Client</RootNamespace>
     <AssemblyName>Gb28181.Client</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -44,6 +45,9 @@
     </Reference>
     <Reference Include="StarEye.VideoConver">
       <HintPath>..\Libs\StarEye.VideoConver.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Sdl">
+      <HintPath>..\Libs\Tao.Sdl.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
