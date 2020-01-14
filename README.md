@@ -41,6 +41,6 @@ BSD v2
 ## 讨论
 
 微信扫描二维码，添加好友，进入微信讨论群(注明：公司+GB28181+姓名)：
-<div style="float:left">
-<img src="./docs/crazybber.png" width="30%">
-</div>
+
++ ![qrcode](./docs/crazybber.png)
+
