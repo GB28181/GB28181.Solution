@@ -42,5 +42,5 @@ BSD v2
 
 微信扫描二维码，添加好友，进入微信讨论群(注明：公司+GB28181+姓名)：
 
-+ ![qrcode](./docs/crazybber.png)
++ ![qrcode](./docs/crazybber.jpg)
 
