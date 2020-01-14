@@ -26,6 +26,7 @@ Device History Video Query
 Mainly on `develop` branch ,in order to support .net core3.1+.
 
 + The windows function part was not maintained .
+  + Form Client Project Need to be fixed.
 + you can reffer to other branch in this repo , `PRs` are always welcome.
 
 ## License
