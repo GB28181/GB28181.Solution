@@ -36,3 +36,11 @@ BSD v2
 + [GB28181_Platform2016_Test](https://github.com/qinpengit/Gb28181_Platform2016_Test)
 
 + [sipsorcery](https://github.com/sipsorcery/sipsorcery)
+
+
+## 讨论
+
+微信扫描二维码，添加好友，进入微信讨论群(注明：公司+GB28181+姓名)：
+<div style="float:left">
+<img src="./docs/crazybber.png" width="30%">
+</div>
