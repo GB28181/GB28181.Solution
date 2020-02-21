@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIPSorcery.28181", "SIPSorcery.28181\SIPSorcery.28181.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject
@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcAgent", "GrpcAgent\Grpc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.GB28181.Service", "Test.GB28181.Service\Test.GB28181.Service.csproj", "{860672ED-162F-4D45-8377-4E7BD17CEB90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NATS.Client", "NATS.Client\NATS.Client.csproj", "{63538762-E1D0-4592-96D6-C0812DD3F990}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nats.Client", "NATS.Client\Nats.Client.csproj", "{63538762-E1D0-4592-96D6-C0812DD3F990}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

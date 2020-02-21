@@ -72,9 +72,10 @@ namespace GB28181Service
 
         public void Dispose()
         {
+            Dispose(true);
             // tell the GC that the Finalize process no longer needs to be run for this object.
             GC.SuppressFinalize(this);
-            Dispose(true);
+            
         }
 
         protected virtual void Dispose(bool disposing)
@@ -353,7 +354,7 @@ namespace GB28181Service
         {
             string localip = string.Empty;
             string hostname = Dns.GetHostName();
-            IPHostEntry ipadrlist = Dns.GetHostByName(hostname);
+            IPHostEntry ipadrlist = Dns.GetHostEntry(hostname);
             IPAddress localaddr = null;
             foreach (IPAddress obj in ipadrlist.AddressList)
             {

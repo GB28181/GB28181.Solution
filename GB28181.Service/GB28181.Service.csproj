@@ -25,7 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
     <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
-    <ProjectReference Include="..\NATS.Client\NATS.Client.csproj" />
+    <ProjectReference Include="..\NATS.Client\Nats.Client.csproj" />
     <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
   </ItemGroup>
 
@@ -37,9 +37,12 @@
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="0.7.2.6" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.27.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
+    <PackageReference Include="MyNatsClient" Version="0.14.1" />
   </ItemGroup>
 
   <ItemGroup>
