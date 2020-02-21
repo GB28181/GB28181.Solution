@@ -213,7 +213,7 @@ namespace Win.MediaNetEngine.Wave.Wave
             try {
                 lock (m_pPlayItems) {
                     PlayItem item = m_pPlayItems[0];
-                    WavMethods.waveOutUnprepareHeader(m_pWavDevHandle, item.HeaderHandle.AddrOfPinnedObject(), Marshal.SizeOf(item.Header));
+                    WavMethods.WaveOutUnprepareHeader(m_pWavDevHandle, item.HeaderHandle.AddrOfPinnedObject(), Marshal.SizeOf(item.Header));
                     m_pPlayItems.Remove(item);
                     
                     m_BytesBuffered -= item.DataSize;
@@ -238,7 +238,7 @@ namespace Win.MediaNetEngine.Wave.Wave
                 return;
             lock (m_pPlayItems) {
                 m_IsPaused = false;
-                WavMethods.waveOutRestart(m_pWavDevHandle);
+                WavMethods.WaveOutRestart(m_pWavDevHandle);
             }
         }
         public void Play(byte[] audioData) {
@@ -288,13 +288,13 @@ namespace Win.MediaNetEngine.Wave.Wave
                             m_IsBuffing = true;
                         }
                     } else if (m_IsBuffing && m_BytesBuffered > m_MinBuffer) {
-                        WavMethods.waveOutRestart(m_pWavDevHandle);
+                        WavMethods.WaveOutRestart(m_pWavDevHandle);
                         m_IsBuffing = false;
                     }
 
                    
 
-                    result = WavMethods.waveOutWrite(m_pWavDevHandle, headerHandle.AddrOfPinnedObject(), Marshal.SizeOf(wavHeader));
+                    result = WavMethods.WaveOutWrite(m_pWavDevHandle, headerHandle.AddrOfPinnedObject(), Marshal.SizeOf(wavHeader));
                 }
             } else {
                 dataHandle.Free();
@@ -482,7 +482,7 @@ namespace Win.MediaNetEngine.Wave.Wave
                     WavMethods.waveOutReset(m_pWavDevHandle);
                     // If there are unprepared wav headers, we need to unprepare these.
                     foreach (PlayItem item in m_pPlayItems) {
-                        WavMethods.waveOutUnprepareHeader(m_pWavDevHandle, item.HeaderHandle.AddrOfPinnedObject(), Marshal.SizeOf(item.Header));
+                        WavMethods.WaveOutUnprepareHeader(m_pWavDevHandle, item.HeaderHandle.AddrOfPinnedObject(), Marshal.SizeOf(item.Header));
                         item.Dispose();
                     }
                     // Close output device.

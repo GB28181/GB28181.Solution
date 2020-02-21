@@ -219,7 +219,7 @@ namespace Win.MediaNetEngine.Wave.Wave.Native
         /// <param name="hWaveOut">Handle to the waveform-audio output device.</param>
         /// <returns>Returns value of MMSYSERR.</returns>
         [DllImport("winmm.dll")]
-		public static extern int waveOutRestart(IntPtr hWaveOut);
+		public static extern int WaveOutRestart(IntPtr hWaveOut);
 
         /// <summary>
         /// Sets the volume of a waveform output device.
@@ -240,7 +240,7 @@ namespace Win.MediaNetEngine.Wave.Wave.Native
         /// <param name="uSize">Size, in bytes, of the WAVEHDR structure.</param>
         /// <returns>Returns value of MMSYSERR.</returns>
 		[DllImport("winmm.dll")]
-		public static extern int waveOutUnprepareHeader(IntPtr hWaveOut,IntPtr lpWaveOutHdr,int uSize);
+		public static extern int WaveOutUnprepareHeader(IntPtr hWaveOut,IntPtr lpWaveOutHdr,int uSize);
 
         /// <summary>
         /// Sends a data block to the specified waveform output device.
@@ -250,7 +250,7 @@ namespace Win.MediaNetEngine.Wave.Wave.Native
         /// <param name="uSize">Size, in bytes, of the WAVEHDR structure.</param>
         /// <returns>Returns value of MMSYSERR.</returns>
 		[DllImport("winmm.dll")]
-		public static extern int waveOutWrite(IntPtr hWaveOut,IntPtr lpWaveOutHdr,int uSize);
+		public static extern int WaveOutWrite(IntPtr hWaveOut,IntPtr lpWaveOutHdr,int uSize);
         
     }
 }

@@ -119,17 +119,17 @@ namespace SLW.ClientBase.Codec
 
 
     public class AudioEncodeCfg : Win.MediaNetEngine.Codec.AudioEncodeCfg {
-        public int micId = 0;
-        public int frequency = 8000;// 采样
-        public int format = 16;// 位元
-        public int channel = 2;// 通道模式
-        public int samples = 160;// 这个参数设置小了可以降底延迟
-        public int keyFrameRate = 50;// 关键帧间隔
-        public int bitrate = 32000;// 比特率
+        public new int micId = 0;
+        public new int frequency = 8000;// 采样
+        public new int format = 16;// 位元
+        public new int channel = 2;// 通道模式
+        public new int samples = 160;// 这个参数设置小了可以降底延迟
+        public new int keyFrameRate = 50;// 关键帧间隔
+        public new int bitrate = 32000;// 比特率
 
 
 
-        public static AudioEncodeCfg GetDefault() {
+        public new static AudioEncodeCfg GetDefault() {
             AudioEncodeCfg r = new AudioEncodeCfg();
             r.SetEncoder("AAC_");
             r.frequency = 32000;

@@ -261,7 +261,7 @@
             this.btnRecord.TabIndex = 12;
             this.btnRecord.Text = "录像点播";
             this.btnRecord.UseVisualStyleBackColor = true;
-            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
+            this.btnRecord.Click += new System.EventHandler(this.BtnRecord_Click);
             // 
             // btnStopRecord
             // 
@@ -271,7 +271,7 @@
             this.btnStopRecord.TabIndex = 13;
             this.btnStopRecord.Text = "终止点播";
             this.btnStopRecord.UseVisualStyleBackColor = true;
-            this.btnStopRecord.Click += new System.EventHandler(this.btnStopRecord_Click);
+            this.btnStopRecord.Click += new System.EventHandler(this.BtnStopRecord_Click);
             // 
             // txtStartTime
             // 
@@ -313,7 +313,7 @@
             this.btnRecordGet.TabIndex = 18;
             this.btnRecordGet.Text = "录像查询";
             this.btnRecordGet.UseVisualStyleBackColor = true;
-            this.btnRecordGet.Click += new System.EventHandler(this.btnRecordGet_Click);
+            this.btnRecordGet.Click += new System.EventHandler(this.BtnRecordGet_Click);
             // 
             // lvRecord
             // 
@@ -373,7 +373,7 @@
             this.btnStateSearch.TabIndex = 28;
             this.btnStateSearch.Text = "状态查询";
             this.btnStateSearch.UseVisualStyleBackColor = true;
-            this.btnStateSearch.Click += new System.EventHandler(this.btnStateSearch_Click);
+            this.btnStateSearch.Click += new System.EventHandler(this.BtnStateSearch_Click);
             // 
             // btnSetGuard
             // 
@@ -595,7 +595,7 @@
             this.btnStopRd.TabIndex = 2;
             this.btnStopRd.Text = "停止录像";
             this.btnStopRd.UseVisualStyleBackColor = true;
-            this.btnStopRd.Click += new System.EventHandler(this.btnStopRd_Click);
+            this.btnStopRd.Click += new System.EventHandler(this.BtnStopRd_Click);
             // 
             // btnStartRecord
             // 
@@ -631,7 +631,7 @@
             this.button17.TabIndex = 27;
             this.button17.Text = "播放";
             this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
+            this.button17.Click += new System.EventHandler(this.Button17_Click);
             // 
             // label1
             // 
@@ -657,7 +657,7 @@
             this.btnSdu.TabIndex = 19;
             this.btnSdu.Text = "设置";
             this.btnSdu.UseVisualStyleBackColor = true;
-            this.btnSdu.Click += new System.EventHandler(this.btnSdu_Click);
+            this.btnSdu.Click += new System.EventHandler(this.BtnSdu_Click);
             // 
             // btnPlay
             // 
@@ -667,7 +667,7 @@
             this.btnPlay.TabIndex = 15;
             this.btnPlay.Text = "播放继续";
             this.btnPlay.UseVisualStyleBackColor = true;
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            this.btnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
             // 
             // btnPause
             // 
@@ -677,7 +677,7 @@
             this.btnPause.TabIndex = 14;
             this.btnPause.Text = "播放暂停";
             this.btnPause.UseVisualStyleBackColor = true;
-            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            this.btnPause.Click += new System.EventHandler(this.BtnPause_Click);
             // 
             // tabControl1
             // 
@@ -918,7 +918,7 @@
             this.btnFocus1.TabIndex = 57;
             this.btnFocus1.Text = "聚焦+";
             this.btnFocus1.UseVisualStyleBackColor = true;
-            this.btnFocus1.Click += new System.EventHandler(this.btnFocus1_Click);
+            this.btnFocus1.Click += new System.EventHandler(this.BtnFocus1_Click);
             // 
             // btnZoom1
             // 
@@ -928,7 +928,7 @@
             this.btnZoom1.TabIndex = 62;
             this.btnZoom1.Text = "变倍+";
             this.btnZoom1.UseVisualStyleBackColor = true;
-            this.btnZoom1.Click += new System.EventHandler(this.btnZoom1_Click);
+            this.btnZoom1.Click += new System.EventHandler(this.BtnZoom1_Click);
             // 
             // btnRightDown
             // 
@@ -1149,7 +1149,7 @@
             this.btnConfigQuery.TabIndex = 47;
             this.btnConfigQuery.Text = "设备配置查询";
             this.btnConfigQuery.UseVisualStyleBackColor = true;
-            this.btnConfigQuery.Click += new System.EventHandler(this.btnConfigQuery_Click);
+            this.btnConfigQuery.Click += new System.EventHandler(this.BtnConfigQuery_Click);
             // 
             // txtMsg
             // 
@@ -1195,7 +1195,7 @@
             this.btnSubscribeCancel.TabIndex = 5;
             this.btnSubscribeCancel.Text = "移动位置取消订阅";
             this.btnSubscribeCancel.UseVisualStyleBackColor = true;
-            this.btnSubscribeCancel.Click += new System.EventHandler(this.btnSubscribeCancel_Click);
+            this.btnSubscribeCancel.Click += new System.EventHandler(this.BtnSubscribeCancel_Click);
             // 
             // label23
             // 
@@ -1240,7 +1240,7 @@
             this.btnSubPositionInfo.TabIndex = 1;
             this.btnSubPositionInfo.Text = "移动位置数据订阅";
             this.btnSubPositionInfo.UseVisualStyleBackColor = true;
-            this.btnSubPositionInfo.Click += new System.EventHandler(this.btnSubPositionInfo_Click);
+            this.btnSubPositionInfo.Click += new System.EventHandler(this.BtnSubPositionInfo_Click);
             // 
             // btnAudioNotify
             // 
@@ -1250,7 +1250,7 @@
             this.btnAudioNotify.TabIndex = 0;
             this.btnAudioNotify.Text = "语音广播通知";
             this.btnAudioNotify.UseVisualStyleBackColor = true;
-            this.btnAudioNotify.Click += new System.EventHandler(this.btnAudioNotify_Click);
+            this.btnAudioNotify.Click += new System.EventHandler(this.BtnAudioNotify_Click);
             // 
             // tabPage1
             // 

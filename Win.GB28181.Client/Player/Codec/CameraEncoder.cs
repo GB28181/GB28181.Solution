@@ -29,12 +29,12 @@ namespace SLW.ClientBase.Codec
         private bool _isworking = false;
         private bool _isDisoseing = false;
         private bool _isDisosed = false;
-        private int _camera;
-        private int _width;
-        private int _height;
+        private readonly int _camera;
+        private readonly int _width;
+        private readonly int _height;
 
         private FFScale _ffscale = null;
-        private Action<byte[]> _callBack = null;
+        private readonly Action<byte[]> _callBack = null;
         public CameraCapturer()
         {
         }
@@ -173,8 +173,7 @@ namespace SLW.ClientBase.Codec
 
             buf = _ffscale.Convert(buf);
 
-            if (_callBack != null)
-                _callBack(buf);
+            _callBack?.Invoke(buf);
         }
 
         public void Dispose()
@@ -220,10 +219,10 @@ namespace SLW.ClientBase.Codec
     public class CameraAForge : CameraCapturer
     {
 
-        private AForge.Video.DirectShow.VideoCaptureDevice videoDevice;
-        private AForge.Video.DirectShow.FilterInfoCollection videoDevices;
-        private FFScale _ffscale = null;
-        private Action<byte[]> _callBack = null;
+        private readonly AForge.Video.DirectShow.VideoCaptureDevice videoDevice;
+        private readonly AForge.Video.DirectShow.FilterInfoCollection videoDevices;
+        private readonly FFScale _ffscale = null;
+        private readonly Action<byte[]> _callBack = null;
         public CameraAForge(int camera, int width, int height, Action<byte[]> callBack)
         {
             _callBack = callBack;
@@ -262,8 +261,7 @@ namespace SLW.ClientBase.Codec
             byte[] buffer = FunctionEx.IntPtrToBytes(e.Buffer, 0, e.Len);
             buffer = _ffscale.Convert(buffer);
 
-            if (_callBack != null)
-                _callBack(buffer);
+            _callBack?.Invoke(buffer);
         }
 
 
@@ -692,7 +690,7 @@ namespace SLW.ClientBase.Codec
     }
     public class CameraEncoder : IDisposable
     {
-        public static int CameraCapturerMode = System.Configuration.ConfigurationSettings.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
+        public static int CameraCapturerMode = System.Configuration.ConfigurationManager.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
         protected bool _isworking = false;
         protected CameraCapturer _capturer = null;
         protected X264Native _x264;
@@ -825,8 +823,7 @@ namespace SLW.ClientBase.Codec
                 {
                     _needClearVideoTransportBuffer = false;
                     var frame = CreateClearVideoTransportBufferMediaFrame(mf);
-                    if (_callBack != null)
-                        _callBack(frame);
+                    _callBack?.Invoke(frame);
                 }
 
                 if (_isFirstKeyFrame)
@@ -841,24 +838,23 @@ namespace SLW.ClientBase.Codec
                         _callBack(frame);
                 }
 
-                if (_callBack != null)
-                    _callBack(mf);
+                _callBack?.Invoke(mf);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (_isworking)
                     throw;
             }
         }
 
-        protected MediaFrame CreateClearVideoTransportBufferMediaFrame(MediaFrame mf)
+        protected static MediaFrame CreateClearVideoTransportBufferMediaFrame(MediaFrame mf)
         {
 
             var frame = MediaFrame.CreateCommandMediaFrame(false, MediaFrameCommandType.ClearVideoTransportBuffer);
             return frame;
         }
 
-        protected MediaFrame CreateResetCodecMediaFrame(MediaFrame mf)
+        protected static MediaFrame CreateResetCodecMediaFrame(MediaFrame mf)
         {
             var infoMediaFrame = new MediaFrame()
             {
@@ -872,7 +868,7 @@ namespace SLW.ClientBase.Codec
                 nPPSLen = mf.nPPSLen,
                 nSPSLen = mf.nSPSLen,
                 nTimetick = mf.nTimetick,
-                Data = new byte[0],
+                Data = Array.Empty<byte>(),
                 nSize = 0,
             };
 
@@ -885,7 +881,7 @@ namespace SLW.ClientBase.Codec
             _draw.Draw(yuv);
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool all)
         {
             try
             {
@@ -896,10 +892,16 @@ namespace SLW.ClientBase.Codec
                 _x264.Release();
                 _draw.Release();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
     }

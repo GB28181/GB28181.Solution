@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.Linq;
 using GLib.Extension;
 using System.IO;
 
-namespace SLW.ClientBase.Codec {
-   public partial class X264Native {
+namespace SLW.ClientBase.Codec
+{
+    public partial class X264Native {
         private static BinaryWriter w = null;
         public static void Test() {
             int width = 320, height = 240;
