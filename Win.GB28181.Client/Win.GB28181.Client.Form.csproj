@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}</ProjectGuid>
+        <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Win.GB28181.Client</RootNamespace>
+    <AssemblyName>Win.GB28181.Client.Form</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
+    <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
+    <ProjectReference Include="..\Win.MeidaNetEngine\Win.StreamMedia.Service.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="AForge">
+      <HintPath>..\Libs\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Controls">
+      <HintPath>..\Libs\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video">
+      <HintPath>..\Libs\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>..\Libs\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="DirectShowLib-2005">
+      <HintPath>..\Libs\DirectShowLib-2005.dll</HintPath>
+    </Reference>
+    <Reference Include="GLib">
+      <HintPath>..\Libs\GLib.dll</HintPath>
+    </Reference>
+    <Reference Include="StarEye.VideoConver">
+      <HintPath>..\Libs\StarEye.VideoConver.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Sdl">
+      <HintPath>..\Libs\Tao.Sdl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
