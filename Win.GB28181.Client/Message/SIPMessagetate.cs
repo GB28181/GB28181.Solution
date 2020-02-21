@@ -79,7 +79,7 @@ namespace Win.GB28181.Client.Message
                 try
                 {
                   //  GB28181.Logger4Net.Config.XmlConfigurator.Configure();
-                    logger = GB28181.Logger4Net.LogManager.GetLogger(LOGGER_NAME);
+                    logger = LogManager.GetLogger(LOGGER_NAME);
                 }
                 catch (Exception logExcp)
                 {

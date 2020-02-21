@@ -211,7 +211,7 @@ namespace SLW.MediaServer.Media.TS
             public short AudioFormat;
             public short Samples;
             public int VideoFrameCount;
-            public int AudioFrameCount;
+  //          public int AudioFrameCount;
             public List<TSPacket> TSPackets = new List<TSPacket>();
             public List<PESPacket> PESPackets = new List<PESPacket>();
 

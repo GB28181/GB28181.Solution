@@ -1,10 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}</ProjectGuid>
-        <OutputType>WinExe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -25,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
     <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
-    <ProjectReference Include="..\Win.MeidaNetEngine\Win.StreamMedia.Service.csproj" />
+    <ProjectReference Include="..\Win.MeidaNetEngine\Win.StreamMedia.Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AForge">

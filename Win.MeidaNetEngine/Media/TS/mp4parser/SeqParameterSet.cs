@@ -82,7 +82,8 @@ namespace com.googlecode.mp4parser.h264.model
 
                 MemoryStream @is = new MemoryStream(buf);
                 return read(@is);
-            } catch (Exception e) {
+            } catch (Exception)
+            {
 
                 throw;
             }
