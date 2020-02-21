@@ -1,0 +1,42 @@
+name: .NET Core CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - develop 
+    tags:
+      - v*
+    paths:
+      - '**'
+      - '!**.md'
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        dotnet-version: [ 3.1 ]
+        include:
+          - dotnet-version: 3.1
+            dotnet-sdk-version: 3.1.101
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XML_DOC_MODE: skip
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core on ${{ matrix.os }} platform, dotnet version ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-sdk-version }}
+    - name: Build Debug
+      run: dotnet build -c Debug
+    - name: Build Release
+      run: dotnet build -c Release
