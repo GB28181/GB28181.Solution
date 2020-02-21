@@ -37,6 +37,6 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-sdk-version }}
     - name: Build Debug
-      run: dotnet build -c Debug
+      run: dotnet build -c Debug GB28181.Service/GB28181.Service.csproj
     - name: Build Release
-      run: dotnet build -c Release
+      run: dotnet build -c Release GB28181.Service/GB28181.Service.csproj
