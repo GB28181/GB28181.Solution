@@ -18,7 +18,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest ]
+        os: [ ubuntu-latest, windows-latest ]
         dotnet-version: [ 3.1 ]
         include:
           - dotnet-version: 3.1

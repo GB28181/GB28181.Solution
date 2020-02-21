@@ -1,5 +1,9 @@
-﻿using Logger4Net;
+﻿using Google.Protobuf;
+using Grpc.Core;
+using Logger4Net;
+using Manage;
 using NATS.Client;
+using Newtonsoft.Json;
 using SIPSorcery.GB28181.Servers;
 using SIPSorcery.GB28181.Servers.SIPMessage;
 using SIPSorcery.GB28181.SIP;
@@ -48,7 +52,7 @@ namespace GB28181Service
             if (!Catalogs.ContainsKey(obj.DeviceID))
             {
                 Catalogs.Add(obj.DeviceID, obj);
-                logger.Debug("OnCatalogReceived: " + JsonConvert.SerializeObject(obj).ToString());
+                logger.Debug("OnCatalogReceived: " + JsonConvert.SerializeObject(obj));
             }
             if (GBSIPTransactions.ContainsKey(obj.DeviceID))
             {
