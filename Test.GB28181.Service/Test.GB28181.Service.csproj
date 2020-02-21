@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GB28181.Service\GB28181.Service.csproj" />
-    <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
+    <ProjectReference Include="..\GB28181.Service\GB28181.Server.csproj" />
+    <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 
   <ItemGroup>

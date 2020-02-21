@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gb28181_Client.Player.Analyzer
+namespace Win.GB28181.Client.Player.Analyzer
 {
     /// <summary>
     /// 分析视频流

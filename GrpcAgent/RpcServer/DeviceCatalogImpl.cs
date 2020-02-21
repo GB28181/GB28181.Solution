@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcDeviceCatalog;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Sys.XML;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Sys.XML;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -6,9 +6,9 @@ using Grpc.Core;
 using GrpcDeviceFeature;
 using Logger4Net;
 using Newtonsoft.Json;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
-using SIPSorcery.GB28181.Sys.XML;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Servers.SIPMonitor;
+using GB28181.SIPSorcery.Sys.XML;
 
 namespace GrpcAgent.WebsocketRpcServer
 {

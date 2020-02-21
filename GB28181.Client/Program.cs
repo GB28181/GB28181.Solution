@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Gb28181.Client;
+using System;
 using System.Windows.Forms;
 
-namespace Gb28181_Client
+namespace Win.GB28181.Client
 {
     static class Program
     {

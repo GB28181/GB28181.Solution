@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Gb28181_Client.Player.Analyzer
+namespace Win.GB28181.Client.Player.Analyzer
 {
 
     public class MediaFramePacket

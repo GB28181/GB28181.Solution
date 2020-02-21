@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using MediaContract;
 using System.Threading.Tasks;
-using SIPSorcery.GB28181.Servers;
+using GB28181.SIPSorcery.Servers;
 using System;
 using Logger4Net;
 using System.Collections.Generic;
@@ -210,7 +210,7 @@ namespace GrpcAgent.WebsocketRpcServer
             }
         }
 
-        private Header GetHeaderBySipHeader(SIPSorcery.GB28181.SIP.SIPHeader sipHeader)
+        private Header GetHeaderBySipHeader(GB28181.SIPSorcery.SIP.SIPHeader sipHeader)
         {
             Header header = new Header();
             header.Sequence = sipHeader.CSeq;

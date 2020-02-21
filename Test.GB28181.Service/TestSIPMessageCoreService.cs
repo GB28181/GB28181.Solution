@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Moq;
 using Xunit;
-using SIPSorcery.GB28181.Servers.SIPMessage;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.Sys.Config;
-using SIPSorcery.GB28181.Sys.Cache;
-using SIPSorcery.GB28181.Sys.Model;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
+using GB28181.SIPSorcery.Servers.SIPMessage;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.Sys.Config;
+using GB28181.SIPSorcery.Sys.Cache;
+using GB28181.SIPSorcery.Sys.Model;
+using GB28181.SIPSorcery.Servers.SIPMonitor;
 
 namespace Test.GB28181.Service
 {
@@ -27,7 +27,7 @@ namespace Test.GB28181.Service
         //    var ISIPTransportMock = new Mock<ISIPTransport>();
         //    var ISipAccountStorageMock = new Mock<ISipAccountStorage>();
         //    SipAccountStorage sas = new SipAccountStorage();
-        //    //ISipAccountStorageMock.Setup(accouts=> accouts.Accounts.Add(new SIPSorcery.GB28181.SIP.App.SIPAccount { })) ;
+        //    //ISipAccountStorageMock.Setup(accouts=> accouts.Accounts.Add(new GB28181.SIPSorcery.SIP.App.SIPAccount { })) ;
         //    var IMemoCacheMock = new Mock<IMemoCache<Camera>>();
         //    var sipmc = new SIPMessageCoreService(
         //        ISIPRegistrarCoreMock.Object,
@@ -45,7 +45,7 @@ namespace Test.GB28181.Service
             //var ISIPRegistrarCoreMock = new Mock<ISIPRegistrarCore>();
             //var ISIPTransportMock = new Mock<ISIPTransport>();
             //var ISipAccountStorageMock = new Mock<ISipAccountStorage>();
-            //ISipAccountStorageMock.Setup(accouts => accouts.Accounts.Add(new SIPSorcery.GB28181.SIP.App.SIPAccount { }));
+            //ISipAccountStorageMock.Setup(accouts => accouts.Accounts.Add(new GB28181.SIPSorcery.SIP.App.SIPAccount { }));
             //var IMemoCacheMock = new Mock<IMemoCache<Camera>>();
             //var sipmc = new SIPMessageCoreService(
             //    ISIPRegistrarCoreMock.Object,

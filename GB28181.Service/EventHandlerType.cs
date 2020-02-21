@@ -1,5 +1,5 @@
-﻿using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Sys.XML;
+﻿using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Sys.XML;
 
 namespace GB28181Service
 {

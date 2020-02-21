@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Logger4Net;
 using Manage;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
-using SIPSorcery.GB28181.Sys;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.SIP.App;
+using GB28181.SIPSorcery.Sys;
 
 namespace GrpcAgent.WebsocketRpcServer
 {
@@ -23,7 +23,7 @@ namespace GrpcAgent.WebsocketRpcServer
             //_sipRegistrarCore.RPCDmsRegisterReceived += _sipRegistrarCore_RPCDmsRegisterReceived;
         }
 
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, SIPSorcery.GB28181.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIPSorcery.SIP.App.SIPAccount sIPAccount)
         {
             try
             {

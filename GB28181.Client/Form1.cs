@@ -1,14 +1,14 @@
-﻿using Gb28181_Client.Player.Analyzer;
+﻿using Win.GB28181.Client.Player.Analyzer;
 using Logger4Net;
-using SIPSorcery.GB28181.Net;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Servers.SIPMessage;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.Sys;
-using SIPSorcery.GB28181.Sys.Config;
-using SIPSorcery.GB28181.Sys.Model;
-using SIPSorcery.GB28181.Sys.XML;
+using GB28181.SIPSorcery.Net;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Servers.SIPMessage;
+using GB28181.SIPSorcery.Servers.SIPMonitor;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.Sys;
+using GB28181.SIPSorcery.Sys.Config;
+using GB28181.SIPSorcery.Sys.Model;
+using GB28181.SIPSorcery.Sys.XML;
 using SLW.Media;
 using SLW.MediaServer.Media.TS;
 using System;
@@ -1168,7 +1168,7 @@ namespace Gb28181.Client
             //        HeartBeatCount = 1
             //    }
             //};
-            //string xmlBody = SIPSorcery.GB28181.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
+            //string xmlBody = GB28181.SIPSorcery.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
         }
 
         private int test()

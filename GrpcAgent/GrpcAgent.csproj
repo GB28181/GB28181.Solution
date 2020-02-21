@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
-    <ProjectReference Include="..\SIPSorcery.28181\SIPSorcery.28181.csproj" />
+    <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 
 </Project>

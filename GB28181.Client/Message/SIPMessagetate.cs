@@ -41,10 +41,10 @@ using System.Net;
 using System.Text;
 using System.Xml;
 using Logger4Net;
-using SIPSorcery.GB28181.Sys;
+using GB28181.SIPSorcery.Sys;
 using System.Configuration;
 
-namespace Gb28181_Client.Message
+namespace Win.GB28181.Client.Message
 {
     /// <summary>
     /// Retrieves application conifguration settings from App.Config.

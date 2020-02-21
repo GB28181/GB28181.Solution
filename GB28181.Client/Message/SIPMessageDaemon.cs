@@ -42,16 +42,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Xml;
-using SIPSorcery.GB28181.Persistence;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.SIP.App;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Sys;
+using GB28181.SIPSorcery.Persistence;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.SIP.App;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Sys;
 using Logger4Net;
-using SIPSorcery.GB28181.Servers.SIPMessage;
-using SIPSorcery.GB28181.Sys.Config;
+using GB28181.SIPSorcery.Servers.SIPMessage;
+using GB28181.SIPSorcery.Sys.Config;
 
-namespace Gb28181_Client.Message
+namespace Win.GB28181.Client.Message
 {
     public class SIPMessageDaemon
     {

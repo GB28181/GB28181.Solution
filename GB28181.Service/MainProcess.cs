@@ -10,14 +10,14 @@ using Logger4Net;
 using MediaContract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SIPSorcery.GB28181.Servers;
-using SIPSorcery.GB28181.Servers.SIPMessage;
-using SIPSorcery.GB28181.Servers.SIPMonitor;
-using SIPSorcery.GB28181.SIP;
-using SIPSorcery.GB28181.Sys;
-using SIPSorcery.GB28181.Sys.Cache;
-using SIPSorcery.GB28181.Sys.Config;
-using SIPSorcery.GB28181.Sys.Model;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Servers.SIPMessage;
+using GB28181.SIPSorcery.Servers.SIPMonitor;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.Sys;
+using GB28181.SIPSorcery.Sys.Cache;
+using GB28181.SIPSorcery.Sys.Config;
+using GB28181.SIPSorcery.Sys.Model;
 using System;
 using System.Collections.Generic;
 //using GrpcGb28181Config;
@@ -55,7 +55,7 @@ namespace GB28181Service
         private DateTime _keepaliveTime;
         private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
 
-        private Queue<SIPSorcery.GB28181.Sys.XML.Catalog> _catalogQueue = new Queue<SIPSorcery.GB28181.Sys.XML.Catalog>();
+        private Queue<GB28181.SIPSorcery.Sys.XML.Catalog> _catalogQueue = new Queue<GB28181.SIPSorcery.Sys.XML.Catalog>();
 
         private readonly ServiceCollection servicesContainer = new ServiceCollection();
 
@@ -233,7 +233,7 @@ namespace GB28181Service
         }
 
         #region Init Server
-        private List<SIPSorcery.GB28181.SIP.App.SIPAccount> SipAccountStorage_RPCGBServerConfigReceived()
+        private List<GB28181.SIPSorcery.SIP.App.SIPAccount> SipAccountStorage_RPCGBServerConfigReceived()
         {
             try
             {
@@ -245,8 +245,8 @@ namespace GB28181Service
                 GetIntegratedPlatformConfigResponse rep = client.GetIntegratedPlatformConfig(req);
                 logger.Debug("GetIntegratedPlatformConfigResponse: " + rep.Config.ToString());
                 GBPlatformConfig item = rep.Config;
-                List<SIPSorcery.GB28181.SIP.App.SIPAccount> _lstSIPAccount = new List<SIPSorcery.GB28181.SIP.App.SIPAccount>();
-                SIPSorcery.GB28181.SIP.App.SIPAccount obj = new SIPSorcery.GB28181.SIP.App.SIPAccount();
+                List<GB28181.SIPSorcery.SIP.App.SIPAccount> _lstSIPAccount = new List<GB28181.SIPSorcery.SIP.App.SIPAccount>();
+                GB28181.SIPSorcery.SIP.App.SIPAccount obj = new GB28181.SIPSorcery.SIP.App.SIPAccount();
                 obj.Id = Guid.NewGuid();
                 //obj.Owner = item.Name;
                 obj.GbVersion = string.IsNullOrEmpty(item.GbVersion) ? "GB-2016" : item.GbVersion;
@@ -259,7 +259,7 @@ namespace GB28181Service
                 obj.SIPPassword = string.IsNullOrEmpty(item.SIPPassword) ? "123456" : item.SIPPassword;
                 obj.MsgProtocol = System.Net.Sockets.ProtocolType.Udp;
                 obj.StreamProtocol = System.Net.Sockets.ProtocolType.Udp;
-                obj.TcpMode = SIPSorcery.GB28181.Net.RTP.TcpConnectMode.passive;
+                obj.TcpMode = GB28181.SIPSorcery.Net.RTP.TcpConnectMode.passive;
                 obj.MsgEncode = string.IsNullOrEmpty(item.MsgEncode) ? "GB2312" : item.MsgEncode;
                 obj.PacketOutOrder = string.IsNullOrEmpty(item.PacketOutOrder) ? true : Boolean.Parse(item.PacketOutOrder);
                 obj.KeepaliveInterval = string.IsNullOrEmpty(item.KeepaliveInterval) ? Convert.ToUInt16(5000) : Convert.ToUInt16(item.KeepaliveInterval);
