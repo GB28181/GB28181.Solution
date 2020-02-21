@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 //using Npgsql;
 //using NpgsqlTypes;
 

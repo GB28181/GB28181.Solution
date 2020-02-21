@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcPtzControl;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 

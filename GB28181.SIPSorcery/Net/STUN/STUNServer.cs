@@ -36,7 +36,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

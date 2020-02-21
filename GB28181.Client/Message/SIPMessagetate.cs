@@ -40,7 +40,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 using System.Configuration;
 
@@ -78,8 +78,8 @@ namespace Win.GB28181.Client.Message
 
                 try
                 {
-                  //  Logger4Net.Config.XmlConfigurator.Configure();
-                    logger = Logger4Net.LogManager.GetLogger(LOGGER_NAME);
+                  //  GB28181.Logger4Net.Config.XmlConfigurator.Configure();
+                    logger = GB28181.Logger4Net.LogManager.GetLogger(LOGGER_NAME);
                 }
                 catch (Exception logExcp)
                 {

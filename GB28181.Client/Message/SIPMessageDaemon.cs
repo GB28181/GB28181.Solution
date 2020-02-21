@@ -47,7 +47,7 @@ using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.SIP.App;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.Sys.Config;
 

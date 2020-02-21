@@ -35,7 +35,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using Logger4Net;
+using GB28181.Logger4Net;
 using System;
 using System.Collections.Generic;
 using System.Threading;

@@ -10,7 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.SIP
 {

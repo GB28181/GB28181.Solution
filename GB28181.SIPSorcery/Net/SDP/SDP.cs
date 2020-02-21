@@ -98,7 +98,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Net
 {

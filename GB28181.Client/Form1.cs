@@ -1,5 +1,5 @@
 ﻿using Win.GB28181.Client.Player.Analyzer;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMessage;

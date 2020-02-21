@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 
 using System.Linq;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;

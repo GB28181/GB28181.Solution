@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
-    <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
     <ProjectReference Include="..\NATS.Client\Nats.Client.csproj" />
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>

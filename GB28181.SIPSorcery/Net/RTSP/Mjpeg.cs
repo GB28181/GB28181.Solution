@@ -50,7 +50,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Net
 {

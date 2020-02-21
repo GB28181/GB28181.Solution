@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using Heijden.DNS;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.SIP.App;
 

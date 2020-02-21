@@ -38,7 +38,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;

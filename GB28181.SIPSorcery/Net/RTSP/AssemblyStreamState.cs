@@ -36,7 +36,7 @@
 
 using GB28181.SIPSorcery.Sys;
 using System;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Net
 {

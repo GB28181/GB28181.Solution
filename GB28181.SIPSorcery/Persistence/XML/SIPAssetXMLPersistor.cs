@@ -48,7 +48,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.SIP.App;
 
 namespace GB28181.SIPSorcery.Persistence.XML

@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.SIP.App

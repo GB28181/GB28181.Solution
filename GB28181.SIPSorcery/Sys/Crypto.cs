@@ -14,7 +14,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 
 namespace Aza.Configuration

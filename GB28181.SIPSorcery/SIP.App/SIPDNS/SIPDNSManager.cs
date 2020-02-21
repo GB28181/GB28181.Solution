@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 
 using Heijden.DNS;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Net;
 using GB28181.SIPSorcery.Sys;
 using System;

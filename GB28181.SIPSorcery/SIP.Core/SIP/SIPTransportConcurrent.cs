@@ -38,7 +38,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.Sys;
 

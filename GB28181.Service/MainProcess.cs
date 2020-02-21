@@ -6,7 +6,7 @@ using GrpcDeviceCatalog;
 using GrpcDeviceFeature;
 using GrpcPtzControl;
 using GrpcVideoOnDemand;
-using Logger4Net;
+using GB28181.Logger4Net;
 using MediaContract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

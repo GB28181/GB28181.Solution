@@ -6,7 +6,7 @@ using GB28181.SIPSorcery.Sys.XML;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GrpcAgent.WebsocketRpcServer
 {

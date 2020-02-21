@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Logger4Net
+namespace GB28181.Logger4Net
 {
    public class Config
     {

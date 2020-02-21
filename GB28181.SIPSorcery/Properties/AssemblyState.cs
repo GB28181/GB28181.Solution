@@ -34,7 +34,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 using System;
 

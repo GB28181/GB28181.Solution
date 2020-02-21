@@ -11,7 +11,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using Logger4Net;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
 
 namespace Aza.Configuration

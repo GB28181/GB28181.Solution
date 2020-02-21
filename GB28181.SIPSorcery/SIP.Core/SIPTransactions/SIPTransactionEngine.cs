@@ -1,4 +1,4 @@
-﻿using Logger4Net;
+﻿using GB28181.Logger4Net;
 using System;
 using System.Collections.Generic;
 
@@ -386,10 +386,10 @@ namespace GB28181.SIPSorcery.SIP
             public void Init()
             {
                 // Add a Console appender so logger messages will show up in the NUnit Console.Out tab.
-                Logger4Net.Appender.ConsoleAppender appender = new Logger4Net.Appender.ConsoleAppender();
-                Logger4Net.Layout.ILayout fallbackLayout = new Logger4Net.Layout.PatternLayout("%m%n");
+                GB28181.Logger4Net.Appender.ConsoleAppender appender = new GB28181.Logger4Net.Appender.ConsoleAppender();
+                GB28181.Logger4Net.Layout.ILayout fallbackLayout = new GB28181.Logger4Net.Layout.PatternLayout("%m%n");
                 appender.Layout = fallbackLayout;
-                Logger4Net.Config.BasicConfigurator.Configure(appender);
+                GB28181.Logger4Net.Config.BasicConfigurator.Configure(appender);
             }
 
             [TestFixtureTearDown]

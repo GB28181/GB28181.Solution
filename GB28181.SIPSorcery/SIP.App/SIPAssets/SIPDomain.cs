@@ -40,7 +40,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 using System.Linq;
 using System.Xml;
 

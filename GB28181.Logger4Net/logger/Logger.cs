@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logger4Net
+namespace GB28181.Logger4Net
 {
     public class Logger : ILog
     {

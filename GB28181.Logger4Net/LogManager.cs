@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Logger4Net
+namespace GB28181.Logger4Net
 {
     public class LogManager
     {

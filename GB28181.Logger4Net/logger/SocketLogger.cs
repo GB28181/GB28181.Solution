@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-namespace Logger4Net
+namespace GB28181.Logger4Net
 {
     public class SocketLogger : Logger
     {

@@ -11,7 +11,7 @@
 // 28 Mar 2008	Aaron Clauson   Added to sipwitch code base based on http://www.codeproject.com/KB/library/DNS.NET_Resolver.aspx.
 // 28 Mar 2008  Aaron Clauson   Moved timeout from being class scoped field to parameter for individual DNS requests.
 // 28 Mar 2008  Aaron Clauson   Removed deprecated System.DNS methods.
-// 28 Mar 2008  Aaron Clauson   Added Logger4Net logging.
+// 28 Mar 2008  Aaron Clauson   Added GB28181.Logger4Net logging.
 //
 // License:
 // http://www.opensource.org/licenses/gpl-license.php
@@ -25,7 +25,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 /*
  * Network Working Group                                     P. Mockapetris

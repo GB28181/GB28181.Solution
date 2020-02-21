@@ -41,7 +41,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Net
 {
@@ -62,7 +62,7 @@ namespace GB28181.SIPSorcery.Net
 			try
 			{
 				// Configure logging.
-				logger = Logger4Net.LogManager.GetLogger(LOGGER_NAME);
+				logger = GB28181.Logger4Net.LogManager.GetLogger(LOGGER_NAME);
 			}
 			catch(Exception excp)
 			{

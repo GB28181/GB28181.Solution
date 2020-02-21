@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using GB28181.SIPSorcery.SIP;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 /// <summary>
 /// read configuraton and config the data storage

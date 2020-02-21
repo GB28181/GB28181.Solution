@@ -23,7 +23,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Sys
 {
@@ -33,7 +33,7 @@ namespace GB28181.SIPSorcery.Sys
         public const string DEFAULT_ERRRORLOG_FILE = @"c:\temp\appstate.error.log";
         public const string ENCRYPTED_SETTING_PREFIX = "$#";
         private const string ENCRYPTED_SETTINGS_CERTIFICATE_NAME = "EncryptedSettingsCertificateName";
-        private const string APP_LOGGING_ID = "sipsorcery"; // Name of Logger4Net identifier.
+        private const string APP_LOGGING_ID = "sipsorcery"; // Name of GB28181.Logger4Net identifier.
 
         // From http://fightingforalostcause.net/misc/2006/compare-email-regex.php.
         public const string EMAIL_VALIDATION_REGEX = @"^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-zA-Z0-9]{1}[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]{1})|[a-zA-Z])\.)+[a-zA-Z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$";
@@ -53,11 +53,11 @@ namespace GB28181.SIPSorcery.Sys
                 {
                     // Initialise logging functionality from an XML node in the app.config file.
                     Console.WriteLine("Starting logging initialisation.");
-                    // Logger4Net.Config.XmlConfigurator.Configure();
+                    // GB28181.Logger4Net.Config.XmlConfigurator.Configure();
                 }
                 catch
                 {
-                    // Unable to load the Logger4Net configuration node (probably invalid XML in the config file).
+                    // Unable to load the GB28181.Logger4Net configuration node (probably invalid XML in the config file).
                     Console.WriteLine("Unable to load logging configuration check that the app.config file exists and is well formed.");
 
                     try
@@ -126,7 +126,7 @@ namespace GB28181.SIPSorcery.Sys
             var fallbackLayout = new Layout.PatternLayout("%m%n");
             appender.Layout = fallbackLayout;
 
-            // Logger4Net.Config.BasicConfigurator.Configure(appender);
+            // GB28181.Logger4Net.Config.BasicConfigurator.Configure(appender);
         }
 
         /// <summary>

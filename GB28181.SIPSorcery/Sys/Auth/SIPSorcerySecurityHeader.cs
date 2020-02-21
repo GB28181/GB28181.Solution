@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using Logger4Net;
+using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Sys.Auth
 {

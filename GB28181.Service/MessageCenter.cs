@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
 using Grpc.Core;
-using Logger4Net;
+using GB28181.Logger4Net;
 using Manage;
 using NATS.Client;
 using Newtonsoft.Json;

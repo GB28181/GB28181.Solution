@@ -40,7 +40,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using GB28181.SIPSorcery.SIP.App;
 using GB28181.SIPSorcery.Sys;
-using Logger4Net;
+using GB28181.Logger4Net;
 using System.Data;
 using System.Data.Common;
 
