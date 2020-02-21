@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
-    <ProjectReference Include="..\NATS.Client\Nats.Client.csproj" />
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 
@@ -42,6 +41,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
     <PackageReference Include="MyNatsClient" Version="0.14.1" />
+    <PackageReference Include="NATS.Client" Version="0.10.0" />
   </ItemGroup>
 
   <ItemGroup>
