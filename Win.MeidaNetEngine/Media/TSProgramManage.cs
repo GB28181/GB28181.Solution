@@ -41,6 +41,8 @@ namespace SLW.MediaServer.Media.TS
             _programList.Add(program);
 
         }
+        
+     
 
         public void AddStream(TS.TS_PMT.TS_PMT_Stream stream) {
             if (_streamList.Contains(stream))
@@ -172,9 +174,15 @@ namespace SLW.MediaServer.Media.TS
             FirstFrameTimeTick = -1;
         }
 
+        protected virtual void Dispose(bool all)
+        {
+
+        }
+
         public void Dispose()
         {
-       
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public override string ToString() {

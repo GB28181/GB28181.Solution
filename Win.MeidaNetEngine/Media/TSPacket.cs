@@ -380,11 +380,11 @@ namespace SLW.MediaServer.Media.TS
                 len -= 6;
             }
 
-            if (false) {//这两个字段暂不使用，未了解
-                bs.Write(splice_countdown, 0, 8);
-                bs.Write(transport_private_data_length, 0, 8);
-                len -= 2;
-            }
+            //if (false) {//这两个字段暂不使用，未了解
+            //    bs.Write(splice_countdown, 0, 8);
+            //    bs.Write(transport_private_data_length, 0, 8);
+            //    len -= 2;
+            //}
             bs.Position = 0;
             var buf = bs.ToByteArray();
 

@@ -44,7 +44,8 @@ namespace SLW.MediaServer.Media.TS
                     if (_MediaFrame == null)
                         throw new Exception();
 
-                } catch (Exception e) {
+                } catch (Exception)
+                {
                     throw;
                 }
             }
@@ -193,9 +194,10 @@ namespace SLW.MediaServer.Media.TS
                 nTimetick = frame.nTimetick;
             try {
                 List<PESPacket> packs = new List<PESPacket>();
-                var ms = new MemoryStream(frame.Data);
-                ms.Position = 0;
-                var max = 65526000;
+                var ms = new MemoryStream(frame.Data)
+                {
+                    Position = 0
+                };
                 var tick = (frame.nTimetick - nTimetick) * 90;
                 while (ms.Position < ms.Length) {
                     var size = frame.nSize;
@@ -216,7 +218,9 @@ namespace SLW.MediaServer.Media.TS
                     return pack;
                 }
                 return null;
-            } catch (Exception e) {
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
@@ -244,8 +248,10 @@ namespace SLW.MediaServer.Media.TS
         {
             byte[] buffer = new byte[14];
             stream.Read(buffer, 0, buffer.Length);
-            BitStream bs = new BitStream(buffer);
-            bs.Position = 0;
+            BitStream bs = new BitStream(buffer)
+            {
+                Position = 0
+            };
             bs.Read(out start_code, 0, 32);
             bs.Read(out marker1, 0, 2);
             bs.Read(out system_clock1, 0, 3);

@@ -28,6 +28,7 @@ namespace SLW.MediaServer.Media.TS
 
         public WSIPTVChannelInfo(string key, string name, string ip, int port)
         {
+            Key = key;
             Name = name;
             IP = ip;
             Port = port;
@@ -71,7 +72,7 @@ namespace SLW.MediaServer.Media.TS
         //是否将帧时间戳重置为系统时间，该项必须启用EnabledFrameSequence才有效
         public bool ResetFrameTimetickForSystemTick { get; set; }
 
-        public TSStreamInput(WSIPTVChannelInfo info) {
+        protected TSStreamInput(WSIPTVChannelInfo info) {
             IPTVChannelInfo = info;
             _tsms = new TSProgramManage();
             _tsms.NewMediaFrame = NewMediaFrame;
@@ -101,6 +102,16 @@ namespace SLW.MediaServer.Media.TS
                 _fileStream.Close();
         }
 
+        protected virtual void Dispose(bool all)
+        {
+            Stop();
+
+            if (_ioStream != null)
+                _ioStream.Close();
+            if (_tsms != null)
+                _tsms.Dispose();
+
+        }
         protected abstract void OnStart();
 
         protected abstract void OnStop();
@@ -150,7 +161,9 @@ namespace SLW.MediaServer.Media.TS
                             pack.Decode();
                             if (pack.PacketType == TSPacketType.DATA)
                                 pack.ProgramManage.WriteMediaTSPacket(pack);
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e)
+                        {
                             _DebugEx.Trace("TSStreamInput", "解析TS失败 1" + e.ToString());
                         }
                     } else {
@@ -196,7 +209,7 @@ namespace SLW.MediaServer.Media.TS
             TSProgramManage tsms = new TSProgramManage();
             int pos = 0;
             while (pos++ < data.Length) {
-                var index = ms.Position;
+            //    var index = ms.Position;
                 if (ms.ReadByte() == 0x47) {
                     int offset = (int)ms.Position - 1;
                     if (!CheckOffsetIsPacketFlag(data, offset))
@@ -210,8 +223,9 @@ namespace SLW.MediaServer.Media.TS
                         pack.Decode();
                         ms.Seek(-188, SeekOrigin.Current);
                         return (int)ms.Position;
-                        break;
-                    } catch (Exception e) {
+                    }
+                    catch (Exception)
+                    {
                         return -1;
                     }
                 }
@@ -334,8 +348,8 @@ namespace SLW.MediaServer.Media.TS
                     ReceiveFrame(frame);
             } catch (Exception e) {
                
-                    throw;
                 _DebugEx.Trace(e);
+                throw;
             }
 
         }
@@ -344,12 +358,11 @@ namespace SLW.MediaServer.Media.TS
             Console.WriteLine(String.Format(msg, ps));
         }
 
-        public virtual void Dispose() {
-            Stop();
-            if (_ioStream != null)
-                _ioStream.Close();
-            if (_tsms != null)
-                _tsms.Dispose();
+         public void Dispose() 
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+
         }
 
 

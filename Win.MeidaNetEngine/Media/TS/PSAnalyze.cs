@@ -18,7 +18,7 @@ namespace SLW.MediaServer.Media.TS
  
     public partial class PSAnalyze {
 
-        private object _lock = new object();
+        private readonly object _lock = new object();
         private IOMemoryStream ms = new IOMemoryStream();
         private Boolean _firstAudioFrame = true;
 
@@ -149,7 +149,7 @@ namespace SLW.MediaServer.Media.TS
 
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         //if (_isWorking && SLW.Base.AppConfig._D)
                         //{
@@ -338,7 +338,7 @@ namespace SLW.MediaServer.Media.TS
         public class IOMemoryStream : MemoryStream {
             private long _lastReadPosition = 0;
             private long _lastWritePosition = 0;
-            private object _sync = new object();
+            private readonly object _sync = new object();
             //一定注意这里是new
             public new long Position { get { return base.Position; } set { throw new Exception(""); } }
             public long ReadPosition { get { return _lastReadPosition; } }
@@ -377,7 +377,8 @@ namespace SLW.MediaServer.Media.TS
                         _lastReadPosition = Position;
                     }
                     return read;
-                } catch (Exception e) {
+                } catch (Exception)
+                {
                     throw;
                 }
             }
@@ -519,10 +520,9 @@ namespace SLW.MediaServer.Media.TS
                 bb.Write(system_clock2, 0, 15);
                 bb.Write(system_clock3, 0, 15);
                 bb.Position = 32;
-                long scr = 0;
-                bb.Read(out scr, 0, 32);
+                bb.Read(out long scr, 0, 32);
                 bb.Close();
-                scr = scr / 90;
+                scr /= 90;
                 return scr;
             }
         }

@@ -82,7 +82,7 @@ namespace Win.MediaNetEngine
         /// <summary>
         /// 媒体数据
         /// </summary>
-        public byte[] Data = new byte[0];
+        public byte[] Data = Array.Empty<byte>();
 
         public byte[] SerializableData;//序列化数据
 
@@ -270,7 +270,7 @@ namespace Win.MediaNetEngine
                 nIsAudio = this.nIsAudio,
                 nTimetick = 0,
                 nSize = 0,
-                Data = new byte[0],
+                Data = Array.Empty<byte>(),
             };
         }
         public static MediaFrame CreateCommandMediaFrame(bool isAudio, MediaFrameCommandType cmd)
@@ -279,7 +279,7 @@ namespace Win.MediaNetEngine
         }
         public static MediaFrame CreateCommandMediaFrame(bool isAudio, MediaFrameCommandType cmd, byte[] data = null)
         {
-            data = data ?? new byte[0];
+            data ??= Array.Empty<byte>();
             var mf = new MediaFrame()
             {
                 MediaFrameVersion = 0xff,
@@ -288,7 +288,7 @@ namespace Win.MediaNetEngine
                 nIsAudio = (byte)(isAudio ? 1 : 0),
                 nTimetick = 0,
                 nSize = data.Length,
-                Data = data ?? new byte[0],
+                Data = data ?? Array.Empty<byte>(),
             };
             return mf;
         }
@@ -324,6 +324,8 @@ namespace Win.MediaNetEngine
                     return GetGeneralEncoder("XVID");
                 case AVCode.CODEC_ID_MPEG4:
                     return GetGeneralEncoder("MP4V");
+                default:
+                    break;
             }
             return 0;
         }
@@ -376,7 +378,7 @@ namespace Win.MediaNetEngine
         }
 
 
-        public static MediaFrame createVideoKeyFrame(VideoEncodeCfg cfg, long timetick, byte[] data, int offset, int size)
+        public static MediaFrame CreateVideoKeyFrame(VideoEncodeCfg cfg, long timetick, byte[] data, int offset, int size)
         {
             MediaFrame mFrame = CreateVideoFrame(cfg, timetick, data, offset, size);// new
             // MediaFrame((byte)
@@ -393,13 +395,20 @@ namespace Win.MediaNetEngine
 
         public static MediaFrame CreateVideoFrame(VideoEncodeCfg cfg, long timetick, byte[] data, int offset, int size)
         {
-            MediaFrame mFrame = new MediaFrame((byte)0);
-            mFrame.nIsAudio = 0;
-            mFrame.nIsKeyFrame = 0;
-            mFrame.nTimetick = timetick;
-            mFrame.nSize = size;
-            mFrame.nOffset = offset;
-            mFrame.Data = data;
+            if (cfg is null)
+            {
+                throw new ArgumentNullException(nameof(cfg));
+            }
+
+            MediaFrame mFrame = new MediaFrame(0)
+            {
+                nIsAudio = 0,
+                nIsKeyFrame = 0,
+                nTimetick = timetick,
+                nSize = size,
+                nOffset = offset,
+                Data = data
+            };
             return mFrame;
         }
 
@@ -422,13 +431,20 @@ namespace Win.MediaNetEngine
 
         public static MediaFrame CreateAudioFrame(AudioEncodeCfg cfg, long timetick, byte[] data, int offset, int size)
         {
-            MediaFrame mFrame = new MediaFrame((byte)0);
-            mFrame.nIsAudio = 1;
-            mFrame.nIsKeyFrame = 0;
-            mFrame.nTimetick = timetick;
-            mFrame.nSize = size;
-            mFrame.nOffset = offset;
-            mFrame.Data = data;
+            if (cfg is null)
+            {
+                throw new ArgumentNullException(nameof(cfg));
+            }
+
+            MediaFrame mFrame = new MediaFrame(0)
+            {
+                nIsAudio = 1,
+                nIsKeyFrame = 0,
+                nTimetick = timetick,
+                nSize = size,
+                nOffset = offset,
+                Data = data
+            };
             return mFrame;
         }
     }

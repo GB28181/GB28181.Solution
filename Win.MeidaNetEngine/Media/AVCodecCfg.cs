@@ -49,7 +49,7 @@ namespace Win.MediaNetEngine.Codec
      
 
         // 获取H264的SPS PPS
-        public byte[] getSPSPPSBytes() {
+        public byte[] GetSPSPPSBytes() {
             if (this.PPS == null || this.SPS == null || this.profileLevel == null)
                 throw new Exception();
             var ms = new MemoryStream();
