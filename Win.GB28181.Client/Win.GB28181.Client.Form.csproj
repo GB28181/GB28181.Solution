@@ -28,28 +28,28 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AForge">
-      <HintPath>..\Libs\AForge.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\AForge.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Controls">
-      <HintPath>..\Libs\AForge.Controls.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\AForge.Controls.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video">
-      <HintPath>..\Libs\AForge.Video.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\AForge.Video.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video.DirectShow">
-      <HintPath>..\Libs\AForge.Video.DirectShow.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
     <Reference Include="DirectShowLib-2005">
-      <HintPath>..\Libs\DirectShowLib-2005.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\DirectShowLib-2005.dll</HintPath>
     </Reference>
     <Reference Include="GLib">
-      <HintPath>..\Libs\GLib.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\GLib.dll</HintPath>
     </Reference>
     <Reference Include="StarEye.VideoConver">
-      <HintPath>..\Libs\StarEye.VideoConver.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\StarEye.VideoConver.dll</HintPath>
     </Reference>
     <Reference Include="Tao.Sdl">
-      <HintPath>..\Libs\Tao.Sdl.dll</HintPath>
+      <HintPath>..\Win.GB28181.Libs\Tao.Sdl.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

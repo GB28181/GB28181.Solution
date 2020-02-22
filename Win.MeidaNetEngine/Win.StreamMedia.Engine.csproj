@@ -9,11 +9,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GLib">
-      <HintPath>..\Libs\GLib.dll</HintPath>
-    </Reference>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Reference Include="GLib">
+      <HintPath>..\Win.GB28181.Libs\GLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
