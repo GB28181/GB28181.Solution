@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GrpcAgent\GrpcAgent.csproj" />
+    <ProjectReference Include="..\GB28181.Grpc.Session\GB28181.Grpc.Session.csproj" />
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 
