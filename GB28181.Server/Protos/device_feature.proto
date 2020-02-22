@@ -1,5 +1,5 @@
 syntax = "proto3";
-option csharp_namespace = "GB28181.Server.Grpc.Protos.DeviceFeature";
+option csharp_namespace = "GB28181.Service.Protos.DeviceFeature";
 
 package GrpcDeviceFeature;
 

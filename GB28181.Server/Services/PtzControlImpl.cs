@@ -5,7 +5,7 @@ using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 
-namespace GB28181.Server.Grpc.Protos.Ptz
+namespace GB28181.Service.Protos.Ptz
 {
     public class PtzControlImpl : PtzControl.PtzControlBase
     {

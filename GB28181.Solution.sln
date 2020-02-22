@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Win.StreamMedia.Engine", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.SIPSorcery", "GB28181.SIPSorcery\GB28181.SIPSorcery.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GB28181.Server.Grpc", "GB28181.Server.Grpc\GB28181.Server.Grpc.csproj", "{A10D6BA9-C42F-4B3A-BBFB-D820FB1597EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GB28181.Server", "GB28181.Server\GB28181.Server.csproj", "{A10D6BA9-C42F-4B3A-BBFB-D820FB1597EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

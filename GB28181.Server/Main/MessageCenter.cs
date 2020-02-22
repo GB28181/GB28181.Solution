@@ -10,7 +10,7 @@ using GB28181.SIPSorcery.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GB28181.Server.Grpc.Protos.AsClient.DeviceManagement;
+using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
 
 namespace GB28181Service

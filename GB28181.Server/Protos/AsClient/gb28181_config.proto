@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "GB28181.Server.Grpc.Protos.AsClient.manage";
+option csharp_namespace = "GB28181.Service.Protos.AsClient.manage";
 
 package manage;
 

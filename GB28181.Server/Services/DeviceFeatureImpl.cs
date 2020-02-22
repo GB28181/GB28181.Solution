@@ -9,7 +9,7 @@ using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 using GB28181.SIPSorcery.Sys.XML;
 
-namespace GB28181.Server.Grpc.Protos.DeviceFeature
+namespace GB28181.Service.Protos.DeviceFeature
 {
     public class DeviceFeatureImpl : DeviceFeature.DeviceFeatureBase
     {

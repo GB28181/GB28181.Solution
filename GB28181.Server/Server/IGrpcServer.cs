@@ -1,5 +1,5 @@
 ﻿
-namespace GB28181.Server.Grpc
+namespace GB28181.Service
 {
     public interface IGrpcServer
     {

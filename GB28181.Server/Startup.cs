@@ -1,11 +1,11 @@
-﻿using GB28181.Server.Grpc.Protos.Ptz;
+﻿using GB28181.Service.Protos.Ptz;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace GB28181.Server.Grpc
+namespace GB28181.Service
 {
     public class Startup
     {

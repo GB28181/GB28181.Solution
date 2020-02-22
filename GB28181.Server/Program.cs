@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace GB28181.Server.Grpc
+namespace GB28181.Service
 {
     public class Program
     {

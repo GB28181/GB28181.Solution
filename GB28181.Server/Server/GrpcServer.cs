@@ -2,12 +2,12 @@
 using GB28181.Logger4Net;
 using System;
 using System.Threading.Tasks;
-using GB28181.Server.Grpc.Protos.Video;
-using GB28181.Server.Grpc.Protos.Ptz;
-using GB28181.Server.Grpc.Protos.DeviceFeature;
-using GB28181.Server.Grpc.Protos.VideoRecord;
-using GB28181.Server.Grpc.Protos.DeviceCatalog;
-namespace GB28181.Server.Grpc
+using GB28181.Service.Protos.Video;
+using GB28181.Service.Protos.Ptz;
+using GB28181.Service.Protos.DeviceFeature;
+using GB28181.Service.Protos.VideoRecord;
+using GB28181.Service.Protos.DeviceCatalog;
+namespace GB28181.Service
 {
     public class GrpcServer : IGrpcServer, IDisposable
     {

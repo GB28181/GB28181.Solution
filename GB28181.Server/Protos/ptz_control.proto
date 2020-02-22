@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "GB28181.Server.Grpc.Protos.Ptz";
+option csharp_namespace = "GB28181.Service.Protos.Ptz";
 
 package GrpcPtzControl;
 

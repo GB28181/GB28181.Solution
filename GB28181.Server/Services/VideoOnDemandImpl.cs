@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Sys.XML;
 
-namespace GB28181.Server.Grpc.Protos.VideoRecord
+namespace GB28181.Service.Protos.VideoRecord
 {
     public class VideoOnDemandImpl : VideoOnDemand.VideoOnDemandBase
     {

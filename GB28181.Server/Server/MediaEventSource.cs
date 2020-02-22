@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
-using GB28181.Server.Grpc.Protos.Video;
+using GB28181.Service.Protos.Video;
 
-namespace GB28181.Server.Grpc
+namespace GB28181.Service
 {
 
     /// <summary>

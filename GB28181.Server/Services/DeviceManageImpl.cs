@@ -5,7 +5,7 @@ using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.Sys;
 using Grpc.Net.Client;
 
-namespace GB28181.Server.Grpc.Protos.AsClient.DeviceManagement
+namespace GB28181.Service.Protos.AsClient.DeviceManagement
 {
     public class DeviceManageImpl : Manage.ManageClient
     {

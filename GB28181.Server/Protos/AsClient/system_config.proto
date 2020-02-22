@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "GB28181.Server.Grpc.Protos.AsClient.SystemConfig";
+option csharp_namespace = "GB28181.Service.Protos.AsClient.SystemConfig";
 
 package systemConfig;
 

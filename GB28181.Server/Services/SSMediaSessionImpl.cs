@@ -5,7 +5,7 @@ using System;
 using GB28181.Logger4Net;
 using System.Collections.Generic;
 
-namespace GB28181.Server.Grpc.Protos.Video
+namespace GB28181.Service.Protos.Video
 {
     public class SSMediaSessionImpl : VideoSession.VideoSessionBase
     {

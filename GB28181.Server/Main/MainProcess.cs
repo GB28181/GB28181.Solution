@@ -16,13 +16,13 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using GB28181.Server.Grpc.Protos.AsClient.SystemConfig;
-using GB28181.Server.Grpc;
-using GB28181.Server.Grpc.Protos.Video;
-using GB28181.Server.Grpc.Protos.Ptz;
-using GB28181.Server.Grpc.Protos.DeviceCatalog;
-using GB28181.Server.Grpc.Protos.VideoRecord;
-using GB28181.Server.Grpc.Protos.DeviceFeature;
+using GB28181.Service.Protos.AsClient.SystemConfig;
+using GB28181.Service;
+using GB28181.Service.Protos.Video;
+using GB28181.Service.Protos.Ptz;
+using GB28181.Service.Protos.DeviceCatalog;
+using GB28181.Service.Protos.VideoRecord;
+using GB28181.Service.Protos.DeviceFeature;
 using Grpc.Net.Client;
 
 namespace GB28181Service

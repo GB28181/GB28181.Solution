@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "GB28181.Server.Grpc": {
+    "GB28181.Service": {
       "commandName": "Project",
       "launchBrowser": false,
       "applicationUrl": "https://localhost:5001",
