@@ -8,7 +8,7 @@ using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 
-namespace GrpcAgent.WebsocketRpcServer
+namespace GB28181.Server.Grpc.Protos
 {
     public class PtzControlImpl : PtzControl.PtzControlBase
     {

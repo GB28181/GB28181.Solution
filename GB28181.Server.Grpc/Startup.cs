@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using GrpcAgent.WebsocketRpcServer;
+using GB28181.Server.Grpc.Protos;
 
 namespace GB28181.Server.Grpc
 {
