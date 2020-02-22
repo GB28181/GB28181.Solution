@@ -13,29 +13,27 @@ using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
 
-namespace GB28181Service
+namespace GB28181.Server.Message
 {
-    public class MessageCenter
+    public class MessageHub
     {
-        private static ILog logger = AppState.logger;
+        private static readonly ILog logger = AppState.logger;
         private DateTime _keepaliveTime;
-        private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
-        private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
-        private List<string> _deviceAlarmSubscribed = new List<string>();
+        private readonly Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
+        private readonly Queue<Catalog> _catalogQueue = new Queue<Catalog>();
+        private readonly List<string> _deviceAlarmSubscribed = new List<string>();
         private ISipMessageCore _sipCoreMessageService;
         private ISIPMonitorCore _sIPMonitorCore;
         private ISIPRegistrarCore _registrarCore;
-        //private Dictionary<string, HeartBeatEndPoint> _HeartBeatStatuses = new Dictionary<string, HeartBeatEndPoint>();
-        //public Dictionary<string, HeartBeatEndPoint> HeartBeatStatuses => _HeartBeatStatuses;
-        private Dictionary<string, DeviceStatus> _DeviceStatuses = new Dictionary<string, DeviceStatus>();
-        public Dictionary<string, DeviceStatus> DeviceStatuses => _DeviceStatuses;
-        private Dictionary<string, Catalog> _Catalogs = new Dictionary<string, Catalog>();
-        public Dictionary<string, Catalog> Catalogs => _Catalogs;
-        private Dictionary<string, SIPTransaction> _GBSIPTransactions = new Dictionary<string, SIPTransaction>();
-        public Dictionary<string, SIPTransaction> GBSIPTransactions => _GBSIPTransactions;
-        GB28181.SIPSorcery.SIP.App.SIPAccount _SIPAccount;
 
-        public MessageCenter(ISipMessageCore sipCoreMessageService, ISIPMonitorCore sIPMonitorCore, ISIPRegistrarCore sipRegistrarCore)
+        public Dictionary<string, DeviceStatus> DeviceStatuses { get; } = new Dictionary<string, DeviceStatus>();
+
+        public Dictionary<string, Catalog> Catalogs { get; } = new Dictionary<string, Catalog>();
+        public Dictionary<string, SIPTransaction> GBSIPTransactions { get; } = new Dictionary<string, SIPTransaction>();
+       
+        SIPSorcery.SIP.App.SIPAccount _SIPAccount;
+
+        public MessageHub(ISipMessageCore sipCoreMessageService, ISIPMonitorCore sIPMonitorCore, ISIPRegistrarCore sipRegistrarCore)
         {
             _sipCoreMessageService = sipCoreMessageService;
             _sIPMonitorCore = sIPMonitorCore;

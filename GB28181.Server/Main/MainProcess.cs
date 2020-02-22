@@ -1,7 +1,13 @@
-﻿using Consul;
-using GB28181.Logger4Net;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using GB28181.Logger4Net;
+using GB28181.Server.Message;
+using GB28181.Server.Utils;
+using GB28181.Service;
+using GB28181.Service.Protos.AsClient.SystemConfig;
+using GB28181.Service.Protos.DeviceCatalog;
+using GB28181.Service.Protos.DeviceFeature;
+using GB28181.Service.Protos.Ptz;
+using GB28181.Service.Protos.Video;
+using GB28181.Service.Protos.VideoRecord;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
@@ -10,26 +16,20 @@ using GB28181.SIPSorcery.Sys;
 using GB28181.SIPSorcery.Sys.Cache;
 using GB28181.SIPSorcery.Sys.Config;
 using GB28181.SIPSorcery.Sys.Model;
+using Grpc.Net.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using GB28181.Service.Protos.AsClient.SystemConfig;
-using GB28181.Service;
-using GB28181.Service.Protos.Video;
-using GB28181.Service.Protos.Ptz;
-using GB28181.Service.Protos.DeviceCatalog;
-using GB28181.Service.Protos.VideoRecord;
-using GB28181.Service.Protos.DeviceFeature;
-using Grpc.Net.Client;
 
-namespace GB28181Service
+namespace GB28181.Server.Message
 {
     public class MainProcess : IDisposable
     {
-        private static ILog logger = AppState.GetLogger("Startup");
+        private static readonly ILog logger = AppState.GetLogger("Process");
         //interface IDisposable implementation
         private bool _already_disposed = false;
 
@@ -58,7 +58,6 @@ namespace GB28181Service
 
         private ServiceProvider _serviceProvider = null;
 
-        private AgentServiceRegistration _AgentServiceRegistration = null;
 
         public MainProcess()
         {
@@ -99,8 +98,6 @@ namespace GB28181Service
             _eventStopService.Reset();
             _eventThreadExit.Reset();
 
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
             // config info for .net core https://www.cnblogs.com/Leo_wl/p/5745772.html#_label3
             var builder = new ConfigurationBuilder();
             //.SetBasePath(Directory.GetCurrentDirectory())
@@ -108,8 +105,10 @@ namespace GB28181Service
             var config = builder.Build();//Console.WriteLine(config["sipaccount:ID"]);
             //var sect = config.GetSection("sipaccounts");
 
-            //Consul Register
-            ServiceRegister();
+            //Consul Register Close Consul
+           // ServiceRegister();
+
+
             //InitServer
             SipAccountStorage.RPCGBServerConfigReceived += SipAccountStorage_RPCGBServerConfigReceived;
 
@@ -137,7 +136,10 @@ namespace GB28181Service
                             .AddSingleton<ILog, Logger>()
                             .AddSingleton<ISipAccountStorage, SipAccountStorage>()
                             .AddSingleton<MediaEventSource>()
-                            .AddSingleton<MessageCenter>()
+                            .AddSingleton<MessageHub>()
+                            .AddSingleton<CatalogEventsProc>()
+                            .AddSingleton<AlarmEventsProc>()
+                              .AddSingleton<DeviceEventsProc>()
                             .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
                             .AddTransient<ISIPMonitorCore, SIPMonitorCoreService>()
                             .AddSingleton<ISipMessageCore, SIPMessageCoreService>()
@@ -163,7 +165,7 @@ namespace GB28181Service
             {
                 var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
                 //Get meassage Handler
-                var messageHandler = _serviceProvider.GetRequiredService<MessageCenter>();
+                var messageHandler = _serviceProvider.GetRequiredService<MessageHub>();
                 // start the Listening SipService in main Service
                 _sipTask = Task.Factory.StartNew(() =>
                 {
@@ -223,10 +225,7 @@ namespace GB28181Service
                 logger.Error(exMsg.Message);
                 _eventExitMainProcess.Set();
             }
-            finally
-            {
-
-            }
+            
         }
 
         #region Init Server
@@ -249,7 +248,7 @@ namespace GB28181Service
                 //obj.Owner = item.Name;
                 obj.GbVersion = string.IsNullOrEmpty(item.GbVersion) ? "GB-2016" : item.GbVersion;
                 obj.LocalID = string.IsNullOrEmpty(item.LocalID) ? "42010000002100000002" : item.LocalID;
-                obj.LocalIP = System.Net.IPAddress.Parse(GetIPAddress());
+                obj.LocalIP = HostsEnv.GetRawIP();
                 obj.LocalPort = string.IsNullOrEmpty(item.LocalPort) ? Convert.ToUInt16(5061) : Convert.ToUInt16(item.LocalPort);
                 obj.RemotePort = string.IsNullOrEmpty(item.RemotePort) ? Convert.ToUInt16(5060) : Convert.ToUInt16(item.RemotePort);
                 obj.Authentication = string.IsNullOrEmpty(item.Authentication) ? false : bool.Parse(item.Authentication);
@@ -275,6 +274,7 @@ namespace GB28181Service
             }
         }
 
+        //for test
         private async Task VideoSessionKeepAlive()
         {
             await Task.Run(() =>
@@ -301,6 +301,7 @@ namespace GB28181Service
              });
         }
 
+        //for test
         //private async Task WaitUserCmd()
         //{
         //    await Task.Run(() =>
@@ -335,64 +336,6 @@ namespace GB28181Service
         //     });
         //}
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (e.ExceptionObject != null)
-            {
-                if (e.ExceptionObject is Exception exceptionObj)
-                {
-                    throw exceptionObj;
-                }
-            }
-        }
-        #endregion
-
-        #region Consul Register
-        public string GetIPAddress()
-        {
-            string localip = string.Empty;
-            string hostname = Dns.GetHostName();
-            IPHostEntry ipadrlist = Dns.GetHostEntry(hostname);
-            IPAddress localaddr = null;
-            foreach (IPAddress obj in ipadrlist.AddressList)
-            {
-                localaddr = obj;
-            }
-            //localip = localaddr.ToString();
-            localip = EnvironmentVariables.GbServiceLocalIp ?? localaddr.ToString();
-            //logger.Debug("Gb Service Local Ip: " + localip);
-            return localip;
-        }
-        /// <summary>
-        /// Consul Register
-        /// </summary>
-        /// <param name="client"></param>
-        private void ServiceRegister()
-        {
-            try
-            {
-                var clients = new ConsulClient(ConfigurationOverview);
-                _AgentServiceRegistration = new AgentServiceRegistration()
-                {
-                    Address = GetIPAddress(),
-                    ID = "gbdeviceservice",//"gb28181" + Dns.GetHostName(),
-                    Name = "gbdeviceservice",
-                    Port = EnvironmentVariables.GBServerGrpcPort,
-                    Tags = new[] { "gb28181" }
-                };
-                var result = clients.Agent.ServiceRegister(_AgentServiceRegistration).Result;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Consul Register: " + ex.Message);
-            }
-        }
-        private void ConfigurationOverview(ConsulClientConfiguration obj)
-        {
-            obj.Address = new Uri("http://" + (EnvironmentVariables.MicroRegistryAddress ?? GetIPAddress() + ":8500"));
-            logger.Debug("Consul Client: " + obj.Address);
-            obj.Datacenter = "dc1";
-        }
         #endregion
     }
 }
