@@ -30,11 +30,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Consul" Version="0.7.2.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Proto.Actor" Version="0.2.0" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.27.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
     <PackageReference Include="Grpc.AspNetCore.Server" Version="2.27.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
+    <PackageReference Include="MyNatsClient" Version="0.14.1" />
+    <PackageReference Include="NATS.Client" Version="0.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
@@ -43,6 +49,6 @@
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 
-  
 
+ 
 </Project>

@@ -1,6 +1,9 @@
 syntax = "proto3";
 
+option csharp_namespace = "GB28181.Server.Grpc.Protos.AsClient.manage";
+
 package manage;
+
 service ManageGbService {
   rpc GetGb28181ServiceConfig (QueryGb28181ConfigRequest) returns (QueryGb28181ConfigReply) {}
 }
