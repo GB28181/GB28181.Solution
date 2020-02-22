@@ -1,7 +1,7 @@
 ﻿
 namespace GB28181.Server.Grpc
 {
-    public interface IRpcService
+    public interface IGrpcServer
     {
         void AddIPAdress(string ipaddress);
 

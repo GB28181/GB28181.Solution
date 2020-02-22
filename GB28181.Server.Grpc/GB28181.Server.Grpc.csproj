@@ -10,6 +10,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Config\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Folder>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Config\gb28181.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Proto.Actor" Version="0.2.0" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.27.0" />
@@ -22,5 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
+
+  
 
 </Project>

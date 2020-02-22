@@ -9,7 +9,7 @@ using GB28181.Server.Grpc.Protos.VideoRecord;
 using GB28181.Server.Grpc.Protos.DeviceCatalog;
 namespace GB28181.Server.Grpc
 {
-    public class RpcServer : IRpcService, IDisposable
+    public class GrpcServer : IGrpcServer, IDisposable
     {
         private static ILog logger = LogManager.GetLogger("RpcServer");
 
@@ -31,7 +31,7 @@ namespace GB28181.Server.Grpc
 
         private readonly TaskCompletionSource<bool> tokenSource = new TaskCompletionSource<bool>();
 
-        public RpcServer(VideoSession.VideoSessionBase videoSessionImp, 
+        public GrpcServer(VideoSession.VideoSessionBase videoSessionImp, 
             PtzControl.PtzControlBase ptzControlService,
             DeviceCatalog.DeviceCatalogBase deviceCatalogService,
    //         Manage.ManageBase deviceManageService,
@@ -71,8 +71,15 @@ namespace GB28181.Server.Grpc
   //          _server.ShutdownAsync().Wait();
         }
 
+        protected virtual void Dispose(bool all)
+        {
+
+        }
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public void AddIPAdress(string ipaddress)
