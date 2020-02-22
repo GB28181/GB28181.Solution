@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using GB28181.Server.Utils;
 
-namespace GB28181.Server.Message
+namespace GB28181.Server.Main
 {
     public class ServicesRegistry
     {

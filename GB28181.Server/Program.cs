@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace GB28181.Service
 {
@@ -16,8 +19,7 @@ namespace GB28181.Service
 
             var host = CreateHostBuilder(args).Build();
 
-            //如果需要在服务启动前做一些事情,参考如下代码
-            //下列代码用于在服务启动前，先进行数据库迁移工作
+            //pre-working before app starting
             //using (var scope = host.Services.CreateScope())
             //{
             //    var myDbContext = scope.ServiceProvider.GetRequiredService<YourDbContext>();
@@ -42,6 +44,20 @@ namespace GB28181.Service
         // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                 .ConfigureLogging(logging =>
+                 {
+                     logging.ClearProviders(); 
+ //                    logging.SetMinimumLevel(LogLevel.Trace);  //configration used
+                 })
+                //.ConfigureServices(services => services.AddHostedService<GBWorker>())
+                .ConfigureAppConfiguration( config =>
+                {
+                    config.AddEnvironmentVariables();
+                    if (args != null)
+                    {
+                        config.AddCommandLine(args);
+                    }
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

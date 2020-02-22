@@ -25,7 +25,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GB28181.Server.Message
+namespace GB28181.Server.Main
 {
     public class MainProcess : IDisposable
     {
@@ -40,7 +40,7 @@ namespace GB28181.Server.Message
         private readonly ManualResetEvent _eventThreadExit = new ManualResetEvent(false);
 
         //signal to exit the main Process
-        private readonly AutoResetEvent _eventExitMainProcess = new AutoResetEvent(false);
+        //private readonly AutoResetEvent _eventExitMainProcess = new AutoResetEvent(false);
 
         private Task _mainTask = null;
         private Task _sipTask = null;
@@ -119,7 +119,7 @@ namespace GB28181.Server.Message
             _mainTask = Task.Factory.StartNew(() => MainServiceProcessing());
 
             //wait the process exit of main
-            _eventExitMainProcess.WaitOne();
+         //   _eventExitMainProcess.WaitOne();
         }
 
         public void Stop()
@@ -218,12 +218,12 @@ namespace GB28181.Server.Message
                 _eventStopService.WaitOne();
 
                 //signal main process exit
-                _eventExitMainProcess.Set();
+              //  _eventExitMainProcess.Set();
             }
             catch (Exception exMsg)
             {
                 logger.Error(exMsg.Message);
-                _eventExitMainProcess.Set();
+     //          _eventExitMainProcess.Set();
             }
             
         }

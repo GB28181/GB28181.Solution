@@ -16,16 +16,19 @@ namespace GB28181.Service
     {
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _env;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<GBService>();
             services.AddGrpc();
         }
 
@@ -36,10 +39,18 @@ namespace GB28181.Service
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            // app.UseHttpsRedirection();
+            // app.UseStaticFiles();
 
             app.UseRouting();
 
-            //      app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

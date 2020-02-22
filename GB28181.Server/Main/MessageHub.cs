@@ -13,7 +13,7 @@ using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
 
-namespace GB28181.Server.Message
+namespace GB28181.Server.Main
 {
     public class MessageHub
     {
