@@ -254,14 +254,14 @@ namespace GB28181Service
                 obj.LocalIP = System.Net.IPAddress.Parse(GetIPAddress());
                 obj.LocalPort = string.IsNullOrEmpty(item.LocalPort) ? Convert.ToUInt16(5061) : Convert.ToUInt16(item.LocalPort);
                 obj.RemotePort = string.IsNullOrEmpty(item.RemotePort) ? Convert.ToUInt16(5060) : Convert.ToUInt16(item.RemotePort);
-                obj.Authentication = string.IsNullOrEmpty(item.Authentication) ? false : Boolean.Parse(item.Authentication);
+                obj.Authentication = string.IsNullOrEmpty(item.Authentication) ? false : bool.Parse(item.Authentication);
                 obj.SIPUsername = string.IsNullOrEmpty(item.SIPUsername) ? "admin" : item.SIPUsername;
                 obj.SIPPassword = string.IsNullOrEmpty(item.SIPPassword) ? "123456" : item.SIPPassword;
                 obj.MsgProtocol = System.Net.Sockets.ProtocolType.Udp;
                 obj.StreamProtocol = System.Net.Sockets.ProtocolType.Udp;
                 obj.TcpMode = GB28181.SIPSorcery.Net.RTP.TcpConnectMode.passive;
                 obj.MsgEncode = string.IsNullOrEmpty(item.MsgEncode) ? "GB2312" : item.MsgEncode;
-                obj.PacketOutOrder = string.IsNullOrEmpty(item.PacketOutOrder) ? true : Boolean.Parse(item.PacketOutOrder);
+                obj.PacketOutOrder = string.IsNullOrEmpty(item.PacketOutOrder) ? true : bool.Parse(item.PacketOutOrder);
                 obj.KeepaliveInterval = string.IsNullOrEmpty(item.KeepaliveInterval) ? Convert.ToUInt16(5000) : Convert.ToUInt16(item.KeepaliveInterval);
                 obj.KeepaliveNumber = string.IsNullOrEmpty(item.KeepaliveNumber) ? Convert.ToByte(3) : Convert.ToByte(item.KeepaliveNumber);
                 _lstSIPAccount.Add(obj);

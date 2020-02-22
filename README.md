@@ -27,6 +27,7 @@ running on .net core 3.1+
 + Architecture架构
   + [x] 设计与流媒体服务交互的GRPC接口
   + [x] 设计与系统配置服务(或数据服务)交互的GRPC接口
+  + [x] 精简服务模块，调整代码结构关系
   + [ ] 为配置接口和流媒体服务接口提供mock数据,使得服务可以独立运行
   + [ ] 以GRPC方式对接流媒体服务[EasydarwinGo](https://www.github.com/gb28181/easydawingo)
   + [ ] 以GRPC方式从系统配置服务(或者数据服务)中获取GB信令服务的配置信息，包括名称、ID、端口、协议等

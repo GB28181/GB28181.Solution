@@ -3,11 +3,9 @@ using Grpc.HealthCheck;
 using GB28181.Logger4Net;
 using MediaContract;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using GrpcPtzControl;
 using GrpcDeviceCatalog;
-using Manage;
 using GrpcDeviceFeature;
 using GrpcVideoOnDemand;
 
