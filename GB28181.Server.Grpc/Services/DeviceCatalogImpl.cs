@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using GB28181.Logger4Net;
 
-namespace GB28181.Server.Grpc.Protos
+namespace GB28181.Server.Grpc.Protos.DeviceCatalog
 {
     public class DeviceCatalogImpl : DeviceCatalog.DeviceCatalogBase
     {

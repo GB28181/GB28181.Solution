@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Proto.Actor" Version="0.2.0" />
+    <PackageReference Include="Grpc.HealthCheck" Version="2.27.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
     <PackageReference Include="Grpc.AspNetCore.Server" Version="2.27.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
@@ -17,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GB28181.Grpc.Session\GB28181.Grpc.Session.csproj" />
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
   </ItemGroup>
 

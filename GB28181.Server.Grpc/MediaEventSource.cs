@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
-using MediaContract;
+using GB28181.Server.Grpc.Protos.Video;
 
-namespace GrpcAgent
+namespace GB28181.Server.Grpc
 {
 
     /// <summary>

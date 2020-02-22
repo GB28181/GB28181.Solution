@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option csharp_namespace = "GB28181.Server.Grpc.Protos.VideoRecord";
+
 package GrpcVideoOnDemand;
 
 service VideoOnDemand {

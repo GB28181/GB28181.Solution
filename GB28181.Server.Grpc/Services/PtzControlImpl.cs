@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Grpc.Core;
-using GrpcPtzControl;
 using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 
-namespace GB28181.Server.Grpc.Protos
+namespace GB28181.Server.Grpc.Protos.Ptz
 {
     public class PtzControlImpl : PtzControl.PtzControlBase
     {
