@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace GB28181.Service
 {
@@ -22,8 +23,15 @@ namespace GB28181.Service
             //pre-working before app starting
             //using (var scope = host.Services.CreateScope())
             //{
-            //    var myDbContext = scope.ServiceProvider.GetRequiredService<YourDbContext>();
-            //    await myDbContext.Database.MigrateAsync();
+            //    var builder = new ConfigurationBuilder();
+            //    builder.SetBasePath(Directory.GetCurrentDirectory());
+            //    builder.AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
+            //    var config = builder.Build();      
+            //    Console.WriteLine(config["sipaccount:ID"]);
+            //    var sect = config.GetSection("sipaccounts");
+
+            //    // var myDbContext = scope.ServiceProvider.GetRequiredService<YourDbContext>();
+            //    //await myDbContext.Database.MigrateAsync();
             //}
 
             await host.RunAsync();
@@ -46,18 +54,23 @@ namespace GB28181.Service
             Host.CreateDefaultBuilder(args)
                  .ConfigureLogging(logging =>
                  {
-                     logging.ClearProviders(); 
- //                    logging.SetMinimumLevel(LogLevel.Trace);  //configration used
+                     logging.ClearProviders();
+                     logging.AddConsole();
+                     // logging.SetMinimumLevel(LogLevel.Trace);  //configration used
                  })
-                //.ConfigureServices(services => services.AddHostedService<GBWorker>())
-                .ConfigureAppConfiguration( config =>
+                .ConfigureHostConfiguration(config =>
                 {
-                    config.AddEnvironmentVariables();
-                    if (args != null)
-                    {
-                        config.AddCommandLine(args);
-                    }
+                    config.SetBasePath(Directory.GetCurrentDirectory());
+                    config.AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
                 })
+                .ConfigureAppConfiguration(config =>
+               {
+                   config.AddEnvironmentVariables();
+                   if (args != null)
+                   {
+                       config.AddCommandLine(args);
+                   }
+               })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

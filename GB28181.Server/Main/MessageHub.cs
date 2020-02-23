@@ -271,7 +271,7 @@ namespace GB28181.Server.Main
         internal void DeviceStatusReport()
         {
             //logger.Debug("DeviceStatusReport started.");
-            TimeSpan pre = new TimeSpan(DateTime.Now.Ticks);
+            // var pre = new TimeSpan(DateTime.Now.Ticks);
             while (true)
             {
                 //report status every 8 seconds 
@@ -331,12 +331,9 @@ namespace GB28181.Server.Main
                             #region
                             Options opts = ConnectionFactory.GetDefaultOptions();
                             opts.Url = EnvironmentVariables.GBNatsChannelAddress ?? Defaults.Url;
-                            using (IConnection c = new ConnectionFactory().CreateConnection(opts))
-                            {
-                                c.Publish(subject, payload);
-                                c.Flush();
-                                //logger.Debug("Device on/off line status published.");
-                            }
+                            using IConnection c = new ConnectionFactory().CreateConnection(opts);
+                            c.Publish(subject, payload);
+                            c.Flush();
                             #endregion
                         }
                         else
