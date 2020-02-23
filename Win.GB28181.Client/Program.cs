@@ -1,5 +1,4 @@
-﻿using Gb28181.Client;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace Win.GB28181.Client

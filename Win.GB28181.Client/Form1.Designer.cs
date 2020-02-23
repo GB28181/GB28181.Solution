@@ -1,4 +1,4 @@
-﻿namespace Gb28181.Client
+﻿namespace Win.GB28181.Client
 {
     partial class Form1
     {
