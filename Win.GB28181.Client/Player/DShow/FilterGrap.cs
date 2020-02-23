@@ -7,7 +7,7 @@ using DirectShowLib;
 using System.Runtime.InteropServices;
 using GLib.Extension;
 using System.Diagnostics;
-namespace SLW.WPFClient.DShow
+namespace Win.WPFClient.DShow
 {
     /// <summary>
     /// 过滤器--图表基类

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Win.MediaNetEngine.Wave.Wave
+namespace Win.Media.Wave.Wave
 {
     /// <summary>
     /// This class represents wav output device.

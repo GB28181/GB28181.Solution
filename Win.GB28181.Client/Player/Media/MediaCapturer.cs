@@ -15,13 +15,13 @@ using System.Threading;
 
 using System.IO;
 
-using SLW.Comm;
-using Win.MediaNetEngine;
-using SLW.ClientBase.Codec;
-using SLW.MediaServer.Media.TS;
+using Win.Comm;
+using Win.Media;
+using Win.ClientBase.Codec;
+using Win.MediaServer.Media.TS;
 
 
-namespace SLW.ClientBase.Media
+namespace Win.ClientBase.Media
 {
 
     public class MediaCapturer : IDisposable

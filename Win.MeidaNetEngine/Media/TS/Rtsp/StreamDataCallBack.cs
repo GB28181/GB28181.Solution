@@ -1,4 +1,4 @@
-﻿namespace SLW.MediaServer.Media.TS.Rtsp
+﻿namespace Win.MediaServer.Media.TS.Rtsp
 {
     using System;
 

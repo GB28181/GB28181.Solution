@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.GB28181.Service", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Win.GB28181.Client.Form", "Win.GB28181.Client\Win.GB28181.Client.Form.csproj", "{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Win.StreamMedia.Engine", "Win.MeidaNetEngine\Win.StreamMedia.Engine.csproj", "{8332828E-DA9A-4813-9569-9DBA95DF8FF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Win.MediaNetEngine", "Win.MeidaNetEngine\Win.MediaNetEngine.csproj", "{8332828E-DA9A-4813-9569-9DBA95DF8FF8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.SIPSorcery", "GB28181.SIPSorcery\GB28181.SIPSorcery.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GB28181.Server", "GB28181.Server\GB28181.Server.csproj", "{A10D6BA9-C42F-4B3A-BBFB-D820FB1597EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.Server", "GB28181.Server\GB28181.Server.csproj", "{A10D6BA9-C42F-4B3A-BBFB-D820FB1597EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

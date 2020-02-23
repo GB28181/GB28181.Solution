@@ -7,7 +7,7 @@ using GLib.Extension;
 using System.IO;
 using System.Threading;
 
-namespace SLW.ClientBase.Codec {
+namespace Win.ClientBase.Codec {
     public class FaacImp : IDisposable {
         private IntPtr _handle = IntPtr.Zero;
         private int _channel = 0;

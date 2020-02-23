@@ -6,7 +6,7 @@ using DirectShowLib;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using GLib.GeneralModel;
-namespace SLW.WPFClient.DShow
+namespace Win.WPFClient.DShow
 {
     public class PinConnectEventArg : EventArgs
     {

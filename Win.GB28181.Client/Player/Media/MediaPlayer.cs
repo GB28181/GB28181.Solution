@@ -6,11 +6,11 @@ using System.Threading;
 using System.Windows.Forms;
 using GLib.AXLib.Utility;
 using GLib.GeneralModel;
-using SLW.ClientBase.Codec;
-using SLW.ClientBase.Media;
-using Win.MediaNetEngine;
+using Win.ClientBase.Codec;
+using Win.ClientBase.Media;
+using Win.Media;
 
-namespace SLW.ClientBase.Media {
+namespace Win.ClientBase.Media {
     public class MediaPlayer : IDisposable {
 
         private WaveAudioPlayer _ap;

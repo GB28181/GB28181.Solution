@@ -1,6 +1,6 @@
-﻿using SLW.ClientBase.Codec;
-using Win.MediaNetEngine;
-using SLW.MediaServer.Media;
+﻿using Win.ClientBase.Codec;
+using Win.Media;
+using Win.MediaServer.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SLW.ClientBase.Mixer.Audio
+namespace Win.ClientBase.Mixer.Audio
 {
     internal class AacDec : DecoderLine
     {

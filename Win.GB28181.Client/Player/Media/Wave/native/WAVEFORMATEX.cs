@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Win.MediaNetEngine.Wave.Wave.Native
+namespace Win.Media.Wave.Wave.Native
 {
     // Why this must be class ? otherwise in win XP won't work.
     

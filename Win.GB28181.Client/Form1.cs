@@ -1,5 +1,4 @@
-﻿using Win.GB28181.Client.Player.Analyzer;
-using GB28181.Logger4Net;
+﻿using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMessage;
@@ -9,8 +8,8 @@ using GB28181.SIPSorcery.Sys;
 using GB28181.SIPSorcery.Sys.Config;
 using GB28181.SIPSorcery.Sys.Model;
 using GB28181.SIPSorcery.Sys.XML;
-using Win.MediaNetEngine;
-using SLW.MediaServer.Media.TS;
+using Win.Media;
+using Win.MediaServer.Media.TS;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Win.GB28181.Client.Player.Analyzer;
 
 namespace Gb28181.Client
 {
@@ -29,7 +29,7 @@ namespace Gb28181.Client
         private Thread _cataThread;
         private static ILog logger = AppState.logger;
         private bool _isStop = true;
-       // private string _dir = AppDomain.CurrentDomain.BaseDirectory + "Config";
+        private string _dir = AppDomain.CurrentDomain.BaseDirectory + "Config";
         private DateTime _keepaliveTime;
         private Thread _keepaliveThread;
         private readonly Queue<Keep> _keepQueue = new Queue<Keep>();

@@ -1,10 +1,10 @@
-﻿using SLW.ClientBase.Codec;
+﻿using Win.ClientBase.Codec;
 using System.Drawing;
 using System;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 
-namespace SLW.ClientBase.Mixer.Video
+namespace Win.ClientBase.Mixer.Video
 {
     public class VideoCanvas : Canvas, IYUVDraw
     {

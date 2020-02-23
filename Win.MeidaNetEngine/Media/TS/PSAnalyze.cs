@@ -2,7 +2,7 @@
 using GLib.GeneralModel;
 using GLib.IO;
 using GLib.Net;
-using Win.MediaNetEngine;
+using Win.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 
-namespace SLW.MediaServer.Media.TS
+namespace Win.MediaServer.Media.TS
 {
 
     public class HikPSAnalyze : PSAnalyze {
@@ -151,7 +151,7 @@ namespace SLW.MediaServer.Media.TS
                     }
                     catch (Exception)
                     {
-                        //if (_isWorking && SLW.Base.AppConfig._D)
+                        //if (_isWorking && Win.Base.AppConfig._D)
                         //{
                         //    //GLib.DebugEx.WriteLog(e);
                         //    throw;

@@ -5,7 +5,7 @@ using System.Text;
 using DirectShowLib;
 using System.Runtime.InteropServices;
 
-namespace SLW.WPFClient.DShow
+namespace Win.WPFClient.DShow
 { 
     /// <summary>
     /// DShow过滤器扩展

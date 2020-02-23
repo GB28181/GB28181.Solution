@@ -1,10 +1,10 @@
 ﻿using GLib.Extension;
 using GLib.Net;
-using Win.MediaNetEngine.Codec;
+using Win.Media.Codec;
 using System;
 using System.IO;
 using System.Text;
-namespace Win.MediaNetEngine
+namespace Win.Media
 {
 
     public enum AVCode {

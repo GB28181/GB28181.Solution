@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using Win.MediaNetEngine;
+using Win.Media;
 using System.IO;
 
-namespace SLW.ClientBase.Codec
+namespace Win.ClientBase.Codec
 {
     /// <summary>
     /// 音视频编码参数设置
@@ -80,7 +80,7 @@ namespace SLW.ClientBase.Codec
     //        encodeName = name;
     //        encoder = GetGeneralEncoder(name);
     //    }
-         
+
 
     //    // 获取通用编码代号
     //    public static int GetGeneralEncoder(String name) {
@@ -96,12 +96,14 @@ namespace SLW.ClientBase.Codec
     //}
 
 
-    public class VideoEncodeCfg : Win.MediaNetEngine.Codec.VideoEncodeCfg {
-       
-        public IYUVDraw Draw;
- 
+    public class VideoEncodeCfg : Win.Media.Codec.VideoEncodeCfg
+    {
 
-        public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null) {
+        public IYUVDraw Draw;
+
+
+        public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null)
+        {
             VideoEncodeCfg encCfg = new VideoEncodeCfg();
 
             encCfg.SetEncoder("H264");
@@ -118,18 +120,20 @@ namespace SLW.ClientBase.Codec
 
 
 
-    public class AudioEncodeCfg : Win.MediaNetEngine.Codec.AudioEncodeCfg {
-        public new int micId = 0;
-        public new int frequency = 8000;// 采样
-        public new int format = 16;// 位元
-        public new int channel = 2;// 通道模式
-        public new int samples = 160;// 这个参数设置小了可以降底延迟
-        public new int keyFrameRate = 50;// 关键帧间隔
-        public new int bitrate = 32000;// 比特率
+    public class AudioEncodeCfg : Win.Media.Codec.AudioEncodeCfg
+    {
+        public int micId = 0;
+        public int frequency = 8000;// 采样
+        public int format = 16;// 位元
+        public int channel = 2;// 通道模式
+        public int samples = 160;// 这个参数设置小了可以降底延迟
+        public int keyFrameRate = 50;// 关键帧间隔
+        public int bitrate = 32000;// 比特率
 
 
 
-        public new static AudioEncodeCfg GetDefault() {
+        public static AudioEncodeCfg GetDefault()
+        {
             AudioEncodeCfg r = new AudioEncodeCfg();
             r.SetEncoder("AAC_");
             r.frequency = 32000;

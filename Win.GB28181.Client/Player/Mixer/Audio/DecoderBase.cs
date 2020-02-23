@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SLW.ClientBase.Mixer.Audio
+namespace Win.ClientBase.Mixer.Audio
 {
     internal abstract class DecoderLine
     {

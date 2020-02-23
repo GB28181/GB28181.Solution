@@ -1,10 +1,10 @@
-﻿using Win.MediaNetEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Win.Media;
 
-namespace SLW.MediaServer.Media.TS
+namespace Win.MediaServer.Media.TS
 {
     //http://www.360doc.com/content/13/0512/11/532901_284774233.shtml
 

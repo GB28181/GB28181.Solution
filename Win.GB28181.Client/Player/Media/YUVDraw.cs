@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 
-namespace SLW.ClientBase.Codec {
+namespace Win.ClientBase.Codec {
 
     public interface IYUVDraw {
         void Start();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace SLW.ClientBase.Mixer.Video
+namespace Win.ClientBase.Mixer.Video
 {
     public class Canvas : IDisposable
     {

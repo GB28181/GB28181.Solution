@@ -1,11 +1,11 @@
 ﻿using GLib.IO;
-using Win.MediaNetEngine;
+using Win.Media;
 using System;
 using System.IO;
 using System.Text;
 
 
-namespace SLW.MediaServer.Media.TS
+namespace Win.MediaServer.Media.TS
 {
     //http://www.360doc.com/content/13/0512/11/532901_284774233.shtml
 

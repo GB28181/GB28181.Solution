@@ -11,11 +11,11 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using System.IO;
-using Win.MediaNetEngine;
-using Win.MediaNetEngine.Wave.Wave;
+using Win.Media;
+using Win.Media.Wave.Wave;
 
 
-namespace SLW.ClientBase.Codec
+namespace Win.ClientBase.Codec
 {
 
 
@@ -151,7 +151,7 @@ namespace SLW.ClientBase.Codec
             if (buf.Length == 0)
                 return;
             //生成媒体帧
-            var mf = new Win.MediaNetEngine.MediaFrame()
+            var mf = new Win.Media.MediaFrame()
             {
                 nFrequency = _frequency,
                 nSamples = (short)_audioCfg.samples,

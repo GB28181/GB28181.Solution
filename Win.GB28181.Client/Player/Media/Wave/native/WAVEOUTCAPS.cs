@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Win.MediaNetEngine.Wave.Wave.Native
+namespace Win.Media.Wave.Wave.Native
 {
     /// <summary>
     /// This class represents WAVEOUTCAPS structure.

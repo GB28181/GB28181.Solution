@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using GLib.Extension;
 
 
-namespace SLW.ClientBase.Codec {
+namespace Win.ClientBase.Codec {
     public class FFScale {
 
         private int _handle = -1;

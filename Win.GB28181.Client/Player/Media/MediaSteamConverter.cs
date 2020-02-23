@@ -5,11 +5,11 @@
 using BoxMatrix.Media;
 using GLib.AXLib.Utility;
 using GLib.Extension;
-using Win.MediaNetEngine;
+using Win.Media;
 using System;
 using System.IO;
 
-namespace SLW.ClientBase.Media
+namespace Win.ClientBase.Media
 {
 
 

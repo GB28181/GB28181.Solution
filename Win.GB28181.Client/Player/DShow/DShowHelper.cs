@@ -9,7 +9,7 @@ using GLib.Extension;
 using GLib;
 using System.Drawing;
 
-namespace SLW.WPFClient.DShow
+namespace Win.WPFClient.DShow
 {
     public class DShowHelper
     {

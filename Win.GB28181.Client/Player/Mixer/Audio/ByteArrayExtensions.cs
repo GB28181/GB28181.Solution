@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
-namespace SLW.ClientBase.Mixer.Audio
+namespace Win.ClientBase.Mixer.Audio
 {
     /// <summary>
     /// Extension methods for byte[].

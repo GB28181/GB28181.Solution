@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Win.MediaNetEngine.Wave.Wave.Native
+namespace Win.Media.Wave.Wave.Native
 {
     /// <summary>
     /// This class holds most known wav compression formats.

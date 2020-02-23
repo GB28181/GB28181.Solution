@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace SLW.ClientBase.Mixer.Video
+namespace Win.ClientBase.Mixer.Video
 {
     public class ImageCanvas : Canvas
     {

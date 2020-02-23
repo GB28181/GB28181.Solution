@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
     <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
-    <ProjectReference Include="..\Win.MeidaNetEngine\Win.StreamMedia.Engine.csproj" />
+    <ProjectReference Include="..\Win.MeidaNetEngine\Win.MediaNetEngine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AForge">

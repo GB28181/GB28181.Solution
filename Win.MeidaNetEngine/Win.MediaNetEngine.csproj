@@ -3,8 +3,8 @@
     <ProjectGuid>{8332828E-DA9A-4813-9569-9DBA95DF8FF8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Win.MeidaNetEngine</RootNamespace>
-    <AssemblyName>Win.MeidaNetEngine</AssemblyName>
+    <RootNamespace>Win.MediaNetEngine</RootNamespace>
+    <AssemblyName>Win.MediaNetEngine</AssemblyName>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

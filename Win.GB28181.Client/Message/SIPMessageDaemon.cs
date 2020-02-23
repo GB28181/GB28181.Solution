@@ -90,9 +90,10 @@ namespace Win.GB28181.Client.Message
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
                 m_sipTransport.AddSIPChannel(sipChannels);
 
-
                 MessageCore = new SIPMessageCoreService(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+               
                 MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList,_account);
+                
                 GB28181Catalog.Instance.MessageCore = MessageCore;
                 m_sipTransport.SIPTransportRequestReceived += MessageCore.AddMessageRequest;
                 m_sipTransport.SIPTransportResponseReceived += MessageCore.AddMessageResponse;

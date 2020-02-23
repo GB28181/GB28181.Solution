@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-namespace SLW.Comm
+namespace Win.Comm
 {
     public class _DebugEx
     {

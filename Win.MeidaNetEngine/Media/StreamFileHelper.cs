@@ -1,11 +1,10 @@
-﻿using Win.MediaNetEngine;
-using SLW.MediaServer.Media.TS;
+﻿using Win.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace SLW.MediaServer.Media
+namespace Win.MediaServer.Media
 {
     public class ReadFile {
         public static List<byte[]> GetBuffByFile1(string file) {

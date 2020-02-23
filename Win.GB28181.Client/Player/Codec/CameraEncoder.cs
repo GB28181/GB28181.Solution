@@ -2,10 +2,10 @@
 using GLib.AXLib.Utility;
 using GLib.Extension;
 using GLib.GeneralModel;
-using SLW.ClientBase.Mixer.Video;
-using SLW.Comm;
-using Win.MediaNetEngine;
-using SLW.WPFClient.DShow;
+using Win.ClientBase.Mixer.Video;
+using Win.Comm;
+using Win.Media;
+using Win.WPFClient.DShow;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,7 +14,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace SLW.ClientBase.Codec
+namespace Win.ClientBase.Codec
 {
     public class CameraCapturer : IDisposable
     {
@@ -811,7 +811,7 @@ namespace SLW.ClientBase.Codec
 
                 if (mf.nIsKeyFrame == 1)
                 {
-                    var sps_pps = SLW.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
+                    var sps_pps = Win.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
                     mf.nSPSLen = (short)sps_pps[0].Length;
                     mf.nPPSLen = (short)sps_pps[1].Length;
                 }

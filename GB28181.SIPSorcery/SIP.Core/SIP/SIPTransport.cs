@@ -119,6 +119,7 @@ namespace GB28181.SIPSorcery.SIP
 
         private Dictionary<string, SIPChannel> m_sipChannels = new Dictionary<string, SIPChannel>();    // List of the physical channels that have been opened and are under management by this instance.
 
+
         private ISIPTransactionEngine _transactionEngine;
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
@@ -156,6 +157,20 @@ namespace GB28181.SIPSorcery.SIP
             _transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
+
+
+        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, bool queueIncoming)
+        {
+            if (sipResolver == null)
+            {
+                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
+            }
+
+            ResolveSIPEndPoint_External = sipResolver;
+            _transactionEngine = transactionEngine;
+            m_queueIncoming = queueIncoming;
+        }
+
 
         public SIPTransport(ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
         {

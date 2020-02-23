@@ -58,6 +58,7 @@ namespace GB28181.SIPSorcery.SIP
 
         private const string m_allIPAddresses = LocalIPConfig.ALL_LOCAL_IPADDRESSES_KEY;
 
+
         public static List<SIPChannel> ParseSIPChannelsNode(SIPAccount sipAccount)
         {
 
@@ -78,6 +79,21 @@ namespace GB28181.SIPSorcery.SIP
                 channel = new SIPTCPChannel(ipEndPoint);
                 channels.Add(channel);
             }
+            return channels;
+        }
+
+
+        public static List<SIPChannel> ParseSIPChannelsNode(IPAddress ipAddress, int localPort = 5060)
+        {
+
+            var channels = new List<SIPChannel>();
+
+            var ipEndPoint = new IPEndPoint(ipAddress, localPort);
+
+            SIPChannel channel = null;
+
+            channel = new SIPUDPChannel(ipEndPoint);
+            channels.Add(channel);
             return channels;
         }
 

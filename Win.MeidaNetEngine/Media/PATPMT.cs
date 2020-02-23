@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace SLW.MediaServer.Media.TS
+namespace Win.MediaServer.Media.TS
 {
 
     #region PAT

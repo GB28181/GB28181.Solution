@@ -26,6 +26,6 @@ namespace GB28181.SIPSorcery.Sys.Config
         /// </summary>
         public int RemotePort { get; set; }
 
-        public GB28181.SIPSorcery.Sys.XML.DevStatus Status { get; set; }
+        public XML.DevStatus Status { get; set; }
     }
 }

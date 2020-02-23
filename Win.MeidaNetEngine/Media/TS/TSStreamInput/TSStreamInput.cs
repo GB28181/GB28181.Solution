@@ -1,15 +1,15 @@
 ﻿using GLib.AXLib.Utility;
 using GLib.GeneralModel;
 using GLib.IO;
-using SLW.Comm;
-using Win.MediaNetEngine;
+using Win.Comm;
+using Win.Media;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 
-namespace SLW.MediaServer.Media.TS
+namespace Win.MediaServer.Media.TS
 {
 
     public class WSIPTVChannelInfo 

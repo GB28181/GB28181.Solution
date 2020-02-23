@@ -2,8 +2,9 @@
 using System.Runtime.InteropServices;
 using GLib.Extension;
 using System.IO;
+using Win.Media;
 
-namespace SLW.ClientBase.Codec
+namespace Win.ClientBase.Codec
 {
     public partial class X264Native {
         private static BinaryWriter w = null;
@@ -15,7 +16,7 @@ namespace SLW.ClientBase.Codec
             x264.Init();
 
             var ls = MediaServer.Media.ReadFile.GetBuffByFile1(@"D:\video_monitor\v2v_super_exchange\branch\branch_V3.16.0.0(dongtaifuyong)\bin\Debug\1237.yuv");
-            AVCodecCfg cf = AVCodecCfg.CreateVideo(width, height, (int)Win.MediaNetEngine.AVCode.CODEC_ID_H264, 100000);
+            AVCodecCfg cf = AVCodecCfg.CreateVideo(width, height, (int)AVCode.CODEC_ID_H264, 100000);
             FFImp ffimp = new FFImp(cf, true);
             //FFScale ffscale = new FFScale(width, height, 26, 12, width, height, 12, 12);
             FFScale ffscale = new FFScale(width, height, 0, 12,width,height, 3, 24);

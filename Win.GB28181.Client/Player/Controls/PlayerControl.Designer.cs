@@ -1,4 +1,4 @@
-﻿namespace SLW.ClientBase
+﻿namespace Win.ClientBase
 {
     partial class PlayerControl
     {

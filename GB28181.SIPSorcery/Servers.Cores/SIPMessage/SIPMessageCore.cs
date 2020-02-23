@@ -31,6 +31,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
+        private static string _sipServerAgent = SIPConstants.SIP_SERVER_STRING;
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
@@ -41,6 +42,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
         private SIPRequest _ackRequest;
         private SIPEndPoint _byeRemoteEP;
         private SIPResponse _audioResponse;
+
         /// <summary>
         /// SIP远端Host的Socket地址(host:Port)和用户名(GBID)
         /// </summary>
@@ -65,7 +67,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
         /// 本地域的sip编码
         /// </summary>
         public string LocalSIPId { get; set; }
-        
+
         private Stream _g711Stream;
         private Channel _audioChannel;
         private IPEndPoint _audioRemoteEP;
@@ -142,6 +144,20 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
 
         #endregion
 
+
+        // MessageCore = new SIPMessageCoreService(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+        public SIPMessageCoreService(ISIPTransport sipTransport, string sipServerAgentStr)
+        {
+            _transport = sipTransport;
+            _sipServerAgent = sipServerAgentStr;
+            // Configure the SIP transport layer.
+            _transport.SIPTransportRequestReceived += AddMessageRequest;
+            _transport.SIPTransportResponseReceived += AddMessageResponse;
+
+            _cameraCache.OnItemAdded += _cameraCache_OnItemAdded;
+        }
+
+
         //   public SIPMessageCoreService(IServiceCollection serviceCollection)
         public SIPMessageCoreService(
             ISIPRegistrarCore sipRegistrarCore,
@@ -164,6 +180,12 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
         }
 
 
+
+        public void Initialize(SIPAuthenticateRequestDelegate sipRequestAuthenticator, Dictionary<string, PlatformConfig> _platformList, SIPAccount account)
+        {
+
+        }
+
         private void _cameraCache_OnItemAdded(object arg1, Camera camera)
         {
             try
@@ -177,19 +199,19 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
                 //logger.Debug("nodeMonitorService divces counts: " + _nodeMonitorService.Count);
                 logger.Debug("_cameraCache_OnItemAdded: [" + camera.DeviceID + "," + camera.IPAddress.ToString() + ":" + camera.Port + "] item initialized.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Debug("Exception _cameraCache_OnItemAdded: " + ex.Message);
             }
         }
-        
+
         #region 启动/停止消息主服务(监听注册链接)
         public void Start()
         {
             _serviceState = ServiceStatus.Wait;
             LocalEP = SIPEndPoint.ParseSIPEndPoint(_LocalSipAccount.MsgProtocol + ":" + _LocalSipAccount.LocalIP.ToString() + ":" + _LocalSipAccount.LocalPort);
             LocalSIPId = _LocalSipAccount.LocalID;
-            
+
             try
             {
                 logger.Debug("SIPMessageCoreService is runing at " + LocalEP.ToString());

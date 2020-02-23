@@ -1,13 +1,13 @@
 ﻿using GLib.AXLib.Utility;
-using Win.MediaNetEngine;
-using SLW.MediaServer.Media.TS;
+using Win.Media;
+using Win.MediaServer.Media.TS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SLW.MeidaNetEngine.Media.TS
+namespace Win.MeidaNetEngine.Media.TS
 {
     public class GB28181TSStreamInput : TSStreamInput
     {

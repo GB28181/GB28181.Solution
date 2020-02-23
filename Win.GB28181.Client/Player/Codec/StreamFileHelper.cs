@@ -5,7 +5,7 @@
 //using System.Text;
 //using Win.MediaNetEngine;
 
-//namespace SLW.ClientBase.Codec {
+//namespace Win.ClientBase.Codec {
 //    public class ReadFile {
 //        public static List<byte[]> GetBuffByFile1(string file) {
 //            var q = GetBuffByFile(file);

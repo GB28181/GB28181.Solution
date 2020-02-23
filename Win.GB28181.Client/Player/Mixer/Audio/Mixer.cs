@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-namespace SLW.ClientBase.Mixer.Audio
+namespace Win.ClientBase.Mixer.Audio
 {
     public partial class MixerAudio:IDisposable
     {

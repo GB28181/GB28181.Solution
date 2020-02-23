@@ -8,7 +8,7 @@ using DirectShowLib;
 using GLib.Extension;
  
 using System.Diagnostics;
-namespace SLW.WPFClient.DShow
+namespace Win.WPFClient.DShow
 {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate long JSSourceFilter_FillBufferCallBack(ref IntPtr pData);

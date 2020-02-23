@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Win.MediaNetEngine.Codec
+namespace Win.Media.Codec
 {
 
     //编码配置基类

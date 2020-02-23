@@ -149,7 +149,6 @@
             this.txtDevName = new System.Windows.Forms.TextBox();
             this.btnDevConfig = new System.Windows.Forms.Button();
             this.tvCalatog = new System.Windows.Forms.TreeView();
-            this.playerWin = new SLW.ClientBase.PlayerControl();
             this.tabControl1.SuspendLayout();
             this.tbReal.SuspendLayout();
             this.tbRecord.SuspendLayout();
@@ -1419,24 +1418,11 @@
             this.tvCalatog.TabIndex = 49;
             this.tvCalatog.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvCalatog_AfterSelect);
             // 
-            // playerWin
-            // 
-            this.playerWin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.playerWin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.playerWin.Location = new System.Drawing.Point(353, 262);
-            this.playerWin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.playerWin.Name = "playerWin";
-            this.playerWin.Size = new System.Drawing.Size(431, 218);
-            this.playerWin.TabIndex = 50;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(791, 491);
-            this.Controls.Add(this.playerWin);
+            this.ClientSize = new System.Drawing.Size(1055, 614);
             this.Controls.Add(this.tvCalatog);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnSetGuard);
@@ -1600,9 +1586,9 @@
         private System.Windows.Forms.Button btnSubscribeCancel;
         private System.Windows.Forms.ComboBox cbxRecordType;
         private System.Windows.Forms.Button btnKeyFrame;
-        private SLW.ClientBase.PlayerControl playerWin;
         private System.Windows.Forms.TreeView tvCalatog;
         private System.Windows.Forms.Button button2;
+        private Win.ClientBase.PlayerControl playerWin;
     }
 }
 

@@ -1,9 +1,17 @@
-﻿using SLW.ClientBase.Codec;
-using SLW.ClientBase.Media;
-using Win.MediaNetEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Win.ClientBase.Codec;
+using Win.ClientBase.Media;
+using Win.Media;
 
-namespace SLW.ClientBase
+namespace Win.ClientBase
 {
     public partial class PlayerControl : UserControl
     {
