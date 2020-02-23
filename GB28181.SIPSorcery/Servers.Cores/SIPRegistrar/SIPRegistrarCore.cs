@@ -95,7 +95,7 @@ namespace GB28181.SIPSorcery.Servers
     ///    persistence class. Of those threads there will be one that runs calling the SIPRegistrations.IdentifyDirtyContacts. This call identifies
     ///    expired contacts and initiates the sending of any keep alive and OPTIONs requests.
     /// </summary>
-    public class SIPRegistrarCoreService : ISIPRegistrarCore
+    public class SIPRegistrarCore : ISIPRegistrarCore
     {
         private const int MAX_REGISTER_QUEUE_SIZE = 1000;
         private const int MAX_PROCESS_REGISTER_SLEEP = 10000;
@@ -137,7 +137,7 @@ namespace GB28181.SIPSorcery.Servers
         public event RPCDmsRegisterDelegate RPCDmsRegisterReceived;
         public event DeviceAlarmSubscribeDelegate DeviceAlarmSubscribe;
 
-        public SIPRegistrarCoreService(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
+        public SIPRegistrarCore(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;
@@ -213,7 +213,7 @@ namespace GB28181.SIPSorcery.Servers
 
         public void ProcessRegisterRequest()
         {
-            logger.Debug("SIPRegistrarCoreService is running at " + _localSipAccount.MsgProtocol + ":" + _localSipAccount.LocalIP + ":" + _localSipAccount.LocalPort);
+            logger.Debug("SIPRegistrarCore is running at " + _localSipAccount.MsgProtocol + ":" + _localSipAccount.LocalIP + ":" + _localSipAccount.LocalPort);
             try
             {
                 while (!Stop)

@@ -27,7 +27,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
     /// <summary>
     /// sip消息核心处理
     /// </summary>
-    public class SIPMessageCoreService : ISipMessageCore
+    public class SIPMessageCore : ISipMessageCore
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
@@ -145,8 +145,8 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
         #endregion
 
 
-        // MessageCore = new SIPMessageCoreService(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
-        public SIPMessageCoreService(ISIPTransport sipTransport, string sipServerAgentStr)
+        // MessageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+        public SIPMessageCore(ISIPTransport sipTransport, string sipServerAgentStr)
         {
             _transport = sipTransport;
             _sipServerAgent = sipServerAgentStr;
@@ -158,8 +158,8 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
         }
 
 
-        //   public SIPMessageCoreService(IServiceCollection serviceCollection)
-        public SIPMessageCoreService(
+        //   public SIPMessageCore(IServiceCollection serviceCollection)
+        public SIPMessageCore(
             ISIPRegistrarCore sipRegistrarCore,
             ISIPTransport sipTransport,
             ISipAccountStorage sipAccountStorage,
@@ -191,7 +191,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
             try
             {
                 var ipaddress = IPAddress.Parse(camera.IPAddress);
-                _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCoreService(this, _transport, sipAccountStorage: _sipAccountStorage)
+                _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCore(this, _transport, sipAccountStorage: _sipAccountStorage)
                 {
                     RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, camera.Port),
                     DeviceId = camera.DeviceID
@@ -214,7 +214,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
 
             try
             {
-                logger.Debug("SIPMessageCoreService is runing at " + LocalEP.ToString());
+                logger.Debug("SIPMessageCore is runing at " + LocalEP.ToString());
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(_LocalSipAccount);
                 _transport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 _transport.MsgEncode = _LocalSipAccount.MsgEncode;
@@ -693,7 +693,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
                         if (!_nodeMonitorService.ContainsKey(catalogItem.DeviceID))
                         {
                             //remoteEP.Port = _LocalSipAccount.RemotePort;
-                            _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCoreService(this, _transport, _sipAccountStorage)
+                            _nodeMonitorService.TryAdd(catalogItem.DeviceID, new SIPMonitorCore(this, _transport, _sipAccountStorage)
                             {
                                 RemoteEndPoint = remoteEP,
                                 DeviceId = catalogItem.DeviceID

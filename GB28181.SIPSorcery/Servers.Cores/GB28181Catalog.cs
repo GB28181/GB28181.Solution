@@ -12,7 +12,7 @@ namespace GB28181.SIPSorcery.Servers
     {
         private static GB28181Catalog _instance;
         private Dictionary<string, string> _devList;
-        public SIPMessageCoreService MessageCore;
+        public SIPMessageCore MessageCore;
 
         public Action<Catalog> OnCatalogReceived;
 

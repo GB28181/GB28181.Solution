@@ -18,7 +18,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
     /// <summary>
     /// sip监控核心服务，每一个接入节点都有一个监控服务实例
     /// </summary>
-    public class SIPMonitorCoreService : ISIPMonitorCore
+    public class SIPMonitorCore : ISIPMonitorCore
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
@@ -60,8 +60,8 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
         #endregion
 
         #region 初始化监控
-        //public SIPMonitorCoreService(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
-        public SIPMonitorCoreService(ISipMessageCore sipMessageCore, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        //public SIPMonitorCore(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        public SIPMonitorCore(ISipMessageCore sipMessageCore, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
         {
             _sipMsgCoreService = sipMessageCore;
             _sipTransport = sipTransport;

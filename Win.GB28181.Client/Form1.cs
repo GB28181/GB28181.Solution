@@ -37,7 +37,7 @@ namespace Win.GB28181.Client
         private Thread _keepaliveThread;
         private readonly Queue<Keep> _keepQueue = new Queue<Keep>();
         //private int _count = 0;
-        private SIPMessageCoreService _messageCore;
+        private SIPMessageCore _messageCore;
         #endregion
 
         #region 私有属性
@@ -146,7 +146,7 @@ namespace Win.GB28181.Client
             _keepaliveTime = DateTime.Now;
             _cataThread = new Thread(new ThreadStart(HandleCata));
             _keepaliveThread = new Thread(new ThreadStart(HandleKeepalive));
- //           _messageCore = new SIPMessageCoreService(cameras, account);
+ //           _messageCore = new SIPMessageCore(cameras, account);
         }
         #endregion
 

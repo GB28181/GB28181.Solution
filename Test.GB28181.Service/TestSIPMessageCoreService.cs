@@ -29,7 +29,7 @@ namespace Test.GB28181.Service
         //    SipAccountStorage sas = new SipAccountStorage();
         //    //ISipAccountStorageMock.Setup(accouts=> accouts.Accounts.Add(new GB28181.SIPSorcery.SIP.App.SIPAccount { })) ;
         //    var IMemoCacheMock = new Mock<IMemoCache<Camera>>();
-        //    var sipmc = new SIPMessageCoreService(
+        //    var sipmc = new SIPMessageCore(
         //        ISIPRegistrarCoreMock.Object,
         //        ISIPTransportMock.Object,
         //        sas,//ISipAccountStorageMock.Object, 
@@ -47,7 +47,7 @@ namespace Test.GB28181.Service
             //var ISipAccountStorageMock = new Mock<ISipAccountStorage>();
             //ISipAccountStorageMock.Setup(accouts => accouts.Accounts.Add(new GB28181.SIPSorcery.SIP.App.SIPAccount { }));
             //var IMemoCacheMock = new Mock<IMemoCache<Camera>>();
-            //var sipmc = new SIPMessageCoreService(
+            //var sipmc = new SIPMessageCore(
             //    ISIPRegistrarCoreMock.Object,
             //    ISIPTransportMock.Object,
             //    ISipAccountStorageMock.Object, 

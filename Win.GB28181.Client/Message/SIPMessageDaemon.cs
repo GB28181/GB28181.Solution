@@ -63,7 +63,7 @@ namespace Win.GB28181.Client.Message
         private SIPAuthenticateRequestDelegate SIPAuthenticateRequest_External;
         private Dictionary<string, PlatformConfig> _platformList;
         private SIPAccount _account;
-        public SIPMessageCoreService MessageCore;
+        public SIPMessageCore MessageCore;
 
         public SIPMessageDaemon(
             SIPAccount account,
@@ -90,7 +90,7 @@ namespace Win.GB28181.Client.Message
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
                 m_sipTransport.AddSIPChannel(sipChannels);
 
-                MessageCore = new SIPMessageCoreService(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+                MessageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
                
                 MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList,_account);
                 
