@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Moq;
+﻿using GB28181.Server.Main;
 using Xunit;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys.Config;
-using GB28181.SIPSorcery.Sys.Cache;
-using GB28181.SIPSorcery.Sys.Model;
-using GB28181Service;
 
 namespace Test.GB28181.Service
 {
