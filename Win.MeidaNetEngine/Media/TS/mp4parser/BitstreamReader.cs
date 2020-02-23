@@ -87,7 +87,7 @@ namespace com.googlecode.mp4parser.h264.read
 				throw new System.ArgumentException("Can not readByte more then 64 bit");
 			}
 
-			long val = 0;
+			int val = 0;
 
 			for (int i = 0; i < n; i++)
 			{

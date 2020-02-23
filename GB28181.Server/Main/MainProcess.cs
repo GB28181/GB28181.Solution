@@ -32,8 +32,7 @@ namespace GB28181.Server.Main
     public partial class MainProcess : IMainProcess
     {
         private static readonly ILog logger = AppState.GetLogger("Process");
-        //interface IDisposable implementation
-        private bool _already_disposed = false;
+     
         private readonly CancellationTokenSource _processingServiceToken = new CancellationTokenSource();
 
         private readonly CancellationTokenSource _registryServiceToken = new CancellationTokenSource();
