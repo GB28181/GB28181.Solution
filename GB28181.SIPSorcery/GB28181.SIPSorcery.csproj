@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GB28181.SIPSorcery</RootNamespace>
     <AssemblyName>GB28181.SIPSorcery</AssemblyName>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
