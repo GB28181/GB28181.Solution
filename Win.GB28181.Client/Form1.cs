@@ -8,19 +8,22 @@ using GB28181.SIPSorcery.Sys;
 using GB28181.SIPSorcery.Sys.Config;
 using GB28181.SIPSorcery.Sys.Model;
 using GB28181.SIPSorcery.Sys.XML;
-using Win.Media;
-using Win.MediaServer.Media.TS;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Win.GB28181.Client.Player.Analyzer;
+using Win.Media;
+using Win.MediaServer.Media.TS;
 
-namespace Gb28181.Client
+namespace Win.GB28181.Client
 {
     public partial class Form1 : Form
     {
@@ -96,7 +99,9 @@ namespace Gb28181.Client
         private void Initialize()
         {
             _devList = new List<ListViewItem>();
+            txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             txtStopTime.Text = DateTime.Now.ToString("yyyy-MM-dd 9:00:00");
+            //txtDragDrop.Text = DateTime.Now.ToString("yyyy-MM-dd 14:00:00");
 
             var configType = new Dictionary<string, string>
             {
@@ -130,7 +135,7 @@ namespace Gb28181.Client
             cbxRecordType.DisplayMember = "Value";
             cbxRecordType.ValueMember = "Key";
 
-          SipAccountStorage.Instance.Read();
+            SipAccountStorage.Instance.Read();
             IList<Camera> cameras = new List<Camera>();
             var account = SipAccountStorage.Instance.Accounts.First();
             if (account == null)
@@ -166,6 +171,7 @@ namespace Gb28181.Client
             txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             _keepaliveTime = DateTime.Now;
             playerWin.Start();
+            Initialize();
 
             _cataThread.Start();
             _keepaliveThread.Start();
@@ -667,7 +673,7 @@ namespace Gb28181.Client
             var key = DevKey;
  //           key.CmdType = CommandType.Playback;
             _messageCore.NodeMonitorService[key].ByeVideoReq();
-            //_messageCore.NodeMonitorService[key].OnStreamReady -= Form1_OnStreamReady;
+        //    _messageCore.NodeMonitorService[key].OnStreamReady -= Form1_OnStreamReady;
         }
 
         //暂停播放
@@ -1146,10 +1152,10 @@ namespace Gb28181.Client
             //int bb = aa.ToString().Length;
             //string str = "0" + aa.ToString("D9");
             ////t=
-         //   uint time = 1516084912;
+            uint time = 1516084912;
             uint end = 1516085076;
-         //   DateTime start = TimeConvert.TimeStampToDate(time);
-         //   DateTime stop = TimeConvert.TimeStampToDate(end);
+            DateTime start = TimeConvert.TimeStampToDate(time);
+            DateTime stop = TimeConvert.TimeStampToDate(end);
             //int a = 0xfc;
             //byte[] buffer = BitConverter.GetBytes(a);
             //buffer = BitConverter.GetBytes(System.Net.IPAddress.HostToNetworkOrder((short)a));
