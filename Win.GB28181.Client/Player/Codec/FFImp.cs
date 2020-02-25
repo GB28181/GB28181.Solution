@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using GLib.Extension;
-//using Win.Base;
+//using SS.Base;
 using System.Threading;
 
 
-namespace Win.ClientBase.Codec {
+namespace SS.ClientBase.Codec {
 
 
     public partial class FFImp {

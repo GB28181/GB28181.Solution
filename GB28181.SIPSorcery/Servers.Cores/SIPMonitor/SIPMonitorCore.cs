@@ -56,7 +56,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
         /// <summary>
         /// 视频流回调
         /// </summary>
-        // public event Action<RTPFrame> OnStreamReady;
+        public event Action<RTPFrame> OnStreamReady;
         #endregion
 
         #region 初始化监控
@@ -71,6 +71,43 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
         #endregion
 
         #region 实时视频
+
+        /// <summary>
+        /// 实时视频请求
+        /// </summary>
+        /// <param name="deviceId">设备编码</param>
+        public void RealVideoReq()
+        {
+            //_mediaPort = _msgCore.SetMediaPort();
+            //string localIp = _msgCore.LocalEP.Address.ToString();
+            //string fromTag = CallProperties.CreateNewTag();
+            //int cSeq = CallProperties.CreateNewCSeq();
+            //string callId = CallProperties.CreateNewCallId();
+
+            //SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
+            //SIPURI localUri = new SIPURI(_msgCore.LocalSIPId, _msgCore.LocalEP.ToHost(), "");
+            //SIPFromHeader from = new SIPFromHeader(null, localUri, fromTag);
+            //SIPToHeader to = new SIPToHeader(null, remoteUri, null);
+            //SIPRequest realReq = _msgCore.Transport.GetRequest(SIPMethodsEnum.INVITE, remoteUri);
+            //SIPContactHeader contactHeader = new SIPContactHeader(null, localUri);
+            //realReq.Header.Contact.Clear();
+            //realReq.Header.Contact.Add(contactHeader);
+
+            //realReq.Header.Allow = null;
+            //realReq.Header.From = from;
+            //realReq.Header.To = to;
+            //realReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            //realReq.Header.CSeq = cSeq;
+            //realReq.Header.CallId = callId;
+            //realReq.Header.Subject = SetSubject();
+            //realReq.Header.ContentType = "application/sdp";
+
+            //realReq.Body = SetMediaReq(localIp, _mediaPort);
+            //_msgCore.SendReliableRequest(_remoteEP, realReq);
+            //_reqSession = realReq;
+        }
+
+
         /// <summary>
         /// 实时视频请求
         /// </summary>

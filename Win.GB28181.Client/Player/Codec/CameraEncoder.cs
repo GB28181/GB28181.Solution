@@ -2,10 +2,10 @@
 using GLib.AXLib.Utility;
 using GLib.Extension;
 using GLib.GeneralModel;
-using Win.ClientBase.Mixer.Video;
-using Win.Comm;
-using Win.Media;
-using Win.WPFClient.DShow;
+using SS.ClientBase.Mixer.Video;
+using SS.Comm;
+using SS.Media;
+using SS.WPFClient.DShow;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,7 +14,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Win.ClientBase.Codec
+namespace SS.ClientBase.Codec
 {
     public class CameraCapturer : IDisposable
     {
@@ -29,12 +29,12 @@ namespace Win.ClientBase.Codec
         private bool _isworking = false;
         private bool _isDisoseing = false;
         private bool _isDisosed = false;
-        private readonly int _camera;
-        private readonly int _width;
-        private readonly int _height;
+        private int _camera;
+        private int _width;
+        private int _height;
 
         private FFScale _ffscale = null;
-        private readonly Action<byte[]> _callBack = null;
+        private Action<byte[]> _callBack = null;
         public CameraCapturer()
         {
         }
@@ -173,7 +173,8 @@ namespace Win.ClientBase.Codec
 
             buf = _ffscale.Convert(buf);
 
-            _callBack?.Invoke(buf);
+            if (_callBack != null)
+                _callBack(buf);
         }
 
         public void Dispose()
@@ -219,10 +220,10 @@ namespace Win.ClientBase.Codec
     public class CameraAForge : CameraCapturer
     {
 
-        private readonly AForge.Video.DirectShow.VideoCaptureDevice videoDevice;
-        private readonly AForge.Video.DirectShow.FilterInfoCollection videoDevices;
-        private readonly FFScale _ffscale = null;
-        private readonly Action<byte[]> _callBack = null;
+        private AForge.Video.DirectShow.VideoCaptureDevice videoDevice;
+        private AForge.Video.DirectShow.FilterInfoCollection videoDevices;
+        private FFScale _ffscale = null;
+        private Action<byte[]> _callBack = null;
         public CameraAForge(int camera, int width, int height, Action<byte[]> callBack)
         {
             _callBack = callBack;
@@ -261,7 +262,8 @@ namespace Win.ClientBase.Codec
             byte[] buffer = FunctionEx.IntPtrToBytes(e.Buffer, 0, e.Len);
             buffer = _ffscale.Convert(buffer);
 
-            _callBack?.Invoke(buffer);
+            if (_callBack != null)
+                _callBack(buffer);
         }
 
 
@@ -690,7 +692,7 @@ namespace Win.ClientBase.Codec
     }
     public class CameraEncoder : IDisposable
     {
-        public static int CameraCapturerMode = System.Configuration.ConfigurationManager.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
+        public static int CameraCapturerMode = System.Configuration.ConfigurationSettings.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
         protected bool _isworking = false;
         protected CameraCapturer _capturer = null;
         protected X264Native _x264;
@@ -811,7 +813,7 @@ namespace Win.ClientBase.Codec
 
                 if (mf.nIsKeyFrame == 1)
                 {
-                    var sps_pps = Win.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
+                    var sps_pps = SS.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
                     mf.nSPSLen = (short)sps_pps[0].Length;
                     mf.nPPSLen = (short)sps_pps[1].Length;
                 }
@@ -823,7 +825,8 @@ namespace Win.ClientBase.Codec
                 {
                     _needClearVideoTransportBuffer = false;
                     var frame = CreateClearVideoTransportBufferMediaFrame(mf);
-                    _callBack?.Invoke(frame);
+                    if (_callBack != null)
+                        _callBack(frame);
                 }
 
                 if (_isFirstKeyFrame)
@@ -838,23 +841,24 @@ namespace Win.ClientBase.Codec
                         _callBack(frame);
                 }
 
-                _callBack?.Invoke(mf);
+                if (_callBack != null)
+                    _callBack(mf);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 if (_isworking)
                     throw;
             }
         }
 
-        protected static MediaFrame CreateClearVideoTransportBufferMediaFrame(MediaFrame mf)
+        protected MediaFrame CreateClearVideoTransportBufferMediaFrame(MediaFrame mf)
         {
 
             var frame = MediaFrame.CreateCommandMediaFrame(false, MediaFrameCommandType.ClearVideoTransportBuffer);
             return frame;
         }
 
-        protected static MediaFrame CreateResetCodecMediaFrame(MediaFrame mf)
+        protected MediaFrame CreateResetCodecMediaFrame(MediaFrame mf)
         {
             var infoMediaFrame = new MediaFrame()
             {
@@ -868,7 +872,7 @@ namespace Win.ClientBase.Codec
                 nPPSLen = mf.nPPSLen,
                 nSPSLen = mf.nSPSLen,
                 nTimetick = mf.nTimetick,
-                Data = Array.Empty<byte>(),
+                Data = new byte[0],
                 nSize = 0,
             };
 
@@ -881,7 +885,7 @@ namespace Win.ClientBase.Codec
             _draw.Draw(yuv);
         }
 
-        protected virtual void Dispose(bool all)
+        public void Dispose()
         {
             try
             {
@@ -892,16 +896,10 @@ namespace Win.ClientBase.Codec
                 _x264.Release();
                 _draw.Release();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
     }

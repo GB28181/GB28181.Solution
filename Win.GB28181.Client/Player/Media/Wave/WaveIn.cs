@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading;
 using System.Runtime.InteropServices;
 
-using Win.Media.Wave.Wave.Native;
+using SS.Media.Wave.Wave.Native;
 
-namespace Win.Media.Wave.Wave {
+namespace SS.Media.Wave.Wave {
     #region Delegates Implementation
 
     /// <summary>

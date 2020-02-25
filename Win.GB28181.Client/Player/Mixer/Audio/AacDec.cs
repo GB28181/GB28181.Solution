@@ -1,6 +1,6 @@
-﻿using Win.ClientBase.Codec;
-using Win.Media;
-using Win.MediaServer.Media;
+﻿using SS.ClientBase.Codec;
+using SS.Media;
+using SS.MediaServer.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Win.ClientBase.Mixer.Audio
+namespace SS.ClientBase.Mixer.Audio
 {
     internal class AacDec : DecoderLine
     {

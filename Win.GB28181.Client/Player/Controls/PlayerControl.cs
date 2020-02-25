@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Win.ClientBase.Codec;
-using Win.ClientBase.Media;
-using Win.Media;
+using SS.ClientBase.Codec;
+using SS.ClientBase.Media;
+using SS.Media;
 
-namespace Win.ClientBase
+namespace SS.ClientBase
 {
     public partial class PlayerControl : UserControl
     {

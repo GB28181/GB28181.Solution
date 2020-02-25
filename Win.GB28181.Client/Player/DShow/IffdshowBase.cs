@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Win.WPFClient.DShow
+namespace SS.WPFClient.DShow
 {
     #region
     [Guid("FC5BCCF4-FD62-45ee-B022-3840EAEA77B2"), SuppressUnmanagedCodeSecurity,

@@ -34,17 +34,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Xml;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
-using System.Configuration;
+using System;
+using System.Xml;
 
-namespace Win.GB28181.Client.Message
+namespace Gb28181_Client.Message
 {
     /// <summary>
     /// Retrieves application conifguration settings from App.Config.
@@ -78,7 +72,7 @@ namespace Win.GB28181.Client.Message
 
                 try
                 {
-                  //  GB28181.Logger4Net.Config.XmlConfigurator.Configure();
+                  //  log4net.Config.XmlConfigurator.Configure();
                     logger = LogManager.GetLogger(LOGGER_NAME);
                 }
                 catch (Exception logExcp)

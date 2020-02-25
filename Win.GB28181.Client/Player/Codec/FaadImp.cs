@@ -6,7 +6,7 @@ using System.Text;
 using GLib.Extension;
 using System.IO;
 
-namespace Win.ClientBase.Codec {
+namespace SS.ClientBase.Codec {
     public class FaadImp : IDisposable {
          private IntPtr _handle = IntPtr.Zero;
         private Boolean _inited = false;

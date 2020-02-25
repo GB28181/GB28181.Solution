@@ -1,21 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Win.ClientBase.Mixer.Audio
+namespace SS.ClientBase.Mixer.Audio
 {
     internal abstract class DecoderLine
     {
-        private byte[] _Buffer = Array.Empty<byte>();
+
+        public int ID;
+        /// <summary>
+        /// 
+        /// </summary>
+        public int AudioType;
+        private byte[] _Buffer = new byte[0];
         public byte[] Buffer
         {
             get { return _Buffer; }
-            set => _Buffer = value ?? Array.Empty<byte>();
+            set
+            {
+                if (value == null)
+                    _Buffer = new byte[0];
+                else
+                    _Buffer = value;
+            }
         }
 
-        public Queue<byte[]> QueueBuffer { get; set; } = new Queue<byte[]>();
+        public Queue<byte[]> QueueBuffer
+        {
+            get
+            {
+                return queueBuffer;
+            }
 
-        public int AudioType { get; set; }
-        public int ID { get; set; }
+            set
+            {
+                queueBuffer = value;
+            }
+        }
+
+        private Queue<byte[]> queueBuffer = new Queue<byte[]>();
 
         public abstract void Dec(byte[] src);
 

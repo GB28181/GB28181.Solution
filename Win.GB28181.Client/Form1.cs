@@ -1,5 +1,4 @@
-﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Net;
+﻿using GB28181.SIPSorcery.Net;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
@@ -8,20 +7,18 @@ using GB28181.SIPSorcery.Sys;
 using GB28181.SIPSorcery.Sys.Config;
 using GB28181.SIPSorcery.Sys.Model;
 using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Logger4Net;
+using SS.Media;
+using SS.MediaServer.Media.TS;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Win.GB28181.Client.Player.Analyzer;
-using Win.Media;
-using Win.MediaServer.Media.TS;
 
 namespace Win.GB28181.Client
 {
@@ -35,8 +32,8 @@ namespace Win.GB28181.Client
         private string _dir = AppDomain.CurrentDomain.BaseDirectory + "Config";
         private DateTime _keepaliveTime;
         private Thread _keepaliveThread;
-        private readonly Queue<Keep> _keepQueue = new Queue<Keep>();
-        //private int _count = 0;
+        private Queue<Keep> _keepQueue = new Queue<Keep>();
+        private int _count = 0;
         private SIPMessageCore _messageCore;
         #endregion
 
@@ -44,7 +41,7 @@ namespace Win.GB28181.Client
         /// <summary>
         /// 选择的设备键
         /// </summary>
-        private string DevKey
+        private MonitorKey DevKey
         {
             get
             {
@@ -53,13 +50,12 @@ namespace Win.GB28181.Client
                 {
                     devItem = item;
                 }
-                //               MonitorKey key = new MonitorKey()
-                //               {
-                //                   DeviceID = devItem.ImageKey,
-                //                  CmdType = CommandType.Play
-                //               };
-                //               return key;
-                return devItem.ImageKey;
+                var key = new MonitorKey()
+                {
+                    DeviceID = devItem.ImageKey,
+                    CmdType = CommandType.Play
+                };
+                return key;
             }
         }
         #endregion
@@ -93,7 +89,6 @@ namespace Win.GB28181.Client
         public Form1()
         {
             InitializeComponent();
-            Initialize();
         }
 
         private void Initialize()
@@ -103,50 +98,42 @@ namespace Win.GB28181.Client
             txtStopTime.Text = DateTime.Now.ToString("yyyy-MM-dd 9:00:00");
             //txtDragDrop.Text = DateTime.Now.ToString("yyyy-MM-dd 14:00:00");
 
-            var configType = new Dictionary<string, string>
-            {
-                { "BasicParam", "基本参数配置" },
-                { "VideoParamOpt", "视频参数范围" },
-                { "SVACEncodeConfig", "SVAC编码配置" },
-                { "SVACDecodeConfig", "SVAC解码配置" }
-            };
-            BindingSource bs = new BindingSource
-            {
-                DataSource = configType
-            };
+            Dictionary<string, string> configType = new Dictionary<string, string>();
+            configType.Add("BasicParam", "基本参数配置");
+            configType.Add("VideoParamOpt", "视频参数范围");
+            configType.Add("SVACEncodeConfig", "SVAC编码配置");
+            configType.Add("SVACDecodeConfig", "SVAC解码配置");
+            BindingSource bs = new BindingSource();
+            bs.DataSource = configType;
 
             cbxConfig.DataSource = bs;
             cbxConfig.DisplayMember = "Value";
             cbxConfig.ValueMember = "Key";
 
-            Dictionary<string, string> recordType = new Dictionary<string, string>
-            {
-                { "time", "time" },
-                { "alarm", "alarm" },
-                { "manual", "manual" },
-                { "all", "all" }
-            };
-            BindingSource bsRecord = new BindingSource
-            {
-                DataSource = recordType
-            };
+            Dictionary<string, string> recordType = new Dictionary<string, string>();
+            recordType.Add("time", "time");
+            recordType.Add("alarm", "alarm");
+            recordType.Add("manual", "manual");
+            recordType.Add("all", "all");
+            BindingSource bsRecord = new BindingSource();
+            bsRecord.DataSource = recordType;
 
             cbxRecordType.DataSource = bsRecord;
             cbxRecordType.DisplayMember = "Value";
             cbxRecordType.ValueMember = "Key";
 
-            SipAccountStorage.Instance.Read();
-            IList<Camera> cameras = new List<Camera>();
-            var account = SipAccountStorage.Instance.Accounts.First();
-            if (account == null)
-            {
-                logger.Error("Account Config NULL,SIP not started");
-                return;
-            }
+            //SIPSqlite.Instance.Read();
+          //  var cameras = new List<CameraInfo>();
+           // var account = SIPSqlite.Instance.Accounts.First();
+            //if (account == null)
+            //{
+            //    logger.Error("Account Config NULL,SIP not started");
+            //    return;
+            //}
             _keepaliveTime = DateTime.Now;
             _cataThread = new Thread(new ThreadStart(HandleCata));
             _keepaliveThread = new Thread(new ThreadStart(HandleKeepalive));
- //           _messageCore = new SIPMessageCore(cameras, account);
+           // _messageCore = new SIPMessageCore(cameras, account);
         }
         #endregion
 
@@ -159,16 +146,14 @@ namespace Win.GB28181.Client
         #endregion
 
         #region 开始/停止服务
-        private void BtnStart_Click(object sender, System.EventArgs e)
+        private void btnStart_Click(object sender, System.EventArgs e)
         {
-
             //_tn = new TreeNode();
             //tvCalatog.Nodes.Add(_tn);
             //_bg = new TreeNode();
             //_tn.Nodes.Add(_bg);
 
             //tvCalatog.Nodes.Add(_tn);
-            txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
             _keepaliveTime = DateTime.Now;
             playerWin.Start();
             Initialize();
@@ -181,6 +166,7 @@ namespace Win.GB28181.Client
             _messageCore.OnCatalogReceived += m_msgCore_OnCatalogReceived;
             _messageCore.OnNotifyCatalogReceived += MessageCore_OnNotifyCatalogReceived;
             _messageCore.OnAlarmReceived += MessageCore_OnAlarmReceived;
+
             _messageCore.OnRecordInfoReceived += MessageCore_OnRecordInfoReceived;
             _messageCore.OnKeepaliveReceived += MessageCore_OnKeepaliveReceived;
             _messageCore.OnDeviceStatusReceived += DeviceStatusReceived;
@@ -303,13 +289,12 @@ namespace Win.GB28181.Client
             Invoke(new Action(() =>
             {
                 MessageBox.Show(msg);
-                //               var key = new MonitorKey()
-                //               {
-                //                   CmdType = CommandType.Play,
-                //                   DeviceID = alarm.DeviceID
-                //                };
-                var key = alarm.DeviceID;
-                _messageCore.NodeMonitorService[key].AlarmResponse(alarm);
+                var key = new MonitorKey()
+                {
+                    CmdType = CommandType.Play,
+                    DeviceID = alarm.DeviceID
+                };
+                _messageCore.NodeMonitorService[key.ToString()].AlarmResponse(alarm);
                 //txtMsg.Text = msg;
             }));
         }
@@ -463,22 +448,22 @@ namespace Win.GB28181.Client
         #region 其他接口
 
         //系统设备配置查询
-        private void BtnConfigQuery_Click(object sender, EventArgs e)
+        private void btnConfigQuery_Click(object sender, EventArgs e)
         {
             string configType = cbxConfig.SelectedValue.ToString();
-            _messageCore.NodeMonitorService[DevKey].DeviceConfigQuery(configType);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceConfigQuery(configType);
         }
 
         //设备状态查询
-        private void BtnStateSearch_Click(object sender, EventArgs e)
+        private void btnStateSearch_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceStateQuery();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceStateQuery();
         }
 
         //设备详细信息查询
         private void btnDevSearch_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceInfoQuery();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceInfoQuery();
         }
 
         //设备信息查询回调函数
@@ -509,7 +494,7 @@ namespace Win.GB28181.Client
         //设备重启
         private void brnRenboot_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceReboot();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceReboot();
         }
 
         //设备配置
@@ -523,10 +508,12 @@ namespace Win.GB28181.Client
             int expiration = (int)numIntervalTimeOut.Value;
             int heartBeatInterval = (int)numIntervalTime.Value;
             int heartBeatToal = (int)numIntervalTotal.Value;
-            _messageCore.NodeMonitorService[DevKey].DeviceConfig(name, expiration, heartBeatInterval, heartBeatToal);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceConfig(name, expiration, heartBeatInterval, heartBeatToal);
         }
-        public static byte[] ConvertUnicodeToUTF8(string message)
+        public byte[] ConvertUnicodeToUTF8(string message)
         {
+            System.Text.Encoding utf8, gb2312;
+            utf8 = System.Text.Encoding.GetEncoding("utf-8");
             byte[] array = Encoding.Default.GetBytes(message);
             byte[] s4 = System.Text.Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), System.Text.Encoding.UTF8, array);
             return s4;
@@ -543,25 +530,25 @@ namespace Win.GB28181.Client
         //事件订阅
         private void btnEventSubscribe_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceEventSubscribe();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceEventSubscribe();
         }
 
         //布防
         private void btnSetGuard_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceControlSetGuard();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceControlSetGuard();
         }
 
         //撤防
         private void btResetGuard_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceControlResetGuard();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceControlResetGuard();
         }
 
         //报警复位
         private void btnAlarmReset_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceControlResetAlarm();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceControlResetAlarm();
         }
         #endregion
 
@@ -569,7 +556,7 @@ namespace Win.GB28181.Client
         //目录订阅
         private void btnCatalogSubscribe_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceCatalogSubscribe(true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceCatalogSubscribe(true);
         }
 
         //目录查询
@@ -589,24 +576,20 @@ namespace Win.GB28181.Client
         private void BtnReal_Click(object sender, EventArgs e)
         {
             _analyzer = new StreamAnalyzer();
-//           _messageCore.NodeMonitorService[DevKey].RealVideoReq();
- //           _messageCore.NodeMonitorService[DevKey].OnStreamReady += Form1_OnStreamReady;
+            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
+            _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady += Form1_OnStreamReady;
         }
 
         //停止实时视频
         private void BtnBye_Click(object sender, EventArgs e)
         {
- //           _messageCore.NodeMonitorService[DevKey].OnStreamReady -= Form1_OnStreamReady;
-            _messageCore.NodeMonitorService[DevKey].ByeVideoReq();
+           _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady -= Form1_OnStreamReady;
+            _messageCore.NodeMonitorService[DevKey.ToString()].ByeVideoReq();
         }
 
         FileStream m_fs;
         void Form1_OnStreamReady(RTPFrame rtpFrame)
         {
-            if (rtpFrame == null)
-            {
-                throw new ArgumentNullException(nameof(rtpFrame));
-            }
             //byte[] buffer = rtpFrame.GetFramePayload();
             //if (this.m_fs == null)
             //{
@@ -655,96 +638,95 @@ namespace Win.GB28181.Client
         }
 
         //录像播放(点播)
-        private void BtnRecord_Click(object sender, EventArgs e)
+        private void btnRecord_Click(object sender, EventArgs e)
         {
             _analyzer = new StreamAnalyzer();
             var key = DevKey;
-    //        key.CmdType = CommandType.Playback;
+            key.CmdType = CommandType.Playback;
 
             DateTime startTime = DateTime.Parse(txtStartTime.Text.Trim());
             DateTime stopTime = DateTime.Parse(txtStopTime.Text.Trim());
-            _messageCore.NodeMonitorService[key].BackVideoReq(startTime, stopTime);
- //           _messageCore.NodeMonitorService[key].OnStreamReady += Form1_OnStreamReady;
+            _messageCore.NodeMonitorService[key.ToString()].BackVideoReq(startTime, stopTime);
+      //      _messageCore.NodeMonitorService[key.ToString()].OnStreamReady += Form1_OnStreamReady;
         }
 
         //终止点播(停止)
-        private void BtnStopRecord_Click(object sender, EventArgs e)
+        private void btnStopRecord_Click(object sender, EventArgs e)
         {
             var key = DevKey;
- //           key.CmdType = CommandType.Playback;
-            _messageCore.NodeMonitorService[key].ByeVideoReq();
-        //    _messageCore.NodeMonitorService[key].OnStreamReady -= Form1_OnStreamReady;
+            key.CmdType = CommandType.Playback;
+            _messageCore.NodeMonitorService[key.ToString()].ByeVideoReq();
+            _messageCore.NodeMonitorService[key.ToString()].OnStreamReady -= Form1_OnStreamReady;
         }
 
         //暂停播放
-        private void BtnPause_Click(object sender, EventArgs e)
+        private void btnPause_Click(object sender, EventArgs e)
         {
             var key = DevKey;
-//            key.CmdType = CommandType.Playback;
-            _messageCore.NodeMonitorService[key].BackVideoPauseControlReq();
+            key.CmdType = CommandType.Playback;
+            _messageCore.NodeMonitorService[key.ToString()].BackVideoPauseControlReq();
         }
         //继续播放
-        private void BtnPlay_Click(object sender, EventArgs e)
+        private void btnPlay_Click(object sender, EventArgs e)
         {
             var key = DevKey;
-//            key.CmdType = CommandType.Playback;
-            _messageCore.NodeMonitorService[key].BackVideoContinuePlayingControlReq();
+            key.CmdType = CommandType.Playback;
+            _messageCore.NodeMonitorService[key.ToString()].BackVideoContinuePlayingControlReq();
         }
         //播放倍数设置
-        private void BtnSdu_Click(object sender, EventArgs e)
+        private void btnSdu_Click(object sender, EventArgs e)
         {
             var key = DevKey;
- //           key.CmdType = CommandType.Playback;
+            key.CmdType = CommandType.Playback;
             string range = txtScale.Text.Trim();
-            _messageCore.NodeMonitorService[key].BackVideoPlaySpeedControlReq(range);
+            _messageCore.NodeMonitorService[key.ToString()].BackVideoPlaySpeedControlReq(range);
         }
         //拖动播放
-        private void Button17_Click(object sender, EventArgs e)
+        private void button17_Click(object sender, EventArgs e)
         {
             var key = DevKey;
- //           key.CmdType = CommandType.Playback;
+            key.CmdType = CommandType.Playback;
             int time = int.Parse(txtDragDrop.Text.Trim());
-            _messageCore.NodeMonitorService[key].BackVideoPlayPositionControlReq(time);
+            _messageCore.NodeMonitorService[key.ToString()].BackVideoPlayPositionControlReq(time);
         }
 
 
 
         //录像文件查询
-        private void BtnRecordGet_Click(object sender, EventArgs e)
+        private void btnRecordGet_Click(object sender, EventArgs e)
         {
             _recordSN = 1;
             lvRecord.Items.Clear();
             DateTime startTime = DateTime.Parse(txtStartTime.Text.Trim());
             DateTime stopTime = DateTime.Parse(txtStopTime.Text.Trim());
-            var key = DevKey;
- //           key.CmdType = CommandType.Playback;
+            //key.CmdType = CommandType.Playback;
             string type = cbxRecordType.SelectedValue.ToString();
-            _messageCore.NodeMonitorService[key].RecordFileQuery(startTime, stopTime, type);
+            _messageCore.NodeMonitorService[DevKey.ToString()].RecordFileQuery(startTime, stopTime, type);
         }
 
         //录像文件下载
         private void btnRecordDownload_Click(object sender, EventArgs e)
         {
             var key = DevKey;
-    //        key.CmdType = CommandType.Playback;
+            key.CmdType = CommandType.Playback;
 
             DateTime startTime = DateTime.Parse(txtStartTime.Text.Trim());
             DateTime stopTime = DateTime.Parse(txtStopTime.Text.Trim());
 
-            _messageCore.NodeMonitorService[key].VideoDownloadReq(startTime, stopTime);
-   //         _messageCore.NodeMonitorService[key].OnStreamReady += Form1_OnStreamReady;
+            _messageCore.NodeMonitorService[key.ToString()].VideoDownloadReq(startTime, stopTime);
+            _messageCore.NodeMonitorService[key.ToString()].OnStreamReady += Form1_OnStreamReady;
         }
 
         //开始手动录像
         private void btnStartRecord_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceControlRecord(true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceControlRecord(true);
         }
 
         //停止手动录像
-        private void BtnStopRd_Click(object sender, EventArgs e)
+        private void btnStopRd_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceControlRecord(false);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceControlRecord(false);
         }
         #endregion
 
@@ -753,55 +735,55 @@ namespace Win.GB28181.Client
         //上
         private void btnUP_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Up, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Up, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //下
         private void btnDown_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Down, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Down, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //左
         private void btnLeft_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Left, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Left, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //右
         private void btnRight_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Right, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Right, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //左上
         private void btnLeftUP_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.UpLeft, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.UpLeft, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //右上
         private void btnRightUP_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.UpRight, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.UpRight, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //左下
         private void btnLeftDown_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.DownLeft, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.DownLeft, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //右下
         private void btnRightDown_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.DownRight, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.DownRight, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //停止
         private void btnPTZStop_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Stop, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Stop, int.Parse(numberSpeed.Value.ToString()));
         }
         #endregion
 
@@ -809,14 +791,14 @@ namespace Win.GB28181.Client
         //设置预置位
         private void btnSetPreset_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.SetPreset, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.SetPreset, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //查询预置位
         private void btnSearchPreset_Click(object sender, EventArgs e)
         {
             cbxPreset.Items.Clear();
-            _messageCore.NodeMonitorService[DevKey].DevicePresetQuery();
+            _messageCore.NodeMonitorService[DevKey.ToString()].DevicePresetQuery();
         }
 
         //private Dictionary<string, string> presetList = new Dictionary<string, string>();
@@ -854,7 +836,7 @@ namespace Win.GB28181.Client
         /// 调用预置位
         private void btnGetPreset_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.GetPreset, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.GetPreset, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //删除预置位
@@ -862,7 +844,7 @@ namespace Win.GB28181.Client
         {
             if (cbxPreset.SelectedItem != null)
             {
-                _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.RemovePreset, int.Parse(cbxPreset.SelectedItem.ToString()));
+                _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.RemovePreset, int.Parse(cbxPreset.SelectedItem.ToString()));
                 cbxPreset.Items.Remove(cbxPreset.SelectedItem);
                 //presetList.Remove(cbxPreset.SelectedText.ToString());
                 //reloadPreset();
@@ -873,39 +855,39 @@ namespace Win.GB28181.Client
 
         #region 变倍/聚焦/光圈
         //变倍+
-        private void BtnZoom1_Click(object sender, EventArgs e)
+        private void btnZoom1_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Zoom1, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Zoom1, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //变倍-
         private void btnZoom2_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Zoom2, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Zoom2, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //聚焦+
-        private void BtnFocus1_Click(object sender, EventArgs e)
+        private void btnFocus1_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Focus1, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Focus1, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //聚焦-
         private void btnFocus2_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Focus2, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Focus2, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //光圈开
         private void btnIris1_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Iris1, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Iris1, int.Parse(numberSpeed.Value.ToString()));
         }
 
         //光圈关
         private void btnIris2_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].PtzContrl(PTZCommand.Iris2, int.Parse(numberSpeed.Value.ToString()));
+            _messageCore.NodeMonitorService[DevKey.ToString()].PtzContrl(PTZCommand.Iris2, int.Parse(numberSpeed.Value.ToString()));
         }
         #endregion
 
@@ -934,14 +916,14 @@ namespace Win.GB28181.Client
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
             var zoom = DragZoomValue();
-            _messageCore.NodeMonitorService[DevKey].DragZoomContrl(zoom, true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DragZoomContrl(zoom, true);
         }
 
         //拉框缩小
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
             var zoom = DragZoomValue();
-            _messageCore.NodeMonitorService[DevKey].DragZoomContrl(zoom, false);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DragZoomContrl(zoom, false);
         }
         #endregion
 
@@ -949,13 +931,13 @@ namespace Win.GB28181.Client
         //看守位开
         private void btnPositionOpen_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].HomePositionControl(true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].HomePositionControl(true);
         }
 
         //看守位关
         private void btnPositionClose_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].HomePositionControl(false);
+            _messageCore.NodeMonitorService[DevKey.ToString()].HomePositionControl(false);
         }
         #endregion
         #endregion
@@ -1082,7 +1064,7 @@ namespace Win.GB28181.Client
                 };
                 playerWin.Play(frame);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
             }
         }
@@ -1108,8 +1090,8 @@ namespace Win.GB28181.Client
             //header.GetBytes();
             //packet.Header = header;
             //packet.Payload = buffer;
-
-            // string viaStr = via.ToString();
+            
+           // string viaStr = via.ToString();
 
             Console.WriteLine("");
 
@@ -1224,22 +1206,22 @@ a=rtpmap:97 MPEG4/90000";
         /// <param name="e"></param>
         private void BtnAudioNotify_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].AudioPublishNotify();
+            _messageCore.NodeMonitorService[DevKey.ToString()].AudioPublishNotify();
         }
 
 
-        private void BtnSubPositionInfo_Click(object sender, EventArgs e)
+        private void btnSubPositionInfo_Click(object sender, EventArgs e)
         {
             int interval = (int)numInterval.Value;
-            _messageCore.NodeMonitorService[DevKey].MobilePositionQueryRequest(interval, true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].MobilePositionQueryRequest(interval, true);
         }
 
         #endregion
 
-        private void BtnSubscribeCancel_Click(object sender, EventArgs e)
+        private void btnSubscribeCancel_Click(object sender, EventArgs e)
         {
             int interval = (int)numInterval.Value;
-            _messageCore.NodeMonitorService[DevKey].MobilePositionQueryRequest(interval, false);
+            _messageCore.NodeMonitorService[DevKey.ToString()].MobilePositionQueryRequest(interval, false);
         }
         #region 移动设备位置数据订阅/通知
 
@@ -1272,7 +1254,7 @@ a=rtpmap:97 MPEG4/90000";
         /// <param name="e"></param>
         private void btnKeyFrame_Click(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].MakeKeyFrameRequest();
+            _messageCore.NodeMonitorService[DevKey.ToString()].MakeKeyFrameRequest();
         }
 
         private void tvCalatog_AfterSelect(object sender, TreeViewEventArgs e)
@@ -1293,7 +1275,7 @@ a=rtpmap:97 MPEG4/90000";
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            _messageCore.NodeMonitorService[DevKey].DeviceCatalogSubscribe(false);
+            _messageCore.NodeMonitorService[DevKey.ToString()].DeviceCatalogSubscribe(false);
         }
     }
 

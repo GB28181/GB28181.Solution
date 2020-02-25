@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Win.ClientBase.Mixer.Video;
+using SS.ClientBase.Mixer.Video;
 using System.Drawing;
 using System.Collections;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Win.ClientBase.Codec;
+using SS.ClientBase.Codec;
 using System.Drawing.Imaging;
-using Win.ClientBase.Media;
+using SS.ClientBase.Media;
 
-namespace Win.ClientBase.Mixer
+namespace SS.ClientBase.Mixer
 {
     public sealed class MediaMixerCanvas
     {
@@ -368,7 +368,7 @@ namespace Win.ClientBase.Mixer
 
             if (count < 0 || count > MAXVIDEO_NUM)
                 return;
-            Image image = Image.FromFile(@"D:\Mixer\SlWClient\Win.WPFClient\Images\bg_module_call.png");
+            Image image = Image.FromFile(@"D:\Mixer\SlWClient\SS.WPFClient\Images\bg_module_call.png");
             mapRects.Clear();
             CreateRect(count);
             System.Drawing.Font logFont = new System.Drawing.Font("宋体", 22.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -424,7 +424,7 @@ namespace Win.ClientBase.Mixer
                     item.StreamID = StreamID;
             }
         }
-        public void Play(Win.Media.MediaFrame frame)
+        public void Play(SS.Media.MediaFrame frame)
         {
             //if(frame.StreamID)
             monitor[0].Play(frame);

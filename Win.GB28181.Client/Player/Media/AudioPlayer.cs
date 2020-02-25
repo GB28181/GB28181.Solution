@@ -14,13 +14,13 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
-using Win.Media;
-using Win.Media.Wave.Wave;
-using Win.ClientBase.Codec;
+using SS.Media;
+using SS.Media.Wave.Wave;
+using SS.ClientBase.Codec;
 using GLib.AXLib.Utility;
-using Win.MediaServer.Media;
+using SS.MediaServer.Media;
 
-namespace Win.ClientBase.Media
+namespace SS.ClientBase.Media
 {
     /// <summary>
     /// 音频播放器

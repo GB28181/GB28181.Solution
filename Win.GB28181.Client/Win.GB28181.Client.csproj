@@ -2,19 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E2F1C35-7354-4F55-ABA4-44CBCE2E18B5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Win.GB28181.Client</RootNamespace>
     <AssemblyName>Win.GB28181.Client</AssemblyName>
-    <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -23,14 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.112" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\GB28181.SIPSorcery\GB28181.SIPSorcery.csproj" />
-    <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
-    <ProjectReference Include="..\Win.MeidaNetEngine\Win.MediaNetEngine.csproj" />
+    <ProjectReference Include="..\SS.MediaNetEngine\SS.MediaNetEngine.csproj" />
+
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AForge">
@@ -48,27 +44,8 @@
     <Reference Include="DirectShowLib-2005">
       <HintPath>..\Win.GB28181.Libs\DirectShowLib-2005.dll</HintPath>
     </Reference>
-    <Reference Include="GLib">
-      <HintPath>..\Win.GB28181.Libs\GLib.dll</HintPath>
-    </Reference>
-    <Reference Include="StarEye.VideoConver">
-      <HintPath>..\Win.GB28181.Libs\StarEye.VideoConver.dll</HintPath>
-    </Reference>
     <Reference Include="Tao.Sdl">
       <HintPath>..\Win.GB28181.Libs\Tao.Sdl.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 </Project>

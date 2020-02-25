@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using DirectShowLib;
 
-namespace Win.WPFClient.DShow
+namespace SS.WPFClient.DShow
 {
     //directshow 数据回调
     [System.Security.SuppressUnmanagedCodeSecurity]

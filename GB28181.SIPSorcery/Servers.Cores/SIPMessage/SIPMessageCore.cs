@@ -24,6 +24,24 @@ using System.Threading.Tasks;
 namespace GB28181.SIPSorcery.Servers.SIPMessage
 {
 
+    public struct MonitorKey
+    {
+        /// <summary>
+        /// 设备编码
+        /// </summary>
+        public string DeviceID { get; set; }
+
+        /// <summary>
+        /// 命令类型
+        /// </summary>
+        public CommandType CmdType { get; set; }
+
+        public override string ToString()
+        {
+            return this.DeviceID;
+        }
+    }
+
     /// <summary>
     /// sip消息核心处理
     /// </summary>
@@ -257,6 +275,8 @@ namespace GB28181.SIPSorcery.Servers.SIPMessage
                 logger.Error("Exception Stop: " + excp.Message);
             }
         }
+
+
 
         public void PtzControl(PTZCommand ptzcmd, int dwSpeed, string deviceId)
         {

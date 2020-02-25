@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Win.ClientBase.Mixer.Video
+namespace SS.ClientBase.Mixer.Video
 {
     public class MarqueeCanvas : StringCanvas
     {

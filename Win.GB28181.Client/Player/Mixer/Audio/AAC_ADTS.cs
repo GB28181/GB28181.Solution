@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Win.ClientBase.Mixer.Audio
+namespace SS.ClientBase.Mixer.Audio
 {
 
     public class AAC_ADTS {

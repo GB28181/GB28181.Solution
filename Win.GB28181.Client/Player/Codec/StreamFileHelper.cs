@@ -3,9 +3,9 @@
 //using System.IO;
 //using System.Linq;
 //using System.Text;
-//using Win.MediaNetEngine;
+//using SS.Media;
 
-//namespace Win.ClientBase.Codec {
+//namespace SS.ClientBase.Codec {
 //    public class ReadFile {
 //        public static List<byte[]> GetBuffByFile1(string file) {
 //            var q = GetBuffByFile(file);

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Win.Media;
-using Win.ClientBase.Codec;
+using SS.Media;
+using SS.ClientBase.Codec;
 using System.Threading;
 using GLib.AXLib.Utility;
 using GLib.GeneralModel;
 
-namespace Win.ClientBase.Media {
+namespace SS.ClientBase.Media {
     public class VideoPlayer : IDisposable {
         private IYUVDraw _yuvDraw = null;
         private FFImp _ffimp = null;

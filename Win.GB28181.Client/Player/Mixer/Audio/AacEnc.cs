@@ -1,11 +1,11 @@
-﻿using Win.ClientBase.Codec;
+﻿using SS.ClientBase.Codec;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Win.ClientBase.Mixer.Audio
+namespace SS.ClientBase.Mixer.Audio
 {
 
     public class AacEnc : IDisposable

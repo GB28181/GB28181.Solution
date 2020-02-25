@@ -7,7 +7,7 @@ using GLib.Extension;
 using System.Threading;
 
 
-namespace Win.ClientBase.Codec
+namespace SS.ClientBase.Codec
 {
     /// <summary>
     /// SPEEX编码器

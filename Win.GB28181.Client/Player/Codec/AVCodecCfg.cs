@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using Win.Media;
+using SS.Media;
 using System.IO;
 
-namespace Win.ClientBase.Codec
+namespace SS.ClientBase.Codec
 {
     /// <summary>
     /// 音视频编码参数设置
@@ -80,7 +80,7 @@ namespace Win.ClientBase.Codec
     //        encodeName = name;
     //        encoder = GetGeneralEncoder(name);
     //    }
-
+         
 
     //    // 获取通用编码代号
     //    public static int GetGeneralEncoder(String name) {
@@ -96,14 +96,12 @@ namespace Win.ClientBase.Codec
     //}
 
 
-    public class VideoEncodeCfg : Win.Media.Codec.VideoEncodeCfg
-    {
-
+    public class VideoEncodeCfg : SS.Media.Codec.VideoEncodeCfg {
+       
         public IYUVDraw Draw;
+ 
 
-
-        public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null)
-        {
+        public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null) {
             VideoEncodeCfg encCfg = new VideoEncodeCfg();
 
             encCfg.SetEncoder("H264");
@@ -120,8 +118,7 @@ namespace Win.ClientBase.Codec
 
 
 
-    public class AudioEncodeCfg : Win.Media.Codec.AudioEncodeCfg
-    {
+    public class AudioEncodeCfg : SS.Media.Codec.AudioEncodeCfg {
         public int micId = 0;
         public int frequency = 8000;// 采样
         public int format = 16;// 位元
@@ -132,8 +129,7 @@ namespace Win.ClientBase.Codec
 
 
 
-        public static AudioEncodeCfg GetDefault()
-        {
+        public static AudioEncodeCfg GetDefault() {
             AudioEncodeCfg r = new AudioEncodeCfg();
             r.SetEncoder("AAC_");
             r.frequency = 32000;

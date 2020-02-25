@@ -34,24 +34,18 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Xml;
-using GB28181.SIPSorcery.Persistence;
+using GB28181.Logger4Net;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Sys;
-using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.Sys.Config;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Win.GB28181.Client.Message
+namespace Gb28181_Client.Message
 {
     public class SIPMessageDaemon
     {
@@ -59,7 +53,7 @@ namespace Win.GB28181.Client.Message
 
         private SIPTransport m_sipTransport;
 
-        private SIPAssetGetDelegate<SIPAccount> GetSIPAccount_External;
+     //   private SIPAssetGetDelegate<SIPAccount> GetSIPAccount_External;
         private SIPAuthenticateRequestDelegate SIPAuthenticateRequest_External;
         private Dictionary<string, PlatformConfig> _platformList;
         private SIPAccount _account;
@@ -86,14 +80,12 @@ namespace Win.GB28181.Client.Message
                 m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
                 m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
                 SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
-
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
                 m_sipTransport.AddSIPChannel(sipChannels);
 
+
                 MessageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
-               
-                MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList,_account);
-                
+                MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList, _account);
                 GB28181Catalog.Instance.MessageCore = MessageCore;
                 m_sipTransport.SIPTransportRequestReceived += MessageCore.AddMessageRequest;
                 m_sipTransport.SIPTransportResponseReceived += MessageCore.AddMessageResponse;

@@ -8,7 +8,7 @@ using GLib.Extension;
 using Tao.Sdl;
 
 
-namespace Win.ClientBase.Media
+namespace SS.ClientBase.Media
 {
     public class SDLPlay
     {

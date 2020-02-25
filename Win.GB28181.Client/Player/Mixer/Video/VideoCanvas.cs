@@ -1,14 +1,14 @@
-﻿using Win.ClientBase.Codec;
-using System.Drawing;
+﻿using SS.ClientBase.Codec;
 using System;
-using System.Runtime.InteropServices;
+using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
-namespace Win.ClientBase.Mixer.Video
+namespace SS.ClientBase.Mixer.Video
 {
     public class VideoCanvas : Canvas, IYUVDraw
     {
-        public System.Drawing.Bitmap Background;
+        public Bitmap Background;
 
      
         public int srcWidth;
