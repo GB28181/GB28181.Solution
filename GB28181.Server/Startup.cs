@@ -10,6 +10,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using GB28181.Server.Main;
+using GB28181.SIPSorcery.Sys.Config;
+using GB28181.Server.Message;
+using GB28181.SIPSorcery.Servers;
+using GB28181.SIPSorcery.Servers.SIPMonitor;
+using GB28181.SIPSorcery.Servers.SIPMessage;
+using GB28181.SIPSorcery.SIP;
+using GB28181.SIPSorcery.Sys.Cache;
+using GB28181.SIPSorcery.Sys.Model;
+using GB28181.Logger4Net;
 
 namespace GB28181.Service
 {
@@ -32,6 +41,26 @@ namespace GB28181.Service
             services.AddSingleton<IMainProcess, MainProcess>();
             services.AddHostedService<GBService>();
             services.AddGrpc();
+            services.AddSingleton<ILog, Logger>()
+                            .AddSingleton<ISipAccountStorage, SipAccountStorage>()
+                            .AddSingleton<MediaEventSource>()
+                            .AddSingleton<MessageHub>()
+                            .AddSingleton<CatalogEventsProc>()
+                            .AddSingleton<AlarmEventsProc>()
+                            .AddSingleton<DeviceEventsProc>()
+                            .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
+                            .AddTransient<ISIPMonitorCore, SIPMonitorCore>()
+                            .AddSingleton<ISipMessageCore, SIPMessageCore>()
+                            .AddSingleton<ISIPTransport, SIPTransport>()
+                            .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
+                            .AddSingleton<ISIPRegistrarCore, SIPRegistrarCore>()
+                            .AddSingleton<IMemoCache<Camera>, DeviceObjectCache>()
+                            .AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>()
+                            .AddScoped<PtzControl.PtzControlBase, PtzControlImpl>()
+                            .AddScoped<DeviceCatalog.DeviceCatalogBase, DeviceCatalogImpl>()
+                            .AddScoped<DeviceFeature.DeviceFeatureBase, DeviceFeatureImpl>()
+                            .AddScoped<VideoOnDemand.VideoOnDemandBase, VideoOnDemandImpl>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
