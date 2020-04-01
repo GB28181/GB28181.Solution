@@ -36,12 +36,12 @@ namespace GB28181.Server.Main
         private MessageHub messageCenter;
         private ISIPRegistrarCore registry;
 
-        public MainProcess(ISipMessageCore sipMessageCore, MessageHub messageHub, ISIPRegistrarCore sipRegistrarCore, IServiceCollection services)
+        public MainProcess(ISipMessageCore sipMessageCore, MessageHub messageHub, ISIPRegistrarCore sipRegistrarCore)
         {
             _mainSipService = sipMessageCore;
             messageCenter = messageHub;
             registry = sipRegistrarCore;
-            _serviceProvider = services.BuildServiceProvider();
+           // _serviceProvider = services.BuildServiceProvider();
         }
 
         public void Stop()
