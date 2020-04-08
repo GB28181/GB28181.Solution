@@ -1,19 +1,8 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.Server.Message;
-using GB28181.Service;
-using GB28181.Service.Protos.DeviceCatalog;
-using GB28181.Service.Protos.DeviceFeature;
-using GB28181.Service.Protos.Ptz;
-using GB28181.Service.Protos.Video;
-using GB28181.Service.Protos.VideoRecord;
 using GB28181.SIPSorcery.Servers;
 using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.Servers.SIPMonitor;
-using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Cache;
 using GB28181.SIPSorcery.Sys.Config;
-using GB28181.SIPSorcery.Sys.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -40,8 +29,20 @@ namespace GB28181.Server.Main
         private readonly CancellationTokenSource _deviceStatusReportToken = new CancellationTokenSource();
 
         // private Queue<HeartBeatEndPoint> _keepAliveQueue = new Queue<HeartBeatEndPoint>();
-        private readonly IServiceCollection servicesContainer = new ServiceCollection();
+        //private readonly IServiceCollection servicesContainer = new ServiceCollection();
+        // private ServiceProvider _serviceProvider = null;
 
+        private ISipMessageCore _mainSipService;
+        private MessageHub messageCenter;
+        private ISIPRegistrarCore registry;
+
+        public MainProcess(ISipMessageCore sipMessageCore, MessageHub messageHub, ISIPRegistrarCore sipRegistrarCore)
+        {
+            _mainSipService = sipMessageCore;
+            messageCenter = messageHub;
+            registry = sipRegistrarCore;
+           // _serviceProvider = services.BuildServiceProvider();
+        }
 
         public void Stop()
         {
@@ -60,48 +61,28 @@ namespace GB28181.Server.Main
             //InitServer
             SipAccountStorage.RPCGBServerConfigReceived += SipAccountStorage_RPCGBServerConfigReceived;
 
-            //Config Service & and run
-            ConfigServices(config);
+            ////Config Service & and run
+            //ConfigServices(config);
 
             //Start the sip main service
             Task.Factory.StartNew(() => Processing(), _processingServiceToken.Token);
         }
 
-        private void ConfigServices(IConfigurationRoot config)
-        {
-            //we should initialize resource here then use them.
-            servicesContainer.AddSingleton<ILog, Logger>()
-                            .AddSingleton(config)  // add configuration 
-                            .AddSingleton<ISipAccountStorage, SipAccountStorage>()
-                            .AddSingleton<MediaEventSource>()
-                            .AddSingleton<MessageHub>()
-                            .AddSingleton<CatalogEventsProc>()
-                            .AddSingleton<AlarmEventsProc>()
-                              .AddSingleton<DeviceEventsProc>()
-                            .AddScoped<ISIPServiceDirector, SIPServiceDirector>()
-                            .AddTransient<ISIPMonitorCore, SIPMonitorCore>()
-                            .AddSingleton<ISipMessageCore, SIPMessageCore>()
-                            .AddSingleton<ISIPTransport, SIPTransport>()
-                            .AddTransient<ISIPTransactionEngine, SIPTransactionEngine>()
-                            .AddSingleton<ISIPRegistrarCore, SIPRegistrarCore>()
-                            .AddSingleton<IMemoCache<Camera>, DeviceObjectCache>()
-                            .AddScoped<VideoSession.VideoSessionBase, SSMediaSessionImpl>()
-                            .AddScoped<PtzControl.PtzControlBase, PtzControlImpl>()
-                            .AddScoped<DeviceCatalog.DeviceCatalogBase, DeviceCatalogImpl>()
-                            .AddScoped<DeviceFeature.DeviceFeatureBase, DeviceFeatureImpl>()
-                            .AddScoped<VideoOnDemand.VideoOnDemandBase, VideoOnDemandImpl>()
-                            .AddSingleton(servicesContainer); // add itself 
-            _serviceProvider = servicesContainer.BuildServiceProvider();
-        }
+        //private void ConfigServices(IConfigurationRoot config)
+        //{
+        //    //we should initialize resource here then use them.
+        //    servicesContainer.AddSingleton(servicesContainer); // add itself 
+        //    _serviceProvider = servicesContainer.BuildServiceProvider();
+        //}
 
         private void Processing()
         {
             //  _keepaliveTime = DateTime.Now;
             try
             {
-                var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
+               // var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
                 //Get meassage Handler
-                var messageCenter = _serviceProvider.GetRequiredService<MessageHub>();
+              //  var messageCenter = _serviceProvider.GetRequiredService<MessageHub>();
                 // start the Listening SipService in main Service
                 Task.Run(() =>
                 {
@@ -122,7 +103,7 @@ namespace GB28181.Server.Main
                 });
 
                 // run the register service
-                var registry = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
+              //  var registry = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
 
                 Task.Factory.StartNew(() => registry.ProcessRegisterRequest(), _registryServiceToken.Token);
 
@@ -132,6 +113,7 @@ namespace GB28181.Server.Main
             catch (Exception exMsg)
             {
                 logger.Error(exMsg.Message);
+                throw exMsg;
             }
 
         }

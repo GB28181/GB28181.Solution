@@ -41,10 +41,11 @@ using GB28181.SIPSorcery.SIP.App;
 using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Persistence.XML;
+using SIPSorcery.GB28181.Persistence;
 
 namespace GB28181.SIPSorcery.Persistence
 {
-    public class SIPAssetPersistorFactory<T> where T : class, ISIPAsset, new()
+    public static class SIPAssetPersistorFactory<T> where T : class, ISIPAsset, new()
     {
         private static ILog logger = AppState.logger;
 

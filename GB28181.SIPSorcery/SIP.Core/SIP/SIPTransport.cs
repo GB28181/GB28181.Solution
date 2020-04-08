@@ -1268,8 +1268,9 @@ namespace GB28181.SIPSorcery.SIP
                         else
                         {
                             //rawSIPMessage = Encoding.Default.GetString(buffer, 0, buffer.Length);
+                            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//函数进行注册,解使用GB2312编码异常，配合System.Text.Encoding.CodePages包使用
                             rawSIPMessage = Encoding.GetEncoding("GB2312").GetString(buffer, 0, buffer.Length);
-                            if (!rawSIPMessage.StartsWith("REGISTER") && !rawSIPMessage.StartsWith("MESSAGE"))
+                            if (!rawSIPMessage.StartsWith("REGISTER", StringComparison.CurrentCultureIgnoreCase) && !rawSIPMessage.StartsWith("MESSAGE", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 string debug = rawSIPMessage;
                             }
@@ -1285,7 +1286,7 @@ namespace GB28181.SIPSorcery.SIP
 
                                 return;
                             }
-                            else if (!rawSIPMessage.Contains("SIP"))
+                            else if (!rawSIPMessage.Contains("SIP", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "Missing SIP string.", SIPValidationFieldsEnum.NoSIPString, rawSIPMessage);
 
@@ -1694,7 +1695,7 @@ namespace GB28181.SIPSorcery.SIP
                 {
                     response.Header.Vias = requestHeader.Vias;
                 }
-                
+
                 response.Header.MaxForwards = Int32.MinValue;
                 response.Header.Allow = ALLOWED_SIP_METHODS;
 

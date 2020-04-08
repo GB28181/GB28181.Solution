@@ -6,6 +6,12 @@ namespace GB28181.SIPSorcery.Servers
 {
     public interface IMediaAction
     {
+
+        /// <summary>
+        /// 实时视频请求
+        /// </summary>
+        void RealVideoReq();
+
         /// <summary>
         /// 实时视频请求
         /// </summary>
@@ -31,7 +37,7 @@ namespace GB28181.SIPSorcery.Servers
         /// <summary>
         /// 视频流回调完成
         /// </summary>
-       // event Action<RTPFrame> OnStreamReady;
+       event Action<RTPFrame> OnStreamReady;
 
 
         #region 录像点播
