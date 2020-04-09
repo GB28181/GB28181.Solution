@@ -69,8 +69,7 @@ running on aspnetcore 3.1+
 
 ## Inspired By
 
-+ [GB28181 Server](https://github.com/mackenbaron/Gb28181_Platform)
-
++ [Gb28181_Platform](https://github.com/mackenbaron/Gb28181_Platform)
 
 + [sipsorcery](https://github.com/sipsorcery/sipsorcery)
 
