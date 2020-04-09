@@ -62,10 +62,12 @@ running on aspnetcore 3.1+
 ## 模块在系统内架构关系
 
 下图展示 GB28181.Server 在整个系统架构中设定的、与其他服务的模块关系以及交互方式设计：
-*需要注意：图示中的架构设计，不一定适合你的项目需求和你的系统架构设计要求，往往需要根据你的项目实际做修改和调整，欢迎共同讨论，共同进步，欢迎PR*
 
- [GB28181.Server-Assembly-Relationship](./docs/GB28181.Server-Assembly-Relationship.png)
+ ![GB28181.Server-Assembly-Relationship](./docs/GB28181.Server-Assembly-Relationship.png)
 
+*需要注意：图示中的架构设计，不一定适合你的项目需求和你的系统架构设计要求，往往需要根据你的项目实际做修改和调整*
+
+*欢迎共同讨论，共同进步，欢迎PR*
 
 ## 讨论、成为共同作者、近距离贡献
 
