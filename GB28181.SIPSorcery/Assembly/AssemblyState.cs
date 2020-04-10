@@ -8,7 +8,7 @@
 //	Aaron Clauson
 //
 // History:
-// 22 May 2005	Aaron Clauson	Created.
+// 22 May 2005	Aaron Clauson Created.
 //
 // License: 
 // This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
@@ -40,24 +40,10 @@ using System;
 
 namespace GB28181.SIPSorcery.SIP
 {
-    public class AssemblyState
+    public static class AssemblyState
 	{
-		public const string LOGGER_NAME = "sipsorcery.sip";
 
-		public static ILog logger = null;
-
-        static AssemblyState()
-		{
-			try
-			{
-				// Configure logging.
-				logger = AppState.GetLogger(LOGGER_NAME);
-			}
-			catch(Exception excp)
-			{
-                Console.WriteLine("Exception AssemblyState. " + excp.Message);
-			}
-		}
+		public static readonly ILog logger = AppState.GetLogger("GB28181.SIPSorcery");
 
         public const string XML_DOMAINS_FILENAME = "sipdomains.xml";
         public const string XML_SIPACCOUNTS_FILENAME = "sipaccounts.xml";

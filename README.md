@@ -86,4 +86,4 @@ running on aspnetcore 3.1+
 
 ## License
 
-BSD v2
+MIT & BSD v2
