@@ -11,19 +11,18 @@
 // 19 Oct 2007	Aaron Clauson	Created.
 // ============================================================================
 
+using GB28181.Logger4Net;
+using Heijden.DNS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
-using System.Threading;
 using System.Text.RegularExpressions;
-using Heijden.DNS;
-using GB28181.Logger4Net;
+using System.Threading;
 
 namespace GB28181.SIPSorcery.Net
 {
-    public class DNSManager
+    public static class DNSManager
     {
         class LookupRequest
         {
