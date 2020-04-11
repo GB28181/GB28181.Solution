@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GB28181.Logger4Net
 {
-    public class LogManager
+    public static class LogManager
     {
 
         private static readonly Dictionary<string, ILog> _loggerMapper = new Dictionary<string, ILog>();
