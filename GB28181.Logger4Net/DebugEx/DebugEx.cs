@@ -3,9 +3,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 
-namespace Helpers
+namespace GB28181.Logger4Net.DebugEx
 {
-	public static class DebugEx
+	public static class _DebugEx
 	{
 		private static string _appName = "";
 
@@ -18,13 +18,20 @@ namespace Helpers
 
 		public static event Action<string> EvtTrace;
 
+
+		public static string[] LogFlagSwitch = new string[] { };
+		
+		public static void Trace(Exception e)
+		{
+			Trace("Error", e.ToString());
+		}
+
 		public static void Trace(string flag, string msg)
 		{
 			string text = $"{flag}___{msg}";
-			Console.WriteLine(text);
 			if (EvtTrace != null)
 			{
-				EvtTrace(text);
+				EvtTrace?.Invoke(text);
 			}
 		}
 
@@ -53,26 +60,26 @@ namespace Helpers
 
 		public static void OnFatalException(Exception ex, bool isEnd = false)
 		{
-			StringBuilder stringBuilder = new StringBuilder();
+			var stringBuilder = new StringBuilder();
 			string text = "";
 			string version = Version;
 			text = $"{_appName} {version} {DateTime.Now}";
 			if (isEnd)
 			{
-				text = string.Format("Fatal error \r\n{0} {1}", _appName, "");
+				text = $"Fatal error \r\n{_appName} {1}";
 			}
 			stringBuilder.AppendLine(text);
 			stringBuilder.AppendLine(GetErrorString(ex));
+
+			var stackMsg = $"{text} \r\nDetails：{ex.Message + ex.StackTrace}\r\nTime：{DateTime.Now}";
+			stringBuilder.AppendLine(stackMsg);
 			WriteLog(stringBuilder.ToString());
-			string text2 = $"{text} \r\nDetails：{ex.Message + ex.StackTrace}\r\nTime：{DateTime.Now}";
-			if (!_alertExceptionMsg)
-			{
-			}
+			
 		}
 
 		public static string GetLog(Exception ex, bool isEnd = false)
 		{
-			StringBuilder stringBuilder = new StringBuilder();
+			var stringBuilder = new StringBuilder();
 			string text = "";
 			string arg = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 			text = $"{_appName} {arg} {DateTime.Now}";
@@ -98,7 +105,6 @@ namespace Helpers
 			stringBuilder.AppendLine(pleft + ex.StackTrace);
 			if (ex.InnerException != null)
 			{
-				stringBuilder.AppendLine("-------------------------");
 				stringBuilder.AppendLine(GetErrorString(ex.InnerException, pleft + "  "));
 			}
 			return stringBuilder.ToString();
