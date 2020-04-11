@@ -1896,12 +1896,12 @@ namespace GB28181.SIPSorcery.SIP
 
         public SIPDNSLookupResult GetHostEndPoint(string host, bool async)
         {
-            return ResolveSIPEndPoint_External(SIPURI.ParseSIPURIRelaxed(host), async);
+            return ResolveSIPEndPoint_External?.Invoke(SIPURI.ParseSIPURIRelaxed(host), async);
         }
 
         public SIPDNSLookupResult GetURIEndPoint(SIPURI uri, bool async)
         {
-            return ResolveSIPEndPoint_External(uri, async);
+            return ResolveSIPEndPoint_External?.Invoke(uri, async);
         }
 
         /// <summary>

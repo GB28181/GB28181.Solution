@@ -30,9 +30,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using Heijden.DNS;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Net;
 using GB28181.SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
@@ -60,7 +58,7 @@ namespace GB28181.SIPSorcery.SIP.App
     /// - A DNS server has been observed to not respond at all to NAPTR or SRV record queries meaning lookups for
     ///   them will permanently time out.
     /// </remarks>
-    public class SIPDNSManager
+    public static class SIPDNSManager
     {
         private const int DNS_LOOKUP_TIMEOUT = 5;                       // 2 second timeout for DNS lookups.
         private const int DNS_A_RECORD_LOOKUP_TIMEOUT = 15;              // 5 second timeout for crticial A record DNS lookups.
@@ -172,36 +170,37 @@ namespace GB28181.SIPSorcery.SIP.App
             SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS A record lookup requested for " + host + ".", null));
             SIPDNSLookupResult result = new SIPDNSLookupResult(uri);
 
-            DNSResponse aRecordResponse = DNSManager.Lookup(host, DNSQType.A, DNS_A_RECORD_LOOKUP_TIMEOUT, null, true, async);
-            if (aRecordResponse == null && async)
-            {
-                result.Pending = true;
-            }
-            else if (aRecordResponse.Timedout)
-            {
-                result.ATimedoutAt = DateTime.Now;
-            }
-            else if (aRecordResponse.Error != null)
-            {
-                result.LookupError = aRecordResponse.Error;
-            }
-            else if (aRecordResponse.RecordsA == null || aRecordResponse.RecordsA.Length == 0)
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS no A records found for " + host + ".", null));
-                result.LookupError = "No A records found for " + host + ".";
-            }
-            else
-            {
-                SIPURI sipURI = result.URI;
-                foreach (RecordA aRecord in aRecordResponse.RecordsA)
-                {
-                    SIPDNSLookupEndPoint sipLookupEndPoint = new SIPDNSLookupEndPoint(new SIPEndPoint(sipURI.Protocol, new IPEndPoint(aRecord.Address, port)), aRecord.RR.TTL);
-                    result.AddLookupResult(sipLookupEndPoint);
-                    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS A record found for " + host + ", result " + sipLookupEndPoint.LookupEndPoint.ToString() + ".", null));
-                }
-            }
+            //DNSResponse aRecordResponse = DNSManager.Lookup(host, DNSQType.A, DNS_A_RECORD_LOOKUP_TIMEOUT, null, true, async);
+            //if (aRecordResponse == null && async)
+            //{
+            //    result.Pending = true;
+            //}
+            //else if (aRecordResponse.Timedout)
+            //{
+            //    result.ATimedoutAt = DateTime.Now;
+            //}
+            //else if (aRecordResponse.Error != null)
+            //{
+            //    result.LookupError = aRecordResponse.Error;
+            //}
+            //else if (aRecordResponse.RecordsA == null || aRecordResponse.RecordsA.Length == 0)
+            //{
+            //    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS no A records found for " + host + ".", null));
+            //    result.LookupError = "No A records found for " + host + ".";
+            //}
+            //else
+            //{
+            //    SIPURI sipURI = result.URI;
+            //    foreach (RecordA aRecord in aRecordResponse.RecordsA)
+            //    {
+            //        SIPDNSLookupEndPoint sipLookupEndPoint = new SIPDNSLookupEndPoint(new SIPEndPoint(sipURI.Protocol, new IPEndPoint(aRecord.Address, port)), aRecord.RR.TTL);
+            //        result.AddLookupResult(sipLookupEndPoint);
+            //        SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS A record found for " + host + ", result " + sipLookupEndPoint.LookupEndPoint.ToString() + ".", null));
+            //    }
+            //}
 
             return result;
+        
         }
 
         public static SIPDNSLookupResult DNSARecordLookup(SIPDNSServiceResult nextSRVRecord, string host, int port, bool async, SIPURI lookupURI)
@@ -214,35 +213,6 @@ namespace GB28181.SIPSorcery.SIP.App
             else
             {
                 return DNSARecordLookup(host, port, async, lookupURI);
-            }
-        }
-
-        public static void DNSNAPTRRecordLookup(string host, bool async, ref SIPDNSLookupResult lookupResult)
-        {
-            SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS NAPTR record lookup initiated for " + host + ".", null));
-
-            // Target is a hostname with no explicit port, DNS lookup for NAPTR records.
-            DNSResponse naptrRecordResponse = DNSManager.Lookup(host, DNSQType.NAPTR, DNS_LOOKUP_TIMEOUT, null, true, async);
-            if (naptrRecordResponse == null && async)
-            {
-                lookupResult.Pending = true;
-            }
-            else if (naptrRecordResponse.Timedout)
-            {
-                lookupResult.NAPTRTimedoutAt = DateTime.Now;
-            }
-            else if (naptrRecordResponse.Error == null && naptrRecordResponse.RecordNAPTR != null && naptrRecordResponse.RecordNAPTR.Length > 0)
-            {
-                foreach (RecordNAPTR naptrRecord in naptrRecordResponse.RecordNAPTR)
-                {
-                    SIPDNSServiceResult sipNAPTRResult = new SIPDNSServiceResult(SIPServices.GetService(naptrRecord.Service), naptrRecord.Order, 0, naptrRecord.RR.TTL, naptrRecord.Replacement, 0, DateTime.Now);
-                    lookupResult.AddNAPTRResult(sipNAPTRResult);
-                    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS NAPTR record found for " + host + ", result " + naptrRecord.Service + " " + naptrRecord.Replacement + ".", null));
-                }
-            }
-            else
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS no NAPTR records found for " + host + ".", null));
             }
         }
 
@@ -289,34 +259,34 @@ namespace GB28181.SIPSorcery.SIP.App
 
             SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup requested for " + srvLookup + ".", null));
 
-            DNSResponse srvRecordResponse = DNSManager.Lookup(srvLookup, DNSQType.SRV, DNS_LOOKUP_TIMEOUT, null, true, async);
-            if (srvRecordResponse == null && async)
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup pending for " + srvLookup + ".", null));
-                lookupResult.Pending = true;
-            }
-            else if (srvRecordResponse.Timedout)
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup timed out for " + srvLookup + ".", null));
-                lookupResult.SRVTimedoutAt = DateTime.Now;
-            }
-            else if (srvRecordResponse.Error != null)
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup for " + srvLookup + " returned error of " + lookupResult.LookupError + ".", null));
-            }
-            else if (srvRecordResponse.Error == null && srvRecordResponse.RecordSRV != null && srvRecordResponse.RecordSRV.Length > 0)
-            {
-                foreach (RecordSRV srvRecord in srvRecordResponse.RecordSRV)
-                {
-                    SIPDNSServiceResult sipSRVResult = new SIPDNSServiceResult(reqdNAPTRService, srvRecord.Priority, srvRecord.Weight, srvRecord.RR.TTL, srvRecord.Target, srvRecord.Port, DateTime.Now);
-                    lookupResult.AddSRVResult(sipSRVResult);
-                    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record found for " + srvLookup + ", result " + srvRecord.Target + " " + srvRecord.Port + ".", null));
-                }
-            }
-            else
-            {
-                SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS no SRV records found for " + srvLookup + ".", null));
-            }
+            //DNSResponse srvRecordResponse = DNSManager.Lookup(srvLookup, DNSQType.SRV, DNS_LOOKUP_TIMEOUT, null, true, async);
+            //if (srvRecordResponse == null && async)
+            //{
+            //    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup pending for " + srvLookup + ".", null));
+            //    lookupResult.Pending = true;
+            //}
+            //else if (srvRecordResponse.Timedout)
+            //{
+            //    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup timed out for " + srvLookup + ".", null));
+            //    lookupResult.SRVTimedoutAt = DateTime.Now;
+            //}
+            //else if (srvRecordResponse.Error != null)
+            //{
+            //    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record lookup for " + srvLookup + " returned error of " + lookupResult.LookupError + ".", null));
+            //}
+            //else if (srvRecordResponse.Error == null && srvRecordResponse.RecordSRV != null && srvRecordResponse.RecordSRV.Length > 0)
+            //{
+            //    foreach (RecordSRV srvRecord in srvRecordResponse.RecordSRV)
+            //    {
+            //        SIPDNSServiceResult sipSRVResult = new SIPDNSServiceResult(reqdNAPTRService, srvRecord.Priority, srvRecord.Weight, srvRecord.RR.TTL, srvRecord.Target, srvRecord.Port, DateTime.Now);
+            //        lookupResult.AddSRVResult(sipSRVResult);
+            //        SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS SRV record found for " + srvLookup + ", result " + srvRecord.Target + " " + srvRecord.Port + ".", null));
+            //    }
+            //}
+            //else
+            //{
+            //    SIPMonitorLogEvent(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.Unknown, SIPMonitorEventTypesEnum.DNS, "SIP DNS no SRV records found for " + srvLookup + ".", null));
+            //}
         }
     }
 }
