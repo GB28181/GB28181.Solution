@@ -20,7 +20,7 @@ running on aspnetcore 3.1+
   + 以develop分支为主.
 + The windows function part was not maintained .
   + Form Client Project Need to be fixed.
-+ you can reffer to other branch in this repo , `PRs` are always welcome.
++ you can refer to other branch in this repo , `PRs` are always welcome.
 + provide grpc interface for other microservice
 
 ## 一些要做的事情(TODO List)
@@ -42,7 +42,7 @@ running on aspnetcore 3.1+
 
 + SIP信令服务
   + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
-    + [x] Device Registering And managemment
+    + [x] Device Registering And management
     + [x] Device Controlling Service such as :PTZ
     + [x] Device Catalog Query
     + [x] Device Info Query
@@ -86,4 +86,20 @@ running on aspnetcore 3.1+
 
 ## License
 
-MIT & BSD v2
+MIT & BSD v2 & GPL
+
+
+
+***说明: 由于项目前期License问题的不严谨性，项目采用了诸多协议，如GPL、MIT、BSD V2等，但是,由于[GPL License的约束和传染性](https://www.oschina.net/question/12_2826)，项目涉及到License中实际生效的只有GPL，这对想修改后闭源使用的朋友可能会存在较大影响.***
+
+***项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)中明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php), 比如: [DNSResponse](https://github.com/GB28181/GB28181.Solution/blob/dc38a76ddcd8b424768089ad4ba2f5bee4a2931c/GB28181.SIPSorcery/Net/DNS/DNSResponse.cs#L16)***
+
+***针对该License问题：项目的后续计划是将使用的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)中的相关代码更新为原作者使用[Code Project Open License (CPOL)](https://www.codeproject.com/info/cpol10.aspx)的版本, 比如：[使用CPOL版本DNSResponse](https://github.com/sipsorcery/sipsorcery/blob/e677393f7e8c30a10b311892eff78a86ddaa8aba/src/net/DNS/DNSResponse.cs#L17)，同时将其他代码的License也做适当的更宽泛化调整***
+
+
+
+GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licenses/gpl-1.0.html)、[GPL 2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)、[GPL 3.0](http://www.gnu.org/licenses/gpl-3.0.html) 
+
+关于GPL的更多了解：[开源中国GPL](https://www.oschina.net/question/12_2826)、[百科 GPL](https://baike.baidu.com/item/GPL/2357903)
+
+
