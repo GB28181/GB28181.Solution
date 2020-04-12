@@ -31,29 +31,20 @@ namespace mp4parser.h264.read
     public class CAVLCReader : BitstreamReader
     {
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public CAVLCReader(java.io.Stream is) throws java.io.IOException
         public CAVLCReader(Stream @is) : base(@is)
         {
         }
 
-        public virtual long readNBit(int n, string message)
+        public virtual long ReadNBit(int n, string message)
         {
             long val = readNBit(n);
 
-            trace(message, Convert.ToString(val));
+            Trace(message, Convert.ToString(val));
 
             return val;
         }
 
-        /// <summary>
-        /// Read unsigned exp-golomb code
-        /// 
-        /// @return </summary>
-        /// <exception cref="java.io.IOException"> </exception>
-        /// <exception cref="java.io.IOException"> </exception>
-
-        private int readUE()
+        private int ReadUE()
         {
             int cnt = 0;
             while (read1Bit() == 0)
@@ -73,45 +64,45 @@ namespace mp4parser.h264.read
         }
 
 
-        public virtual int readUE(string message)
+        public virtual int ReadUE(string message)
         {
-            int res = readUE();
+            int res = ReadUE();
 
-            trace(message, Convert.ToString(res));
+            Trace(message, Convert.ToString(res));
 
             return res;
         }
 
-        public virtual int readSE(string message)
+        public virtual int ReadSE(string message)
         {
-            int val = readUE();
+            int val = ReadUE();
 
             int sign = ((val & 0x1) << 1) - 1;
             val = ((val >> 1) + (val & 0x1)) * sign;
 
-            trace(message, Convert.ToString(val));
+            Trace(message, Convert.ToString(val));
 
             return val;
         }
 
 
-        public virtual bool readBool(string message)
+        public virtual bool ReadBool(string message)
         {
 
             bool res = read1Bit() == 0 ? false : true;
 
-            trace(message, res ? "1" : "0");
+            Trace(message, res ? "1" : "0");
 
             return res;
         }
 
-        public virtual int readU(int i, string @string)
+        public virtual int ReadU(int i, string @string)
         {
-            return (int)readNBit(i, @string);
+            return (int)ReadNBit(i, @string);
         }
 
 
-        public virtual sbyte[] read(int payloadSize)
+        public virtual sbyte[] Read(int payloadSize)
         {
             sbyte[] result = new sbyte[payloadSize];
             for (int i = 0; i < payloadSize; i++)
@@ -121,35 +112,35 @@ namespace mp4parser.h264.read
             return result;
         }
 
-        public virtual bool readAE()
+        public virtual bool ReadAE()
         {
             // TODO: do it!!
             throw new System.NotSupportedException("Stan");
         }
 
 
-        public virtual int readTE(int max)
+        public virtual int ReadTE(int max)
         {
             if (max > 1)
             {
-                return readUE();
+                return ReadUE();
             }
             return ~read1Bit() & 0x1;
         }
 
-        public virtual int readAEI()
+        public virtual int ReadAEI()
         {
             // TODO: do it!!
             throw new System.NotSupportedException("Stan");
         }
 
 
-        public virtual int readME(string @string)
+        public virtual int ReadME(string @string)
         {
-            return readUE(@string);
+            return ReadUE(@string);
         }
 
-        public virtual object readCE(BTree bt, string message)
+        public virtual object ReadCE(BTree bt, string message)
         {
             while (true)
             {
@@ -162,14 +153,14 @@ namespace mp4parser.h264.read
                 object i = bt.Value;
                 if (i != null)
                 {
-                    trace(message, i.ToString());
+                    Trace(message, i.ToString());
                     return i;
                 }
             }
         }
 
 
-        public virtual int readZeroBitCount(string message)
+        public virtual int ReadZeroBitCount(string message)
         {
             int count = 0;
             while (read1Bit() == 0)
@@ -177,19 +168,19 @@ namespace mp4parser.h264.read
                 count++;
             }
 
-            trace(message, Convert.ToString(count));
+            Trace(message, Convert.ToString(count));
 
             return count;
         }
 
 
-        public virtual void readTrailingBits()
+        public virtual void ReadTrailingBits()
         {
             read1Bit();
             readRemainingByte();
         }
 
-        private void trace(string message, string val)
+        private void Trace(string message, string val)
         {
             StringBuilder traceBuilder = new StringBuilder();
             int spaces;

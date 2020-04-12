@@ -83,14 +83,14 @@ namespace mp4parser.h264.model
             CAVLCReader reader = new CAVLCReader(@is);
             PictureParameterSet pps = new PictureParameterSet();
 
-            pps.pic_parameter_set_id = reader.readUE("PPS: pic_parameter_set_id");
-            pps.seq_parameter_set_id = reader.readUE("PPS: seq_parameter_set_id");
-            pps.entropy_coding_mode_flag = reader.readBool("PPS: entropy_coding_mode_flag");
-            pps.pic_order_present_flag = reader.readBool("PPS: pic_order_present_flag");
-            pps.num_slice_groups_minus1 = reader.readUE("PPS: num_slice_groups_minus1");
+            pps.pic_parameter_set_id = reader.ReadUE("PPS: pic_parameter_set_id");
+            pps.seq_parameter_set_id = reader.ReadUE("PPS: seq_parameter_set_id");
+            pps.entropy_coding_mode_flag = reader.ReadBool("PPS: entropy_coding_mode_flag");
+            pps.pic_order_present_flag = reader.ReadBool("PPS: pic_order_present_flag");
+            pps.num_slice_groups_minus1 = reader.ReadUE("PPS: num_slice_groups_minus1");
             if (pps.num_slice_groups_minus1 > 0)
             {
-                pps.slice_group_map_type = reader.readUE("PPS: slice_group_map_type");
+                pps.slice_group_map_type = reader.ReadUE("PPS: slice_group_map_type");
                 pps.top_left = new int[pps.num_slice_groups_minus1 + 1];
                 pps.bottom_right = new int[pps.num_slice_groups_minus1 + 1];
                 pps.run_length_minus1 = new int[pps.num_slice_groups_minus1 + 1];
@@ -98,21 +98,21 @@ namespace mp4parser.h264.model
                 {
                     for (int iGroup = 0; iGroup <= pps.num_slice_groups_minus1; iGroup++)
                     {
-                        pps.run_length_minus1[iGroup] = reader.readUE("PPS: run_length_minus1");
+                        pps.run_length_minus1[iGroup] = reader.ReadUE("PPS: run_length_minus1");
                     }
                 }
                 else if (pps.slice_group_map_type == 2)
                 {
                     for (int iGroup = 0; iGroup < pps.num_slice_groups_minus1; iGroup++)
                     {
-                        pps.top_left[iGroup] = reader.readUE("PPS: top_left");
-                        pps.bottom_right[iGroup] = reader.readUE("PPS: bottom_right");
+                        pps.top_left[iGroup] = reader.ReadUE("PPS: top_left");
+                        pps.bottom_right[iGroup] = reader.ReadUE("PPS: bottom_right");
                     }
                 }
                 else if (pps.slice_group_map_type == 3 || pps.slice_group_map_type == 4 || pps.slice_group_map_type == 5)
                 {
-                    pps.slice_group_change_direction_flag = reader.readBool("PPS: slice_group_change_direction_flag");
-                    pps.slice_group_change_rate_minus1 = reader.readUE("PPS: slice_group_change_rate_minus1");
+                    pps.slice_group_change_direction_flag = reader.ReadBool("PPS: slice_group_change_direction_flag");
+                    pps.slice_group_change_rate_minus1 = reader.ReadUE("PPS: slice_group_change_rate_minus1");
                 }
                 else if (pps.slice_group_map_type == 6)
                 {
@@ -129,34 +129,34 @@ namespace mp4parser.h264.model
                     {
                         NumberBitsPerSliceGroupId = 1;
                     }
-                    int pic_size_in_map_units_minus1 = reader.readUE("PPS: pic_size_in_map_units_minus1");
+                    int pic_size_in_map_units_minus1 = reader.ReadUE("PPS: pic_size_in_map_units_minus1");
                     pps.slice_group_id = new int[pic_size_in_map_units_minus1 + 1];
                     for (int i = 0; i <= pic_size_in_map_units_minus1; i++)
                     {
-                        pps.slice_group_id[i] = reader.readU(NumberBitsPerSliceGroupId, "PPS: slice_group_id [" + i + "]f");
+                        pps.slice_group_id[i] = reader.ReadU(NumberBitsPerSliceGroupId, "PPS: slice_group_id [" + i + "]f");
                     }
                 }
             }
-            pps.num_ref_idx_l0_active_minus1 = reader.readUE("PPS: num_ref_idx_l0_active_minus1");
-            pps.num_ref_idx_l1_active_minus1 = reader.readUE("PPS: num_ref_idx_l1_active_minus1");
-            pps.weighted_pred_flag = reader.readBool("PPS: weighted_pred_flag");
-            pps.weighted_bipred_idc = (int)reader.readNBit(2, "PPS: weighted_bipred_idc");
-            pps.pic_init_qp_minus26 = reader.readSE("PPS: pic_init_qp_minus26");
-            pps.pic_init_qs_minus26 = reader.readSE("PPS: pic_init_qs_minus26");
-            pps.chroma_qp_index_offset = reader.readSE("PPS: chroma_qp_index_offset");
-            pps.deblocking_filter_control_present_flag = reader.readBool("PPS: deblocking_filter_control_present_flag");
-            pps.constrained_intra_pred_flag = reader.readBool("PPS: constrained_intra_pred_flag");
-            pps.redundant_pic_cnt_present_flag = reader.readBool("PPS: redundant_pic_cnt_present_flag");
+            pps.num_ref_idx_l0_active_minus1 = reader.ReadUE("PPS: num_ref_idx_l0_active_minus1");
+            pps.num_ref_idx_l1_active_minus1 = reader.ReadUE("PPS: num_ref_idx_l1_active_minus1");
+            pps.weighted_pred_flag = reader.ReadBool("PPS: weighted_pred_flag");
+            pps.weighted_bipred_idc = (int)reader.ReadNBit(2, "PPS: weighted_bipred_idc");
+            pps.pic_init_qp_minus26 = reader.ReadSE("PPS: pic_init_qp_minus26");
+            pps.pic_init_qs_minus26 = reader.ReadSE("PPS: pic_init_qs_minus26");
+            pps.chroma_qp_index_offset = reader.ReadSE("PPS: chroma_qp_index_offset");
+            pps.deblocking_filter_control_present_flag = reader.ReadBool("PPS: deblocking_filter_control_present_flag");
+            pps.constrained_intra_pred_flag = reader.ReadBool("PPS: constrained_intra_pred_flag");
+            pps.redundant_pic_cnt_present_flag = reader.ReadBool("PPS: redundant_pic_cnt_present_flag");
             if (reader.moreRBSPData())
             {
                 pps.extended = new PictureParameterSet.PPSExt();
-                pps.extended.transform_8x8_mode_flag = reader.readBool("PPS: transform_8x8_mode_flag");
-                bool pic_scaling_matrix_present_flag = reader.readBool("PPS: pic_scaling_matrix_present_flag");
+                pps.extended.transform_8x8_mode_flag = reader.ReadBool("PPS: transform_8x8_mode_flag");
+                bool pic_scaling_matrix_present_flag = reader.ReadBool("PPS: pic_scaling_matrix_present_flag");
                 if (pic_scaling_matrix_present_flag)
                 {
                     for (int i = 0; i < 6 + 2 * (pps.extended.transform_8x8_mode_flag ? 1 : 0); i++)
                     {
-                        bool pic_scaling_list_present_flag = reader.readBool("PPS: pic_scaling_list_present_flag");
+                        bool pic_scaling_list_present_flag = reader.ReadBool("PPS: pic_scaling_list_present_flag");
                         if (pic_scaling_list_present_flag)
                         {
                             pps.extended.scalindMatrix.ScalingList4x4 = new ScalingList[8];
@@ -172,10 +172,10 @@ namespace mp4parser.h264.model
                         }
                     }
                 }
-                pps.extended.second_chroma_qp_index_offset = reader.readSE("PPS: second_chroma_qp_index_offset");
+                pps.extended.second_chroma_qp_index_offset = reader.ReadSE("PPS: second_chroma_qp_index_offset");
             }
 
-            reader.readTrailingBits();
+            reader.ReadTrailingBits();
 
             return pps;
         }
