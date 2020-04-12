@@ -39,7 +39,7 @@ using GB28181.SIPSorcery.Sys;
 using System.Reflection;
 
 
-[assembly: AssemblyCulture("zh-CN")]
+[assembly: AssemblyCulture("")]
 
 namespace GB28181.SIPSorcery.SIP
 {
