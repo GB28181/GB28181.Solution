@@ -106,7 +106,7 @@ namespace GB28181.SIPSorcery.SIP.App
                 if (sipURI.Host.IndexOf(':') != -1)
                 {
                     host = sipURI.Host.Split(':')[0];
-                    Int32.TryParse(sipURI.Host.Split(':')[1], out port);
+                    _ = int.TryParse(sipURI.Host.Split(':')[1], out port);
                     explicitPort = true;
                 }
 

@@ -22,7 +22,7 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
+    <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
     <ProjectReference Include="..\sipsorcery\SIPSorcery.csproj" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

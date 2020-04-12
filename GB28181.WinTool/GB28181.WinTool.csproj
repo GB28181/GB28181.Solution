@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Win.GB28181.Client</RootNamespace>
-    <AssemblyName>Win.GB28181.Client</AssemblyName>
+    <AssemblyName>GB28181.WinClient</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

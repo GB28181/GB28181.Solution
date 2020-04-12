@@ -12,7 +12,7 @@
     <DefineConstants>TRACE;DEBUG;NETCOREAPP3_1</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GB28181.Common\GB28181.Common.csproj" />
-    <ProjectReference Include="..\GB28181.Logger4Net\GB28181.Logger4Net.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
   </ItemGroup>
 </Project>

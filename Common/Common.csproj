@@ -4,8 +4,8 @@
     <LangVersion>8.0</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Common</RootNamespace>
-    <AssemblyName>GB28181.Common</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Common</AssemblyName>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
