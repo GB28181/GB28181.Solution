@@ -19,6 +19,8 @@ using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.Sys.Cache;
 using GB28181.SIPSorcery.Sys.Model;
 using GB28181.Logger4Net;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace GB28181.Service
 {
@@ -66,6 +68,7 @@ namespace GB28181.Service
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,10 +78,14 @@ namespace GB28181.Service
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("zh-CN"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("zh-CN") }
+            });
             // app.UseHttpsRedirection();
             // app.UseStaticFiles();
-
             app.UseRouting();
 
             // app.UseAuthorization();

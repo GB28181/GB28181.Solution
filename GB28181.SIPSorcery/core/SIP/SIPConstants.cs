@@ -31,11 +31,10 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using GB28181.SIPSorcery.Sys;
 
-#if UNITTEST
-using NUnit.Framework;
-#endif
+
 
 namespace GB28181.SIPSorcery.SIP
 {
@@ -51,8 +50,8 @@ namespace GB28181.SIPSorcery.SIP
 		public const int NONCE_TIMEOUT_MINUTES = 5;							// Length of time an issued nonce is valid for.
 		public const int SIP_MAXIMUM_RECEIVE_LENGTH = 65535;				// Any SIP messages over this size will generate an error.
         public const int SIP_MAXIMUM_UDP_SEND_LENGTH = 1300;				// Any SIP messages over this size should be prevented from using a UDP transport.
-        public const string SIP_USERAGENT_STRING = "Husplus/1.0";
-        public const string SIP_SERVER_STRING = "Husplus/1.0";
+        public const string SIP_USERAGENT_STRING = "SipOrg/1.0";
+        public const string SIP_SERVER_STRING = "SipOrg/1.0";
 		public const string SIP_REQUEST_REGEX = @"^\w+ .* SIP/.*";			// bnf:	Request-Line = Method SP Request-URI SP SIP-Version CRLF
 		public const string SIP_RESPONSE_REGEX = @"^SIP/.* \d{3}";			// bnf: Status-Line = SIP-Version SP Status-Code SP Reason-Phrase CRLF
 		public const string SIP_BRANCH_MAGICCOOKIE = "z9hG4bK";
@@ -67,12 +66,38 @@ namespace GB28181.SIPSorcery.SIP
 		public const int DEFAULT_REGISTEREXPIRY_SECONDS = 600;
 		public const int DEFAULT_SIP_PORT = 5060;
         public const int DEFAULT_SIP_TLS_PORT = 5061;
+        public const int DEFAULT_SIP_WEBSOCKET_PORT = 80;
+        public const int DEFAULT_SIPS_WEBSOCKET_PORT = 443;
         public const int MAX_SIP_PORT = 65535;
  
         public const string NAT_SENDKEEPALIVES_VALUE = "y";
 
-        //public const string SWITCHBOARD_USER_AGENT_PREFIX = "sipsorcery-switchboard";
-	}
+        public const string ALLOWED_SIP_METHODS = "ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, PRACK, REFER, REGISTER, SUBSCRIBE";
+
+        /// <summary>
+        /// Gets the default SIP port for the protocol. 
+        /// </summary>
+        /// <param name="protocol">The transport layer protocol to get the port for.</param>
+        /// <returns>The default port to use.</returns>
+        public static int GetDefaultPort(SIPProtocolsEnum protocol)
+        {
+            switch (protocol)
+            {
+                case SIPProtocolsEnum.udp:
+                    return SIPConstants.DEFAULT_SIP_PORT;
+                case SIPProtocolsEnum.tcp:
+                    return SIPConstants.DEFAULT_SIP_PORT;
+                case SIPProtocolsEnum.tls:
+                    return SIPConstants.DEFAULT_SIP_TLS_PORT;
+                case SIPProtocolsEnum.ws:
+                    return SIPConstants.DEFAULT_SIP_WEBSOCKET_PORT;
+                case SIPProtocolsEnum.wss:
+                    return SIPConstants.DEFAULT_SIPS_WEBSOCKET_PORT;
+                default:
+                    throw new ApplicationException($"Protocol {protocol} was not recognised in GetDefaultPort.");
+            }
+        }
+    }
 
 	public enum SIPMessageTypesEnum
 	{
@@ -118,10 +143,26 @@ namespace GB28181.SIPSorcery.SIP
 
     public enum SIPProtocolsEnum
     {
+        /// <summary>
+        /// User Datagram Protocol.
+        /// </summary>
         udp = 1,
+        /// <summary>.
+        /// Transmission Control Protocol
+        /// </summary>
         tcp = 2,
+        /// <summary>
+        /// Transport Layer Security.
+        /// </summary>
         tls = 3,
-        // sctp = 4,    // Not supported.
+        /// <summary>
+        /// Web Socket.
+        /// </summary>
+        ws = 4,
+        /// <summary>
+        /// Web Socket over TLS.
+        /// </summary>
+        wss = 5,
     }
 
     public class SIPProtocolsType
@@ -502,6 +543,65 @@ namespace GB28181.SIPSorcery.SIP
                 result = result.Replace("%20", " ");
             }
             return result;
+        }
+    }
+
+    ///<summary>
+    /// List of SIP extensions to RFC3262.
+    /// </summary> 
+    public enum SIPExtensions
+    {
+        None = 0,
+        Prack = 1,          // Reliable provisional responses as per RFC3262.
+        NoReferSub = 2,     // No subscription for REFERs as per RFC4488.
+    }
+
+    /// <summary>
+    /// Constants that can be placed in the SIP Supported or Required headers to indicate support or mandate for
+    /// a particular SIP extension.
+    /// </summary>
+    public static class SIPExtensionHeaders
+    {
+        public const string PRACK = "100rel";
+        public const string NO_REFER_SUB = "norefersub";
+
+        /// <summary>
+        /// Parses a string containing a list of SIP extensions into a list of extensions that this library
+        /// understands.
+        /// </summary>
+        /// <param name="extensionList">The string containing the list of extensions to parse.</param>
+        /// <param name="unknownExtensions">A comma separated list of the unsupported extensions.</param>
+        /// <returns>A list of extensions that were understood and a boolean indicating whether any unknown extensions were present.</returns>
+        public static List<SIPExtensions> ParseSIPExtensions(string extensionList, out string unknownExtensions)
+        {
+            List<SIPExtensions> knownExtensions = new List<SIPExtensions>();
+            unknownExtensions = null;
+
+            if (String.IsNullOrEmpty(extensionList) == false)
+            {
+                string[] extensions = extensionList.Trim().Split(',');
+
+                foreach (string extension in extensions)
+                {
+                    if (String.IsNullOrEmpty(extension) == false)
+                    {
+                        if (extension.Trim().ToLower() == PRACK)
+                        {
+                            knownExtensions.Add(SIPExtensions.Prack);
+                        }
+                        else if (extension.Trim().ToLower() == NO_REFER_SUB)
+                        {
+                            knownExtensions.Add(SIPExtensions.NoReferSub);
+                        }
+                        else
+                        {
+                            unknownExtensions += (unknownExtensions != null) ? $",{extension.Trim()}" : extension.Trim();
+                        }
+                    }
+                }
+            }
+
+            return knownExtensions;
         }
     }
 }

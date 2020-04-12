@@ -46,6 +46,7 @@ namespace GB28181.SIPSorcery.SIP
         Unknown = 0,
         Early = 1,
         Confirmed = 2,
+        Terminated = 3
     }
 
     public enum SIPDialogueTransferModesEnum
@@ -92,6 +93,9 @@ namespace GB28181.SIPSorcery.SIP
         public int CallDurationLimit { get; set; }                  // If non-zero indicates the dialogue established should only be permitted to stay up for this many seconds.
         public string ProxySendFrom { get; set; }                   // If set this is the socket the upstream proxy received the call on.
         public SIPDialogueTransferModesEnum TransferMode { get; set; }  // Specifies how the dialogue will handle REFER requests (transfers).
+        /// <summary>
+        /// Indicates whether the dialogue was created by a ingress or egress call.
+        /// </summary>
         public SIPCallDirection Direction { get; set; }              // Indicates whether the dialogue was created by a ingress or egress call.
 
         // User informational fields. They don't affect the operation of the dialogue but allow the user to optionally attach descriptive fields to it.
@@ -103,6 +107,11 @@ namespace GB28181.SIPSorcery.SIP
         public string CRMCompanyName { get; set; }
         public string CRMPictureURL { get; set; }
 
+        /// <summary>
+        /// Used as a flag to indicate whether to send an immediate or slightly delayed re-INVITE request 
+        /// when a call is answered as an attempt to help solve audio issues.
+        /// </summary>
+        public int ReinviteDelay = 0;
         public string DialogueName
         {
             get

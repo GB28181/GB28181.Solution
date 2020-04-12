@@ -50,16 +50,25 @@ namespace GB28181.SIPSorcery.SIP
         private static string m_sipServerAgent = SIPConstants.SIP_SERVER_STRING;
 
         private IPAddress m_contactIPAddress;   // If set this IP address should be used in the Contact header of the Ok response so that ACK requests can be delivered correctly.
-
+  		 /// <summary>
+        /// The local tag is set on the To SIP header and forms part of the information used to identify a SIP dialog.
+        /// </summary>
         public string LocalTag
         {
             get { return m_localTag; }
+            set { m_localTag = value; }
         }
 
         public event SIPTransactionCancelledDelegate UASInviteTransactionCancelled;
         public event SIPTransactionRequestReceivedDelegate NewCallReceived;
         public event SIPTransactionTimedOutDelegate UASInviteTransactionTimedOut;
 
+        /// <summary>
+        /// An application will be interested in getting a notification about the ACK request if it
+        /// is being used to carry the SDP answer. This occurs if the original INVITE did not contain an
+        /// SDP offer.
+        /// </summary>
+        public event SIPTransactionRequestReceivedDelegate OnAckReceived;
         public UASInviteTransaction(
             SIPTransport sipTransport,
             SIPRequest sipRequest,
@@ -101,6 +110,7 @@ namespace GB28181.SIPSorcery.SIP
             TransactionFinalResponseReceived += UASInviteTransaction_TransactionResponseReceived;
             TransactionTimedOut += UASInviteTransaction_TransactionTimedOut;
             TransactionRemoved += UASInviteTransaction_TransactionRemoved;
+
         }
 
         private void UASInviteTransaction_TransactionRemoved(SIPTransaction transaction)
