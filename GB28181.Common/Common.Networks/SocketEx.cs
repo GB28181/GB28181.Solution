@@ -114,18 +114,12 @@ namespace Common.Networks
 
 		protected override void Dispose(bool disposing)
 		{
-			if (__bw != null)
-			{
-				__bw.Close();
-			}
-			if (__br != null)
-			{
-				__br.Close();
-			}
-			if (__ns != null)
-			{
-				__ns.Close();
-			}
+				__bw?.Close();
+			
+				__br?.Close();
+			
+				__ns?.Close();
+			
 			base.Dispose(disposing);
 		}
 	}

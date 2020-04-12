@@ -99,29 +99,29 @@ namespace mp4parser.h264.model
             CAVLCReader reader = new CAVLCReader(@is);
             SeqParameterSet sps = new SeqParameterSet();
 
-            sps.profile_idc = (int)reader.readNBit(8, "SPS: profile_idc");
-            sps.constraint_set_0_flag = reader.readBool("SPS: constraint_set_0_flag");
-            sps.constraint_set_1_flag = reader.readBool("SPS: constraint_set_1_flag");
-            sps.constraint_set_2_flag = reader.readBool("SPS: constraint_set_2_flag");
-            sps.constraint_set_3_flag = reader.readBool("SPS: constraint_set_3_flag");
-            sps.constraint_set_4_flag = reader.readBool("SPS: constraint_set_4_flag");
-            sps.constraint_set_5_flag = reader.readBool("SPS: constraint_set_5_flag");
+            sps.profile_idc = (int)reader.ReadNBit(8, "SPS: profile_idc");
+            sps.constraint_set_0_flag = reader.ReadBool("SPS: constraint_set_0_flag");
+            sps.constraint_set_1_flag = reader.ReadBool("SPS: constraint_set_1_flag");
+            sps.constraint_set_2_flag = reader.ReadBool("SPS: constraint_set_2_flag");
+            sps.constraint_set_3_flag = reader.ReadBool("SPS: constraint_set_3_flag");
+            sps.constraint_set_4_flag = reader.ReadBool("SPS: constraint_set_4_flag");
+            sps.constraint_set_5_flag = reader.ReadBool("SPS: constraint_set_5_flag");
 
-            reader.readNBit(2, "SPS: reserved_zero_2bits");
-            sps.level_idc = (int)reader.readNBit(8, "SPS: level_idc");
-            sps.seq_parameter_set_id = reader.readUE("SPS: seq_parameter_set_id");
+            reader.ReadNBit(2, "SPS: reserved_zero_2bits");
+            sps.level_idc = (int)reader.ReadNBit(8, "SPS: level_idc");
+            sps.seq_parameter_set_id = reader.ReadUE("SPS: seq_parameter_set_id");
 
             if (sps.profile_idc == 100 || sps.profile_idc == 110 || sps.profile_idc == 122 || sps.profile_idc == 144)
             {
-                sps.chroma_format_idc = ChromaFormat.fromId(reader.readUE("SPS: chroma_format_idc"));
+                sps.chroma_format_idc = ChromaFormat.fromId(reader.ReadUE("SPS: chroma_format_idc"));
                 if (sps.chroma_format_idc == ChromaFormat.YUV_444)
                 {
-                    sps.residual_color_transform_flag = reader.readBool("SPS: residual_color_transform_flag");
+                    sps.residual_color_transform_flag = reader.ReadBool("SPS: residual_color_transform_flag");
                 }
-                sps.bit_depth_luma_minus8 = reader.readUE("SPS: bit_depth_luma_minus8");
-                sps.bit_depth_chroma_minus8 = reader.readUE("SPS: bit_depth_chroma_minus8");
-                sps.qpprime_y_zero_transform_bypass_flag = reader.readBool("SPS: qpprime_y_zero_transform_bypass_flag");
-                bool seqScalingMatrixPresent = reader.readBool("SPS: seq_scaling_matrix_present_lag");
+                sps.bit_depth_luma_minus8 = reader.ReadUE("SPS: bit_depth_luma_minus8");
+                sps.bit_depth_chroma_minus8 = reader.ReadUE("SPS: bit_depth_chroma_minus8");
+                sps.qpprime_y_zero_transform_bypass_flag = reader.ReadBool("SPS: qpprime_y_zero_transform_bypass_flag");
+                bool seqScalingMatrixPresent = reader.ReadBool("SPS: seq_scaling_matrix_present_lag");
                 if (seqScalingMatrixPresent)
                 {
                     readScalingListMatrix(reader, sps);
@@ -131,49 +131,49 @@ namespace mp4parser.h264.model
             {
                 sps.chroma_format_idc = ChromaFormat.YUV_420;
             }
-            sps.log2_max_frame_num_minus4 = reader.readUE("SPS: log2_max_frame_num_minus4");
-            sps.pic_order_cnt_type = reader.readUE("SPS: pic_order_cnt_type");
+            sps.log2_max_frame_num_minus4 = reader.ReadUE("SPS: log2_max_frame_num_minus4");
+            sps.pic_order_cnt_type = reader.ReadUE("SPS: pic_order_cnt_type");
             if (sps.pic_order_cnt_type == 0)
             {
-                sps.log2_max_pic_order_cnt_lsb_minus4 = reader.readUE("SPS: log2_max_pic_order_cnt_lsb_minus4");
+                sps.log2_max_pic_order_cnt_lsb_minus4 = reader.ReadUE("SPS: log2_max_pic_order_cnt_lsb_minus4");
             }
             else if (sps.pic_order_cnt_type == 1)
             {
-                sps.delta_pic_order_always_zero_flag = reader.readBool("SPS: delta_pic_order_always_zero_flag");
-                sps.offset_for_non_ref_pic = reader.readSE("SPS: offset_for_non_ref_pic");
-                sps.offset_for_top_to_bottom_field = reader.readSE("SPS: offset_for_top_to_bottom_field");
-                sps.num_ref_frames_in_pic_order_cnt_cycle = reader.readUE("SPS: num_ref_frames_in_pic_order_cnt_cycle");
+                sps.delta_pic_order_always_zero_flag = reader.ReadBool("SPS: delta_pic_order_always_zero_flag");
+                sps.offset_for_non_ref_pic = reader.ReadSE("SPS: offset_for_non_ref_pic");
+                sps.offset_for_top_to_bottom_field = reader.ReadSE("SPS: offset_for_top_to_bottom_field");
+                sps.num_ref_frames_in_pic_order_cnt_cycle = reader.ReadUE("SPS: num_ref_frames_in_pic_order_cnt_cycle");
                 sps.offsetForRefFrame = new int[sps.num_ref_frames_in_pic_order_cnt_cycle];
                 for (int i = 0; i < sps.num_ref_frames_in_pic_order_cnt_cycle; i++)
                 {
-                    sps.offsetForRefFrame[i] = reader.readSE("SPS: offsetForRefFrame [" + i + "]");
+                    sps.offsetForRefFrame[i] = reader.ReadSE("SPS: offsetForRefFrame [" + i + "]");
                 }
             }
-            sps.num_ref_frames = reader.readUE("SPS: num_ref_frames");
-            sps.gaps_in_frame_num_value_allowed_flag = reader.readBool("SPS: gaps_in_frame_num_value_allowed_flag");
-            sps.pic_width_in_mbs_minus1 = reader.readUE("SPS: pic_width_in_mbs_minus1");
-            sps.pic_height_in_map_units_minus1 = reader.readUE("SPS: pic_height_in_map_units_minus1");
-            sps.frame_mbs_only_flag = reader.readBool("SPS: frame_mbs_only_flag");
+            sps.num_ref_frames = reader.ReadUE("SPS: num_ref_frames");
+            sps.gaps_in_frame_num_value_allowed_flag = reader.ReadBool("SPS: gaps_in_frame_num_value_allowed_flag");
+            sps.pic_width_in_mbs_minus1 = reader.ReadUE("SPS: pic_width_in_mbs_minus1");
+            sps.pic_height_in_map_units_minus1 = reader.ReadUE("SPS: pic_height_in_map_units_minus1");
+            sps.frame_mbs_only_flag = reader.ReadBool("SPS: frame_mbs_only_flag");
             if (!sps.frame_mbs_only_flag)
             {
-                sps.mb_adaptive_frame_field_flag = reader.readBool("SPS: mb_adaptive_frame_field_flag");
+                sps.mb_adaptive_frame_field_flag = reader.ReadBool("SPS: mb_adaptive_frame_field_flag");
             }
-            sps.direct_8x8_inference_flag = reader.readBool("SPS: direct_8x8_inference_flag");
-            sps.frame_cropping_flag = reader.readBool("SPS: frame_cropping_flag");
+            sps.direct_8x8_inference_flag = reader.ReadBool("SPS: direct_8x8_inference_flag");
+            sps.frame_cropping_flag = reader.ReadBool("SPS: frame_cropping_flag");
             if (sps.frame_cropping_flag)
             {
-                sps.frame_crop_left_offset = reader.readUE("SPS: frame_crop_left_offset");
-                sps.frame_crop_right_offset = reader.readUE("SPS: frame_crop_right_offset");
-                sps.frame_crop_top_offset = reader.readUE("SPS: frame_crop_top_offset");
-                sps.frame_crop_bottom_offset = reader.readUE("SPS: frame_crop_bottom_offset");
+                sps.frame_crop_left_offset = reader.ReadUE("SPS: frame_crop_left_offset");
+                sps.frame_crop_right_offset = reader.ReadUE("SPS: frame_crop_right_offset");
+                sps.frame_crop_top_offset = reader.ReadUE("SPS: frame_crop_top_offset");
+                sps.frame_crop_bottom_offset = reader.ReadUE("SPS: frame_crop_bottom_offset");
             }
-            bool vui_parameters_present_flag = reader.readBool("SPS: vui_parameters_present_flag");
+            bool vui_parameters_present_flag = reader.ReadBool("SPS: vui_parameters_present_flag");
             if (vui_parameters_present_flag)
             {
                 sps.vuiParams = ReadVUIParameters(reader);
             }
 
-            reader.readTrailingBits();
+            reader.ReadTrailingBits();
 
             return sps;
         }
@@ -182,7 +182,7 @@ namespace mp4parser.h264.model
             sps.scalingMatrix = new ScalingMatrix();
             for (int i = 0; i < 8; i++)
             {
-                bool seqScalingListPresentFlag = reader.readBool("SPS: seqScalingListPresentFlag");
+                bool seqScalingListPresentFlag = reader.ReadBool("SPS: seqScalingListPresentFlag");
                 if (seqScalingListPresentFlag)
                 {
                     sps.scalingMatrix.ScalingList4x4 = new ScalingList[8];
@@ -201,73 +201,73 @@ namespace mp4parser.h264.model
         private static VUIParameters ReadVUIParameters(CAVLCReader reader)
         {
             VUIParameters vuip = new VUIParameters();
-            vuip.aspect_ratio_info_present_flag = reader.readBool("VUI: aspect_ratio_info_present_flag");
+            vuip.aspect_ratio_info_present_flag = reader.ReadBool("VUI: aspect_ratio_info_present_flag");
             if (vuip.aspect_ratio_info_present_flag)
             {
-                vuip.aspect_ratio = AspectRatio.fromValue((int)reader.readNBit(8, "VUI: aspect_ratio"));
+                vuip.aspect_ratio = AspectRatio.fromValue((int)reader.ReadNBit(8, "VUI: aspect_ratio"));
                 if (vuip.aspect_ratio == AspectRatio.Extended_SAR)
                 {
-                    vuip.sar_width = (int)reader.readNBit(16, "VUI: sar_width");
-                    vuip.sar_height = (int)reader.readNBit(16, "VUI: sar_height");
+                    vuip.sar_width = (int)reader.ReadNBit(16, "VUI: sar_width");
+                    vuip.sar_height = (int)reader.ReadNBit(16, "VUI: sar_height");
                 }
             }
-            vuip.overscan_info_present_flag = reader.readBool("VUI: overscan_info_present_flag");
+            vuip.overscan_info_present_flag = reader.ReadBool("VUI: overscan_info_present_flag");
             if (vuip.overscan_info_present_flag)
             {
-                vuip.overscan_appropriate_flag = reader.readBool("VUI: overscan_appropriate_flag");
+                vuip.overscan_appropriate_flag = reader.ReadBool("VUI: overscan_appropriate_flag");
             }
-            vuip.video_signal_type_present_flag = reader.readBool("VUI: video_signal_type_present_flag");
+            vuip.video_signal_type_present_flag = reader.ReadBool("VUI: video_signal_type_present_flag");
             if (vuip.video_signal_type_present_flag)
             {
-                vuip.video_format = (int)reader.readNBit(3, "VUI: video_format");
-                vuip.video_full_range_flag = reader.readBool("VUI: video_full_range_flag");
-                vuip.colour_description_present_flag = reader.readBool("VUI: colour_description_present_flag");
+                vuip.video_format = (int)reader.ReadNBit(3, "VUI: video_format");
+                vuip.video_full_range_flag = reader.ReadBool("VUI: video_full_range_flag");
+                vuip.colour_description_present_flag = reader.ReadBool("VUI: colour_description_present_flag");
                 if (vuip.colour_description_present_flag)
                 {
-                    vuip.colour_primaries = (int)reader.readNBit(8, "VUI: colour_primaries");
-                    vuip.transfer_characteristics = (int)reader.readNBit(8, "VUI: transfer_characteristics");
-                    vuip.matrix_coefficients = (int)reader.readNBit(8, "VUI: matrix_coefficients");
+                    vuip.colour_primaries = (int)reader.ReadNBit(8, "VUI: colour_primaries");
+                    vuip.transfer_characteristics = (int)reader.ReadNBit(8, "VUI: transfer_characteristics");
+                    vuip.matrix_coefficients = (int)reader.ReadNBit(8, "VUI: matrix_coefficients");
                 }
             }
-            vuip.chroma_loc_info_present_flag = reader.readBool("VUI: chroma_loc_info_present_flag");
+            vuip.chroma_loc_info_present_flag = reader.ReadBool("VUI: chroma_loc_info_present_flag");
             if (vuip.chroma_loc_info_present_flag)
             {
-                vuip.chroma_sample_loc_type_top_field = reader.readUE("VUI chroma_sample_loc_type_top_field");
-                vuip.chroma_sample_loc_type_bottom_field = reader.readUE("VUI chroma_sample_loc_type_bottom_field");
+                vuip.chroma_sample_loc_type_top_field = reader.ReadUE("VUI chroma_sample_loc_type_top_field");
+                vuip.chroma_sample_loc_type_bottom_field = reader.ReadUE("VUI chroma_sample_loc_type_bottom_field");
             }
-            vuip.timing_info_present_flag = reader.readBool("VUI: timing_info_present_flag");
+            vuip.timing_info_present_flag = reader.ReadBool("VUI: timing_info_present_flag");
             if (vuip.timing_info_present_flag)
             {
-                vuip.num_units_in_tick = (int)reader.readNBit(32, "VUI: num_units_in_tick");
-                vuip.time_scale = (int)reader.readNBit(32, "VUI: time_scale");
-                vuip.fixed_frame_rate_flag = reader.readBool("VUI: fixed_frame_rate_flag");
+                vuip.num_units_in_tick = (int)reader.ReadNBit(32, "VUI: num_units_in_tick");
+                vuip.time_scale = (int)reader.ReadNBit(32, "VUI: time_scale");
+                vuip.fixed_frame_rate_flag = reader.ReadBool("VUI: fixed_frame_rate_flag");
             }
-            bool nal_hrd_parameters_present_flag = reader.readBool("VUI: nal_hrd_parameters_present_flag");
+            bool nal_hrd_parameters_present_flag = reader.ReadBool("VUI: nal_hrd_parameters_present_flag");
             if (nal_hrd_parameters_present_flag)
             {
                 vuip.nalHRDParams = readHRDParameters(reader);
             }
-            bool vcl_hrd_parameters_present_flag = reader.readBool("VUI: vcl_hrd_parameters_present_flag");
+            bool vcl_hrd_parameters_present_flag = reader.ReadBool("VUI: vcl_hrd_parameters_present_flag");
             if (vcl_hrd_parameters_present_flag)
             {
                 vuip.vclHRDParams = readHRDParameters(reader);
             }
             if (nal_hrd_parameters_present_flag || vcl_hrd_parameters_present_flag)
             {
-                vuip.low_delay_hrd_flag = reader.readBool("VUI: low_delay_hrd_flag");
+                vuip.low_delay_hrd_flag = reader.ReadBool("VUI: low_delay_hrd_flag");
             }
-            vuip.pic_struct_present_flag = reader.readBool("VUI: pic_struct_present_flag");
-            bool bitstream_restriction_flag = reader.readBool("VUI: bitstream_restriction_flag");
+            vuip.pic_struct_present_flag = reader.ReadBool("VUI: pic_struct_present_flag");
+            bool bitstream_restriction_flag = reader.ReadBool("VUI: bitstream_restriction_flag");
             if (bitstream_restriction_flag)
             {
                 vuip.bitstreamRestriction = new VUIParameters.BitstreamRestriction();
-                vuip.bitstreamRestriction.motion_vectors_over_pic_boundaries_flag = reader.readBool("VUI: motion_vectors_over_pic_boundaries_flag");
-                vuip.bitstreamRestriction.max_bytes_per_pic_denom = reader.readUE("VUI max_bytes_per_pic_denom");
-                vuip.bitstreamRestriction.max_bits_per_mb_denom = reader.readUE("VUI max_bits_per_mb_denom");
-                vuip.bitstreamRestriction.log2_max_mv_length_horizontal = reader.readUE("VUI log2_max_mv_length_horizontal");
-                vuip.bitstreamRestriction.log2_max_mv_length_vertical = reader.readUE("VUI log2_max_mv_length_vertical");
-                vuip.bitstreamRestriction.num_reorder_frames = reader.readUE("VUI num_reorder_frames");
-                vuip.bitstreamRestriction.max_dec_frame_buffering = reader.readUE("VUI max_dec_frame_buffering");
+                vuip.bitstreamRestriction.motion_vectors_over_pic_boundaries_flag = reader.ReadBool("VUI: motion_vectors_over_pic_boundaries_flag");
+                vuip.bitstreamRestriction.max_bytes_per_pic_denom = reader.ReadUE("VUI max_bytes_per_pic_denom");
+                vuip.bitstreamRestriction.max_bits_per_mb_denom = reader.ReadUE("VUI max_bits_per_mb_denom");
+                vuip.bitstreamRestriction.log2_max_mv_length_horizontal = reader.ReadUE("VUI log2_max_mv_length_horizontal");
+                vuip.bitstreamRestriction.log2_max_mv_length_vertical = reader.ReadUE("VUI log2_max_mv_length_vertical");
+                vuip.bitstreamRestriction.num_reorder_frames = reader.ReadUE("VUI num_reorder_frames");
+                vuip.bitstreamRestriction.max_dec_frame_buffering = reader.ReadUE("VUI max_dec_frame_buffering");
             }
 
             return vuip;
@@ -276,23 +276,23 @@ namespace mp4parser.h264.model
         private static HRDParameters readHRDParameters(CAVLCReader reader)
         {
             HRDParameters hrd = new HRDParameters();
-            hrd.cpb_cnt_minus1 = reader.readUE("SPS: cpb_cnt_minus1");
-            hrd.bit_rate_scale = (int)reader.readNBit(4, "HRD: bit_rate_scale");
-            hrd.cpb_size_scale = (int)reader.readNBit(4, "HRD: cpb_size_scale");
+            hrd.cpb_cnt_minus1 = reader.ReadUE("SPS: cpb_cnt_minus1");
+            hrd.bit_rate_scale = (int)reader.ReadNBit(4, "HRD: bit_rate_scale");
+            hrd.cpb_size_scale = (int)reader.ReadNBit(4, "HRD: cpb_size_scale");
             hrd.bit_rate_value_minus1 = new int[hrd.cpb_cnt_minus1 + 1];
             hrd.cpb_size_value_minus1 = new int[hrd.cpb_cnt_minus1 + 1];
             hrd.cbr_flag = new bool[hrd.cpb_cnt_minus1 + 1];
 
             for (int SchedSelIdx = 0; SchedSelIdx <= hrd.cpb_cnt_minus1; SchedSelIdx++)
             {
-                hrd.bit_rate_value_minus1[SchedSelIdx] = reader.readUE("HRD: bit_rate_value_minus1");
-                hrd.cpb_size_value_minus1[SchedSelIdx] = reader.readUE("HRD: cpb_size_value_minus1");
-                hrd.cbr_flag[SchedSelIdx] = reader.readBool("HRD: cbr_flag");
+                hrd.bit_rate_value_minus1[SchedSelIdx] = reader.ReadUE("HRD: bit_rate_value_minus1");
+                hrd.cpb_size_value_minus1[SchedSelIdx] = reader.ReadUE("HRD: cpb_size_value_minus1");
+                hrd.cbr_flag[SchedSelIdx] = reader.ReadBool("HRD: cbr_flag");
             }
-            hrd.initial_cpb_removal_delay_length_minus1 = (int)reader.readNBit(5, "HRD: initial_cpb_removal_delay_length_minus1");
-            hrd.cpb_removal_delay_length_minus1 = (int)reader.readNBit(5, "HRD: cpb_removal_delay_length_minus1");
-            hrd.dpb_output_delay_length_minus1 = (int)reader.readNBit(5, "HRD: dpb_output_delay_length_minus1");
-            hrd.time_offset_length = (int)reader.readNBit(5, "HRD: time_offset_length");
+            hrd.initial_cpb_removal_delay_length_minus1 = (int)reader.ReadNBit(5, "HRD: initial_cpb_removal_delay_length_minus1");
+            hrd.cpb_removal_delay_length_minus1 = (int)reader.ReadNBit(5, "HRD: cpb_removal_delay_length_minus1");
+            hrd.dpb_output_delay_length_minus1 = (int)reader.ReadNBit(5, "HRD: dpb_output_delay_length_minus1");
+            hrd.time_offset_length = (int)reader.ReadNBit(5, "HRD: time_offset_length");
             return hrd;
         }
 

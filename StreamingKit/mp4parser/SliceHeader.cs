@@ -25,8 +25,8 @@ public class SliceHeader {
     public SliceHeader(Stream @is, SeqParameterSet sps, PictureParameterSet pps, bool IdrPicFlag) {
         @is.ReadByte();
         CAVLCReader reader = new CAVLCReader(@is);
-        first_mb_in_slice = reader.readUE("SliceHeader: first_mb_in_slice");
-        switch (reader.readUE("SliceHeader: slice_type")) {
+        first_mb_in_slice = reader.ReadUE("SliceHeader: first_mb_in_slice");
+        switch (reader.ReadUE("SliceHeader: slice_type")) {
             case 0:
             case 5:
                 slice_type = SliceType.P;
@@ -53,24 +53,24 @@ public class SliceHeader {
                 break;
 
         }
-        pic_parameter_set_id = reader.readUE("SliceHeader: pic_parameter_set_id");
+        pic_parameter_set_id = reader.ReadUE("SliceHeader: pic_parameter_set_id");
         if (sps.residual_color_transform_flag) {
-            colour_plane_id = reader.readU(2, "SliceHeader: colour_plane_id");
+            colour_plane_id = reader.ReadU(2, "SliceHeader: colour_plane_id");
         }
-        frame_num = reader.readU(sps.log2_max_frame_num_minus4 + 4, "SliceHeader: frame_num");
+        frame_num = reader.ReadU(sps.log2_max_frame_num_minus4 + 4, "SliceHeader: frame_num");
 
         if (!sps.frame_mbs_only_flag) {
-            field_pic_flag = reader.readBool("SliceHeader: field_pic_flag");
+            field_pic_flag = reader.ReadBool("SliceHeader: field_pic_flag");
             if (field_pic_flag) {
-                bottom_field_flag = reader.readBool("SliceHeader: bottom_field_flag");
+                bottom_field_flag = reader.ReadBool("SliceHeader: bottom_field_flag");
             }
         }
         if (IdrPicFlag) {
-            idr_pic_id = reader.readUE("SliceHeader: idr_pic_id");
+            idr_pic_id = reader.ReadUE("SliceHeader: idr_pic_id");
             if (sps.pic_order_cnt_type == 0) {
-                pic_order_cnt_lsb = reader.readU(sps.log2_max_pic_order_cnt_lsb_minus4 + 4, "SliceHeader: pic_order_cnt_lsb");
+                pic_order_cnt_lsb = reader.ReadU(sps.log2_max_pic_order_cnt_lsb_minus4 + 4, "SliceHeader: pic_order_cnt_lsb");
                 if (pps.pic_order_present_flag && !field_pic_flag) {
-                    delta_pic_order_cnt_bottom = reader.readSE("SliceHeader: delta_pic_order_cnt_bottom");
+                    delta_pic_order_cnt_bottom = reader.ReadSE("SliceHeader: delta_pic_order_cnt_bottom");
                 }
             }
         }
@@ -79,8 +79,8 @@ public class SliceHeader {
     public SliceHeader(Stream @is) {
         @is.ReadByte();
         CAVLCReader reader = new CAVLCReader(@is);
-        first_mb_in_slice = reader.readUE("SliceHeader: first_mb_in_slice");
-        switch (reader.readUE("SliceHeader: slice_type")) {
+        first_mb_in_slice = reader.ReadUE("SliceHeader: first_mb_in_slice");
+        switch (reader.ReadUE("SliceHeader: slice_type")) {
             case 0:
             case 5:
                 slice_type = SliceType.P;

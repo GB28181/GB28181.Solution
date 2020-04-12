@@ -71,7 +71,7 @@ namespace mp4parser.h264.model
             {
                 if (nextScale != 0)
                 {
-                    int deltaScale = @is.readSE("deltaScale");
+                    int deltaScale = @is.ReadSE("deltaScale");
                     nextScale = (lastScale + deltaScale + 256) % 256;
                     sl.useDefaultScalingMatrixFlag = (j == 0 && nextScale == 0);
                 }
