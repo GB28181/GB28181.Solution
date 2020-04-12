@@ -12,14 +12,6 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="SIP.Core\SIPEvents\Dialog\EventDialogSchema.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="SIP.Core\SIPEvents\Presence\PIDFSchema.xsd">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
