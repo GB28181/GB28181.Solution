@@ -58,7 +58,7 @@ namespace GB28181.SIPSorcery.SIP.App
         Machine = 2,    // Connection from an application that will be sent events.
     }
 
-    public class SIPMonitorClientTypes
+    public static class SIPMonitorClientTypes
     {
         public static SIPMonitorClientTypesEnum GetSIPMonitorClientType(string eventTypeName)
         {
@@ -213,21 +213,22 @@ namespace GB28181.SIPSorcery.SIP.App
 
         protected string m_serialisationPrefix = SIPMonitorConsoleEvent.SERIALISATION_PREFIX;    // Default to a control client event.
 
-        public string SessionID;                        // The ID of the user notification session this event corresponds to.
-        public SIPMonitorClientTypesEnum ClientType;
-		public string Message;
-		public SIPEndPoint RemoteEndPoint;
-		public DateTimeOffset Created;
-        public string Username;
-        public string MonitorServerID;                  // The ID of the monitoring server that received this event. Useful when there are multiple monitoring servers.
-        public int ProcessID;                        // The ID of the process that generated this event.
+        public string SessionID { get; set; }                        // The ID of the user notification session this event corresponds to.
+        public SIPMonitorClientTypesEnum ClientType { get; set; }
+        public string Message { get; set; }
+        public SIPEndPoint RemoteEndPoint { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public string Username { get; set; }
+        public string MonitorServerID { get; set; }                  // The ID of the monitoring server that received this event. Useful when there are multiple monitoring servers.
+        public int ProcessID { get; set; }
+
 
         //public int GeographicId;
         //public string GeographicDescription;
         //public double Latitude;
         //public double Longitude;
 
-		protected SIPMonitorEvent()
+        protected SIPMonitorEvent()
 		{
             Created = DateTimeOffset.UtcNow;
         }

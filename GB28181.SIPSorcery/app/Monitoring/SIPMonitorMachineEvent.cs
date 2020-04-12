@@ -101,17 +101,18 @@ namespace GB28181.SIPSorcery.SIP.App
         {
             try
             {
-                SIPMonitorMachineEvent machineEvent = new SIPMonitorMachineEvent();
+                var machineEvent = new SIPMonitorMachineEvent();
 
-                if (eventCSV.IndexOf(END_MESSAGE_DELIMITER) != -1)
+                if (eventCSV.IndexOf(END_MESSAGE_DELIMITER,StringComparison.OrdinalIgnoreCase) != -1)
                 {
                     eventCSV.Remove(eventCSV.Length - 2, 2);
                 }
 
-                string[] eventFields = eventCSV.Split(new char[] { '|' });
+                var eventFields = eventCSV.Split(new char[] { '|' });
 
                 machineEvent.SessionID = eventFields[1];
                 machineEvent.MonitorServerID = eventFields[2];
+               
                 machineEvent.MachineEventType = SIPMonitorMachineEventTypes.GetMonitorMachineTypeForId(Convert.ToInt32(eventFields[3]));
                 machineEvent.Created = DateTimeOffset.ParseExact(eventFields[4], SERIALISATION_DATETIME_FORMAT, CultureInfo.InvariantCulture);
                 machineEvent.Username = eventFields[5];

@@ -35,19 +35,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
 using GB28181.SIPSorcery.Sys;
-using GB28181.Logger4Net;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 #if UNITTEST
 using NUnit.Framework;

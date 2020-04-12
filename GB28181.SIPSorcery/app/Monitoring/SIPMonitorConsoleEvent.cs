@@ -65,12 +65,12 @@ namespace GB28181.SIPSorcery.SIP.App
         private const string CALLDIRECTION_IN_STRING = "<-";
         private const string CALLDIRECTION_OUT_STRING = "->";
 
-        private static readonly string m_topLevelAdminID = "*";
+        private const string m_topLevelAdminID = "*";
 
-        public SIPMonitorServerTypesEnum ServerType;
-        public SIPEndPoint DestinationEndPoint;
-        public SIPEndPoint ServerEndPoint;           // Socket the request was received on by the server.
-        public SIPMonitorEventTypesEnum EventType;
+        public SIPMonitorServerTypesEnum ServerType { get; set; }
+        public SIPEndPoint DestinationEndPoint { get; set; }
+        public SIPEndPoint ServerEndPoint { get; set; }             // Socket the request was received on by the server.
+        public SIPMonitorEventTypesEnum EventType { get; set; }
 
         private SIPMonitorConsoleEvent()
         {
@@ -148,11 +148,11 @@ namespace GB28181.SIPSorcery.SIP.App
             string dirn = (callDirection == SIPCallDirection.In) ? CALLDIRECTION_IN_STRING : CALLDIRECTION_OUT_STRING;
             if (sipRequest != null)
             {
-                Message = "REQUEST (" + Created.ToString("HH:mm:ss:fff") + "): " + localEndPoint + dirn + remoteEndPoint + "\r\n" + sipRequest.ToString();
+                Message = $"REQUEST ({Created:HH:mm:ss:fff}): {localEndPoint}{dirn}{remoteEndPoint}\r\n{sipRequest}";
             }
             else if (sipResponse != null)
             {
-                Message = "RESPONSE (" + Created.ToString("HH:mm:ss:fff") + "): " + localEndPoint + dirn + remoteEndPoint + "\r\n" + sipResponse.ToString();
+                Message = $"RESPONSE ({Created:HH:mm:ss:fff}): {localEndPoint}{dirn}{remoteEndPoint}\r\n{sipResponse}";
             }
         }
 
@@ -160,7 +160,7 @@ namespace GB28181.SIPSorcery.SIP.App
         {
             try
             {
-                SIPMonitorConsoleEvent monitorEvent = new SIPMonitorConsoleEvent();
+                var monitorEvent = new SIPMonitorConsoleEvent();
 
                 if (eventCSV.IndexOf(END_MESSAGE_DELIMITER) != -1)
                 {
@@ -194,7 +194,11 @@ namespace GB28181.SIPSorcery.SIP.App
                 }
 
                 monitorEvent.Username = eventFields[9];
-                Int32.TryParse(eventFields[10], out monitorEvent.ProcessID);
+
+                _ = int.TryParse(eventFields[10], out int _prcessID);
+
+                monitorEvent.ProcessID = _prcessID;
+
                 monitorEvent.Message = eventFields[11].Trim('#');
 
                 return monitorEvent;
