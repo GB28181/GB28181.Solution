@@ -1,3 +1,3 @@
 # Important Change
 
-## a lot of change ,as a basic codes
+## Prepare to Remove GPL Related Source code

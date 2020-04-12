@@ -150,10 +150,7 @@ $RECYCLE.BIN/
 .DS_Store
 .vs
 *.cache
-obj/
-bin/
 /.vs/
 /packages
 packages.config
-obj/
 *.orig

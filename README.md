@@ -90,7 +90,7 @@ MIT & BSD v2 & BSD v3 & GPL
 
 
 
-***说明: 由于项目前期License问题的不严谨性，项目采用了诸多协议，如GPL、MIT、BSD v2 BSD v3等，但是,由于[GPL License的约束和传染性](https://www.oschina.net/question/12_2826)，由于GPL License的存在，这对希望修改后闭源使用的朋友可能会造成较大影响.***
+***说明: 由于项目前期License问题的不严谨性，项目采用了诸多协议，如GPL、MIT、BSD v2 BSD v3等，但是,由于GPL License的存在以及[GPL License的约束和传染性](https://www.oschina.net/question/12_2826)，这对希望修改后闭源使用的朋友可能会造成较大影响.***
 
 ***项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)中明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php), 比如: [DNSResponse](https://github.com/GB28181/GB28181.Solution/blob/dc38a76ddcd8b424768089ad4ba2f5bee4a2931c/GB28181.SIPSorcery/Net/DNS/DNSResponse.cs#L16)***
 
