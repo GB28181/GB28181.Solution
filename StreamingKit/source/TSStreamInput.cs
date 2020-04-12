@@ -2,7 +2,6 @@
 using Common.Streams;
 using GB28181.Logger4Net.DebugEx;
 using Helpers;
-using StreamingKit;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,32 +9,6 @@ using System.Threading;
 
 namespace StreamingKit.Media.TS
 {
-
-    public class WSIPTVChannelInfo 
-    {
-        public string Name { get; set; }
-
-        public string Key { get; set; }
-
-        public string IP { get; set; }
-        public int Port { get; set; }
-
-        public WSIPTVChannelInfo()
-        {
-
-        }
-
-        public WSIPTVChannelInfo(string key, string name, string ip, int port)
-        {
-            Key = key;
-            Name = name;
-            IP = ip;
-            Port = port;
-        }
-
-
-    }
-
     public abstract class TSStreamInput : IDisposable {
 
         protected Boolean _isworking = false;

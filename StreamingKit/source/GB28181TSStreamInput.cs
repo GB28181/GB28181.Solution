@@ -1,9 +1,8 @@
 ﻿using Helpers;
-using StreamingKit;
 using StreamingKit.Media.TS;
 using System;
 
-namespace SS.MeidaNetEngine.Media.TS
+namespace StreamingKit.Source.TS
 {
     public class GB28181TSStreamInput : TSStreamInput
     {
@@ -66,7 +65,6 @@ namespace SS.MeidaNetEngine.Media.TS
                 _lastTimeTick = frame.nTimetick;
                 var span = DateTime.Now.Ticks / 10000 - _startTimeTick;
                 int sleep = (int)((_lastTimeTick - _firstTimeTick) - span);
-                //Console.WriteLine((_lastTimeTick - _firstTimeTick) + "   " + span);
                 if (sleep > 40)
                     sleep = 40;
                 if (PlaySync)
