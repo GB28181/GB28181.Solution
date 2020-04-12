@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+
 namespace GB28181.Logger4Net
 {
     public class Appender
