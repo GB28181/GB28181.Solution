@@ -36,7 +36,10 @@
 
 using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
-using System;
+using System.Reflection;
+
+
+[assembly: AssemblyCulture("zh-CN")]
 
 namespace GB28181.SIPSorcery.SIP
 {

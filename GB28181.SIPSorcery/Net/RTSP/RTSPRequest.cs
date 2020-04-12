@@ -57,21 +57,21 @@ namespace GB28181.SIPSorcery.Net
 		private static int m_rtspMajorVersion = RTSPConstants.RTSP_MAJOR_VERSION;
 		private static int m_rtspMinorVersion = RTSPConstants.RTSP_MINOR_VERSION;
 
-		public bool Valid = true;
-		public RTSPHeaderError ValidationError = RTSPHeaderError.None;
+		public bool Valid { get; set; } = true;
+		public RTSPHeaderError ValidationError { get; set; } = RTSPHeaderError.None;
 
-		public string RTSPVersion = m_rtspVersion;
-		public int RTSPMajorVersion = m_rtspMajorVersion;
-		public int RTSPMinorVersion = m_rtspMinorVersion;
-		public RTSPMethodsEnum Method;
-		public string UnknownMethod = null;
+		public string RTSPVersion { get; set; } = m_rtspVersion;
+		public int RTSPMajorVersion { get; set; } = m_rtspMajorVersion;
+		public int RTSPMinorVersion { get; set; } = m_rtspMinorVersion;
+		public RTSPMethodsEnum Method { get; set; }
+		public string UnknownMethod { get; set; }
 
-		public RTSPURL URL;
-		public RTSPHeader Header;
-		public string Body;
+		public RTSPURL URL { get; set; }
+		public RTSPHeader Header { get; set; }
+		public string Body { get; set; }
 
-		public DateTime ReceivedAt = DateTime.MinValue;
-		public IPEndPoint ReceivedFrom;
+		public DateTime ReceivedAt { get; set; } = DateTime.MinValue;
+		public IPEndPoint ReceivedFrom { get; set; } 
 
 		private RTSPRequest()
 		{}
@@ -118,11 +118,11 @@ namespace GB28181.SIPSorcery.Net
 			
 			try
 			{
-				RTSPRequest rtspRequest = new RTSPRequest();
+				var rtspRequest = new RTSPRequest();
 
                 string statusLine = rtspMessage.FirstLine;
 
-                int firstSpacePosn = statusLine.IndexOf(" ");
+                int firstSpacePosn = statusLine.IndexOf(" ",StringComparison.OrdinalIgnoreCase);
 
                 string method = statusLine.Substring(0, firstSpacePosn).Trim();
                 rtspRequest.Method = RTSPMethods.GetMethod(method);
@@ -181,7 +181,7 @@ namespace GB28181.SIPSorcery.Net
 			catch(Exception excp)
 			{
 				logger.Error("Exception RTSPRequest ToString. " + excp.Message);
-				throw excp;
+				throw;
 			}
 		}
     }
