@@ -1,5 +1,5 @@
 ﻿using Helpers;
-using Common.Networks;
+using StreamingKit.Interface;
 using StreamingKit.Codec;
 using System;
 using System.IO;
@@ -7,24 +7,13 @@ using System.Text;
 namespace StreamingKit
 {
 
-    public enum AVCode
+    public partial class MediaFrame : IBufferBytes
     {
-        PIX_FMT_YUV420P = 0,
-        PIX_FMT_RGB32 = 6,
-        CODEC_ID_AAC = 86018,
-        CODEC_TYPE_VIDEO = 0,
-        CODEC_TYPE_AUDIO = 1,
-        CODEC_ID_H264 = 28,
-        CODEC_ID_H263 = 5,
-        CODEC_ID_FLV1 = 22,
-        CODEC_ID_XVID = 63,
-        CODEC_ID_MPEG4 = 13,
-    }
-    public partial class MediaFrame : IByteObj
-    {
-        public byte MediaFrameVersion;//0x00小版本，0x01全版本,0xff为命令（命令的内容见nRawType对应的枚举）
+        //0x00小版本，
+        //0x01全版本,
+        //0xff为命令（命令的内容见nRawType对应的枚举）
         //0x02版本为区分音频版本
-
+        public byte MediaFrameVersion { get; set; }
         /// <summary>
         /// 扩展字段，默认为1 
         /// 当MediaFrameVersion 为0x00或0x01，则该字段：0为不可被丢弃(一般只有首帧是不可丢弃的。)，1为可被丢弃,
@@ -42,20 +31,20 @@ namespace StreamingKit
         /// <summary>
         /// 编码器CODE
         /// </summary>
-        public int NEncoder { get; set; }
+        public int Encoder { get; set; }
         /// <summary>
         /// 编码器名称
         /// </summary>
-        public string EncodeName => GetGeneralEncodecName(NEncoder);
+        public string EncodeName => GetGeneralEncodecName(Encoder);
 
         /// <summary>
         /// H264里面的SPS长度
         /// </summary>
-        public short SPSLen { get; set; }
+        public int SPSLen { get; set; } = 0;
         /// <summary>
         /// H264里面的PPS长度
         /// </summary>
-        public short PPSLen { get; set; }
+        public int PPSLen { get; set; } = 0;
         /// <summary>
         /// 视频宽
         /// </summary>
@@ -82,6 +71,23 @@ namespace StreamingKit
         public short Samples { get; set; }
 
         private byte[] data = Array.Empty<byte>();
+
+        public MediaFrame()
+        {
+        }
+
+        public MediaFrame(byte version)
+        {
+            MediaFrameVersion = version;
+        }
+        public MediaFrame(byte[] buf) : this(new MemoryStream(buf))
+        {
+
+        }
+        public MediaFrame(Stream stream)
+        {
+            SetBytes(stream);
+        }
 
         /// <summary>
         /// 媒体数据
@@ -111,22 +117,7 @@ namespace StreamingKit
             serializableData = value;
         }
 
-        public MediaFrame()
-        {
-        }
 
-        public MediaFrame(byte version)
-        {
-            MediaFrameVersion = version;
-        }
-        public MediaFrame(byte[] buf) : this(new MemoryStream(buf))
-        {
-
-        }
-        public MediaFrame(Stream stream)
-        {
-            SetBytes(stream);
-        }
         public void SetBytes(byte[] buf)
         {
             SetBytes(new MemoryStream(buf));
@@ -149,7 +140,7 @@ namespace StreamingKit
             Offset = br.ReadInt32();
             if (MediaFrameVersion == 1 || MediaFrameVersion == 2)
             {
-                NEncoder = br.ReadInt32();
+                Encoder = br.ReadInt32();
                 if (IsAudio == 0)
                 {
                     SPSLen = br.ReadInt16();
@@ -195,7 +186,7 @@ namespace StreamingKit
 
             if (MediaFrameVersion == 1 || MediaFrameVersion == 2)
             {
-                bw.Write(NEncoder);
+                bw.Write(Encoder);
                 if (IsAudio == 0)
                 {
                     bw.Write(SPSLen);
@@ -249,9 +240,6 @@ namespace StreamingKit
 
             return !IsCommandMediaFrame() && !((MediaFrameVersion == 0 || MediaFrameVersion == 1) && Ex == 0);
         }
-    }
-    public partial class MediaFrame
-    {
 
         public byte[] GetSPS()
         {
@@ -404,16 +392,14 @@ namespace StreamingKit
 
         public static MediaFrame CreateVideoKeyFrame(VideoEncodeCfg cfg, long timetick, byte[] data, int offset, int size)
         {
-            MediaFrame mFrame = CreateVideoFrame(cfg, timetick, data, offset, size);// new
-            // MediaFrame((byte)
-            // 1);
+            var mFrame = CreateVideoFrame(cfg, timetick, data, offset, size);
             mFrame.MediaFrameVersion = 1;
             mFrame.IsKeyFrame = 1;
             mFrame.Width = cfg.Width;
             mFrame.Height = cfg.Height;
-            mFrame.SPSLen = (short)(cfg.SPS == null ? 0 : (byte)cfg.SPS.Length);
-            mFrame.PPSLen = (short)(cfg.PPS == null ? 0 : (byte)cfg.PPS.Length);
-            mFrame.NEncoder = cfg.encoder;
+            mFrame.SPSLen = cfg.SPS == null ? 0 : cfg.SPS.Length;
+            mFrame.PPSLen = cfg.PPS == null ? 0 : cfg.PPS.Length;
+            mFrame.Encoder = cfg.encoder;
             return mFrame;
         }
 
@@ -448,7 +434,7 @@ namespace StreamingKit
             mFrame.Channel = cfg.channel;
             mFrame.AudioFormat = (short)cfg.format;
             mFrame.Samples = (short)cfg.samples;
-            mFrame.NEncoder = cfg.encoder;
+            mFrame.Encoder = cfg.encoder;
 
             return mFrame;
 
@@ -474,61 +460,5 @@ namespace StreamingKit
         }
     }
 
-    /// <summary>
-    /// 媒体帧命令类型
-    /// </summary>
-    public enum MediaFrameCommandType : byte
-    {
-        /// <summary>
-        /// 无效值
-        /// </summary>
-        None = 0x00,
-        /// <summary>
-        /// 开始
-        /// </summary>
-        Start = 0x01,
-        /// <summary>
-        /// 停止 
-        /// </summary>
-        Stop = 0x02,
-        /// <summary>
-        /// 暂停
-        /// </summary>
-        Pause = 0x03,
-        /// <summary>
-        /// 继续
-        /// </summary>
-        Continue = 0x04,
-        /// <summary>
-        /// 重置播放位置
-        /// </summary>
-        ResetPos = 0x05,
-
-        /// <summary>
-        /// 音视频索引
-        /// </summary>
-        Index = 0x10,
-        /// <summary>
-        /// 缩略图
-        /// </summary>
-        Thumbnail = 0x24,
-
-        /// <summary>
-        /// 重置播放位置
-        /// </summary>
-        ResetCodec = 0x28,
-        /// <summary>
-        /// 清除发送缓冲区(音视频),该指令一般只能用于音频优先传输模式,暂只在UDP传输模式中有效
-        /// </summary>
-        ClearTransportBuffer = 0x2A,
-        /// <summary>
-        /// 清除视频传输缓冲区,该指令一般只能用于音频优先传输模式,暂只在UDP传输模式中有效
-        /// </summary>
-        ClearVideoTransportBuffer = 0x2B,
-        /// <summary>
-        /// 清除音频传输缓冲区,该指令一般只能用于音频优先传输模式,暂只在UDP传输模式中有效
-        /// </summary>
-        ClearAudioTransportBuffer = 0x2C,
-    }
 
 }

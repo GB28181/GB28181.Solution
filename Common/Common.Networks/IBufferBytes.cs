@@ -1,6 +1,6 @@
 namespace Common.Networks
 {
-	public interface IByteObj
+	public interface IBufferBytes
 	{
 		byte[] GetBytes();
 

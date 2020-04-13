@@ -1,6 +1,6 @@
 namespace Common.Networks
 {
-	public class ByteObjSocket<T> : SocketEx where T : IByteObj, new()
+	public class ByteObjSocket<T> : SocketEx where T : IBufferBytes, new()
 	{
 		public virtual T ReadObj()
 		{
