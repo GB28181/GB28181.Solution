@@ -109,7 +109,7 @@ namespace StreamingKit.Media
 
             var firstFrame = new MediaFrame(firstFrameBuffer);
             var lastFrame = new MediaFrame(lastFrameBuffer);
-            return new long[] { firstFrame.nTimetick, lastFrame.nTimetick };
+            return new long[] { firstFrame.NTimetick, lastFrame.NTimetick };
         }
 
     }

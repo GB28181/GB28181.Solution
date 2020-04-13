@@ -41,7 +41,7 @@ namespace StreamingKit.Media.TS
             var pes = PESPacket.MediaFrame2PES(frame);
             var pes_buffer = pes.GetBytes();
             var msInput = new MemoryStream(pes_buffer);
-            int PID = frame.nIsAudio == 1 ? 257 : 258;
+            int PID = frame.IsAudio == 1 ? 257 : 258;
             bool isFirstPack = true;
             do {
                 var payload_unit_start_indicator = 0;
@@ -50,11 +50,11 @@ namespace StreamingKit.Media.TS
                 var data_len = 0;
                 AdaptationInfo ai = null;
                 if ((isFirstPack || size < max_data_len)) {
-                    if (isFirstPack && (frame.nIsAudio == 0 || true)) {
+                    if (isFirstPack && (frame.IsAudio == 0 || true)) {
                         max_data_len = 188 - 4 - 8;//5B为包头长度 8B为adaptation长度
                         data_len = Math.Min(max_data_len, size);
                         var adaptation_field_length = 188 - 4 - data_len - 1;//1B为adaptation的头，这1B不算在adaptation_field_length中
-                        var pcr_bas = (frame.nTimetick - pm.FirstFrameTimeTick) * 90;//这里为什么是*45我也不知道，
+                        var pcr_bas = (frame.NTimetick - pm.FirstFrameTimeTick) * 90;//这里为什么是*45我也不知道，
                         ai = new AdaptationInfo() {
                             adaptation_field_length = (byte)adaptation_field_length,
                             random_access_indicator = 1,

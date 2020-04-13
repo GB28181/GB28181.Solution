@@ -12,7 +12,7 @@ namespace StreamingKit.Codec
         public int encoder = -1;// 通用编码代号
         public string encodeName = null;// 通用编码名称
 
-        public Dictionary<string, object> Params = new Dictionary<string, object>();
+        public Dictionary<string, object> Params { get; set; } = new Dictionary<string, object>();
 
         // 设置编码名称
 
@@ -41,22 +41,21 @@ namespace StreamingKit.Codec
 
     public class VideoEncodeCfg : CodecCfgBase
     {
-        public int width;
-        public int height;
-        public int frameRate;
-        public int cameraId = -1;// 0为后置摄像头，1为前置摄像头
-        public int videoBitRate = 1024 * 640;
-        public byte[] SPS;
-        public byte[] PPS;
-        public string profileLevel;
-        public string strSPS;
-        public string strPPS;
-
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int FrameRate { get; set; }
+        public int CameraId { get; set; } = -1;// 0为后置摄像头，1为前置摄像头
+        public int VideoBitRate { get; set; } = 1024 * 640;
+        public byte[] SPS { get; set; }
+        public byte[] PPS { get; set; }
+        public string ProfileLevel { get; set; }
+        public string StrSPS { get; set; }
+        public string StrPPS { get; set; }
 
         // 获取H264的SPS PPS
         public byte[] GetSPSPPSBytes()
         {
-            if (PPS == null || SPS == null || profileLevel == null)
+            if (PPS == null || SPS == null || ProfileLevel == null)
                 throw new Exception();
             var ms = new MemoryStream();
             var baoStream = new BinaryWriter(ms);

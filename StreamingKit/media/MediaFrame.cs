@@ -30,62 +30,62 @@ namespace StreamingKit
         /// 当MediaFrameVersion 为0x00或0x01，则该字段：0为不可被丢弃(一般只有首帧是不可丢弃的。)，1为可被丢弃,
         /// 当MediaFrameVersion为0xff时，该字段为命令类型，命令包不可丢弃
         /// </summary>
-        public byte nEx = 1;//
-        public byte nIsKeyFrame;	//是否为关键帧，0为非关键帧，1为关键帧
-        public long nTimetick;		//时间辍
-        public byte nIsAudio;		//是否为音频,0:视频,1:音频
-        public int nSize;		//数据大小,紧跟着该结构后的数据媒体数据
-        public int nOffset;//偏移量
+        public byte Ex { get; set; } = 1;//
+        public byte IsKeyFrame { get; set; }	//是否为关键帧，0为非关键帧，1为关键帧
+        public long NTimetick { get; set; }		//时间辍
+        public byte IsAudio { get; set; }		//是否为音频,0:视频,1:音频
+        public int Size { get; set; }		//数据大小,紧跟着该结构后的数据媒体数据
+        public int Offset { get; set; }//偏移量
 
-        public short StreamID = 0;//区分音频（或视频）数据。0代表一路  1代表一路
+        public short StreamID { get; set; } = 0;//区分音频（或视频）数据。0代表一路  1代表一路
 
         /// <summary>
         /// 编码器CODE
         /// </summary>
-        public int nEncoder;
+        public int NEncoder { get; set; }
         /// <summary>
         /// 编码器名称
         /// </summary>
-        public string EncodeName { get { return GetGeneralEncodecName(nEncoder); } }
+        public string EncodeName { get { return GetGeneralEncodecName(NEncoder); } }
 
         /// <summary>
         /// H264里面的SPS长度
         /// </summary>
-        public short nSPSLen;
+        public short SPSLen { get; set; }
         /// <summary>
         /// H264里面的PPS长度
         /// </summary>
-        public short nPPSLen;
+        public short PPSLen { get; set; }
         /// <summary>
         /// 视频宽
         /// </summary>
-        public int nWidth;
+        public int Width { get; set; }
         /// <summary>
         /// 视频高
         /// </summary>
-        public int nHeight;
+        public int Height { get; set; }
         /// <summary>
         /// 采样率,speex一般为8000
         /// </summary>
-        public int nFrequency;
+        public int Frequency { get; set; }
         /// <summary>
         /// 1=单通道，2=双通道,speex编码一般为1
         /// </summary>
-        public int nChannel;
+        public int Channel { get; set; }
         /// <summary>
         /// 0=8位,1=16位,一般为2
         /// </summary>
-        public short nAudioFormat;
+        public short AudioFormat { get; set; }
         /// <summary>
         /// 采集大小,speex 一般为160
         /// </summary>
-        public short nSamples;
+        public short Samples { get; set; }
         /// <summary>
         /// 媒体数据
         /// </summary>
-        public byte[] Data = Array.Empty<byte>();
+        public byte[] Data { get; set; } = Array.Empty<byte>();
 
-        public byte[] SerializableData;//序列化数据
+        public byte[] SerializableData { get; set; }//序列化数据
 
         public MediaFrame()
         {
@@ -114,37 +114,37 @@ namespace StreamingKit
         {
             var br = new System.IO.BinaryReader(stream);
             MediaFrameVersion = br.ReadByte();
-            nEx = br.ReadByte();
-            nIsKeyFrame = br.ReadByte();
-            nTimetick = br.ReadInt64();
-            nIsAudio = br.ReadByte();
+            Ex = br.ReadByte();
+            IsKeyFrame = br.ReadByte();
+            NTimetick = br.ReadInt64();
+            IsAudio = br.ReadByte();
             if (MediaFrameVersion == 2)
             {
                 StreamID = br.ReadInt16();
             }
-            nSize = br.ReadInt32();
-            nOffset = br.ReadInt32();
+            Size = br.ReadInt32();
+            Offset = br.ReadInt32();
             if (MediaFrameVersion == 1 || MediaFrameVersion == 2)
             {
-                nEncoder = br.ReadInt32();
-                if (nIsAudio == 0)
+                NEncoder = br.ReadInt32();
+                if (IsAudio == 0)
                 {
-                    nSPSLen = br.ReadInt16();
-                    nPPSLen = br.ReadInt16();
-                    nWidth = br.ReadInt32();
-                    nHeight = br.ReadInt32();
+                    SPSLen = br.ReadInt16();
+                    PPSLen = br.ReadInt16();
+                    Width = br.ReadInt32();
+                    Height = br.ReadInt32();
                 }
                 else
                 {
-                    nFrequency = br.ReadInt32();
-                    nChannel = br.ReadInt32();
-                    nAudioFormat = br.ReadInt16();
-                    nSamples = br.ReadInt16();
+                    Frequency = br.ReadInt32();
+                    Channel = br.ReadInt32();
+                    AudioFormat = br.ReadInt16();
+                    Samples = br.ReadInt16();
                 }
             }
             try
             {
-                Data = br.ReadBytes(nSize + nOffset);
+                Data = br.ReadBytes(Size + Offset);
             }
             catch (Exception ex)
             {
@@ -157,39 +157,39 @@ namespace StreamingKit
             var ms = new MemoryStream();
             var bw = new BinaryWriter(ms);
             bw.Write(MediaFrameVersion);
-            bw.Write(nEx);
-            bw.Write(nIsKeyFrame);
-            bw.Write(nTimetick);
-            bw.Write(nIsAudio);
+            bw.Write(Ex);
+            bw.Write(IsKeyFrame);
+            bw.Write(NTimetick);
+            bw.Write(IsAudio);
             if (MediaFrameVersion == 2)
             {
                 bw.Write(StreamID);
             }
-            bw.Write(nSize);
-            int _tOffset = nOffset;// 重置偏移量
-            nOffset = 0;
-            bw.Write(nOffset);
+            bw.Write(Size);
+            int _tOffset = Offset;// 重置偏移量
+            Offset = 0;
+            bw.Write(Offset);
 
             if (MediaFrameVersion == 1 || MediaFrameVersion == 2)
             {
-                bw.Write(nEncoder);
-                if (nIsAudio == 0)
+                bw.Write(NEncoder);
+                if (IsAudio == 0)
                 {
-                    bw.Write(nSPSLen);
-                    bw.Write(nPPSLen);
-                    bw.Write(nWidth);
-                    bw.Write(nHeight);
+                    bw.Write(SPSLen);
+                    bw.Write(PPSLen);
+                    bw.Write(Width);
+                    bw.Write(Height);
                 }
                 else
                 {
-                    bw.Write(nFrequency);
-                    bw.Write(nChannel);
-                    bw.Write(nAudioFormat);
-                    bw.Write(nSamples);
+                    bw.Write(Frequency);
+                    bw.Write(Channel);
+                    bw.Write(AudioFormat);
+                    bw.Write(Samples);
                 }
             }
-            bw.Write(Data, _tOffset, nSize);
-            nOffset = _tOffset;
+            bw.Write(Data, _tOffset, Size);
+            Offset = _tOffset;
             return ms.ToArray();
         }
 
@@ -197,26 +197,26 @@ namespace StreamingKit
         {
             if (!this.IsCommandMediaFrame())
             {
-                if (this.nIsKeyFrame == 1)
+                if (this.IsKeyFrame == 1)
                 {
-                    if (this.nIsAudio == 0)
+                    if (this.IsAudio == 0)
                     {
-                        return string.Format("nIsAudio:%{0}  nIsKeyFrame:{1}  nSize:{2}  codec:{3}  width:{4}  height:{5}", nIsAudio, nIsKeyFrame, nSize, EncodeName, nWidth, nHeight);
+                        return string.Format("nIsAudio:%{0}  nIsKeyFrame:{1}  nSize:{2}  codec:{3}  width:{4}  height:{5}", IsAudio, IsKeyFrame, Size, EncodeName, Width, Height);
                     }
                     else
                     {
-                        return string.Format("nIsAudio:%{0}  nIsKeyFrame:{1}  nSize:{2}  codec:{3}  channel:{4} frequency:{5}", nIsAudio, nIsKeyFrame, nSize, EncodeName, nChannel, nFrequency);
+                        return string.Format("nIsAudio:%{0}  nIsKeyFrame:{1}  nSize:{2}  codec:{3}  channel:{4} frequency:{5}", IsAudio, IsKeyFrame, Size, EncodeName, Channel, Frequency);
                     }
 
                 }
                 else
                 {
-                    return string.Format("nIsAudio:{0}  nIsKeyFrame:{1}  nTick:{2}  nSize:{3}   ", nIsAudio, nIsKeyFrame, nTimetick, nSize);
+                    return string.Format("nIsAudio:{0}  nIsKeyFrame:{1}  nTick:{2}  nSize:{3}   ", IsAudio, IsKeyFrame, NTimetick, Size);
                 }
             }
             else
             {
-                return string.Format("nIsAudio:{0}  Command:{1}", nIsAudio, (MediaFrameCommandType)nEx);
+                return string.Format("nIsAudio:{0}  Command:{1}", IsAudio, (MediaFrameCommandType)Ex);
             }
 
         }
@@ -224,7 +224,7 @@ namespace StreamingKit
         public bool IsAllowDiscard()
         {
 
-            return !IsCommandMediaFrame() && !((MediaFrameVersion == 0 || MediaFrameVersion == 1) && nEx == 0);
+            return !IsCommandMediaFrame() && !((MediaFrameVersion == 0 || MediaFrameVersion == 1) && Ex == 0);
         }
     }
     public partial class MediaFrame
@@ -232,10 +232,10 @@ namespace StreamingKit
 
         public byte[] GetSPS()
         {
-            if (this.nIsAudio == 0 && this.nIsKeyFrame == 1)
+            if (this.IsAudio == 0 && this.IsKeyFrame == 1)
             {
-                byte[] sps = new byte[nSPSLen];
-                Array.Copy(Data, 4, sps, 0, nSPSLen);
+                byte[] sps = new byte[SPSLen];
+                Array.Copy(Data, 4, sps, 0, SPSLen);
                 return sps;
             }
             else
@@ -243,10 +243,10 @@ namespace StreamingKit
         }
         public byte[] GetPPS()
         {
-            if (this.nIsAudio == 0 && this.nIsKeyFrame == 1)
+            if (this.IsAudio == 0 && this.IsKeyFrame == 1)
             {
-                byte[] pps = new byte[nPPSLen];
-                Array.Copy(Data, nSPSLen + 8, pps, 0, nPPSLen);
+                byte[] pps = new byte[PPSLen];
+                Array.Copy(Data, SPSLen + 8, pps, 0, PPSLen);
                 return pps;
             }
             else
@@ -260,18 +260,18 @@ namespace StreamingKit
         {
             if (!IsCommandMediaFrame())
                 throw new Exception("");
-            return (MediaFrameCommandType)nEx;
+            return (MediaFrameCommandType)Ex;
         }
         public MediaFrame CreateCommandMediaFrame(MediaFrameCommandType cmd)
         {
             return new MediaFrame()
             {
                 MediaFrameVersion = 0xff,
-                nEx = (byte)cmd,
-                nIsKeyFrame = 0,
-                nIsAudio = this.nIsAudio,
-                nTimetick = 0,
-                nSize = 0,
+                Ex = (byte)cmd,
+                IsKeyFrame = 0,
+                IsAudio = this.IsAudio,
+                NTimetick = 0,
+                Size = 0,
                 Data = Array.Empty<byte>(),
             };
         }
@@ -285,11 +285,11 @@ namespace StreamingKit
             var mf = new MediaFrame()
             {
                 MediaFrameVersion = 0xff,
-                nEx = (byte)cmd,
-                nIsKeyFrame = 0,
-                nIsAudio = (byte)(isAudio ? 1 : 0),
-                nTimetick = 0,
-                nSize = data.Length,
+                Ex = (byte)cmd,
+                IsKeyFrame = 0,
+                IsAudio = (byte)(isAudio ? 1 : 0),
+                NTimetick = 0,
+                Size = data.Length,
                 Data = data ?? Array.Empty<byte>(),
             };
             return mf;
@@ -386,12 +386,12 @@ namespace StreamingKit
             // MediaFrame((byte)
             // 1);
             mFrame.MediaFrameVersion = 1;
-            mFrame.nIsKeyFrame = 1;
-            mFrame.nWidth = cfg.width;
-            mFrame.nHeight = cfg.height;
-            mFrame.nSPSLen = (short)(cfg.SPS == null ? 0 : (byte)cfg.SPS.Length);
-            mFrame.nPPSLen = (short)(cfg.PPS == null ? 0 : (byte)cfg.PPS.Length);
-            mFrame.nEncoder = cfg.encoder;
+            mFrame.IsKeyFrame = 1;
+            mFrame.Width = cfg.Width;
+            mFrame.Height = cfg.Height;
+            mFrame.SPSLen = (short)(cfg.SPS == null ? 0 : (byte)cfg.SPS.Length);
+            mFrame.PPSLen = (short)(cfg.PPS == null ? 0 : (byte)cfg.PPS.Length);
+            mFrame.NEncoder = cfg.encoder;
             return mFrame;
         }
 
@@ -404,11 +404,11 @@ namespace StreamingKit
 
             MediaFrame mFrame = new MediaFrame(0)
             {
-                nIsAudio = 0,
-                nIsKeyFrame = 0,
-                nTimetick = timetick,
-                nSize = size,
-                nOffset = offset,
+                IsAudio = 0,
+                IsKeyFrame = 0,
+                NTimetick = timetick,
+                Size = size,
+                Offset = offset,
                 Data = data
             };
             return mFrame;
@@ -420,12 +420,12 @@ namespace StreamingKit
             // MediaFrame((byte)
             // 1);
             mFrame.MediaFrameVersion = 1;
-            mFrame.nIsKeyFrame = 1;
-            mFrame.nFrequency = cfg.frequency;
-            mFrame.nChannel = cfg.channel;
-            mFrame.nAudioFormat = (short)cfg.format;
-            mFrame.nSamples = (short)cfg.samples;
-            mFrame.nEncoder = cfg.encoder;
+            mFrame.IsKeyFrame = 1;
+            mFrame.Frequency = cfg.frequency;
+            mFrame.Channel = cfg.channel;
+            mFrame.AudioFormat = (short)cfg.format;
+            mFrame.Samples = (short)cfg.samples;
+            mFrame.NEncoder = cfg.encoder;
 
             return mFrame;
 
@@ -440,11 +440,11 @@ namespace StreamingKit
 
             MediaFrame mFrame = new MediaFrame(0)
             {
-                nIsAudio = 1,
-                nIsKeyFrame = 0,
-                nTimetick = timetick,
-                nSize = size,
-                nOffset = offset,
+                IsAudio = 1,
+                IsKeyFrame = 0,
+                NTimetick = timetick,
+                Size = size,
+                Offset = offset,
                 Data = data
             };
             return mFrame;

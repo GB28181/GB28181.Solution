@@ -53,16 +53,16 @@ namespace StreamingKit.Source.TS
 
         protected override void NewMediaFrame(MediaFrame frame)
         {
-            if (_firstTimeTick == 0 && frame.nIsKeyFrame == 1 && frame.nIsAudio == 0)
+            if (_firstTimeTick == 0 && frame.IsKeyFrame == 1 && frame.IsAudio == 0)
             {
-                _firstTimeTick = frame.nTimetick;
+                _firstTimeTick = frame.NTimetick;
                 _startTimeTick = DateTime.Now.Ticks / 10000;
             }
             if (_firstTimeTick == 0)
                 return;
-            if (_lastTimeTick <= frame.nTimetick)
+            if (_lastTimeTick <= frame.NTimetick)
             {
-                _lastTimeTick = frame.nTimetick;
+                _lastTimeTick = frame.NTimetick;
                 var span = DateTime.Now.Ticks / 10000 - _startTimeTick;
                 int sleep = (int)((_lastTimeTick - _firstTimeTick) - span);
                 if (sleep > 40)

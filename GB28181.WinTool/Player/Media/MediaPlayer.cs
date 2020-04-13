@@ -71,8 +71,8 @@ namespace SS.ClientBase.Media {
                             _startPlayTick = 0;
                             bool _videoIFrameAdded = false;
                             foreach (var item in _cache) {
-                                if (item.nTimetick >= value) {
-                                    if (_videoIFrameAdded || (item.nIsKeyFrame == 1 && item.nIsAudio == 0)) {
+                                if (item.NTimetick >= value) {
+                                    if (_videoIFrameAdded || (item.IsKeyFrame == 1 && item.IsAudio == 0)) {
                                         _queue.Enqueue(item);
                                         _videoIFrameAdded = true;
                                     }
@@ -88,8 +88,8 @@ namespace SS.ClientBase.Media {
                             _startPlayTick = 0;
                             bool _videoIFrameAdded = false;
                             foreach (var item in _cache) {
-                                if (item.nTimetick >= value) {
-                                    if (_videoIFrameAdded || (item.nIsKeyFrame == 1 && item.nIsAudio == 0)) {
+                                if (item.NTimetick >= value) {
+                                    if (_videoIFrameAdded || (item.IsKeyFrame == 1 && item.IsAudio == 0)) {
                                         _queue.Enqueue(item);
                                         _videoIFrameAdded = true;
                                     }
@@ -140,15 +140,15 @@ namespace SS.ClientBase.Media {
                 return;
             lock (_queue) {
 
-                if (_lastReceiveFrameTick < frame.nTimetick)
-                    _lastReceiveFrameTick = frame.nTimetick;
+                if (_lastReceiveFrameTick < frame.NTimetick)
+                    _lastReceiveFrameTick = frame.NTimetick;
 
-                if (frame.nIsAudio == 1 && IsAudioPlay)
+                if (frame.IsAudio == 1 && IsAudioPlay)
                     _queue.Enqueue(frame);
 
-                if (frame.nIsAudio == 0 && IsVideoPlay)
+                if (frame.IsAudio == 0 && IsVideoPlay)
                 {
-                    if (hasKey||frame.nIsKeyFrame==1)
+                    if (hasKey||frame.IsKeyFrame==1)
                     {
                         _queue.Enqueue(frame);
                         hasKey = true;
@@ -222,16 +222,16 @@ namespace SS.ClientBase.Media {
                     if (_queue.Count > 0 && !_needBuffer && !_isPaused) {
                         var frame = _queue.Dequeue();
                         if (_firstFrameTime == 0)
-                            _firstFrameTime = frame.nTimetick;
+                            _firstFrameTime = frame.NTimetick;
                         if (_startPlayTick == 0)
                             _startPlayTick = Environment.TickCount;
 
-                        if (frame.nIsAudio == 0) {
+                        if (frame.IsAudio == 0) {
                             if (_firstVideoFrameTime == 0)
-                                _firstVideoFrameTime = frame.nTimetick;
-                        } else if (frame.nIsAudio == 1 && (_vp.IsPlaying || _IgnoreVideoPlay) && ForwardPlay) {
+                                _firstVideoFrameTime = frame.NTimetick;
+                        } else if (frame.IsAudio == 1 && (_vp.IsPlaying || _IgnoreVideoPlay) && ForwardPlay) {
                             if (_firstAudioFrameTime == 0)
-                                _firstAudioFrameTime = frame.nTimetick;
+                                _firstAudioFrameTime = frame.NTimetick;
                         }
 
                         if (_firstVideoFrameTime != 0)
@@ -240,9 +240,9 @@ namespace SS.ClientBase.Media {
                         if (_firstAudioFrameTime != 0)
                             _ap.SyncPlayTime(_firstAudioFrameTime + (int)((Environment.TickCount - _startPlayTick) * 1));
 
-                        if (frame.nIsAudio == 0) {
+                        if (frame.IsAudio == 0) {
                             _vp.Play(frame);
-                        } else if (frame.nIsAudio == 1 && (_vp.IsPlaying || _IgnoreVideoPlay) && ForwardPlay) {
+                        } else if (frame.IsAudio == 1 && (_vp.IsPlaying || _IgnoreVideoPlay) && ForwardPlay) {
                             _ap.Play(frame);
                         }
                         _needSleep = false;
@@ -255,7 +255,7 @@ namespace SS.ClientBase.Media {
                                 _ap.SyncPlayTime(_firstAudioFrameTime + (int)((Environment.TickCount - _startPlayTick) * 1));
                             if (_queue.Count > 0 && _needBuffer) {
                                 var mf = _queue.Peek();
-                                if (_lastReceiveFrameTick - mf.nTimetick > BuffTime * 1000) {
+                                if (_lastReceiveFrameTick - mf.NTimetick > BuffTime * 1000) {
                                     _needBuffer = false;
                                 }
                             }

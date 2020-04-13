@@ -61,8 +61,8 @@ namespace SS.ClientBase.Media {
             }
  
             _inited = true;
-            _width = frame.nWidth;
-            _height = frame.nHeight;
+            _width = frame.Width;
+            _height = frame.Height;
             _ffimp = new FFImp(AVCodecCfg.CreateVideo(_width, _height), true,true);
             if (_yuvDraw == null && _control != null) {
                 _yuvDraw = new YUVGDIDraw(_control);
@@ -77,7 +77,7 @@ namespace SS.ClientBase.Media {
         private bool CheckInit(MediaFrame frame, bool reinit = false) {
  
             if (!_inited) {
-                if (frame.nIsKeyFrame == 1)
+                if (frame.IsKeyFrame == 1)
                     Init(frame);
             }
 
@@ -86,8 +86,8 @@ namespace SS.ClientBase.Media {
             if (frame.IsCommandMediaFrame() && frame.GetCommandType() == MediaFrameCommandType.ResetCodec) {
                 _inited = false;
                 return false;
-            } else if (frame.nIsKeyFrame == 1) {
-                if (_width != -1 && _height != -1 && (frame.nWidth != _width || frame.nHeight != _height)) {
+            } else if (frame.IsKeyFrame == 1) {
+                if (_width != -1 && _height != -1 && (frame.Width != _width || frame.Height != _height)) {
                     Init(frame, true);
                 }
             }
@@ -150,12 +150,12 @@ namespace SS.ClientBase.Media {
         {
             if (frame != null)
             {
-                if (frame.nTimetick < _curPlayMediaTimetick)
+                if (frame.NTimetick < _curPlayMediaTimetick)
                 {
                     _isHasBFrame = true;
                 }
-                if (_curPlayMediaTimetick < frame.nTimetick)
-                    _curPlayMediaTimetick = frame.nTimetick;
+                if (_curPlayMediaTimetick < frame.NTimetick)
+                    _curPlayMediaTimetick = frame.NTimetick;
             }
             if (frame != null)
             {
@@ -163,7 +163,7 @@ namespace SS.ClientBase.Media {
                 {
                     if (Speed == 1)
                     {
-                        long a = frame.nTimetick - ccc;
+                        long a = frame.NTimetick - ccc;
 
                         if (a <150)
                         {
@@ -231,7 +231,7 @@ namespace SS.ClientBase.Media {
                         //    sleep = 10;
                         //  Console.WriteLine("tick:" +a+ " cachecount:" + _queue.Count);
 
-                        ccc = frame.nTimetick;
+                        ccc = frame.NTimetick;
                        
                        // Console.WriteLine("tick:" + sleep + " cachecount:" + _queue.Count);
                         Thread.Sleep(sleep);
@@ -240,11 +240,11 @@ namespace SS.ClientBase.Media {
                     else
                     {
                         var sysSpan = Environment.TickCount - _lastPlaySystemTime;
-                        var sleep = (int)((frame.nTimetick - _lastPlayMediaTimetick - sysSpan) / Speed);
+                        var sleep = (int)((frame.NTimetick - _lastPlayMediaTimetick - sysSpan) / Speed);
                         if (sleep > 200 || sleep < 0)
                             sleep = 40;
                         Thread.Sleep(sleep);
-                        _lastPlayMediaTimetick = frame.nTimetick;
+                        _lastPlayMediaTimetick = frame.NTimetick;
                     }
                 }
                 long dd = DateTime.Now.Ticks;
@@ -391,7 +391,7 @@ namespace SS.ClientBase.Media {
         private void PlayBackward(MediaFrame frame) {
   
             if (frame != null) {
-                if (frame.nIsKeyFrame == 1) {
+                if (frame.IsKeyFrame == 1) {
                     if (_stackRewindFrame != null) {
                         _stackRewindFrame.Push(frame);
                         PlayBackward(_stackRewindFrame);
@@ -426,9 +426,9 @@ namespace SS.ClientBase.Media {
                 byte[] yuv = _ffimp.VideoDec(frame.Data, bufferData);
                 if (yuv != null) {
                     yuvStack.Push(new MediaFrame() {
-                        nTimetick = frame.nTimetick,
+                        NTimetick = frame.NTimetick,
                         Data = yuv,
-                        nSize = yuv.Length,
+                        Size = yuv.Length,
                     });
                 }
             }
@@ -453,15 +453,15 @@ namespace SS.ClientBase.Media {
                         //_drawHandle.BeginInvoke(frame.Data, null, null);
                         _drawHandle(frame.Data);
                         if (lastTick == 0)
-                            lastTick = frame.nTimetick;
-                        int sleep = (int)(lastTick - frame.nTimetick);
+                            lastTick = frame.NTimetick;
+                        int sleep = (int)(lastTick - frame.NTimetick);
                         if (sleep < 0 || sleep >= 100)
                             sleep = 40;
                         ThreadEx.Sleep(sleep);
                         //Console.WriteLine(sleep + "   " + (lastTick - frame.nTimetick)+"    "+(Environment.TickCount - sysTick));
                         lock (_queue) {
                             if (!_PlayBackwardResetPos)
-                                _curPlayMediaTimetick = lastTick = frame.nTimetick;
+                                _curPlayMediaTimetick = lastTick = frame.NTimetick;
                         }
                         lock (_queue) {
                             _lastPlaySystemTime = Environment.TickCount;

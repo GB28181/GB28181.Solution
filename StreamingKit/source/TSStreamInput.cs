@@ -263,11 +263,11 @@ namespace StreamingKit.Media.TS
             else
             {
                 //排序
-                if (frame.nIsAudio == 0)
+                if (frame.IsAudio == 0)
                 {
                     _qVideoMediaFrame.Enqueue(frame);
                 }
-                else if (frame.nIsAudio == 1)
+                else if (frame.IsAudio == 1)
                 {
                     _qAudioMediaFrame.Enqueue(frame);
                 }
@@ -277,7 +277,7 @@ namespace StreamingKit.Media.TS
                     {
                         var v = _qVideoMediaFrame.Peek();
                         var a = _qAudioMediaFrame.Peek();
-                        if (v.nTimetick < a.nTimetick)
+                        if (v.NTimetick < a.NTimetick)
                         {
                             v = _qVideoMediaFrame.Dequeue();
                             OnNewMediaFrame(v);
@@ -314,23 +314,23 @@ namespace StreamingKit.Media.TS
             if (!_isworking)
                 return;
 
-            if (frame.nIsAudio == 0)
+            if (frame.IsAudio == 0)
                 _videoCount++;
             else
                 _audioCount++;
 
             if (_firstTimetick == 0)
-                _firstTimetick = frame.nTimetick;
+                _firstTimetick = frame.NTimetick;
 
             if (AutoResetFrameTimetick)
             {
 
-                if (frame.nTimetick < _firstTimetick)
+                if (frame.NTimetick < _firstTimetick)
                 {
                     return;
                 }
 
-                if (frame.nTimetick == _firstTimetick && _lastTimetick != 0)
+                if (frame.NTimetick == _firstTimetick && _lastTimetick != 0)
                 {
                     _tsms.Clean();
                     _qAudioMediaFrame.Clear();
@@ -339,14 +339,14 @@ namespace StreamingKit.Media.TS
                 }
 
                 //重置时间戳
-                frame.nTimetick += _timetickOffset;
-                if (frame.nIsAudio == 0)
+                frame.NTimetick += _timetickOffset;
+                if (frame.IsAudio == 0)
                 {
                     //  Console.WriteLine(frame.nTimetick - _lastTimetick);
                 }
 
             }
-            _lastTimetick = frame.nTimetick;
+            _lastTimetick = frame.NTimetick;
 
 
 
@@ -354,15 +354,15 @@ namespace StreamingKit.Media.TS
             {
                 if (_firstFrameSystemTick == 0)
                 {
-                    _firstFrameTimetick = frame.nTimetick;
+                    _firstFrameTimetick = frame.NTimetick;
                     _firstFrameSystemTick = DateTime.Now.Ticks / 10000;
 
                 }
-                frame.nTimetick = (frame.nTimetick - _firstFrameTimetick) + _firstFrameSystemTick;
+                frame.NTimetick = (frame.NTimetick - _firstFrameTimetick) + _firstFrameSystemTick;
 
 
             }
-            if (frame.nIsKeyFrame == 1 && frame.nIsAudio == 0)
+            if (frame.IsKeyFrame == 1 && frame.IsAudio == 0)
             {
                 IsCanPlay = true;
                 if (IPTVChannelInfo != null)

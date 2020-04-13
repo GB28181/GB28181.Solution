@@ -211,7 +211,7 @@ namespace StreamingKit.Media.TS
         public static PESPacket MediaFrame2PES(MediaFrame frame)
         {
             if (nTimetick == 0)
-                nTimetick = frame.nTimetick;
+                nTimetick = frame.NTimetick;
             try
             {
                 List<PESPacket> packs = new List<PESPacket>();
@@ -219,12 +219,12 @@ namespace StreamingKit.Media.TS
                 {
                     Position = 0
                 };
-                var tick = (frame.nTimetick - nTimetick) * 90;
+                var tick = (frame.NTimetick - nTimetick) * 90;
                 while (ms.Position < ms.Length)
                 {
-                    var size = frame.nSize;
+                    var size = frame.Size;
                     byte[] buf = null;
-                    if (frame.nIsAudio == 0)
+                    if (frame.IsAudio == 0)
                     {
                         buf = new byte[size + 6];
                         buf[0] = 0x00;
@@ -239,7 +239,7 @@ namespace StreamingKit.Media.TS
                     {
                         buf = frame.Data;
                     }
-                    var pack = new PESPacket(buf, frame.nIsAudio == 0, tick);
+                    var pack = new PESPacket(buf, frame.IsAudio == 0, tick);
                     return pack;
                 }
                 return null;

@@ -105,11 +105,11 @@ namespace SS.ClientBase.Codec
             VideoEncodeCfg encCfg = new VideoEncodeCfg();
 
             encCfg.SetEncoder("H264");
-            encCfg.videoBitRate = 256 * 1000;
-            encCfg.frameRate = 10;
-            encCfg.height = 240;
-            encCfg.width = 320;
-            encCfg.cameraId = 0;
+            encCfg.VideoBitRate = 256 * 1000;
+            encCfg.FrameRate = 10;
+            encCfg.Height = 240;
+            encCfg.Width = 320;
+            encCfg.CameraId = 0;
             encCfg.Draw = _Draw;
             return encCfg;
         }

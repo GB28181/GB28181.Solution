@@ -36,18 +36,18 @@ namespace SS.ClientBase.Media
                     {
                         mf = new MediaFrame()
                         {
-                            nIsAudio = 0,
-                            nIsKeyFrame = 0,
+                            IsAudio = 0,
+                            IsKeyFrame = 0,
                             Data = entity.Buffer,
-                            nSize = entity.Length,
-                            nHeight = entity.Height,
-                            nWidth = entity.Width,
-                            nSPSLen = (short)streamInfo.Video_SPS.Length,
-                            nPPSLen = (short)streamInfo.Video_PPS.Length,
-                            nTimetick = ThreadEx.TickCount,
-                            nOffset = 0,
-                            nEncoder = MediaFrame.H264Encoder,
-                            nEx = 1,
+                            Size = entity.Length,
+                            Height = entity.Height,
+                            Width = entity.Width,
+                            SPSLen = (short)streamInfo.Video_SPS.Length,
+                            PPSLen = (short)streamInfo.Video_PPS.Length,
+                            NTimetick = ThreadEx.TickCount,
+                            Offset = 0,
+                            NEncoder = MediaFrame.H264Encoder,
+                            Ex = 1,
                             MediaFrameVersion = 0x00,
                         };
                     }
@@ -76,18 +76,18 @@ namespace SS.ClientBase.Media
                     {
                         var mf = new MediaFrame()
                         {
-                            nIsAudio = 0,
-                            nIsKeyFrame = 1,
+                            IsAudio = 0,
+                            IsKeyFrame = 1,
                             Data = entity.Buffer,
-                            nSize = entity.Length,
-                            nHeight = entity.Height,
-                            nWidth = entity.Width,
-                            nSPSLen = 0,
-                            nPPSLen = 0,
-                            nTimetick = ThreadEx.TickCount,
-                            nOffset = 0,
-                            nEncoder = MediaFrame.H264Encoder,
-                            nEx = (byte)(needResetCodec ? 0 : 1),
+                            Size = entity.Length,
+                            Height = entity.Height,
+                            Width = entity.Width,
+                            SPSLen = 0,
+                            PPSLen = 0,
+                            NTimetick = ThreadEx.TickCount,
+                            Offset = 0,
+                            NEncoder = MediaFrame.H264Encoder,
+                            Ex = (byte)(needResetCodec ? 0 : 1),
                             //nEx=(byte)entity.Ex,
                             MediaFrameVersion = 0x01,
                         };
@@ -97,18 +97,18 @@ namespace SS.ClientBase.Media
                     {
                         var mf = new MediaFrame()
                         {
-                            nIsAudio = 0,
-                            nIsKeyFrame = 1,
+                            IsAudio = 0,
+                            IsKeyFrame = 1,
                             Data = entity.Buffer,
-                            nSize = entity.Length,
-                            nHeight = entity.Height,
-                            nWidth = entity.Width,
-                            nSPSLen = (short)streamInfo.Video_SPS.Length,
-                            nPPSLen = (short)streamInfo.Video_PPS.Length,
-                            nTimetick = ThreadEx.TickCount,
-                            nOffset = 0,
-                            nEncoder = MediaFrame.H264Encoder,
-                            nEx = (byte)(needResetCodec ? 0 : 1),
+                            Size = entity.Length,
+                            Height = entity.Height,
+                            Width = entity.Width,
+                            SPSLen = (short)streamInfo.Video_SPS.Length,
+                            PPSLen = (short)streamInfo.Video_PPS.Length,
+                            NTimetick = ThreadEx.TickCount,
+                            Offset = 0,
+                            NEncoder = MediaFrame.H264Encoder,
+                            Ex = (byte)(needResetCodec ? 0 : 1),
                             //nEx=(byte)entity.Ex,
                             MediaFrameVersion = 0x01,
                         };
@@ -128,17 +128,17 @@ namespace SS.ClientBase.Media
                 }
                 try {
                     var mf = new MediaFrame() {
-                        nIsAudio = 1,
-                        nIsKeyFrame = 1,
+                        IsAudio = 1,
+                        IsKeyFrame = 1,
                         Data = entity.Buffer,
-                        nSize = entity.Length,
-                        nChannel = 1,
-                        nFrequency = 32000,
-                        nAudioFormat = 2,
-                        nTimetick = ThreadEx.TickCount,
-                        nOffset = 0,
-                        nEncoder = MediaFrame.AAC_Encoder,
-                        nEx = 1,
+                        Size = entity.Length,
+                        Channel = 1,
+                        Frequency = 32000,
+                        AudioFormat = 2,
+                        NTimetick = ThreadEx.TickCount,
+                        Offset = 0,
+                        NEncoder = MediaFrame.AAC_Encoder,
+                        Ex = 1,
                         MediaFrameVersion = 0x01,
                     };
                     //if (mf.nIsKeyFrame == 1)
@@ -160,17 +160,17 @@ namespace SS.ClientBase.Media
       
             var result= new MediaFrameEntity() {
                 Buffer = frame.Data,
-                Length = (ushort)frame.nSize,
-                EncodTime = frame.nTimetick,
-                MediaType = frame.nIsAudio == 1 ? MediaType.AudioES : MediaType.VideoES,
+                Length = (ushort)frame.Size,
+                EncodTime = frame.NTimetick,
+                MediaType = frame.IsAudio == 1 ? MediaType.AudioES : MediaType.VideoES,
                 SampleRate = 32000,
                 FrameRate = 25,
-                Width=(ushort)frame.nWidth,
-                Height=(ushort)frame.nHeight,
-                KeyFrame = (byte)(frame.nIsAudio == 0 && frame.nIsKeyFrame == 1 ? 1 : 0),
+                Width=(ushort)frame.Width,
+                Height=(ushort)frame.Height,
+                KeyFrame = (byte)(frame.IsAudio == 0 && frame.IsKeyFrame == 1 ? 1 : 0),
             };
-            if (frame.nIsAudio == 1 && frame.nIsKeyFrame == 1) {
-                result.SampleRate = (ushort)frame.nFrequency;
+            if (frame.IsAudio == 1 && frame.IsKeyFrame == 1) {
+                result.SampleRate = (ushort)frame.Frequency;
             }
             if (frame.IsCommandMediaFrame()) {
                 result.Buffer = new byte[0];

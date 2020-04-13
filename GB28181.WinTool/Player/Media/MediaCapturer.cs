@@ -205,15 +205,15 @@ namespace SS.ClientBase.Media
             {
                 if (!mf.IsCommandMediaFrame())
                 {
-                    if (mf.nTimetick == _lastTick)
-                        mf.nTimetick++;
-                    if (mf.nTimetick > _lastTick)
-                        _lastTick = mf.nTimetick;
+                    if (mf.NTimetick == _lastTick)
+                        mf.NTimetick++;
+                    if (mf.NTimetick > _lastTick)
+                        _lastTick = mf.NTimetick;
                 }
             }
-            if (!IsAudioPub && mf.nIsAudio == 1)
+            if (!IsAudioPub && mf.IsAudio == 1)
                 return;
-            if (!IsVideoPub && mf.nIsAudio == 0)
+            if (!IsVideoPub && mf.IsAudio == 0)
                 return;
 
             if (Captured != null)

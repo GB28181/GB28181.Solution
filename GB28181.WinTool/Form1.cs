@@ -1056,11 +1056,11 @@ namespace Win.GB28181.Client
                 MediaFrame frame = new MediaFrame()
                 {
                     Data = packet.Buffer,
-                    nIsAudio = 0,
-                    nIsKeyFrame = packet.KeyFrame,
-                    nHeight = packet.Height,
-                    nWidth = packet.Width,
-                    nChannel = 1
+                    IsAudio = 0,
+                    IsKeyFrame = packet.KeyFrame,
+                    Height = packet.Height,
+                    Width = packet.Width,
+                    Channel = 1
                 };
                 playerWin.Play(frame);
             }

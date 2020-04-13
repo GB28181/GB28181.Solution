@@ -98,15 +98,15 @@ namespace SS.ClientBase.Media
         }
 
         protected virtual void Init(MediaFrame frame) {
-            if (!_inited && frame.nIsKeyFrame == 1 && frame.nIsAudio == 1) {
-                if (frame.nEncoder == MediaFrame.AAC_Encoder)
-                    _aac = new FFImp(AVCodecCfg.CreateAudio(frame.nChannel, frame.nFrequency, (int)AVCode.CODEC_ID_AAC), true,false);
-                if (frame.nEncoder == MediaFrame.SPEXEncoder)
+            if (!_inited && frame.IsKeyFrame == 1 && frame.IsAudio == 1) {
+                if (frame.NEncoder == MediaFrame.AAC_Encoder)
+                    _aac = new FFImp(AVCodecCfg.CreateAudio(frame.Channel, frame.Frequency, (int)AVCode.CODEC_ID_AAC), true,false);
+                if (frame.NEncoder == MediaFrame.SPEXEncoder)
                     _speex = _speex ?? new Speex(4, 160);
                 if (WaveOut.Devices == null || WaveOut.Devices.Length == 0) {
 
                 } else {
-                    _wave = new WaveOut(WaveOut.Devices[0], frame.nFrequency, 16, frame.nChannel);
+                    _wave = new WaveOut(WaveOut.Devices[0], frame.Frequency, 16, frame.Channel);
                 }
                
                 _inited = true;
@@ -154,14 +154,14 @@ namespace SS.ClientBase.Media
             lock (_queue) {
                 _queue.Enqueue(frame);
             }
-            _lastMediaFrameTime = frame.nTimetick;
+            _lastMediaFrameTime = frame.NTimetick;
         }
         //System.IO.BinaryWriter bw = new BinaryWriter(new System.IO.FileStream(@"D:\\aac.aac", FileMode.Create));
         protected virtual void _Play(MediaFrame frame) {
             if (_isDisoseing || _isDisosed)
                 return;
 
-            if (!_inited && frame.nIsKeyFrame == 1)
+            if (!_inited && frame.IsKeyFrame == 1)
                 Init(frame);
             if (!_inited)
                 return;
@@ -205,7 +205,7 @@ namespace SS.ClientBase.Media
                 }
                 if (frame != null) {
                     if (Speed == 1) {
-                        var sleep = (int)(frame.nTimetick - _syncPlayTime);
+                        var sleep = (int)(frame.NTimetick - _syncPlayTime);
 
                         if (sleep < -3000)
                         {
@@ -217,15 +217,15 @@ namespace SS.ClientBase.Media
                         if (sleep > 0 && !_reseting)
                             Thread.Sleep(sleep);
                     } else {
-                        var sleep = (int)(frame.nTimetick - _syncPlayTime);
+                        var sleep = (int)(frame.NTimetick - _syncPlayTime);
                         if (sleep > 0 && !_reseting)
                             Thread.Sleep(sleep);
                     }
                     if (!_reseting) {
                         _Play(frame);
                         lock (_queue) {
-                            if (_curPlayTime < frame.nTimetick && !_reseting)
-                                _curPlayTime = frame.nTimetick;
+                            if (_curPlayTime < frame.NTimetick && !_reseting)
+                                _curPlayTime = frame.NTimetick;
                         }
                     }
                     _reseting = false;
@@ -255,7 +255,7 @@ namespace SS.ClientBase.Media
         private byte[] DecMultiAAC(AAC_ADTS[] aacs) {
             var ms = new MemoryStream();
             foreach (var item in aacs) {
-                var bytes = DecAAC(item.AACData);
+                var bytes = DecAAC(item.GetAACData());
                 ms.Write(bytes, 0, bytes.Length);
             }
             return ms.ToArray();

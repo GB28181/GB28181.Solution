@@ -144,22 +144,22 @@ namespace SS.ClientBase.Codec
             //生成媒体帧
             var mf = new StreamingKit.MediaFrame()
             {
-                nFrequency = _frequency,
-                nSamples = (short)_audioCfg.samples,
-                nIsKeyFrame = (byte)((_audioFrameIndex++ % 50) == 0 ? 1 : 0),
-                nEncoder = _audioCfg.encoder,
+                Frequency = _frequency,
+                Samples = (short)_audioCfg.samples,
+                IsKeyFrame = (byte)((_audioFrameIndex++ % 50) == 0 ? 1 : 0),
+                NEncoder = _audioCfg.encoder,
                 MediaFrameVersion = 0,
-                nChannel = _channels,
-                nAudioFormat = 2,
-                nIsAudio = 1,
-                nTimetick = Environment.TickCount,
-                nEx = 1,
+                Channel = _channels,
+                AudioFormat = 2,
+                IsAudio = 1,
+                NTimetick = Environment.TickCount,
+                Ex = 1,
                 Data = buf,
-                nSize = buf.Length,
+                Size = buf.Length,
             };
 
-            mf.MediaFrameVersion = (byte)(mf.nIsKeyFrame == 1 ? 1 : 0);
-            mf.nEx = (byte)(mf.nIsKeyFrame == 1 ? 0 : 1);
+            mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
+            mf.Ex = (byte)(mf.IsKeyFrame == 1 ? 0 : 1);
 
             if (_isFirstKeyFrame)
             {
@@ -183,19 +183,19 @@ namespace SS.ClientBase.Codec
             var infoMediaFrame = new MediaFrame()
             {
 
-                nFrequency = mf.nFrequency,
-                nSamples = mf.nSamples,
-                nIsKeyFrame = mf.nIsKeyFrame,
-                nEncoder = mf.nEncoder,
+                Frequency = mf.Frequency,
+                Samples = mf.Samples,
+                IsKeyFrame = mf.IsKeyFrame,
+                NEncoder = mf.NEncoder,
                 MediaFrameVersion = mf.MediaFrameVersion,
-                nChannel = mf.nChannel,
-                nAudioFormat = mf.nAudioFormat,
-                nIsAudio = mf.nIsAudio,
-                nTimetick = mf.nTimetick,
-                nEx = mf.nEx,
+                Channel = mf.Channel,
+                AudioFormat = mf.AudioFormat,
+                IsAudio = mf.IsAudio,
+                NTimetick = mf.NTimetick,
+                Ex = mf.Ex,
 
                 Data = new byte[0],
-                nSize = 0,
+                Size = 0,
             };
 
             var resetCodecMediaFrame = MediaFrame.CreateCommandMediaFrame(true, MediaFrameCommandType.ResetCodec, infoMediaFrame.GetBytes());

@@ -675,7 +675,7 @@ namespace SS.ClientBase.Codec
         }
         protected override CameraCapturer CreateCapturer()
         {
-            return new MixerVideoCapturer(base.Canvas, _cfgVideo.width, _cfgVideo.height, _cfgVideo.frameRate, CameraCapturer_CallBack);
+            return new MixerVideoCapturer(base.Canvas, _cfgVideo.Width, _cfgVideo.Height, _cfgVideo.FrameRate, CameraCapturer_CallBack);
         }
     }
     public class ScreenaEncoder : CameraEncoder
@@ -686,7 +686,7 @@ namespace SS.ClientBase.Codec
         }
         protected override CameraCapturer CreateCapturer()
         {
-            return new ScreenCapturer(_cfgVideo.width, _cfgVideo.height, _cfgVideo.frameRate, CameraCapturer_CallBack);
+            return new ScreenCapturer(_cfgVideo.Width, _cfgVideo.Height, _cfgVideo.FrameRate, CameraCapturer_CallBack);
         }
     }
     public class CameraEncoder : IDisposable
@@ -710,10 +710,10 @@ namespace SS.ClientBase.Codec
         public CameraEncoder(VideoEncodeCfg cfgVideo, Action<MediaFrame> callBack, Canvas canvas = null)
         {
             _cfgVideo = cfgVideo;
-            _fps = cfgVideo.frameRate;
+            _fps = cfgVideo.FrameRate;
             this.Canvas = canvas;
             _capturer = CreateCapturer();
-            var @params = new X264Params(_cfgVideo.width, _cfgVideo.height, _fps, cfgVideo.videoBitRate);
+            var @params = new X264Params(_cfgVideo.Width, _cfgVideo.Height, _fps, cfgVideo.VideoBitRate);
             if (cfgVideo.Params.ContainsKey("X264Encode"))
                 @params.method = (int)cfgVideo.Params["X264Encode"];
 
@@ -723,18 +723,18 @@ namespace SS.ClientBase.Codec
 
             _x264 = new X264Native(@params);
             _x264.Init();
-            _ffscale = new FFScale(_cfgVideo.width, _cfgVideo.height, 0, 12, _cfgVideo.width, _cfgVideo.height, 12, 12);
+            _ffscale = new FFScale(_cfgVideo.Width, _cfgVideo.Height, 0, 12, _cfgVideo.Width, _cfgVideo.Height, 12, 12);
             _draw = cfgVideo.Draw;
-            _draw.SetSize(_cfgVideo.width, _cfgVideo.height);
+            _draw.SetSize(_cfgVideo.Width, _cfgVideo.Height);
             _callBack = callBack;
         }
 
         protected virtual CameraCapturer CreateCapturer()
         {
             if (CameraCapturerMode == 0)
-                return new CameraCapturer(_cfgVideo.cameraId, _cfgVideo.width, _cfgVideo.height, CameraCapturer_CallBack);
+                return new CameraCapturer(_cfgVideo.CameraId, _cfgVideo.Width, _cfgVideo.Height, CameraCapturer_CallBack);
             else
-                return new CameraAForge(_cfgVideo.cameraId, _cfgVideo.width, _cfgVideo.height, CameraCapturer_CallBack);
+                return new CameraAForge(_cfgVideo.CameraId, _cfgVideo.Width, _cfgVideo.Height, CameraCapturer_CallBack);
         }
 
 
@@ -796,27 +796,27 @@ namespace SS.ClientBase.Codec
 
                 var mf = new MediaFrame()
                 {
-                    nWidth = _cfgVideo.width,
-                    nHeight = _cfgVideo.height,
-                    nEx = 1,
-                    nIsAudio = 0,
-                    nEncoder = MediaFrame.H264Encoder,
-                    nIsKeyFrame = (byte)(_x264.IsKeyFrame() ? 1 : 0),
+                    Width = _cfgVideo.Width,
+                    Height = _cfgVideo.Height,
+                    Ex = 1,
+                    IsAudio = 0,
+                    NEncoder = MediaFrame.H264Encoder,
+                    IsKeyFrame = (byte)(_x264.IsKeyFrame() ? 1 : 0),
                     MediaFrameVersion = 0,
-                    nPPSLen = 0,
-                    nSPSLen = 0,
+                    PPSLen = 0,
+                    SPSLen = 0,
                     Data = enc,
-                    nSize = enc.Length,
-                    nTimetick = Environment.TickCount,
+                    Size = enc.Length,
+                    NTimetick = Environment.TickCount,
                 };
 
-                if (mf.nIsKeyFrame == 1)
+                if (mf.IsKeyFrame == 1)
                 {
                     var sps_pps = SS.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
-                    mf.nSPSLen = (short)sps_pps[0].Length;
-                    mf.nPPSLen = (short)sps_pps[1].Length;
+                    mf.SPSLen = (short)sps_pps[0].Length;
+                    mf.PPSLen = (short)sps_pps[1].Length;
                 }
-                mf.MediaFrameVersion = mf.nIsKeyFrame;
+                mf.MediaFrameVersion = mf.IsKeyFrame;
 
 
 
@@ -830,9 +830,9 @@ namespace SS.ClientBase.Codec
 
                 if (_isFirstKeyFrame)
                 {
-                    if (mf.nIsKeyFrame == 1)
+                    if (mf.IsKeyFrame == 1)
                     {
-                        mf.nEx = 0;
+                        mf.Ex = 0;
                     }
                     _isFirstKeyFrame = false;
                     var frame = CreateResetCodecMediaFrame(mf);
@@ -861,18 +861,18 @@ namespace SS.ClientBase.Codec
         {
             var infoMediaFrame = new MediaFrame()
             {
-                nWidth = mf.nWidth,
-                nHeight = mf.nHeight,
-                nEx = mf.nEx,
-                nIsAudio = mf.nIsAudio,
-                nEncoder = mf.nEncoder,
-                nIsKeyFrame = mf.nIsKeyFrame,
+                Width = mf.Width,
+                Height = mf.Height,
+                Ex = mf.Ex,
+                IsAudio = mf.IsAudio,
+                NEncoder = mf.NEncoder,
+                IsKeyFrame = mf.IsKeyFrame,
                 MediaFrameVersion = mf.MediaFrameVersion,
-                nPPSLen = mf.nPPSLen,
-                nSPSLen = mf.nSPSLen,
-                nTimetick = mf.nTimetick,
+                PPSLen = mf.PPSLen,
+                SPSLen = mf.SPSLen,
+                NTimetick = mf.NTimetick,
                 Data = new byte[0],
-                nSize = 0,
+                Size = 0,
             };
 
             var resetCodecMediaFrame = MediaFrame.CreateCommandMediaFrame(false, MediaFrameCommandType.ResetCodec, infoMediaFrame.GetBytes());

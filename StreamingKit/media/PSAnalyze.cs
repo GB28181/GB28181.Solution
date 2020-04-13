@@ -125,8 +125,8 @@ namespace StreamingKit.Media.TS
                                 pesVideo.SetBytes(ms);
                                 var frame = AnalyzeNewFrame(pesVideo, false);
                                 if (frame != null)
-                                    frame.nTimetick = scr;
-                                if (frame != null && frame.nIsKeyFrame == 1)
+                                    frame.NTimetick = scr;
+                                if (frame != null && frame.IsKeyFrame == 1)
                                 {
                                     lock (_lock)
                                         ms = ms.Tolave();
@@ -257,39 +257,39 @@ namespace StreamingKit.Media.TS
                     h264.Write(data, 0, data.Length);
 
                     var mf = new MediaFrame() {
-                        nIsAudio = 0,
-                        nIsKeyFrame = 1,
+                        IsAudio = 0,
+                        IsKeyFrame = 1,
                         Data = h264.ToArray(),
-                        nSize = (int)h264.Length,
-                        nWidth = Width,
-                        nHeight = Height,
-                        nSPSLen = (short)this.SPS.Length,
-                        nPPSLen = (short)this.PPS.Length,
-                        nTimetick = tick,
-                        nOffset = 0,
-                        nEncoder = MediaFrame.H264Encoder,
-                        nEx = 1,
+                        Size = (int)h264.Length,
+                        Width = Width,
+                        Height = Height,
+                        SPSLen = (short)this.SPS.Length,
+                        PPSLen = (short)this.PPS.Length,
+                        NTimetick = tick,
+                        Offset = 0,
+                        NEncoder = MediaFrame.H264Encoder,
+                        Ex = 1,
                     };
-                    mf.MediaFrameVersion = (byte)(mf.nIsKeyFrame == 1 ? 1 : 0);
+                    mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                     VideoFrameCount++;
                     return mf;
                 } else {
                     if (this.SPS != null) {
                         var mf = new MediaFrame() {
-                            nIsAudio = 0,
-                            nIsKeyFrame = 0,
+                            IsAudio = 0,
+                            IsKeyFrame = 0,
                             Data = data,
-                            nSize = data.Length,
-                            nWidth = Width,
-                            nHeight = Height,
-                            nSPSLen = (short)this.SPS.Length,
-                            nPPSLen = (short)this.PPS.Length,
-                            nTimetick = tick,
-                            nOffset = 0,
-                            nEncoder = MediaFrame.H264Encoder,
-                            nEx = 1,
+                            Size = data.Length,
+                            Width = Width,
+                            Height = Height,
+                            SPSLen = (short)this.SPS.Length,
+                            PPSLen = (short)this.PPS.Length,
+                            NTimetick = tick,
+                            Offset = 0,
+                            NEncoder = MediaFrame.H264Encoder,
+                            Ex = 1,
                         };
-                        mf.MediaFrameVersion = (byte)(mf.nIsKeyFrame == 1 ? 1 : 0);
+                        mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                         VideoFrameCount++;
                         return mf;
                     }
@@ -310,17 +310,17 @@ namespace StreamingKit.Media.TS
             }
             VideoFrameCount++;
             var mf = new MediaFrame() {
-                nIsAudio = 1,
-                nIsKeyFrame = 1,
+                IsAudio = 1,
+                IsKeyFrame = 1,
                 Data = data,
-                nSize = data.Length,
-                nChannel = Channel,
-                nFrequency = Frequency,
-                nAudioFormat = AudioFormat,
-                nTimetick = tick,
-                nOffset = 0,
-                nEncoder = MediaFrame.AAC_Encoder,
-                nEx = (byte)(_firstAudioFrame ? 0 : 1),
+                Size = data.Length,
+                Channel = Channel,
+                Frequency = Frequency,
+                AudioFormat = AudioFormat,
+                NTimetick = tick,
+                Offset = 0,
+                NEncoder = MediaFrame.AAC_Encoder,
+                Ex = (byte)(_firstAudioFrame ? 0 : 1),
                 MediaFrameVersion = 1,
             };
             _firstAudioFrame = false;

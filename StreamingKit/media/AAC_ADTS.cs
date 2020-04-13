@@ -6,7 +6,8 @@ using System.IO;
 namespace StreamingKit.Media
 {
 
-    public class AAC_ADTS {
+    public class AAC_ADTS
+    {
 
         public int Syncword;                         //12bit all bits must be 1 
         public byte MPEG_version;                       //1bit 0 for MPEG-4, 1 for MPEG-2 
@@ -24,54 +25,84 @@ namespace StreamingKit.Media
         public ushort Buffer_Fullness;                  // 11bit buffer fullness 
         public byte Number_of_AAC_Frames;               // 2bit number of AAC frames (RDBs) in ADTS frame minus 1, for maximum compatibility always use 1 AAC frame per ADTS frame 
         public byte[] CRC;                              // 16bit CRC if protection absent is 0 
-        public ushort AACDataLen {
-            get {
+        public ushort AACDataLen
+        {
+            get
+            {
                 return (ushort)(Frame_Length - (Protection == 0 ? 9 : 7));
             }
         }
-        public byte[] AACData { get; private set; }
-        public byte[] ADTSData { get; private set; }
-        public byte[] FrameData
-        {
-            get {   
-                var r = new byte[AACData.Length + ADTSData.Length];
-             
-                Array.Copy(ADTSData, 0, r, 0, ADTSData.Length);
-                Array.Copy(AACData, 0, r, ADTSData.Length, AACData.Length);
-                return r;
 
-            }
+        private byte[] aACData;
+
+        public byte[] GetAACData()
+        {
+            return aACData;
+        }
+
+        private void SetAACData(byte[] value)
+        {
+            aACData = value;
+        }
+
+        private byte[] aDTSData;
+
+        public byte[] GetADTSData()
+        {
+            return aDTSData;
+        }
+
+        private void SetADTSData(byte[] value)
+        {
+            aDTSData = value;
+        }
+
+        public byte[] GetFrameData()
+        {
+            var r = new byte[GetAACData().Length + GetADTSData().Length];
+            Array.Copy(GetADTSData(), 0, r, 0, GetADTSData().Length);
+            Array.Copy(GetAACData(), 0, r, GetADTSData().Length, GetAACData().Length);
+            return r;
+
         }
         public AAC_ADTS(byte[] bs)
-            : this(new MemoryStream(bs)) {
+            : this(new MemoryStream(bs))
+        {
         }
 
-        public AAC_ADTS(Stream ms) {
+        public AAC_ADTS(Stream ms)
+        {
             var br = new BinaryReader(ms);
             var bs = br.ReadBytes(7);
-            init(bs);
+            Init(bs);
             if (Protection == 0)//还有2byte校验
             {
                 CRC = br.ReadBytes(2);
-                ADTSData = new byte[9];
-                Array.Copy(bs, ADTSData, bs.Length);
-                ADTSData[7] = CRC[0];
-                ADTSData[8] = CRC[1];
-            } else {
-                ADTSData = bs;
+                SetADTSData(new byte[9]);
+                Array.Copy(bs, GetADTSData(), bs.Length);
+                GetADTSData()[7] = CRC[0];
+                GetADTSData()[8] = CRC[1];
             }
-            AACData = br.ReadBytes(AACDataLen);
+            else
+            {
+                SetADTSData(bs);
+            }
+            SetAACData(br.ReadBytes(AACDataLen));
 
         }
-  
-        public void init(byte[] bs) {
-       
-            BitStreamReader sr = new BitStreamReader(bs);
+
+        public void Init(byte[] bs)
+        {
+
+            var sr = new BitStreamReader(bs);
             SetHead(bs);
             Protection = (byte)(bs[1] & 0x01);
-            if (Protection == 0) {//ADTS有9byte
+            if (Protection == 0)
+            {//ADTS有9byte
 
-            } else {//ADTS有7byte
+            }
+            else
+            {//ADTS有7byte
 
             }
 
@@ -121,7 +152,8 @@ namespace StreamingKit.Media
             Frame_Length = (ushort)(((bs[3] & 0x03) << 11) | ((bs[4] & 0xFF) << 3) | ((bs[5] & 0xE0) >> 5));
         }
 
-        public void SetHead(byte[] bs) {
+        public void SetHead(byte[] bs)
+        {
             var adts = bs;
             Syncword = ((adts[0] << 4) | (adts[1] >> 4));
             MPEG_version = (byte)((adts[1] >> 3) & 0x1);
@@ -140,10 +172,11 @@ namespace StreamingKit.Media
             Number_of_AAC_Frames = (byte)(adts[6] & 0x3);
         }
 
-        public byte[] GetHead() {
-        
+        public byte[] GetHead()
+        {
+
             var adts = new byte[7];
-            adts[0] = (byte)(this.Syncword >> 4);
+            adts[0] = (byte)(Syncword >> 4);
             adts[1] = (byte)(((this.Syncword & 0xF) << 4) | (this.MPEG_version << 3) | (this.Layer << 1) | (this.Protection));
             adts[2] = (byte)((this.Profile << 6) | (this.MPEG_4_Sampling_Frequency_Index << 2) | (this.Private_Stream << 1) | ((this.MPEG_4_Channel_Configuration >> 2) & 0x1));
             adts[3] = (byte)(((this.MPEG_4_Channel_Configuration & 0x3) << 6) | (this.Originality << 5) | (this.Home << 4) | (this.Copyrighted_Stream << 3) | (this.Copyrighted_Start << 2) | ((this.Frame_Length >> 11) & 0x3));
@@ -153,12 +186,14 @@ namespace StreamingKit.Media
             return adts;
         }
 
-        public static bool Check(int frequency, int channel, byte[] bs) {
-            try {
+        public static bool Check(int frequency, int channel, byte[] bs)
+        {
+            try
+            {
                 var aac = new AAC_ADTS(bs);
-                if(aac.Syncword!=0xfff)
+                if (aac.Syncword != 0xfff)
                     return false;
-                if (aac.AACDataLen != aac.AACData.Length)
+                if (aac.AACDataLen != aac.GetAACData().Length)
                     return false;
                 var frequencys = new int[] { 96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 2000, 11025 };
 
@@ -167,18 +202,22 @@ namespace StreamingKit.Media
 
                 if (aac.MPEG_4_Channel_Configuration != channel)
                     return false;
-               
+
                 return true;
-            } catch {
+            }
+            catch
+            {
                 return false;
             }
 
         }
 
-        public static AAC_ADTS[] GetMultiAAC(byte[] bs) {
+        public static AAC_ADTS[] GetMultiAAC(byte[] bs)
+        {
             var ms = new MemoryStream(bs);
-            List<AAC_ADTS> aacs = new List<AAC_ADTS>();
-            while (ms.Position + 7 < ms.Length) {
+            var aacs = new List<AAC_ADTS>();
+            while (ms.Position + 7 < ms.Length)
+            {
                 var aac = new AAC_ADTS(ms);
                 aacs.Add(aac);
             }
