@@ -314,7 +314,7 @@ namespace StreamingKit.Media.TS
                             Array.Copy(data, keyFrameFlagOffset, tdata, 0, tdata.Length);
                         }
                         var sps_pps = SliceHeader.GetSPS_PPS(tdata);
-                        var sps = mp4parser.h264.model.SeqParameterSet.read(new MemoryStream(sps_pps[0], 1, sps_pps[0].Length - 1));
+                        var sps = mp4parser.h264.model.SeqParameterSet.Read(new MemoryStream(sps_pps[0], 1, sps_pps[0].Length - 1));
                         var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(sps_pps[1], 1, sps_pps[1].Length - 1));
                         Width = (sps.pic_width_in_mbs_minus1 + 1) * 16 - 2 * sps.frame_crop_left_offset - 2 * sps.frame_crop_right_offset;
                         Height = (sps.pic_height_in_map_units_minus1 + 1) * 16 - 2 * sps.frame_crop_top_offset - 2 * sps.frame_crop_bottom_offset;

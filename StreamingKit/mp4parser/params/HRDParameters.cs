@@ -24,22 +24,22 @@ namespace mp4parser.h264.model
 
     public class HRDParameters
 	{
+		public int bit_rate_scale { get; set; }
+		public int cpb_size_scale { get; set; }
+		public int[] bit_rate_value_minus1 { get; set; }
+		public int[] cpb_size_value_minus1 { get; set; }
+		public bool[] cbr_flag { get; set; }
+		public int initial_cpb_removal_delay_length_minus1 { get; set; }
+		public int cpb_removal_delay_length_minus1 { get; set; }
+		public int dpb_output_delay_length_minus1 { get; set; }
+		public int time_offset_length { get; set; }
 
-		public int cpb_cnt_minus1;
-		public int bit_rate_scale;
-		public int cpb_size_scale;
-		public int[] bit_rate_value_minus1;
-		public int[] cpb_size_value_minus1;
-		public bool[] cbr_flag;
-		public int initial_cpb_removal_delay_length_minus1;
-		public int cpb_removal_delay_length_minus1;
-		public int dpb_output_delay_length_minus1;
-		public int time_offset_length;
+		public int Cpb_cnt_minus1 { get; set; }
 
 		public override string ToString()
 		{
 
-            return "HRDParameters{" + "cpb_cnt_minus1=" + cpb_cnt_minus1 + ", bit_rate_scale=" + bit_rate_scale + ", cpb_size_scale=" + cpb_size_scale + ", bit_rate_value_minus1=" + bit_rate_value_minus1.ConstituteString() + ", cpb_size_value_minus1=" + cpb_size_value_minus1.ConstituteString() + ", cbr_flag=" + cbr_flag.ConstituteString() + ", initial_cpb_removal_delay_length_minus1=" + initial_cpb_removal_delay_length_minus1 + ", cpb_removal_delay_length_minus1=" + cpb_removal_delay_length_minus1 + ", dpb_output_delay_length_minus1=" + dpb_output_delay_length_minus1 + ", time_offset_length=" + time_offset_length + '}';
+            return "HRDParameters{" + "cpb_cnt_minus1=" + Cpb_cnt_minus1 + ", bit_rate_scale=" + bit_rate_scale + ", cpb_size_scale=" + cpb_size_scale + ", bit_rate_value_minus1=" + bit_rate_value_minus1.ConstituteString() + ", cpb_size_value_minus1=" + cpb_size_value_minus1.ConstituteString() + ", cbr_flag=" + cbr_flag.ConstituteString() + ", initial_cpb_removal_delay_length_minus1=" + initial_cpb_removal_delay_length_minus1 + ", cpb_removal_delay_length_minus1=" + cpb_removal_delay_length_minus1 + ", dpb_output_delay_length_minus1=" + dpb_output_delay_length_minus1 + ", time_offset_length=" + time_offset_length + '}';
 		}
 	}
 

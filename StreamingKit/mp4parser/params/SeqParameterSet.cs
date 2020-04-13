@@ -38,53 +38,53 @@ namespace mp4parser.h264.model
     /// </summary>
     public class SeqParameterSet
     {
-        public int pic_order_cnt_type;
-        public bool field_pic_flag;
-        public bool delta_pic_order_always_zero_flag;
-        public bool weighted_pred_flag;
-        public int weighted_bipred_idc;
-        public bool entropy_coding_mode_flag;
-        public bool mb_adaptive_frame_field_flag;
-        public bool direct_8x8_inference_flag;
-        public ChromaFormat chroma_format_idc;
-        public int log2_max_frame_num_minus4;
-        public int log2_max_pic_order_cnt_lsb_minus4;
-        public int pic_height_in_map_units_minus1;
-        public int pic_width_in_mbs_minus1;
-        public int bit_depth_luma_minus8;
-        public int bit_depth_chroma_minus8;
-        public bool qpprime_y_zero_transform_bypass_flag;
-        public int profile_idc;
-        public bool constraint_set_0_flag;
-        public bool constraint_set_1_flag;
-        public bool constraint_set_2_flag;
-        public bool constraint_set_3_flag;
-        public bool constraint_set_4_flag;
-        public bool constraint_set_5_flag;
-        public int level_idc;
-        public int seq_parameter_set_id;
-        public bool residual_color_transform_flag;
-        public int offset_for_non_ref_pic;
-        public int offset_for_top_to_bottom_field;
-        public int num_ref_frames;
-        public bool gaps_in_frame_num_value_allowed_flag;
-        public bool frame_mbs_only_flag;
-        public bool frame_cropping_flag;
-        public int frame_crop_left_offset;
-        public int frame_crop_right_offset;
-        public int frame_crop_top_offset;
-        public int frame_crop_bottom_offset;
-        public int[] offsetForRefFrame;
-        public VUIParameters vuiParams;
-        public ScalingMatrix scalingMatrix;
-        public int num_ref_frames_in_pic_order_cnt_cycle;
-        public static SeqParameterSet read(byte[] buf)
+        public int pic_order_cnt_type { get; set; }
+        public bool field_pic_flag { get; set; }
+        public bool delta_pic_order_always_zero_flag { get; set; }
+        public bool weighted_pred_flag { get; set; }
+        public int weighted_bipred_idc { get; set; }
+        public bool entropy_coding_mode_flag { get; set; }
+        public bool mb_adaptive_frame_field_flag { get; set; }
+        public bool direct_8x8_inference_flag { get; set; }
+        public ChromaFormat chroma_format_idc { get; set; }
+        public int log2_max_frame_num_minus4 { get; set; }
+        public int log2_max_pic_order_cnt_lsb_minus4 { get; set; }
+        public int pic_height_in_map_units_minus1 { get; set; }
+        public int pic_width_in_mbs_minus1 { get; set; }
+        public int bit_depth_luma_minus8 { get; set; }
+        public int bit_depth_chroma_minus8 { get; set; }
+        public bool qpprime_y_zero_transform_bypass_flag { get; set; }
+        public int profile_idc { get; set; }
+        public bool constraint_set_0_flag { get; set; }
+        public bool constraint_set_1_flag { get; set; }
+        public bool constraint_set_2_flag { get; set; }
+        public bool constraint_set_3_flag { get; set; }
+        public bool constraint_set_4_flag { get; set; }
+        public bool constraint_set_5_flag { get; set; }
+        public int level_idc { get; set; }
+        public int seq_parameter_set_id { get; set; }
+        public bool residual_color_transform_flag { get; set; }
+        public int offset_for_non_ref_pic { get; set; }
+        public int offset_for_top_to_bottom_field { get; set; }
+        public int num_ref_frames { get; set; }
+        public bool gaps_in_frame_num_value_allowed_flag { get; set; }
+        public bool frame_mbs_only_flag { get; set; }
+        public bool frame_cropping_flag { get; set; }
+        public int frame_crop_left_offset { get; set; }
+        public int frame_crop_right_offset { get; set; }
+        public int frame_crop_top_offset { get; set; }
+        public int frame_crop_bottom_offset { get; set; }
+        public int[] offsetForRefFrame { get; set; }
+        public VUIParameters VuiParams { get; set; }
+        public ScalingMatrix ScalingMatrix { get; set; }
+        public int Num_ref_frames_in_pic_order_cnt_cycle { get; set; }
+        public static SeqParameterSet Read(byte[] buf)
         {
             try
             {
 
                 MemoryStream @is = new MemoryStream(buf);
-                return read(@is);
+                return Read(@is);
             }
             catch (Exception)
             {
@@ -94,18 +94,19 @@ namespace mp4parser.h264.model
 
         }
 
-        public static SeqParameterSet read(Stream @is)
+        public static SeqParameterSet Read(Stream @is)
         {
-            CAVLCReader reader = new CAVLCReader(@is);
-            SeqParameterSet sps = new SeqParameterSet();
-
-            sps.profile_idc = (int)reader.ReadNBit(8, "SPS: profile_idc");
-            sps.constraint_set_0_flag = reader.ReadBool("SPS: constraint_set_0_flag");
-            sps.constraint_set_1_flag = reader.ReadBool("SPS: constraint_set_1_flag");
-            sps.constraint_set_2_flag = reader.ReadBool("SPS: constraint_set_2_flag");
-            sps.constraint_set_3_flag = reader.ReadBool("SPS: constraint_set_3_flag");
-            sps.constraint_set_4_flag = reader.ReadBool("SPS: constraint_set_4_flag");
-            sps.constraint_set_5_flag = reader.ReadBool("SPS: constraint_set_5_flag");
+            var reader = new CAVLCReader(@is);
+            var sps = new SeqParameterSet
+            {
+                profile_idc = (int)reader.ReadNBit(8, "SPS: profile_idc"),
+                constraint_set_0_flag = reader.ReadBool("SPS: constraint_set_0_flag"),
+                constraint_set_1_flag = reader.ReadBool("SPS: constraint_set_1_flag"),
+                constraint_set_2_flag = reader.ReadBool("SPS: constraint_set_2_flag"),
+                constraint_set_3_flag = reader.ReadBool("SPS: constraint_set_3_flag"),
+                constraint_set_4_flag = reader.ReadBool("SPS: constraint_set_4_flag"),
+                constraint_set_5_flag = reader.ReadBool("SPS: constraint_set_5_flag")
+            };
 
             reader.ReadNBit(2, "SPS: reserved_zero_2bits");
             sps.level_idc = (int)reader.ReadNBit(8, "SPS: level_idc");
@@ -142,9 +143,9 @@ namespace mp4parser.h264.model
                 sps.delta_pic_order_always_zero_flag = reader.ReadBool("SPS: delta_pic_order_always_zero_flag");
                 sps.offset_for_non_ref_pic = reader.ReadSE("SPS: offset_for_non_ref_pic");
                 sps.offset_for_top_to_bottom_field = reader.ReadSE("SPS: offset_for_top_to_bottom_field");
-                sps.num_ref_frames_in_pic_order_cnt_cycle = reader.ReadUE("SPS: num_ref_frames_in_pic_order_cnt_cycle");
-                sps.offsetForRefFrame = new int[sps.num_ref_frames_in_pic_order_cnt_cycle];
-                for (int i = 0; i < sps.num_ref_frames_in_pic_order_cnt_cycle; i++)
+                sps.Num_ref_frames_in_pic_order_cnt_cycle = reader.ReadUE("SPS: num_ref_frames_in_pic_order_cnt_cycle");
+                sps.offsetForRefFrame = new int[sps.Num_ref_frames_in_pic_order_cnt_cycle];
+                for (int i = 0; i < sps.Num_ref_frames_in_pic_order_cnt_cycle; i++)
                 {
                     sps.offsetForRefFrame[i] = reader.ReadSE("SPS: offsetForRefFrame [" + i + "]");
                 }
@@ -170,7 +171,7 @@ namespace mp4parser.h264.model
             bool vui_parameters_present_flag = reader.ReadBool("SPS: vui_parameters_present_flag");
             if (vui_parameters_present_flag)
             {
-                sps.vuiParams = ReadVUIParameters(reader);
+                sps.VuiParams = ReadVUIParameters(reader);
             }
 
             reader.ReadTrailingBits();
@@ -179,21 +180,21 @@ namespace mp4parser.h264.model
         }
         private static void readScalingListMatrix(CAVLCReader reader, SeqParameterSet sps)
         {
-            sps.scalingMatrix = new ScalingMatrix();
+            sps.ScalingMatrix = new ScalingMatrix();
             for (int i = 0; i < 8; i++)
             {
                 bool seqScalingListPresentFlag = reader.ReadBool("SPS: seqScalingListPresentFlag");
                 if (seqScalingListPresentFlag)
                 {
-                    sps.scalingMatrix.ScalingList4x4 = new ScalingList[8];
-                    sps.scalingMatrix.ScalingList8x8 = new ScalingList[8];
+                    sps.ScalingMatrix.ScalingList4x4 = new ScalingList[8];
+                    sps.ScalingMatrix.ScalingList8x8 = new ScalingList[8];
                     if (i < 6)
                     {
-                        sps.scalingMatrix.ScalingList4x4[i] = ScalingList.read(reader, 16);
+                        sps.ScalingMatrix.ScalingList4x4[i] = ScalingList.read(reader, 16);
                     }
                     else
                     {
-                        sps.scalingMatrix.ScalingList8x8[i - 6] = ScalingList.read(reader, 64);
+                        sps.ScalingMatrix.ScalingList8x8[i - 6] = ScalingList.read(reader, 64);
                     }
                 }
             }
@@ -261,13 +262,13 @@ namespace mp4parser.h264.model
             if (bitstream_restriction_flag)
             {
                 vuip.bitstreamRestriction = new VUIParameters.BitstreamRestriction();
-                vuip.bitstreamRestriction.motion_vectors_over_pic_boundaries_flag = reader.ReadBool("VUI: motion_vectors_over_pic_boundaries_flag");
-                vuip.bitstreamRestriction.max_bytes_per_pic_denom = reader.ReadUE("VUI max_bytes_per_pic_denom");
-                vuip.bitstreamRestriction.max_bits_per_mb_denom = reader.ReadUE("VUI max_bits_per_mb_denom");
-                vuip.bitstreamRestriction.log2_max_mv_length_horizontal = reader.ReadUE("VUI log2_max_mv_length_horizontal");
-                vuip.bitstreamRestriction.log2_max_mv_length_vertical = reader.ReadUE("VUI log2_max_mv_length_vertical");
-                vuip.bitstreamRestriction.num_reorder_frames = reader.ReadUE("VUI num_reorder_frames");
-                vuip.bitstreamRestriction.max_dec_frame_buffering = reader.ReadUE("VUI max_dec_frame_buffering");
+                vuip.bitstreamRestriction.Motion_vectors_over_pic_boundaries_flag = reader.ReadBool("VUI: motion_vectors_over_pic_boundaries_flag");
+                vuip.bitstreamRestriction.Max_bytes_per_pic_denom = reader.ReadUE("VUI max_bytes_per_pic_denom");
+                vuip.bitstreamRestriction.Max_bits_per_mb_denom = reader.ReadUE("VUI max_bits_per_mb_denom");
+                vuip.bitstreamRestriction.Log2_max_mv_length_horizontal = reader.ReadUE("VUI log2_max_mv_length_horizontal");
+                vuip.bitstreamRestriction.Log2_max_mv_length_vertical = reader.ReadUE("VUI log2_max_mv_length_vertical");
+                vuip.bitstreamRestriction.Num_reorder_frames = reader.ReadUE("VUI num_reorder_frames");
+                vuip.bitstreamRestriction.Max_dec_frame_buffering = reader.ReadUE("VUI max_dec_frame_buffering");
             }
 
             return vuip;
@@ -275,15 +276,17 @@ namespace mp4parser.h264.model
 
         private static HRDParameters readHRDParameters(CAVLCReader reader)
         {
-            HRDParameters hrd = new HRDParameters();
-            hrd.cpb_cnt_minus1 = reader.ReadUE("SPS: cpb_cnt_minus1");
-            hrd.bit_rate_scale = (int)reader.ReadNBit(4, "HRD: bit_rate_scale");
-            hrd.cpb_size_scale = (int)reader.ReadNBit(4, "HRD: cpb_size_scale");
-            hrd.bit_rate_value_minus1 = new int[hrd.cpb_cnt_minus1 + 1];
-            hrd.cpb_size_value_minus1 = new int[hrd.cpb_cnt_minus1 + 1];
-            hrd.cbr_flag = new bool[hrd.cpb_cnt_minus1 + 1];
+            HRDParameters hrd = new HRDParameters
+            {
+                Cpb_cnt_minus1 = reader.ReadUE("SPS: cpb_cnt_minus1"),
+                bit_rate_scale = (int)reader.ReadNBit(4, "HRD: bit_rate_scale"),
+                cpb_size_scale = (int)reader.ReadNBit(4, "HRD: cpb_size_scale")
+            };
+            hrd.bit_rate_value_minus1 = new int[hrd.Cpb_cnt_minus1 + 1];
+            hrd.cpb_size_value_minus1 = new int[hrd.Cpb_cnt_minus1 + 1];
+            hrd.cbr_flag = new bool[hrd.Cpb_cnt_minus1 + 1];
 
-            for (int SchedSelIdx = 0; SchedSelIdx <= hrd.cpb_cnt_minus1; SchedSelIdx++)
+            for (int SchedSelIdx = 0; SchedSelIdx <= hrd.Cpb_cnt_minus1; SchedSelIdx++)
             {
                 hrd.bit_rate_value_minus1[SchedSelIdx] = reader.ReadUE("HRD: bit_rate_value_minus1");
                 hrd.cpb_size_value_minus1[SchedSelIdx] = reader.ReadUE("HRD: cpb_size_value_minus1");
@@ -319,25 +322,25 @@ namespace mp4parser.h264.model
                 writer.writeUE(bit_depth_luma_minus8, "SPS: ");
                 writer.writeUE(bit_depth_chroma_minus8, "SPS: ");
                 writer.writeBool(qpprime_y_zero_transform_bypass_flag, "SPS: qpprime_y_zero_transform_bypass_flag");
-                writer.writeBool(scalingMatrix != null, "SPS: ");
-                if (scalingMatrix != null)
+                writer.writeBool(ScalingMatrix != null, "SPS: ");
+                if (ScalingMatrix != null)
                 {
                     for (int i = 0; i < 8; i++)
                     {
                         if (i < 6)
                         {
-                            writer.writeBool(scalingMatrix.ScalingList4x4[i] != null, "SPS: ");
-                            if (scalingMatrix.ScalingList4x4[i] != null)
+                            writer.writeBool(ScalingMatrix.ScalingList4x4[i] != null, "SPS: ");
+                            if (ScalingMatrix.ScalingList4x4[i] != null)
                             {
-                                scalingMatrix.ScalingList4x4[i].write(writer);
+                                ScalingMatrix.ScalingList4x4[i].write(writer);
                             }
                         }
                         else
                         {
-                            writer.writeBool(scalingMatrix.ScalingList8x8[i - 6] != null, "SPS: ");
-                            if (scalingMatrix.ScalingList8x8[i - 6] != null)
+                            writer.writeBool(ScalingMatrix.ScalingList8x8[i - 6] != null, "SPS: ");
+                            if (ScalingMatrix.ScalingList8x8[i - 6] != null)
                             {
-                                scalingMatrix.ScalingList8x8[i - 6].write(writer);
+                                ScalingMatrix.ScalingList8x8[i - 6].write(writer);
                             }
                         }
                     }
@@ -378,10 +381,10 @@ namespace mp4parser.h264.model
                 writer.writeUE(frame_crop_top_offset, "SPS: frame_crop_top_offset");
                 writer.writeUE(frame_crop_bottom_offset, "SPS: frame_crop_bottom_offset");
             }
-            writer.writeBool(vuiParams != null, "SPS: ");
-            if (vuiParams != null)
+            writer.writeBool(VuiParams != null, "SPS: ");
+            if (VuiParams != null)
             {
-                writeVUIParameters(vuiParams, writer);
+                writeVUIParameters(VuiParams, writer);
             }
 
             writer.writeTrailingBits();
@@ -451,24 +454,24 @@ namespace mp4parser.h264.model
             writer.writeBool(vuip.bitstreamRestriction != null, "VUI: ");
             if (vuip.bitstreamRestriction != null)
             {
-                writer.writeBool(vuip.bitstreamRestriction.motion_vectors_over_pic_boundaries_flag, "VUI: motion_vectors_over_pic_boundaries_flag");
-                writer.writeUE(vuip.bitstreamRestriction.max_bytes_per_pic_denom, "VUI: max_bytes_per_pic_denom");
-                writer.writeUE(vuip.bitstreamRestriction.max_bits_per_mb_denom, "VUI: max_bits_per_mb_denom");
-                writer.writeUE(vuip.bitstreamRestriction.log2_max_mv_length_horizontal, "VUI: log2_max_mv_length_horizontal");
-                writer.writeUE(vuip.bitstreamRestriction.log2_max_mv_length_vertical, "VUI: log2_max_mv_length_vertical");
-                writer.writeUE(vuip.bitstreamRestriction.num_reorder_frames, "VUI: num_reorder_frames");
-                writer.writeUE(vuip.bitstreamRestriction.max_dec_frame_buffering, "VUI: max_dec_frame_buffering");
+                writer.writeBool(vuip.bitstreamRestriction.Motion_vectors_over_pic_boundaries_flag, "VUI: motion_vectors_over_pic_boundaries_flag");
+                writer.writeUE(vuip.bitstreamRestriction.Max_bytes_per_pic_denom, "VUI: max_bytes_per_pic_denom");
+                writer.writeUE(vuip.bitstreamRestriction.Max_bits_per_mb_denom, "VUI: max_bits_per_mb_denom");
+                writer.writeUE(vuip.bitstreamRestriction.Log2_max_mv_length_horizontal, "VUI: log2_max_mv_length_horizontal");
+                writer.writeUE(vuip.bitstreamRestriction.Log2_max_mv_length_vertical, "VUI: log2_max_mv_length_vertical");
+                writer.writeUE(vuip.bitstreamRestriction.Num_reorder_frames, "VUI: num_reorder_frames");
+                writer.writeUE(vuip.bitstreamRestriction.Max_dec_frame_buffering, "VUI: max_dec_frame_buffering");
             }
 
         }
 
         private void writeHRDParameters(HRDParameters hrd, CAVLCWriter writer)
         {
-            writer.writeUE(hrd.cpb_cnt_minus1, "HRD: cpb_cnt_minus1");
+            writer.writeUE(hrd.Cpb_cnt_minus1, "HRD: cpb_cnt_minus1");
             writer.writeNBit(hrd.bit_rate_scale, 4, "HRD: bit_rate_scale");
             writer.writeNBit(hrd.cpb_size_scale, 4, "HRD: cpb_size_scale");
 
-            for (int SchedSelIdx = 0; SchedSelIdx <= hrd.cpb_cnt_minus1; SchedSelIdx++)
+            for (int SchedSelIdx = 0; SchedSelIdx <= hrd.Cpb_cnt_minus1; SchedSelIdx++)
             {
                 writer.writeUE(hrd.bit_rate_value_minus1[SchedSelIdx], "HRD: ");
                 writer.writeUE(hrd.cpb_size_value_minus1[SchedSelIdx], "HRD: ");
@@ -482,7 +485,7 @@ namespace mp4parser.h264.model
 
         public override string ToString()
         {
-            return "SeqParameterSet{ " + "\n        pic_order_cnt_type=" + pic_order_cnt_type + ", \n        field_pic_flag=" + field_pic_flag + ", \n        delta_pic_order_always_zero_flag=" + delta_pic_order_always_zero_flag + ", \n        weighted_pred_flag=" + weighted_pred_flag + ", \n        weighted_bipred_idc=" + weighted_bipred_idc + ", \n        entropy_coding_mode_flag=" + entropy_coding_mode_flag + ", \n        mb_adaptive_frame_field_flag=" + mb_adaptive_frame_field_flag + ", \n        direct_8x8_inference_flag=" + direct_8x8_inference_flag + ", \n        chroma_format_idc=" + chroma_format_idc + ", \n        log2_max_frame_num_minus4=" + log2_max_frame_num_minus4 + ", \n        log2_max_pic_order_cnt_lsb_minus4=" + log2_max_pic_order_cnt_lsb_minus4 + ", \n        pic_height_in_map_units_minus1=" + pic_height_in_map_units_minus1 + ", \n        pic_width_in_mbs_minus1=" + pic_width_in_mbs_minus1 + ", \n        bit_depth_luma_minus8=" + bit_depth_luma_minus8 + ", \n        bit_depth_chroma_minus8=" + bit_depth_chroma_minus8 + ", \n        qpprime_y_zero_transform_bypass_flag=" + qpprime_y_zero_transform_bypass_flag + ", \n        profile_idc=" + profile_idc + ", \n        constraint_set_0_flag=" + constraint_set_0_flag + ", \n        constraint_set_1_flag=" + constraint_set_1_flag + ", \n        constraint_set_2_flag=" + constraint_set_2_flag + ", \n        constraint_set_3_flag=" + constraint_set_3_flag + ", \n        constraint_set_4_flag=" + constraint_set_4_flag + ", \n        constraint_set_5_flag=" + constraint_set_5_flag + ", \n        level_idc=" + level_idc + ", \n        seq_parameter_set_id=" + seq_parameter_set_id + ", \n        residual_color_transform_flag=" + residual_color_transform_flag + ", \n        offset_for_non_ref_pic=" + offset_for_non_ref_pic + ", \n        offset_for_top_to_bottom_field=" + offset_for_top_to_bottom_field + ", \n        num_ref_frames=" + num_ref_frames + ", \n        gaps_in_frame_num_value_allowed_flag=" + gaps_in_frame_num_value_allowed_flag + ", \n        frame_mbs_only_flag=" + frame_mbs_only_flag + ", \n        frame_cropping_flag=" + frame_cropping_flag + ", \n        frame_crop_left_offset=" + frame_crop_left_offset + ", \n        frame_crop_right_offset=" + frame_crop_right_offset + ", \n        frame_crop_top_offset=" + frame_crop_top_offset + ", \n        frame_crop_bottom_offset=" + frame_crop_bottom_offset + ", \n        offsetForRefFrame=" + offsetForRefFrame + ", \n        vuiParams=" + vuiParams + ", \n        scalingMatrix=" + scalingMatrix + ", \n        num_ref_frames_in_pic_order_cnt_cycle=" + num_ref_frames_in_pic_order_cnt_cycle + '}';
+            return "SeqParameterSet{ " + "\n        pic_order_cnt_type=" + pic_order_cnt_type + ", \n        field_pic_flag=" + field_pic_flag + ", \n        delta_pic_order_always_zero_flag=" + delta_pic_order_always_zero_flag + ", \n        weighted_pred_flag=" + weighted_pred_flag + ", \n        weighted_bipred_idc=" + weighted_bipred_idc + ", \n        entropy_coding_mode_flag=" + entropy_coding_mode_flag + ", \n        mb_adaptive_frame_field_flag=" + mb_adaptive_frame_field_flag + ", \n        direct_8x8_inference_flag=" + direct_8x8_inference_flag + ", \n        chroma_format_idc=" + chroma_format_idc + ", \n        log2_max_frame_num_minus4=" + log2_max_frame_num_minus4 + ", \n        log2_max_pic_order_cnt_lsb_minus4=" + log2_max_pic_order_cnt_lsb_minus4 + ", \n        pic_height_in_map_units_minus1=" + pic_height_in_map_units_minus1 + ", \n        pic_width_in_mbs_minus1=" + pic_width_in_mbs_minus1 + ", \n        bit_depth_luma_minus8=" + bit_depth_luma_minus8 + ", \n        bit_depth_chroma_minus8=" + bit_depth_chroma_minus8 + ", \n        qpprime_y_zero_transform_bypass_flag=" + qpprime_y_zero_transform_bypass_flag + ", \n        profile_idc=" + profile_idc + ", \n        constraint_set_0_flag=" + constraint_set_0_flag + ", \n        constraint_set_1_flag=" + constraint_set_1_flag + ", \n        constraint_set_2_flag=" + constraint_set_2_flag + ", \n        constraint_set_3_flag=" + constraint_set_3_flag + ", \n        constraint_set_4_flag=" + constraint_set_4_flag + ", \n        constraint_set_5_flag=" + constraint_set_5_flag + ", \n        level_idc=" + level_idc + ", \n        seq_parameter_set_id=" + seq_parameter_set_id + ", \n        residual_color_transform_flag=" + residual_color_transform_flag + ", \n        offset_for_non_ref_pic=" + offset_for_non_ref_pic + ", \n        offset_for_top_to_bottom_field=" + offset_for_top_to_bottom_field + ", \n        num_ref_frames=" + num_ref_frames + ", \n        gaps_in_frame_num_value_allowed_flag=" + gaps_in_frame_num_value_allowed_flag + ", \n        frame_mbs_only_flag=" + frame_mbs_only_flag + ", \n        frame_cropping_flag=" + frame_cropping_flag + ", \n        frame_crop_left_offset=" + frame_crop_left_offset + ", \n        frame_crop_right_offset=" + frame_crop_right_offset + ", \n        frame_crop_top_offset=" + frame_crop_top_offset + ", \n        frame_crop_bottom_offset=" + frame_crop_bottom_offset + ", \n        offsetForRefFrame=" + offsetForRefFrame + ", \n        vuiParams=" + VuiParams + ", \n        scalingMatrix=" + ScalingMatrix + ", \n        num_ref_frames_in_pic_order_cnt_cycle=" + Num_ref_frames_in_pic_order_cnt_cycle + '}';
         }
     }
 }

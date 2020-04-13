@@ -127,7 +127,7 @@ namespace Win.GB28181.Client.Player.Analyzer
                     {
                         return;
                     }
-                    var sps = mp4parser.h264.model.SeqParameterSet.read(new MemoryStream(sps_pps[0], 1, sps_pps[0].Length - 1));
+                    var sps = mp4parser.h264.model.SeqParameterSet.Read(new MemoryStream(sps_pps[0], 1, sps_pps[0].Length - 1));
                     var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(sps_pps[1], 1, sps_pps[1].Length - 1));
                     Width = (ushort)((sps.pic_width_in_mbs_minus1 + 1) * 16 - 2 * sps.frame_crop_left_offset - 2 * sps.frame_crop_right_offset);
                     Height = (ushort)((sps.pic_height_in_map_units_minus1 + 1) * 16 - 2 * sps.frame_crop_top_offset - 2 * sps.frame_crop_bottom_offset);

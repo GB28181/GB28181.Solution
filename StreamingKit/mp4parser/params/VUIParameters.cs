@@ -29,24 +29,24 @@ namespace mp4parser.h264.model
 		public class BitstreamRestriction
 		{
 
-			public bool motion_vectors_over_pic_boundaries_flag;
-			public int max_bytes_per_pic_denom;
-			public int max_bits_per_mb_denom;
-			public int log2_max_mv_length_horizontal;
-			public int log2_max_mv_length_vertical;
-			public int num_reorder_frames;
-			public int max_dec_frame_buffering;
+			public bool Motion_vectors_over_pic_boundaries_flag { get; set; }
+			public int Max_bytes_per_pic_denom { get; set; }
+			public int Max_bits_per_mb_denom { get; set; }
+			public int Log2_max_mv_length_horizontal { get; set; }
+			public int Log2_max_mv_length_vertical { get; set; }
+			public int Num_reorder_frames { get; set; }
+			public int Max_dec_frame_buffering { get; set; }
 
 			public override string ToString()
 			{
 				StringBuilder sb = new StringBuilder("BitstreamRestriction{");
-				sb.Append("motion_vectors_over_pic_boundaries_flag=").Append(motion_vectors_over_pic_boundaries_flag);
-				sb.Append(", max_bytes_per_pic_denom=").Append(max_bytes_per_pic_denom);
-				sb.Append(", max_bits_per_mb_denom=").Append(max_bits_per_mb_denom);
-				sb.Append(", log2_max_mv_length_horizontal=").Append(log2_max_mv_length_horizontal);
-				sb.Append(", log2_max_mv_length_vertical=").Append(log2_max_mv_length_vertical);
-				sb.Append(", num_reorder_frames=").Append(num_reorder_frames);
-				sb.Append(", max_dec_frame_buffering=").Append(max_dec_frame_buffering);
+				sb.Append("motion_vectors_over_pic_boundaries_flag=").Append(Motion_vectors_over_pic_boundaries_flag);
+				sb.Append(", max_bytes_per_pic_denom=").Append(Max_bytes_per_pic_denom);
+				sb.Append(", max_bits_per_mb_denom=").Append(Max_bits_per_mb_denom);
+				sb.Append(", log2_max_mv_length_horizontal=").Append(Log2_max_mv_length_horizontal);
+				sb.Append(", log2_max_mv_length_vertical=").Append(Log2_max_mv_length_vertical);
+				sb.Append(", num_reorder_frames=").Append(Num_reorder_frames);
+				sb.Append(", max_dec_frame_buffering=").Append(Max_dec_frame_buffering);
 				sb.Append('}');
 				return sb.ToString();
 			}

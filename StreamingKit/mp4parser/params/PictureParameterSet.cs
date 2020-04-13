@@ -23,8 +23,8 @@ namespace mp4parser.h264.model
 
     using System;
     using System.IO;
-    using CAVLCReader = mp4parser.h264.read.CAVLCReader;
-    using CAVLCWriter = mp4parser.h264.write.CAVLCWriter;
+    using CAVLCReader = read.CAVLCReader;
+    using CAVLCWriter = write.CAVLCWriter;
 
     /// <summary>
     /// Picture Parameter Set entity of H264 bitstream
@@ -49,29 +49,29 @@ namespace mp4parser.h264.model
             }
         }
 
-        public bool entropy_coding_mode_flag;
-        public int num_ref_idx_l0_active_minus1;
-        public int num_ref_idx_l1_active_minus1;
-        public int slice_group_change_rate_minus1;
-        public int pic_parameter_set_id;
-        public int seq_parameter_set_id;
-        public bool pic_order_present_flag;
-        public int num_slice_groups_minus1;
-        public int slice_group_map_type;
-        public bool weighted_pred_flag;
-        public int weighted_bipred_idc;
-        public int pic_init_qp_minus26;
-        public int pic_init_qs_minus26;
-        public int chroma_qp_index_offset;
-        public bool deblocking_filter_control_present_flag;
-        public bool constrained_intra_pred_flag;
-        public bool redundant_pic_cnt_present_flag;
-        public int[] top_left;
-        public int[] bottom_right;
-        public int[] run_length_minus1;
-        public bool slice_group_change_direction_flag;
-        public int[] slice_group_id;
-        public PPSExt extended;
+        public bool entropy_coding_mode_flag { get; set; }
+        public int num_ref_idx_l0_active_minus1 { get; set; }
+        public int num_ref_idx_l1_active_minus1 { get; set; }
+        public int slice_group_change_rate_minus1 { get; set; }
+        public int pic_parameter_set_id { get; set; }
+        public int seq_parameter_set_id { get; set; }
+        public bool pic_order_present_flag { get; set; }
+        public int num_slice_groups_minus1 { get; set; }
+        public int slice_group_map_type { get; set; }
+        public bool weighted_pred_flag { get; set; }
+        public int weighted_bipred_idc { get; set; }
+        public int pic_init_qp_minus26 { get; set; }
+        public int pic_init_qs_minus26 { get; set; }
+        public int chroma_qp_index_offset { get; set; }
+        public bool deblocking_filter_control_present_flag { get; set; }
+        public bool constrained_intra_pred_flag { get; set; }
+        public bool redundant_pic_cnt_present_flag { get; set; }
+        public int[] top_left { get; set; }
+        public int[] bottom_right { get; set; }
+        public int[] run_length_minus1 { get; set; }
+        public bool slice_group_change_direction_flag { get; set; }
+        public int[] slice_group_id { get; set; }
+        public PPSExt extended { get; set; }
 
         public static PictureParameterSet read(byte[] b)
         {
@@ -80,14 +80,15 @@ namespace mp4parser.h264.model
 
         public static PictureParameterSet read(Stream @is)
         {
-            CAVLCReader reader = new CAVLCReader(@is);
-            PictureParameterSet pps = new PictureParameterSet();
-
-            pps.pic_parameter_set_id = reader.ReadUE("PPS: pic_parameter_set_id");
-            pps.seq_parameter_set_id = reader.ReadUE("PPS: seq_parameter_set_id");
-            pps.entropy_coding_mode_flag = reader.ReadBool("PPS: entropy_coding_mode_flag");
-            pps.pic_order_present_flag = reader.ReadBool("PPS: pic_order_present_flag");
-            pps.num_slice_groups_minus1 = reader.ReadUE("PPS: num_slice_groups_minus1");
+            var reader = new CAVLCReader(@is);
+            PictureParameterSet pps = new PictureParameterSet
+            {
+                pic_parameter_set_id = reader.ReadUE("PPS: pic_parameter_set_id"),
+                seq_parameter_set_id = reader.ReadUE("PPS: seq_parameter_set_id"),
+                entropy_coding_mode_flag = reader.ReadBool("PPS: entropy_coding_mode_flag"),
+                pic_order_present_flag = reader.ReadBool("PPS: pic_order_present_flag"),
+                num_slice_groups_minus1 = reader.ReadUE("PPS: num_slice_groups_minus1")
+            };
             if (pps.num_slice_groups_minus1 > 0)
             {
                 pps.slice_group_map_type = reader.ReadUE("PPS: slice_group_map_type");
