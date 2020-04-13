@@ -1,4 +1,4 @@
-﻿using Common.Networks;
+﻿using StreamingKit.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ namespace StreamingKit.Media.TS
     //http://blog.163.com/benben_168/blog/static/185277057201152125757560/
 
 
-    public partial class PESPacket : IByteObj
+    public partial class PESPacket : IBufferBytes
     {
 
         public byte[] Packet_Start_Code_Prefix;     // 3 bytes
@@ -202,7 +202,7 @@ namespace StreamingKit.Media.TS
 
         public void SetBytes(byte[] buf)
         {
-            var ms = new System.IO.MemoryStream(buf);
+            var ms = new MemoryStream(buf);
             SetBytes(ms);
         }
 

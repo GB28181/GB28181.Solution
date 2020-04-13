@@ -99,9 +99,9 @@ namespace SS.ClientBase.Media
 
         protected virtual void Init(MediaFrame frame) {
             if (!_inited && frame.IsKeyFrame == 1 && frame.IsAudio == 1) {
-                if (frame.NEncoder == MediaFrame.AAC_Encoder)
+                if (frame.Encoder == MediaFrame.AAC_Encoder)
                     _aac = new FFImp(AVCodecCfg.CreateAudio(frame.Channel, frame.Frequency, (int)AVCode.CODEC_ID_AAC), true,false);
-                if (frame.NEncoder == MediaFrame.SPEXEncoder)
+                if (frame.Encoder == MediaFrame.SPEXEncoder)
                     _speex = _speex ?? new Speex(4, 160);
                 if (WaveOut.Devices == null || WaveOut.Devices.Length == 0) {
 

@@ -64,8 +64,7 @@ namespace StreamingKit.Codec
             baoStream.Write(SPS);
             baoStream.Write(new byte[] { 0, 0, 0, 1 });
             baoStream.Write(PPS);
-            byte[] pps_sps = ms.ToArray();
-            return pps_sps;
+            return ms.ToArray();
         }
 
 
@@ -88,13 +87,15 @@ namespace StreamingKit.Codec
 
         public static AudioEncodeCfg GetDefault()
         {
-            AudioEncodeCfg r = new AudioEncodeCfg();
+            var r = new AudioEncodeCfg
+            {
+                frequency = 32000,
+                format = 16,
+                channel = 1,
+                samples = 1024 * 2,
+                micId = 0
+            };
             r.SetEncoder("AAC_");
-            r.frequency = 32000;
-            r.format = 16;
-            r.channel = 1;
-            r.samples = 1024 * 2;
-            r.micId = 0;
             return r;
         }
     }

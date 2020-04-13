@@ -621,7 +621,7 @@ namespace SS.ClientBase.Codec
         }
 
         private void CaptureThread()
-        {          
+        {
             while (_isworking)
             {
                 var dt = DateTime.Now;
@@ -667,9 +667,9 @@ namespace SS.ClientBase.Codec
     }
     public class MixerVideoEncoder : CameraEncoder
     {
-        
+
         public MixerVideoEncoder(Mixer.Video.Canvas canvas, VideoEncodeCfg cfgVideo, Action<MediaFrame> callBack)
-            : base(cfgVideo, callBack,canvas)
+            : base(cfgVideo, callBack, canvas)
         {
             base.Canvas = canvas;
         }
@@ -800,20 +800,20 @@ namespace SS.ClientBase.Codec
                     Height = _cfgVideo.Height,
                     Ex = 1,
                     IsAudio = 0,
-                    NEncoder = MediaFrame.H264Encoder,
+                    Encoder = MediaFrame.H264Encoder,
                     IsKeyFrame = (byte)(_x264.IsKeyFrame() ? 1 : 0),
                     MediaFrameVersion = 0,
                     PPSLen = 0,
-                    SPSLen = 0,                   
+                    SPSLen = 0,
                     Size = enc.Length,
                     NTimetick = Environment.TickCount,
                 };
                 mf.SetData(enc);
                 if (mf.IsKeyFrame == 1)
                 {
-                    var sps_pps = SS.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
-                    mf.SPSLen = (short)sps_pps[0].Length;
-                    mf.PPSLen = (short)sps_pps[1].Length;
+                    var sps_pps = Media.MediaSteamConverter.GetSPS_PPS(enc);
+                    mf.SPSLen = sps_pps[0].Length;
+                    mf.PPSLen = sps_pps[1].Length;
                 }
                 mf.MediaFrameVersion = mf.IsKeyFrame;
 
@@ -864,7 +864,7 @@ namespace SS.ClientBase.Codec
                 Height = mf.Height,
                 Ex = mf.Ex,
                 IsAudio = mf.IsAudio,
-                NEncoder = mf.NEncoder,
+                Encoder = mf.Encoder,
                 IsKeyFrame = mf.IsKeyFrame,
                 MediaFrameVersion = mf.MediaFrameVersion,
                 PPSLen = mf.PPSLen,

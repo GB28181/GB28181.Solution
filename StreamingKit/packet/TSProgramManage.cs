@@ -18,7 +18,8 @@ namespace StreamingKit.Media.TS
     //http://blog.163.com/benben_168/blog/static/185277057201152125757560/
 
 
-    public enum TSPacketType {
+    public enum TSPacketType
+    {
         UNKNOW,
         PAT,
         PMT,
@@ -34,32 +35,36 @@ namespace StreamingKit.Media.TS
         private Dictionary<int, MediaInfo> _dicMediaFrameCache = new Dictionary<int, MediaInfo>();
         public long FirstFrameTimeTick = -1;
         public Action<MediaFrame> NewMediaFrame;
-        public void AddProgram(TS.TS_PAT.TS_PAT_Program program) {
+        public void AddProgram(TS.TS_PAT.TS_PAT_Program program)
+        {
             if (_programList.Contains(program))
                 return;
             _programList.Add(program);
 
         }
-        
-     
 
-        public void AddStream(TS.TS_PMT.TS_PMT_Stream stream) {
+
+
+        public void AddStream(TS.TS_PMT.TS_PMT_Stream stream)
+        {
             if (_streamList.Contains(stream))
                 return;
             _streamList.Add(stream);
 
         }
 
-        public bool IsPMT_PID(ushort pid) {
+        public bool IsPMT_PID(ushort pid)
+        {
 
             for (int i = 0; i < _programList.Count; i++)
                 if (_programList[i].program_map_PID == pid)
                     return true;
             return false;
-             
+
         }
 
-        public bool IsTSTable(ushort pid) {
+        public bool IsTSTable(ushort pid)
+        {
             #region 特殊PID映射列 http://blog.163.com/benben_168/blog/static/185277057201152125757560/
             /* 
                TABLE TYPE                      PID VALUE
@@ -86,7 +91,8 @@ namespace StreamingKit.Media.TS
 
         }
 
-        public bool IsData(ushort pid) {
+        public bool IsData(ushort pid)
+        {
             for (int i = 0; i < _streamList.Count; i++)
                 if (_streamList[i].elementary_PID == pid)
                     return true;
@@ -94,31 +100,40 @@ namespace StreamingKit.Media.TS
 
         }
 
-   
 
-        public byte GetCounter(int pid) {
-            if (_dicCounter.ContainsKey(pid)) {
+
+        public byte GetCounter(int pid)
+        {
+            if (_dicCounter.ContainsKey(pid))
+            {
                 return _dicCounter[pid]++;
-            } else {
+            }
+            else
+            {
                 _dicCounter[pid] = 0;
                 return _dicCounter[pid]++;
             }
         }
- 
-        public void WriteMediaTSPacket(TSPacket pack) {
 
-           // Console.WriteLine(pack.PID);
+        public void WriteMediaTSPacket(TSPacket pack)
+        {
+
+            // Console.WriteLine(pack.PID);
             var data = pack.data;
             var newFrameFlag = data[0] == 0x0 && data[1] == 0x0 && data[2] == 0x1 && (data[3] == 0xE0 || data[3] == 0xC0);
-             
+
             MediaInfo mi = null;
 
-            lock (_dicMediaFrameCache) {
+            lock (_dicMediaFrameCache)
+            {
                 if (_dicMediaFrameCache.ContainsKey(pack.PID))
                     mi = _dicMediaFrameCache[pack.PID];
-                else {
-                    if (newFrameFlag) {
-                        _dicMediaFrameCache[pack.PID] = mi = new MediaInfo() {
+                else
+                {
+                    if (newFrameFlag)
+                    {
+                        _dicMediaFrameCache[pack.PID] = mi = new MediaInfo()
+                        {
                             PID = pack.PID,
                             IsVideo = pack.data[3] == 0xE0,
                             IsAudio = pack.data[3] == 0xC0,
@@ -126,22 +141,29 @@ namespace StreamingKit.Media.TS
                     }
                 }
             }
-            if (mi != null) {
-                if (newFrameFlag) {
-                    lock (mi.TSPackets) {
-                        if ((mi.IsAudio && pack.data[3] != 0xC0) || (mi.IsVideo && pack.data[3] != 0xE0)) {
-                            lock (_dicMediaFrameCache) {
-                                foreach (var item in _dicMediaFrameCache.Values) {
+            if (mi != null)
+            {
+                if (newFrameFlag)
+                {
+                    lock (mi.TSPackets)
+                    {
+                        if ((mi.IsAudio && pack.data[3] != 0xC0) || (mi.IsVideo && pack.data[3] != 0xE0))
+                        {
+                            lock (_dicMediaFrameCache)
+                            {
+                                foreach (var item in _dicMediaFrameCache.Values)
+                                {
                                     item.Release();
                                 }
                                 _dicMediaFrameCache.Clear();
                             }
                             return;
                         }
-                        
+
                         var mediaFrame = mi.NextMediaFrame();
 
-                        if (mediaFrame != null &&  mediaFrame.Size == mediaFrame.GetData().Length) {
+                        if (mediaFrame != null && mediaFrame.Size == mediaFrame.GetData().Length)
+                        {
                             OnNewMediaFrame(mediaFrame);
                         }
 
@@ -149,23 +171,27 @@ namespace StreamingKit.Media.TS
 
                         mi.TSPackets.Add(pack);
                     }
-                } else {
+                }
+                else
+                {
                     lock (mi.TSPackets)
                         mi.TSPackets.Add(pack);
                 }
             }
         }
 
- 
-        protected void OnNewMediaFrame(MediaFrame frame) {
+
+        protected void OnNewMediaFrame(MediaFrame frame)
+        {
             NewMediaFrame(frame);
-             
-            
-         
+
+
+
         }
 
 
-        public void Clean() {
+        public void Clean()
+        {
             _dicCounter = new Dictionary<int, byte>();
             _programList = new List<TS_PAT.TS_PAT_Program>();
             _streamList = new List<TS_PMT.TS_PMT_Stream>();
@@ -184,11 +210,14 @@ namespace StreamingKit.Media.TS
             GC.SuppressFinalize(this);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             string str = string.Format("PAT_Program:{0}  PMT_Stream:{1}", _programList.Count, _streamList.Count);
 
-            lock (_dicMediaFrameCache) {
-                foreach (var item in _dicMediaFrameCache.Values) {
+            lock (_dicMediaFrameCache)
+            {
+                foreach (var item in _dicMediaFrameCache.Values)
+                {
                     str += "\r\n" + item.ToString();
                 }
             }
@@ -196,7 +225,8 @@ namespace StreamingKit.Media.TS
             return str;
         }
 
-        class MediaInfo {
+        class MediaInfo
+        {
             private Boolean _firstAudioFrame = true;
             public int PID;
             public bool IsVideo;
@@ -205,22 +235,25 @@ namespace StreamingKit.Media.TS
             public byte[] PPS;
             public int Width;
             public int Height;
-            public int  Frequency;
+            public int Frequency;
             public int Channel;
             public short AudioFormat;
             public short Samples;
             public int VideoFrameCount;
-  //          public int AudioFrameCount;
+            //          public int AudioFrameCount;
             public List<TSPacket> TSPackets = new List<TSPacket>();
             public List<PESPacket> PESPackets = new List<PESPacket>();
 
-            private Boolean CheckTSPack() {
+            private Boolean CheckTSPack()
+            {
                 if (TSPackets.Count == 0)
                     return false;
                 var ps = TSPackets.ToList();
                 var index = ps[0].continuity_counter;
-                for (int x = 0; x < ps.Count; x++) {
-                    if ((index & 0x0f) != ps[x].continuity_counter) {
+                for (int x = 0; x < ps.Count; x++)
+                {
+                    if ((index & 0x0f) != ps[x].continuity_counter)
+                    {
                         return false;
                     }
                     index++;
@@ -240,29 +273,34 @@ namespace StreamingKit.Media.TS
                     return null;
 
                 //验证PES包头
-                if (TSPackets[0].data[0] != 0 || TSPackets[0].data[1] != 0 || TSPackets[0].data[2] != 1) {
+                if (TSPackets[0].data[0] != 0 || TSPackets[0].data[1] != 0 || TSPackets[0].data[2] != 1)
+                {
                     TSPackets = new List<TSPacket>();
                     return null;
                 }
                 var tmp_tspackets = TSPackets;
                 TSPackets = new List<TSPacket>();
 
-                
+
                 var stream = new MemoryStream();
-                foreach (var item in tmp_tspackets) {
+                foreach (var item in tmp_tspackets)
+                {
                     stream.Write(item.data, 0, item.data.Length);
                 }
                 stream.Position = 0;
                 var pes = new PESPacket();
                 pes.SetBytes(stream);
-                
-                if (IsVideo) {
+
+                if (IsVideo)
+                {
                     var esdata = pes.PES_Packet_Data;
                     //新的一帧
-                    if (PESPackets.Count > 0 && esdata[0] == 0 && esdata[1] == 0 && esdata[2] == 0 && esdata[3] == 1) {
-                         
+                    if (PESPackets.Count > 0 && esdata[0] == 0 && esdata[1] == 0 && esdata[2] == 0 && esdata[3] == 1)
+                    {
+
                         stream = new MemoryStream();
-                        foreach (var item in PESPackets) {
+                        foreach (var item in PESPackets)
+                        {
                             stream.Write(item.PES_Packet_Data, 0, item.PES_Packet_Data.Length);
                         }
                         long tick = PESPackets.FirstOrDefault().GetVideoTimetick();
@@ -271,16 +309,22 @@ namespace StreamingKit.Media.TS
                         PESPackets = new List<PESPacket>();
                         PESPackets.Add(pes);
                         return frame;
-                    } else {
+                    }
+                    else
+                    {
                         PESPackets.Add(pes);
                         return null;
                     }
-                }else if (IsAudio) {
+                }
+                else if (IsAudio)
+                {
                     var esdata = pes.PES_Packet_Data;
                     //新的一帧
-                    if (PESPackets.Count > 0 && esdata[0] == 0xFF && (esdata[1] & 0xF0)==0xF0) {
+                    if (PESPackets.Count > 0 && esdata[0] == 0xFF && (esdata[1] & 0xF0) == 0xF0)
+                    {
                         stream = new MemoryStream();
-                        foreach (var item in PESPackets) {
+                        foreach (var item in PESPackets)
+                        {
                             stream.Write(item.PES_Packet_Data, 0, item.PES_Packet_Data.Length);
                         }
                         long tick = PESPackets.FirstOrDefault().GetAudioTimetick();
@@ -288,28 +332,35 @@ namespace StreamingKit.Media.TS
                         PESPackets.Add(pes);
                         esdata = stream.ToArray();
                         return CreateAudioMediaFrame(esdata, tick);
-                    } else {
+                    }
+                    else
+                    {
                         PESPackets.Add(pes);
                         return null;
                     }
                 }
                 return null;
             }
- 
-            private MediaFrame CreateVideoMediaFrame(byte[] data,long tick) {
+
+            private MediaFrame CreateVideoMediaFrame(byte[] data, long tick)
+            {
 
                 int keyFrameFlagOffset = 0;
-                if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 1 && data[4] == 0x09  ) {
+                if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 1 && data[4] == 0x09)
+                {
                     var tmp = new byte[data.Length - 6];
                     Array.Copy(data, 6, tmp, 0, tmp.Length - 6);
                     data = tmp;
                     keyFrameFlagOffset = 0;
                 }
 
-                if (data[keyFrameFlagOffset + 4] == 0x67 || data[keyFrameFlagOffset + 4] == 0x27) {
-                    if (this.SPS == null) {
+                if (data[keyFrameFlagOffset + 4] == 0x67 || data[keyFrameFlagOffset + 4] == 0x27)
+                {
+                    if (this.SPS == null)
+                    {
                         var tdata = data;
-                        if (keyFrameFlagOffset > 0) {
+                        if (keyFrameFlagOffset > 0)
+                        {
                             tdata = new byte[data.Length - keyFrameFlagOffset];
                             Array.Copy(data, keyFrameFlagOffset, tdata, 0, tdata.Length);
                         }
@@ -321,36 +372,41 @@ namespace StreamingKit.Media.TS
                         this.SPS = sps_pps[0];
                         this.PPS = sps_pps[1];
                     }
-                    var mf = new MediaFrame() {
+                    var mf = new MediaFrame()
+                    {
                         IsAudio = 0,
                         IsKeyFrame = 1,
                         Size = data.Length,
                         Width = Width,
                         Height = Height,
-                        SPSLen = (short)this.SPS.Length,
-                        PPSLen = (short)this.PPS.Length,
+                        SPSLen = SPS.Length,
+                        PPSLen = PPS.Length,
                         NTimetick = tick,
                         Offset = 0,
-                        NEncoder = MediaFrame.H264Encoder,
+                        Encoder = MediaFrame.H264Encoder,
                         Ex = 1,
                     };
                     mf.SetData(data);
                     mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                     VideoFrameCount++;
                     return mf;
-                } else {
-                    if (this.SPS != null) {
-                        var mf = new MediaFrame() {
+                }
+                else
+                {
+                    if (this.SPS != null)
+                    {
+                        var mf = new MediaFrame()
+                        {
                             IsAudio = 0,
                             IsKeyFrame = 0,
                             Size = data.Length,
                             Width = Width,
                             Height = Height,
-                            SPSLen = (short)this.SPS.Length,
-                            PPSLen = (short)this.PPS.Length,
+                            SPSLen = SPS.Length,
+                            PPSLen = PPS.Length,
                             NTimetick = tick,
                             Offset = 0,
-                            NEncoder = MediaFrame.H264Encoder,
+                            Encoder = MediaFrame.H264Encoder,
                             Ex = 1,
                         };
                         mf.SetData(data);
@@ -363,8 +419,10 @@ namespace StreamingKit.Media.TS
 
             }
 
-            private MediaFrame CreateAudioMediaFrame(byte[] data, long tick) {
-                if (_firstAudioFrame) {
+            private MediaFrame CreateAudioMediaFrame(byte[] data, long tick)
+            {
+                if (_firstAudioFrame)
+                {
                     var adts = new AAC_ADTS(data);
                     var frequencys = new int[] { 96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 2000, 11025 };
                     Frequency = frequencys[adts.MPEG_4_Sampling_Frequency_Index];
@@ -373,7 +431,8 @@ namespace StreamingKit.Media.TS
                     Samples = 0;
                 }
                 VideoFrameCount++;
-                var mf = new MediaFrame() {
+                var mf = new MediaFrame()
+                {
                     IsAudio = 1,
                     IsKeyFrame = 1,
                     Size = data.Length,
@@ -382,7 +441,7 @@ namespace StreamingKit.Media.TS
                     AudioFormat = AudioFormat,
                     NTimetick = tick,
                     Offset = 0,
-                    NEncoder = MediaFrame.AAC_Encoder,
+                    Encoder = MediaFrame.AAC_Encoder,
                     Ex = (byte)(_firstAudioFrame ? 0 : 1),
                     MediaFrameVersion = 1,
                 };
@@ -390,23 +449,25 @@ namespace StreamingKit.Media.TS
                 _firstAudioFrame = false;
 
                 return mf;
- 
+
             }
 
-            public void Release() {
+            public void Release()
+            {
 
                 TSPackets.Clear();
                 PESPackets.Clear();
             }
 
-            public override string ToString() {
+            public override string ToString()
+            {
                 return string.Format("TSPacket:{0}   PESPackets:{1}", TSPackets.Count, PESPackets.Count);
             }
         }
 
 
     }
- 
+
 }
 
 

@@ -1,4 +1,4 @@
-﻿using Common.Networks;
+﻿using StreamingKit.Interface;
 using Common.Streams;
 using System;
 using System.IO;
@@ -6,7 +6,7 @@ using System.IO;
 namespace StreamingKit.Media.TS
 {
 
-    public class PSMap : IByteObj
+    public class PSMap : IBufferBytes
     {
         public int start_code;                                 //32bit
         public ushort length;
@@ -36,7 +36,7 @@ namespace StreamingKit.Media.TS
         }
     }
 
-    public class PSSystemHeader : IByteObj
+    public class PSSystemHeader : IBufferBytes
     {
         public int start_code;                                 //32bit
         public ushort header_length;
@@ -64,7 +64,7 @@ namespace StreamingKit.Media.TS
         }
     }
 
-    public class PSPacketHeader : IByteObj
+    public class PSPacketHeader : IBufferBytes
     {
         public int start_code;                                  //32bit  0x000000BA
         public byte marker1;                                    //2bit

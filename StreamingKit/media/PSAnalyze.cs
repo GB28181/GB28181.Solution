@@ -1,6 +1,4 @@
 ﻿using Common.Generic;
-using Common.Networks;
-using Common.Streams;
 using Helpers;
 using System;
 using System.Collections.Generic;
@@ -292,11 +290,11 @@ namespace StreamingKit.Media.TS
                         Size = (int)h264.Length,
                         Width = Width,
                         Height = Height,
-                        SPSLen = (short)this.SPS.Length,
-                        PPSLen = (short)this.PPS.Length,
+                        SPSLen = SPS.Length,
+                        PPSLen = PPS.Length,
                         NTimetick = tick,
                         Offset = 0,
-                        NEncoder = MediaFrame.H264Encoder,
+                        Encoder = MediaFrame.H264Encoder,
                         Ex = 1,
                     };
                     mf.SetData(h264.ToArray());
@@ -319,7 +317,7 @@ namespace StreamingKit.Media.TS
                             PPSLen = (short)this.PPS.Length,
                             NTimetick = tick,
                             Offset = 0,
-                            NEncoder = MediaFrame.H264Encoder,
+                            Encoder = MediaFrame.H264Encoder,
                             Ex = 1,
                         };
                         mf.SetData(data);
@@ -355,7 +353,7 @@ namespace StreamingKit.Media.TS
                 AudioFormat = AudioFormat,
                 NTimetick = tick,
                 Offset = 0,
-                NEncoder = MediaFrame.AAC_Encoder,
+                Encoder = MediaFrame.AAC_Encoder,
                 Ex = (byte)(_firstAudioFrame ? 0 : 1),
                 MediaFrameVersion = 1,
             };
