@@ -1,5 +1,4 @@
 ﻿using Common.Streams;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +31,7 @@ namespace StreamingKit.Media.TS
 
         public int CRC_32;                            //: 32;  //CRC32校验码  /
 
-        public static byte[] GetBytes()
+        public byte[] GetBytes()
         {
             //暂时返回固定字节，因为暂时所使用的PMT只有一个，如果有多个或复杂应用的时候需要根据当前结构生成结果
 
@@ -190,7 +189,7 @@ namespace StreamingKit.Media.TS
         public int CRC_32;//                    : 32;   
 
 
-        public static byte[] GetBytes()
+        public byte[] GetBytes()
         {
             //返回固定字节，对应PMT_PID为256  因为暂时所使用频道只有一个，即只有一个音频流及视频流组成一个频道
 
@@ -212,7 +211,7 @@ namespace StreamingKit.Media.TS
         /// 监控只获取视频
         /// </summary>
         /// <returns></returns>
-        public static byte[] GetVideoBytes()
+        public byte[] GetVideoBytes()
         {
             return new byte[] { 0x02, 0xB0, 0x12, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x02, 0xF0, 0x00, 0x1B, 0xE1, 0x02, 0xF0, 0x00, 0xA1, 0x4F, 0xAD, 0xCC };
         }

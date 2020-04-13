@@ -103,8 +103,10 @@ namespace StreamingKit.Media.TS
 
         public byte[] GetBytes() {
             byte[] result = new byte[188];
-            var ms = new MemoryStream(result);
-            ms.Position = 0;
+            var ms = new MemoryStream(result)
+            {
+                Position = 0
+            };
             byte[] head = new byte[4];
             head[0] = 0x47;
             head[1] = (byte)((transport_error_indicator << 7) | (payload_unit_start_indicator << 6) | (transport_priority << 5) | (PID >> 8 & 0x001f));
@@ -211,7 +213,7 @@ namespace StreamingKit.Media.TS
         }
  
         public override String ToString() {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("sync_byte:{0}\r\n", sync_byte);
             sb.AppendFormat("transport_error_indicator:{0}\r\n", transport_error_indicator);
             sb.AppendFormat("payload_unit_start_indicator:{0}\r\n", payload_unit_start_indicator);

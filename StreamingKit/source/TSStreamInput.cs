@@ -9,10 +9,11 @@ using System.Threading;
 
 namespace StreamingKit.Media.TS
 {
-    public abstract class TSStreamInput : IDisposable {
+    public abstract class TSStreamInput : IDisposable
+    {
 
-        protected Boolean _isworking = false;
-        protected Boolean _tsHeadFlagFinded = false;
+        protected bool _isworking = false;
+        protected bool _tsHeadFlagFinded = false;
         protected TSProgramManage _tsms = new TSProgramManage();
         protected IOStream _ioStream = new IOStream();
         protected Thread _threadTSStreamResolve = null;
@@ -44,13 +45,17 @@ namespace StreamingKit.Media.TS
         //是否将帧时间戳重置为系统时间，该项必须启用EnabledFrameSequence才有效
         public bool ResetFrameTimetickForSystemTick { get; set; }
 
-        protected TSStreamInput(WSIPTVChannelInfo info) {
+        protected TSStreamInput(WSIPTVChannelInfo info)
+        {
             IPTVChannelInfo = info;
-            _tsms = new TSProgramManage();
-            _tsms.NewMediaFrame = NewMediaFrame;
+            _tsms = new TSProgramManage
+            {
+                NewMediaFrame = NewMediaFrame
+            };
         }
 
-        public virtual void Start() {
+        public virtual void Start()
+        {
             if (_isworking)
                 return;
             _isworking = true;
@@ -61,7 +66,8 @@ namespace StreamingKit.Media.TS
 
         }
 
-        public virtual void Stop() {
+        public virtual void Stop()
+        {
             if (!_isworking)
                 return;
             _isworking = false;
@@ -88,13 +94,15 @@ namespace StreamingKit.Media.TS
 
         protected abstract void OnStop();
 
-        protected virtual void OnDataReceived(byte[] data) {
+        protected virtual void OnDataReceived(byte[] data)
+        {
 
             if (!_isworking)
                 return;
 
-  
-            if (!_tsHeadFlagFinded) {
+
+            if (!_tsHeadFlagFinded)
+            {
                 var offset = FindTSHeadFlag(data);
                 data = data.Skip(offset).ToArray();
                 _tsHeadFlagFinded = true;
@@ -102,20 +110,24 @@ namespace StreamingKit.Media.TS
             _ioStream.Write(data);
         }
 
-        protected virtual void TSStreamResolveThread() {
+        protected virtual void TSStreamResolveThread()
+        {
 
             byte[] buffer_ts = new byte[188 * 2];   //两个包的空间，这里需要读取两个188字节的ts packet 而不是读取一个的原因是，
             //读取两个，当可以检验前后ts packet标识字段是否为0x47，如果不是则当前位置不是处理ts packet的开头，
             //则需要重新找到ts packet的头
             byte[] part_ts = null;//当检测到当前ts packet错误的时候 part_ts用来保存正确的ts packet中的一部分
-            while (_isworking) {
+            while (_isworking)
+            {
                 int readSize = 188 * 2 - (part_ts != null ? part_ts.Length : 0);//如果上一次没有残留数据则长度为 2个ts packet 的长度
-                if (_ioStream.Length >= readSize) {
+                if (_ioStream.Length >= readSize)
+                {
 
                     if (part_ts != null)
                         Array.Copy(part_ts, 0, buffer_ts, 0, part_ts.Length);//残留数据
                     _ioStream.Read(buffer_ts, buffer_ts.Length - readSize, readSize);//读取到缓冲区
-                    if (buffer_ts[0] != 0x47) {
+                    if (buffer_ts[0] != 0x47)
+                    {
                         //当前为非 ts packet的头，则找到下一个ts packet的头的偏移
                         int offset = FindTSHeadFlag(buffer_ts);
                         if (offset == -1)//没有找到头则返回起点
@@ -127,8 +139,9 @@ namespace StreamingKit.Media.TS
                         //新建一个临时的缓冲区，并将完整 的ts数据copy到这个临时缓冲区中
                         var tmp_buffer = new byte[188];
                         Array.Copy(buffer_ts, offset, tmp_buffer, 0, tmp_buffer.Length);
-                        try {
-                            TSPacket pack = new TSPacket() { ProgramManage = _tsms };
+                        try
+                        {
+                            var pack = new TSPacket() { ProgramManage = _tsms };
                             pack.SetBytes(tmp_buffer);
                             pack.Decode();
                             if (pack.PacketType == TSPacketType.DATA)
@@ -138,11 +151,15 @@ namespace StreamingKit.Media.TS
                         {
                             _DebugEx.Trace("TSStreamInput", "解析TS失败 1" + e.ToString());
                         }
-                    } else {
+                    }
+                    else
+                    {
                         //当前为 ts packet的头，则找到下一个ts packet的头的偏移
-                        try {
+                        try
+                        {
                             //判断前后两个ts packet是否开头均正确
-                            if (buffer_ts[0] == 0x47 && buffer_ts[188] == 0x47) {
+                            if (buffer_ts[0] == 0x47 && buffer_ts[188] == 0x47)
+                            {
                                 //将两个ts packet 分别解析
                                 var tmp_buffer = new byte[188];
                                 Array.Copy(buffer_ts, 0, tmp_buffer, 0, tmp_buffer.Length);
@@ -159,37 +176,47 @@ namespace StreamingKit.Media.TS
                                 if (pack.PacketType == TSPacketType.DATA)
                                     pack.ProgramManage.WriteMediaTSPacket(pack);
 
-                            } else {
+                            }
+                            else
+                            {
                                 _DebugEx.Trace("TSStreamInput", "TS Packet HeadFlag Error");
                                 throw new Exception("TS Packet HeadFlag Error");
                             }
 
-                        } catch (Exception e) {
-                            _DebugEx.Trace("TSStreamInput", "解析TS失败 2"+e.ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            _DebugEx.Trace("TSStreamInput", "解析TS失败 2" + e.ToString());
                         }
                         part_ts = null;
                     }
 
-                } else {
+                }
+                else
+                {
                     Thread.Sleep(10);
                 }
             }
         }
 
-        protected virtual int FindTSHeadFlag(byte[] data) {
+        protected virtual int FindTSHeadFlag(byte[] data)
+        {
             var ms = new MemoryStream(data);
-            TSProgramManage tsms = new TSProgramManage();
+            var tsms = new TSProgramManage();
             int pos = 0;
-            while (pos++ < data.Length) {
-            //    var index = ms.Position;
-                if (ms.ReadByte() == 0x47) {
+            while (pos++ < data.Length)
+            {
+                //    var index = ms.Position;
+                if (ms.ReadByte() == 0x47)
+                {
                     int offset = (int)ms.Position - 1;
                     if (!CheckOffsetIsPacketFlag(data, offset))
                         continue;
                     ms.Seek(-1, SeekOrigin.Current);
                     byte[] buf = new byte[188];
                     ms.Read(buf, 0, buf.Length);
-                    try {
+                    try
+                    {
                         TSPacket pack = new TSPacket() { ProgramManage = tsms };
                         pack.SetBytes(buf);
                         pack.Decode();
@@ -205,10 +232,13 @@ namespace StreamingKit.Media.TS
             return -1;
         }
 
-        protected virtual bool CheckOffsetIsPacketFlag(byte[] data, int offset) {
+        protected virtual bool CheckOffsetIsPacketFlag(byte[] data, int offset)
+        {
             //判断下一个包是否为为0x47开头，如果不是则当前位置不是一个packet的开头
-            while (offset < data.Length) {
-                if (data[offset] != 0x47) {
+            while (offset < data.Length)
+            {
+                if (data[offset] != 0x47)
+                {
                     return false;
                 }
                 offset += 188;
@@ -217,41 +247,59 @@ namespace StreamingKit.Media.TS
         }
 
 
-        private AQueue<MediaFrame> _qVideoMediaFrame = new AQueue<MediaFrame>();
+        private readonly AQueue<MediaFrame> _qVideoMediaFrame = new AQueue<MediaFrame>();
 
-        private AQueue<MediaFrame> _qAudioMediaFrame = new AQueue<MediaFrame>();
+        private readonly AQueue<MediaFrame> _qAudioMediaFrame = new AQueue<MediaFrame>();
 
 
-        protected virtual void NewMediaFrame(MediaFrame frame) {
-           
-            if (!EnabledFrameSequence) {
+        protected virtual void NewMediaFrame(MediaFrame frame)
+        {
+
+            if (!EnabledFrameSequence)
+            {
                 //不排序
                 OnNewMediaFrame(frame);
-            } else {
+            }
+            else
+            {
                 //排序
-                if (frame.nIsAudio == 0) {
+                if (frame.nIsAudio == 0)
+                {
                     _qVideoMediaFrame.Enqueue(frame);
-                } else if (frame.nIsAudio == 1) {
+                }
+                else if (frame.nIsAudio == 1)
+                {
                     _qAudioMediaFrame.Enqueue(frame);
                 }
-                while (true) {
-                    if (_qVideoMediaFrame.Count > 0 && _qAudioMediaFrame.Count > 0) {
+                while (true)
+                {
+                    if (_qVideoMediaFrame.Count > 0 && _qAudioMediaFrame.Count > 0)
+                    {
                         var v = _qVideoMediaFrame.Peek();
                         var a = _qAudioMediaFrame.Peek();
-                        if (v.nTimetick < a.nTimetick) {
+                        if (v.nTimetick < a.nTimetick)
+                        {
                             v = _qVideoMediaFrame.Dequeue();
                             OnNewMediaFrame(v);
-                        } else {
+                        }
+                        else
+                        {
                             a = _qAudioMediaFrame.Dequeue();
                             OnNewMediaFrame(a);
                         }
-                    } else if (_qVideoMediaFrame.Count > 5) {
-                       var  v = _qVideoMediaFrame.Dequeue();
+                    }
+                    else if (_qVideoMediaFrame.Count > 5)
+                    {
+                        var v = _qVideoMediaFrame.Dequeue();
                         OnNewMediaFrame(v);
-                    } else if (_qAudioMediaFrame.Count > 50) {
+                    }
+                    else if (_qAudioMediaFrame.Count > 50)
+                    {
                         var a = _qAudioMediaFrame.Dequeue();
                         OnNewMediaFrame(a);
-                    } else {
+                    }
+                    else
+                    {
                         break;
                     }
                 }
@@ -259,9 +307,10 @@ namespace StreamingKit.Media.TS
             }
 
         }
- 
 
-        protected void OnNewMediaFrame(MediaFrame frame) {
+
+        protected void OnNewMediaFrame(MediaFrame frame)
+        {
             if (!_isworking)
                 return;
 
@@ -269,17 +318,20 @@ namespace StreamingKit.Media.TS
                 _videoCount++;
             else
                 _audioCount++;
- 
+
             if (_firstTimetick == 0)
                 _firstTimetick = frame.nTimetick;
 
-            if (AutoResetFrameTimetick) {
+            if (AutoResetFrameTimetick)
+            {
 
-                if (frame.nTimetick < _firstTimetick) {
+                if (frame.nTimetick < _firstTimetick)
+                {
                     return;
                 }
 
-                if (frame.nTimetick == _firstTimetick && _lastTimetick != 0) {
+                if (frame.nTimetick == _firstTimetick && _lastTimetick != 0)
+                {
                     _tsms.Clean();
                     _qAudioMediaFrame.Clear();
                     _qVideoMediaFrame.Clear();
@@ -288,49 +340,57 @@ namespace StreamingKit.Media.TS
 
                 //重置时间戳
                 frame.nTimetick += _timetickOffset;
-                if (frame.nIsAudio == 0) {
-                  //  Console.WriteLine(frame.nTimetick - _lastTimetick);
+                if (frame.nIsAudio == 0)
+                {
+                    //  Console.WriteLine(frame.nTimetick - _lastTimetick);
                 }
 
             }
             _lastTimetick = frame.nTimetick;
- 
-       
 
-            if (ResetFrameTimetickForSystemTick) {
-                if (_firstFrameSystemTick == 0) {
+
+
+            if (ResetFrameTimetickForSystemTick)
+            {
+                if (_firstFrameSystemTick == 0)
+                {
                     _firstFrameTimetick = frame.nTimetick;
                     _firstFrameSystemTick = DateTime.Now.Ticks / 10000;
-                    
+
                 }
                 frame.nTimetick = (frame.nTimetick - _firstFrameTimetick) + _firstFrameSystemTick;
 
 
             }
-            if (frame.nIsKeyFrame == 1 && frame.nIsAudio == 0) {
+            if (frame.nIsKeyFrame == 1 && frame.nIsAudio == 0)
+            {
                 IsCanPlay = true;
-                if (IPTVChannelInfo != null) {
+                if (IPTVChannelInfo != null)
+                {
                     Log(string.Format("{0}   video:{1}  audio:{2}   ", IPTVChannelInfo.Name, _videoCount, _audioCount));
                 }
 
- 
+
             }
-            try {
-                if (ReceiveFrame != null)
-                    ReceiveFrame(frame);
-            } catch (Exception e) {
-               
+            try
+            {
+                ReceiveFrame?.Invoke(frame);
+            }
+            catch (Exception e)
+            {
+
                 _DebugEx.Trace(e);
                 throw;
             }
 
         }
- 
-        protected virtual void Log(string msg, params string[] ps) {
+
+        protected virtual void Log(string msg, params string[] ps)
+        {
             Console.WriteLine(String.Format(msg, ps));
         }
 
-         public void Dispose() 
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -340,5 +400,5 @@ namespace StreamingKit.Media.TS
 
 
     }
- 
+
 }

@@ -58,12 +58,10 @@ namespace mp4parser.h264.model
             }
         }
 
-        //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-        //ORIGINAL LINE: public static ScalingList read(mp4parser.h264.read.CAVLCReader is, int sizeOfScalingList) throws java.io.IOException
         public static ScalingList read(CAVLCReader @is, int sizeOfScalingList)
         {
 
-            ScalingList sl = new ScalingList();
+            var sl = new ScalingList();
             sl.scalingList = new int[sizeOfScalingList];
             int lastScale = 8;
             int nextScale = 8;

@@ -61,7 +61,7 @@ namespace mp4parser.h264.model
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder("AspectRatio{");
+			var sb = new StringBuilder("AspectRatio{");
 			sb.Append("value=").Append(value);
 			sb.Append('}');
 			return sb.ToString();
