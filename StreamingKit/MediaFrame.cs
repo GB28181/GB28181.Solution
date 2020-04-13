@@ -397,8 +397,8 @@ namespace StreamingKit
             mFrame.IsKeyFrame = 1;
             mFrame.Width = cfg.Width;
             mFrame.Height = cfg.Height;
-            mFrame.SPSLen = cfg.SPS == null ? 0 : cfg.SPS.Length;
-            mFrame.PPSLen = cfg.PPS == null ? 0 : cfg.PPS.Length;
+            mFrame.SPSLen = cfg.GetSPS() == null ? 0 : cfg.GetSPS().Length;
+            mFrame.PPSLen = cfg.GetPPS() == null ? 0 : cfg.GetPPS().Length;
             mFrame.Encoder = cfg.encoder;
             return mFrame;
         }

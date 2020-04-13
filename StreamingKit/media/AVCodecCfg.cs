@@ -46,24 +46,48 @@ namespace StreamingKit.Codec
         public int FrameRate { get; set; }
         public int CameraId { get; set; } = -1;// 0为后置摄像头，1为前置摄像头
         public int VideoBitRate { get; set; } = 1024 * 640;
-        public byte[] SPS { get; set; }
-        public byte[] PPS { get; set; }
+
         public string ProfileLevel { get; set; }
         public string StrSPS { get; set; }
         public string StrPPS { get; set; }
 
+        private byte[] sPS;
+
+        public byte[] GetSPS()
+        {
+            return sPS;
+        }
+
+        public void SetSPS(byte[] value)
+        {
+            sPS = value;
+        }
+
+        private byte[] pPS;
+
+        public byte[] GetPPS()
+        {
+            return pPS;
+        }
+
+        public void SetPPS(byte[] value)
+        {
+            pPS = value;
+        }
+
+
         // 获取H264的SPS PPS
         public byte[] GetSPSPPSBytes()
         {
-            if (PPS == null || SPS == null || ProfileLevel == null)
+            if (GetPPS() == null || GetSPS() == null || ProfileLevel == null)
                 throw new Exception();
             var ms = new MemoryStream();
             var baoStream = new BinaryWriter(ms);
 
             baoStream.Write(new byte[] { 0, 0, 0, 1 });
-            baoStream.Write(SPS);
+            baoStream.Write(GetSPS());
             baoStream.Write(new byte[] { 0, 0, 0, 1 });
-            baoStream.Write(PPS);
+            baoStream.Write(GetPPS());
             return ms.ToArray();
         }
 
