@@ -21,9 +21,9 @@ namespace StreamingKit.Media.TS
         private IOMemoryStream ms = new IOMemoryStream();
         private Boolean _firstAudioFrame = true;
 
-        private List<PESPacket> _listAudioPES = new List<PESPacket>();
-        private List<PESPacket> _listVideoPES = new List<PESPacket>();
-        private AQueue<MediaFrame> _queueFrame = new AQueue<MediaFrame>();
+        private readonly List<PESPacket> _listAudioPES = new List<PESPacket>();
+        private readonly List<PESPacket> _listVideoPES = new List<PESPacket>();
+        private readonly AQueue<MediaFrame> _queueFrame = new AQueue<MediaFrame>();
         private Thread _analyzeThead = null;
         private bool _isWorking = false;
 
@@ -233,7 +233,7 @@ namespace StreamingKit.Media.TS
                     if (this.SPS != null && this.PPS != null) {
 
                         var sps = mp4parser.h264.model.SeqParameterSet.read(new MemoryStream(this.SPS, 1, this.SPS.Length - 1));
-                        var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(this.PPS, 1, this.PPS.Length - 1));
+                       // var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(this.PPS, 1, this.PPS.Length - 1));
                         Width = (sps.pic_width_in_mbs_minus1 + 1) * 16 - 2 * sps.frame_crop_left_offset - 2 * sps.frame_crop_right_offset;
                         Height = (sps.pic_height_in_map_units_minus1 + 1) * 16 - 2 * sps.frame_crop_top_offset - 2 * sps.frame_crop_bottom_offset;
                     }
@@ -331,92 +331,7 @@ namespace StreamingKit.Media.TS
 
         #region 辅助类
 
-        /// <summary>
-        /// 非线程安全
-        /// </summary>
-        public class IOMemoryStream : MemoryStream {
-            private long _lastReadPosition = 0;
-            private long _lastWritePosition = 0;
-            private readonly object _sync = new object();
-            //一定注意这里是new
-            public new long Position { get { return base.Position; } set { throw new Exception(""); } }
-            public long ReadPosition { get { return _lastReadPosition; } }
-            public IOMemoryStream() {
-            }
 
-            public IOMemoryStream(byte[] data) {
-                Write(data, 0, data.Length);
-
-            }
-
-            public override int Read(byte[] buffer, int offset, int count) {
-
-                while (Length - _lastReadPosition < count) {
-                    ThreadEx.Sleep();
-                }
-
-                int read = 0;
-                lock (_sync) {
-                    base.Position = _lastReadPosition;
-                    read = base.Read(buffer, offset, count);
-                    _lastReadPosition = Position;
-                }
-                return read;
-            }
-
-            public override int ReadByte() {
-                try {
-                    while (Length - _lastReadPosition < 1)
-                        ThreadEx.Sleep();
-
-                    int read = 0;
-                    lock (_sync) {
-                        base.Position = _lastReadPosition;
-                        read = base.ReadByte();
-                        _lastReadPosition = Position;
-                    }
-                    return read;
-                } catch (Exception)
-                {
-                    throw;
-                }
-            }
-
-            public override void Write(byte[] buffer, int offset, int count) {
-                lock (_sync) {
-                    base.Position = _lastWritePosition;
-                    base.Write(buffer, offset, count);
-                    _lastWritePosition = Position;
-                }
-            }
-
-            public override void WriteByte(byte value) {
-                lock (_sync) {
-                    base.Position = _lastWritePosition;
-                    base.WriteByte(value);
-                    _lastWritePosition = Position;
-                }
-
-            }
-
-            public override long Seek(long offset, SeekOrigin loc) {
-                lock (_sync) {
-                    long pos = base.Seek(offset, loc);
-                    _lastReadPosition = Position;
-                    return pos;
-                }
-            }
-
-            public IOMemoryStream Tolave() {
-                lock (_sync) {
-                    var bytes = new byte[Length - _lastReadPosition];
-                    Read(bytes, 0, bytes.Length);
-                    return new IOMemoryStream(bytes);
-                }
-            }
-
-        }
- 
         public class PSMap : IByteObj {
             public int start_code;                                 //32bit
             public ushort length;
@@ -424,8 +339,10 @@ namespace StreamingKit.Media.TS
             public PSMap(Stream stream) {
                 byte[] buffer = new byte[6];
                 stream.Read(buffer, 0, buffer.Length);
-                BitStream bs = new BitStream(buffer);
-                bs.Position = 0;
+                BitStream bs = new BitStream(buffer)
+                {
+                    Position = 0
+                };
                 bs.Read(out start_code, 0, 32);
                 bs.Read(out length, 0, 16);
                 body = new byte[length];
@@ -448,8 +365,10 @@ namespace StreamingKit.Media.TS
             public PSSystemHeader(Stream stream) {
                 byte[] buffer = new byte[6];
                 stream.Read(buffer, 0, buffer.Length);
-                BitStream bs = new BitStream(buffer);
-                bs.Position = 0;
+                var bs = new BitStream(buffer)
+                {
+                    Position = 0
+                };
                 bs.Read(out start_code, 0, 32);
                 bs.Read(out header_length, 0, 16);
                 body = new byte[header_length];
@@ -463,7 +382,8 @@ namespace StreamingKit.Media.TS
             }
         }
 
-        public class PSPacketHeader : IByteObj {
+        public class PSPacketHeader : IByteObj
+        {
             public int start_code;                                  //32bit  0x000000BA
             public byte marker1;                                    //2bit
             public byte system_clock1;                              //3bit
@@ -483,8 +403,10 @@ namespace StreamingKit.Media.TS
             public PSPacketHeader(Stream stream) {
                 byte[] buffer = new byte[14];
                 stream.Read(buffer, 0, buffer.Length);
-                BitStream bs = new BitStream(buffer);
-                bs.Position = 0;
+                var bs = new BitStream(buffer)
+                {
+                    Position = 0
+                };
                 bs.Read(out start_code, 0, 32);
                 bs.Read(out marker1, 0, 2);
                 bs.Read(out system_clock1, 0, 3);

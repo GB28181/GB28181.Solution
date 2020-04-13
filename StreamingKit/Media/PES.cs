@@ -8,15 +8,11 @@ using System.Net;
 namespace StreamingKit.Media.TS
 {
     //http://www.360doc.com/content/13/0512/11/532901_284774233.shtml
-
     //http://blog.csdn.net/ccskyer/article/details/7899991
-
-
     //http://blog.csdn.net/feixiaku/article/details/39119453
     /*TS流，是基于packet的位流格式，每个packet是188个字节或者204个字节（一般是188字节，204字节格式是在188字节的packet后面加上16字节的CRC数据，其他格式相同），
     解析TS流，先解析每个packet ，然后从一个packet中，解析出PAT的PID，根据PID找到PAT包，
     然后从PAT包中解析出PMT的PID，根据PID找到PMT包，在从PMT包中解析出Video和Audio（也有的包括Teletext和EPG）的PID。然后根据PID找出相应的包。*/
-
     //http://blog.163.com/benben_168/blog/static/185277057201152125757560/
 
 
@@ -25,7 +21,6 @@ namespace StreamingKit.Media.TS
         public byte[] Packet_Start_Code_Prefix;     // 3 bytes
         public byte Stream_ID;					    // 1 byte
         public ushort PES_Packet_Length;			// 2 bytes
-
         public byte[] PES_Header_Flags;			    // 2 bytes = "10"(2 biti) + PES_H_F(14 biti)
         public byte PES_Header_Length;			    // 1 byte
         public byte[] PES_Header_Fields;			// Variable length
@@ -283,16 +278,15 @@ namespace StreamingKit.Media.TS
         public long GetSCR()
         {
 
-            BitStream bb = new BitStream();
+            var bb = new BitStream();
             bb.Write(0, 0, 64 - 33);
             bb.Write(system_clock1, 0, 3);
             bb.Write(system_clock2, 0, 15);
             bb.Write(system_clock3, 0, 15);
             bb.Position = 32;
-            long scr = 0;
-            bb.Read(out scr, 0, 32);
+            bb.Read(out long scr, 0, 32);
             bb.Close();
-            scr = scr / 90;
+            scr /= 90;
             return scr;
         }
     }

@@ -10,7 +10,8 @@ namespace StreamingKit.Media.TS
 
     #region PAT
 
-    public class TS_PAT {
+    public class TS_PAT
+    {
         public byte table_id;                           //: 8;固定为0x00 ，标志是该表是PAT表  
         public byte section_syntax_indicator;           //: 1; //段语法标志位，固定为1  
         public byte zero;                               //: 1; //0  
@@ -29,10 +30,11 @@ namespace StreamingKit.Media.TS
         public byte reserved_3;                         //: 3; // 保留位  
         public short network_PID;                       //: 13; /网络信息表（NIT）的PID,节目号为0时对应的PID为network_PID  
 
-        public Int32 CRC_32;                            //: 32;  //CRC32校验码  /
+        public int CRC_32;                            //: 32;  //CRC32校验码  /
 
-        public byte[] GetBytes() {
-            //这里写死，因为暂时所使用的PMT只有一个，如果有多个或复杂应用的时候需要根据当前结构生成结果
+        public static byte[] GetBytes()
+        {
+            //暂时返回固定字节，因为暂时所使用的PMT只有一个，如果有多个或复杂应用的时候需要根据当前结构生成结果
 
             //以下表示PMT有一个，PMT_PID为256
             return new byte[] { 0x00, 0xB0, 0x0D, 0x00, 0x01, 0xC1, 0x00, 0x00, 0x00, 0x01, 0xE1, 0x00, 0xE8, 0xF9, 0x5E, 0x7D };
@@ -57,10 +59,13 @@ namespace StreamingKit.Media.TS
             //bs.Write(version_number, 0, 5);
         }
 
-        public void SetBytes(byte[] buffer) {
-            buffer=buffer.Skip(1).ToArray();
-            BitStream bs = new BitStream(buffer);
-            bs.Position = 0;
+        public void SetBytes(byte[] buffer)
+        {
+            buffer = buffer.Skip(1).ToArray();
+            BitStream bs = new BitStream(buffer)
+            {
+                Position = 0
+            };
             bs.Read(out table_id, 0, 8);                           //: 8;固定为0x00 ，标志是该表是PAT表  
             bs.Read(out section_syntax_indicator, 0, 1);           //: 1; //段语法标志位，固定为1  
             bs.Read(out zero, 0, 1);                               //: 1; //0  
@@ -69,24 +74,29 @@ namespace StreamingKit.Media.TS
 
             bs.Read(out transport_stream_id, 0, 16);               // : 16; //该传输流的ID，区别于一个网络中其它多路复用的流  
             bs.Read(out reserved_2, 0, 2);                        //: 2;// 保留位  
-            bs.Read(out  version_number, 0, 5);                     //: 5; //范围0-31，表示PAT的版本号  
+            bs.Read(out version_number, 0, 5);                     //: 5; //范围0-31，表示PAT的版本号  
             bs.Read(out current_next_indicator, 0, 1);             //: 1; //发送的PAT是当前有效还是下一个PAT有效  
-            bs.Read(out  section_number, 0, 8);                     //: 8; //分段的号码。PAT可能分为多段传输，第一段为00，以后每个分段加1，最多可能有256个分段  
-            bs.Read(out  last_section_number, 0, 8);                //: 8;  //最后一个分段的号码  
+            bs.Read(out section_number, 0, 8);                     //: 8; //分段的号码。PAT可能分为多段传输，第一段为00，以后每个分段加1，最多可能有256个分段  
+            bs.Read(out last_section_number, 0, 8);                //: 8;  //最后一个分段的号码  
 
-            List<TS_PAT_Program> programList = new List<TS_PAT_Program>();
-            int n = 0;
-            for (n = 0; n < section_length - 12; n += 4) {
+            var programList = new List<TS_PAT_Program>();
+            int n;
+            for (n = 0; n < section_length - 12; n += 4)
+            {
                 program_num = (byte)(buffer[8 + n] << 8 | buffer[9 + n]);
                 reserved_3 = (byte)(buffer[10 + n] >> 5); //3 保留位  
                 network_PID = 0x00;
-                if (program_num == 0x00) {
+                if (program_num == 0x00)
+                {
                     network_PID = (short)((buffer[10 + n] & 0x1F) << 8 | buffer[11 + n]);//: 13 网络信息表（NIT）的PID,节目号为0时对应的PID为network_PID  
-                    var TS_network_Pid = network_PID; //记录该TS流的网络PID  
-                } else {
-                    TS_PAT_Program PAT_program = new TS_PAT_Program();
-                    PAT_program.program_map_PID = (short)((buffer[10 + n] & 0x1F) << 8 | buffer[11 + n]);
-                    PAT_program.program_number = program_num;
+                }
+                else
+                {
+                    var PAT_program = new TS_PAT_Program
+                    {
+                        program_map_PID = (short)((buffer[10 + n] & 0x1F) << 8 | buffer[11 + n]),
+                        program_number = program_num
+                    };
                     programList.Add(PAT_program);
 
                     //TS_program.push_back(PAT_program);//向全局PAT节目数组中添加PAT节目信息       
@@ -102,7 +112,8 @@ namespace StreamingKit.Media.TS
 
         }
 
-        public override String ToString() {
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder();
 
 
@@ -125,7 +136,8 @@ namespace StreamingKit.Media.TS
 
             sb.AppendFormat("CRC_32:{0}\r\n", CRC_32);
             sb.AppendFormat("PATProgramList:{0}\r\n", PATProgramList.Count);
-            foreach (var item in PATProgramList) {
+            foreach (var item in PATProgramList)
+            {
                 sb.AppendFormat("   program_map_PID:{0}\r\n", item.program_map_PID);
                 sb.AppendFormat("   program_number:{0}\r\n", item.program_number);
 
@@ -137,7 +149,8 @@ namespace StreamingKit.Media.TS
 
         }
 
-        public struct TS_PAT_Program {
+        public struct TS_PAT_Program
+        {
             public short program_number;//:16; //节目号
             public byte reserved_3;
             public short program_map_PID;//:13;   //节目映射表的PID，节目号大于0时对应的PID，每个节目对应一个
@@ -149,7 +162,8 @@ namespace StreamingKit.Media.TS
 
     #region PMT
 
-    public class TS_PMT {
+    public class TS_PMT
+    {
         public byte table_id;//                       : 8; //固定为0x02, 表示PMT表  
         public byte section_syntax_indicator;//        : 1; //固定为0x01  
         public byte zero;//                           : 1; //0x01  
@@ -176,8 +190,9 @@ namespace StreamingKit.Media.TS
         public int CRC_32;//                    : 32;   
 
 
-        public byte[] GetBytes() {
-            //这里写死，对应PMT_PID为256  因为暂时所使用频道只有一个，即只有一个音频流及视频流组成一个频道
+        public static byte[] GetBytes()
+        {
+            //返回固定字节，对应PMT_PID为256  因为暂时所使用频道只有一个，即只有一个音频流及视频流组成一个频道
 
             //以下表示频道只有一个，PMT_PID为256  
             //音频流AAC PID为257   ES流描述长度为0
@@ -188,7 +203,7 @@ namespace StreamingKit.Media.TS
             //return new byte[] { 0x02, 0xB0, 0x12, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x02, 0xF0, 0x00, 0x1B, 0xE1, 0x02, 0xF0, 0x00, 0xA1, 0x4F, 0xAD, 0xCC };
 
             //音视频
-           return new byte[] { 0x02, 0xB0, 0x17, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x02, 0xF0, 0x00, 0x1B, 0xE1, 0x02, 0xF0, 0x00, 0x0F, 0xE1, 0x01, 0xF0, 0x00, 0x4D, 0x8E, 0xB1, 0xB2 };
+            return new byte[] { 0x02, 0xB0, 0x17, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x02, 0xF0, 0x00, 0x1B, 0xE1, 0x02, 0xF0, 0x00, 0x0F, 0xE1, 0x01, 0xF0, 0x00, 0x4D, 0x8E, 0xB1, 0xB2 };
 
 
 
@@ -197,12 +212,13 @@ namespace StreamingKit.Media.TS
         /// 监控只获取视频
         /// </summary>
         /// <returns></returns>
-        public byte[] GetVideoBytes()
+        public static byte[] GetVideoBytes()
         {
             return new byte[] { 0x02, 0xB0, 0x12, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x02, 0xF0, 0x00, 0x1B, 0xE1, 0x02, 0xF0, 0x00, 0xA1, 0x4F, 0xAD, 0xCC };
         }
 
-        public void SetBytes(byte[] buffer) {
+        public void SetBytes(byte[] buffer)
+        {
             buffer = buffer.Skip(1).ToArray();
             table_id = buffer[0];
             section_syntax_indicator = (byte)(buffer[1] >> 7);
@@ -217,14 +233,10 @@ namespace StreamingKit.Media.TS
             last_section_number = buffer[7];
             reserved_3 = (byte)(buffer[8] >> 5);
             PCR_PID = (ushort)(((buffer[8] << 8) | buffer[9]) & 0x1FFF);
-
-            var PCRID = PCR_PID;
-
             reserved_4 = (byte)(buffer[10] >> 4);
             program_info_length = (ushort)((buffer[10] & 0x0F) << 8 | buffer[11]);
             // Get CRC_32  
-            int len_crc = 0;
-            len_crc = section_length + 3;
+            int len_crc = section_length + 3;
             CRC_32 = (buffer[len_crc - 4] & 0x000000FF) << 24
                       | (buffer[len_crc - 3] & 0x000000FF) << 16
                       | (buffer[len_crc - 2] & 0x000000FF) << 8
@@ -235,22 +247,27 @@ namespace StreamingKit.Media.TS
             if (program_info_length != 0)
                 pos += program_info_length;
 
-            List<TS_PMT_Stream> list = new List<TS_PMT_Stream>();
+            var list = new List<TS_PMT_Stream>();
 
             // Get stream type and PID      
-            for (; pos <= (section_length + 2) - 4; ) {
-                TS_PMT_Stream pmt_stream = new TS_PMT_Stream();
-                pmt_stream.stream_type = buffer[pos];
-                reserved_5 = (byte)(buffer[pos + 1] >> 5);
-                pmt_stream.elementary_PID = (ushort)(((buffer[pos + 1] << 8) | buffer[pos + 2]) & 0x1FFF);
-                reserved_6 = (byte)(buffer[pos + 3] >> 4);
-                pmt_stream.ES_info_length = (ushort)((buffer[pos + 3] & 0x0F) << 8 | buffer[pos + 4]);
+            for (; pos <= (section_length + 2) - 4;)
+            {
+                var pmt_stream = new TS_PMT_Stream
+                {
+                    stream_type = buffer[pos],
+                    elementary_PID = (ushort)(((buffer[pos + 1] << 8) | buffer[pos + 2]) & 0x1FFF),
+                    ES_info_length = (ushort)((buffer[pos + 3] & 0x0F) << 8 | buffer[pos + 4]),
+                    descriptor = 0x00
+                };
 
-                pmt_stream.descriptor = 0x00;
-                if (pmt_stream.ES_info_length != 0) {
+                reserved_5 = (byte)(buffer[pos + 1] >> 5);
+                reserved_6 = (byte)(buffer[pos + 3] >> 4);
+                if (pmt_stream.ES_info_length != 0)
+                {
                     pmt_stream.descriptor = buffer[pos + 5];
 
-                    for (int len = 2; len <= pmt_stream.ES_info_length; len++) {
+                    for (int len = 2; len <= pmt_stream.ES_info_length; len++)
+                    {
                         pmt_stream.descriptor = (ushort)(pmt_stream.descriptor << 8 | buffer[pos + 4 + len]);
                     }
                     pos += pmt_stream.ES_info_length;
@@ -261,7 +278,8 @@ namespace StreamingKit.Media.TS
             PMTStreamList = list;
         }
 
-        public override String ToString() {
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder();
 
             sb.AppendFormat("table_id:{0}\r\n", table_id);
@@ -284,7 +302,8 @@ namespace StreamingKit.Media.TS
             sb.AppendFormat("reserved_5:{0}\r\n", reserved_5);
             sb.AppendFormat("CRC_32:{0}\r\n", CRC_32);
             sb.AppendFormat("PMTStreamList:{0}\r\n", PMTStreamList.Count);
-            foreach (var item in PMTStreamList) {
+            foreach (var item in PMTStreamList)
+            {
                 sb.AppendFormat("   stream_type:{0}  //27=h264 15=aac \r\n", item.stream_type);
                 sb.AppendFormat("   elementary_PID:{0}\r\n", item.elementary_PID);
                 sb.AppendFormat("   descriptor:{0}\r\n", item.descriptor);
@@ -296,11 +315,12 @@ namespace StreamingKit.Media.TS
 
         }
 
-        public struct TS_PMT_Stream {
-            public byte stream_type;//                      : 8; //指示特定PID的节目元素包的类型。该处PID由elementary PID指定  
-            public ushort elementary_PID;//                   : 13; //该域指示TS包的PID值。这些TS包含有相关的节目元素  
-            public ushort ES_info_length;//                    : 12; //前两位bit为00。该域指示跟随其后的描述相关节目元素的byte数  
-            public ushort descriptor;// 8
+        public struct TS_PMT_Stream
+        {
+            public byte stream_type { get; set; } //                      : 8; //指示特定PID的节目元素包的类型。该处PID由elementary PID指定  
+            public ushort elementary_PID { get; set; }//                   : 13; //该域指示TS包的PID值。这些TS包含有相关的节目元素  
+            public ushort ES_info_length { get; set; }//                    : 12; //前两位bit为00。该域指示跟随其后的描述相关节目元素的byte数  
+            public ushort descriptor { get; set; }// 8
         }
     }
 

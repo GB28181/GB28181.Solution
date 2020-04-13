@@ -31,7 +31,8 @@ namespace StreamingKit.Media
         }
         public byte[] AACData { get; private set; }
         public byte[] ADTSData { get; private set; }
-        public byte[] FrameData {
+        public byte[] FrameData
+        {
             get {   
                 var r = new byte[AACData.Length + ADTSData.Length];
              
@@ -46,7 +47,7 @@ namespace StreamingKit.Media
         }
 
         public AAC_ADTS(Stream ms) {
-            var br = new System.IO.BinaryReader(ms);
+            var br = new BinaryReader(ms);
             var bs = br.ReadBytes(7);
             init(bs);
             if (Protection == 0)//还有2byte校验

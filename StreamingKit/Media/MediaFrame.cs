@@ -301,7 +301,7 @@ namespace StreamingKit
         public static int AAC_Encoder = GetGeneralEncoder("AAC_");
         public static int PCM_Encoder = GetGeneralEncoder("PCM_");
 
-        public static int GetGeneralEncoder(String name)
+        public static int GetGeneralEncoder(string name)
         {
             name = name.ToUpper();
             byte[] buf = Encoding.UTF8.GetBytes(name);
@@ -333,7 +333,7 @@ namespace StreamingKit
         }
         public static int ConverterToFFMPEGCoderID(int id)
         {
-            var name = MediaFrame.GetGeneralEncodecName(id);
+            var name = GetGeneralEncodecName(id);
             if (name.EqIgnoreCase("H264"))
                 return (int)AVCode.CODEC_ID_H264;
             if (name.EqIgnoreCase("H263"))

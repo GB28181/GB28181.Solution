@@ -7,35 +7,40 @@ namespace StreamingKit.Codec
 {
 
     //编码配置基类
-    public class CodecCfgBase {
+    public class CodecCfgBase
+    {
         public int encoder = -1;// 通用编码代号
-        public String encodeName = null;// 通用编码名称
+        public string encodeName = null;// 通用编码名称
 
-        public Dictionary<String, Object> Params = new Dictionary<String, Object>();
+        public Dictionary<string, object> Params = new Dictionary<string, object>();
 
         // 设置编码名称
 
-        public void SetEncoder(String name) {
+        public void SetEncoder(string name)
+        {
             name = name.ToUpper();
             encodeName = name;
             encoder = GetGeneralEncoder(name);
         }
 
         // 获取通用编码代号
-        public static int GetGeneralEncoder(String name) {
+        public static int GetGeneralEncoder(string name)
+        {
             byte[] buf = Encoding.UTF8.GetBytes(name);
-            return BitConverter.ToInt32(buf,0);
+            return BitConverter.ToInt32(buf, 0);
         }
 
         // 获取通用的编码名称
-        public static String GetGeneralEncodecName(int generalEncoder) {
-            byte[] buf = BitConverter.GetBytes(generalEncoder);
+        public static string GetGeneralEncodecName(int generalEncoder)
+        {
+            var buf = BitConverter.GetBytes(generalEncoder);
             return BitConverter.ToString(buf);
         }
     }
 
 
-    public class VideoEncodeCfg : CodecCfgBase {
+    public class VideoEncodeCfg : CodecCfgBase
+    {
         public int width;
         public int height;
         public int frameRate;
@@ -43,18 +48,19 @@ namespace StreamingKit.Codec
         public int videoBitRate = 1024 * 640;
         public byte[] SPS;
         public byte[] PPS;
-        public String profileLevel;
-        public String strSPS;
-        public String strPPS;
-     
+        public string profileLevel;
+        public string strSPS;
+        public string strPPS;
+
 
         // 获取H264的SPS PPS
-        public byte[] GetSPSPPSBytes() {
-            if (this.PPS == null || this.SPS == null || this.profileLevel == null)
+        public byte[] GetSPSPPSBytes()
+        {
+            if (PPS == null || SPS == null || profileLevel == null)
                 throw new Exception();
             var ms = new MemoryStream();
             var baoStream = new BinaryWriter(ms);
- 
+
             baoStream.Write(new byte[] { 0, 0, 0, 1 });
             baoStream.Write(SPS);
             baoStream.Write(new byte[] { 0, 0, 0, 1 });
@@ -64,12 +70,13 @@ namespace StreamingKit.Codec
         }
 
 
-      
+
     }
 
 
 
-    public class AudioEncodeCfg : CodecCfgBase {
+    public class AudioEncodeCfg : CodecCfgBase
+    {
         public int micId = 0;
         public int frequency = 8000;// 采样
         public int format = 16;// 位元
@@ -80,13 +87,14 @@ namespace StreamingKit.Codec
 
 
 
-        public static AudioEncodeCfg GetDefault() {
+        public static AudioEncodeCfg GetDefault()
+        {
             AudioEncodeCfg r = new AudioEncodeCfg();
             r.SetEncoder("AAC_");
             r.frequency = 32000;
             r.format = 16;
             r.channel = 1;
-            r.samples = 1024*2;
+            r.samples = 1024 * 2;
             r.micId = 0;
             return r;
         }
