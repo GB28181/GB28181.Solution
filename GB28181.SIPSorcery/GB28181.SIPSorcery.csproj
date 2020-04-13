@@ -10,6 +10,7 @@
     <AssemblyName>GB28181.SIPSorcery</AssemblyName>
     <TargetFramework>netstandard2.1</TargetFramework>
     <FileAlignment>512</FileAlignment>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">

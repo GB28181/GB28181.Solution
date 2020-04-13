@@ -16,13 +16,13 @@ namespace GB28181.SIPSorcery.SIP
 {
     public class SIPEventPresenceTuple
     {
-        private static readonly string m_pidfXMLNS = SIPEventConsts.PIDF_XML_NAMESPACE_URN;
+        private const string m_pidfXMLNS = SIPEventConsts.PIDF_XML_NAMESPACE_URN;
 
-        public string ID;
-        public SIPEventPresenceStateEnum Status;
-        public SIPURI ContactURI;
-        public decimal ContactPriority = Decimal.Zero;
-        public string AvatarURL;
+        public string ID { get; set; }
+        public SIPEventPresenceStateEnum Status { get; set; }
+        public SIPURI ContactURI { get; set; }
+        public decimal ContactPriority { get; set; } = decimal.Zero;
+        public string AvatarURL { get; set; }
 
         private SIPEventPresenceTuple()
         {}

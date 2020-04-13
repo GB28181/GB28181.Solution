@@ -54,7 +54,7 @@ namespace SIPSorcery.GB28181.Persistence
         public override event SIPAssetDelegate<T> Updated;
         public override event SIPAssetDelegate<T> Deleted;
         public override event SIPAssetsModifiedDelegate Modified;
-        private static ILog logger = AppState.logger;
+        //private static ILog logger = AppState.logger;
         protected DbProviderFactory m_dbProviderFactory;
         protected string m_dbConnectionStr;
         protected ObjectMapper<T> m_objectMapper;
