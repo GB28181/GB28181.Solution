@@ -251,7 +251,7 @@ namespace SS.ClientBase.Media {
                 if (!CheckInit(frame))
                     return;
 
-                byte[] yuv = _ffimp.VideoDec(frame.Data, _yuvDataBuffer);
+                byte[] yuv = _ffimp.VideoDec(frame.GetData(), _yuvDataBuffer);
 
                 //_drawHandle.BeginInvoke(frame.Data, null, null);
                 DateTime db = DateTime.Now;
@@ -423,13 +423,15 @@ namespace SS.ClientBase.Media {
                 if (!CheckInit(frame))
                     continue;
                 var bufferData = new byte[_yuvDataBuffer.Length];
-                byte[] yuv = _ffimp.VideoDec(frame.Data, bufferData);
+                byte[] yuv = _ffimp.VideoDec(frame.GetData(), bufferData);
                 if (yuv != null) {
-                    yuvStack.Push(new MediaFrame() {
+                    var mf = new MediaFrame()
+                    {
                         NTimetick = frame.NTimetick,
-                        Data = yuv,
                         Size = yuv.Length,
-                    });
+                    };
+                    mf.SetData(yuv);
+                    yuvStack.Push(mf);
                 }
             }
             if (!_PlayBackwardResetPos)
@@ -451,7 +453,7 @@ namespace SS.ClientBase.Media {
                     while (stack.Count > 0 && !_PlayBackwardResetPos) {
                         var frame = stack.Pop();
                         //_drawHandle.BeginInvoke(frame.Data, null, null);
-                        _drawHandle(frame.Data);
+                        _drawHandle(frame.GetData());
                         if (lastTick == 0)
                             lastTick = frame.NTimetick;
                         int sleep = (int)(lastTick - frame.NTimetick);

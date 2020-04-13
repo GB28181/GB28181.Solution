@@ -804,12 +804,11 @@ namespace SS.ClientBase.Codec
                     IsKeyFrame = (byte)(_x264.IsKeyFrame() ? 1 : 0),
                     MediaFrameVersion = 0,
                     PPSLen = 0,
-                    SPSLen = 0,
-                    Data = enc,
+                    SPSLen = 0,                   
                     Size = enc.Length,
                     NTimetick = Environment.TickCount,
                 };
-
+                mf.SetData(enc);
                 if (mf.IsKeyFrame == 1)
                 {
                     var sps_pps = SS.ClientBase.Media.MediaSteamConverter.GetSPS_PPS(enc);
@@ -871,10 +870,8 @@ namespace SS.ClientBase.Codec
                 PPSLen = mf.PPSLen,
                 SPSLen = mf.SPSLen,
                 NTimetick = mf.NTimetick,
-                Data = new byte[0],
                 Size = 0,
             };
-
             var resetCodecMediaFrame = MediaFrame.CreateCommandMediaFrame(false, MediaFrameCommandType.ResetCodec, infoMediaFrame.GetBytes());
             return resetCodecMediaFrame;
         }

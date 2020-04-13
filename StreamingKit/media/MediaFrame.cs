@@ -46,7 +46,7 @@ namespace StreamingKit
         /// <summary>
         /// 编码器名称
         /// </summary>
-        public string EncodeName { get { return GetGeneralEncodecName(NEncoder); } }
+        public string EncodeName => GetGeneralEncodecName(NEncoder);
 
         /// <summary>
         /// H264里面的SPS长度
@@ -80,12 +80,36 @@ namespace StreamingKit
         /// 采集大小,speex 一般为160
         /// </summary>
         public short Samples { get; set; }
+
+        private byte[] data = Array.Empty<byte>();
+
         /// <summary>
         /// 媒体数据
         /// </summary>
-        public byte[] Data { get; set; } = Array.Empty<byte>();
+        public byte[] GetData()
+        {
+            return data;
+        }
 
-        public byte[] SerializableData { get; set; }//序列化数据
+        /// <summary>
+        /// 媒体数据
+        /// </summary>
+        public void SetData(byte[] value)
+        {
+            data = value;
+        }
+
+        private byte[] serializableData;
+
+        public byte[] GetSerializableData()
+        {
+            return serializableData;
+        }
+
+        public void SetSerializableData(byte[] value)
+        {
+            serializableData = value;
+        }
 
         public MediaFrame()
         {
@@ -95,8 +119,7 @@ namespace StreamingKit
         {
             MediaFrameVersion = version;
         }
-        public MediaFrame(byte[] buf)
-            : this(new System.IO.MemoryStream(buf))
+        public MediaFrame(byte[] buf) : this(new MemoryStream(buf))
         {
 
         }
@@ -106,13 +129,13 @@ namespace StreamingKit
         }
         public void SetBytes(byte[] buf)
         {
-            SetBytes(new System.IO.MemoryStream(buf));
+            SetBytes(new MemoryStream(buf));
 
         }
         //充填媒体帧
         public void SetBytes(Stream stream)
         {
-            var br = new System.IO.BinaryReader(stream);
+            var br = new BinaryReader(stream);
             MediaFrameVersion = br.ReadByte();
             Ex = br.ReadByte();
             IsKeyFrame = br.ReadByte();
@@ -144,7 +167,7 @@ namespace StreamingKit
             }
             try
             {
-                Data = br.ReadBytes(Size + Offset);
+                SetData(br.ReadBytes(Size + Offset));
             }
             catch (Exception ex)
             {
@@ -188,7 +211,7 @@ namespace StreamingKit
                     bw.Write(Samples);
                 }
             }
-            bw.Write(Data, _tOffset, Size);
+            bw.Write(GetData(), _tOffset, Size);
             Offset = _tOffset;
             return ms.ToArray();
         }
@@ -235,7 +258,7 @@ namespace StreamingKit
             if (this.IsAudio == 0 && this.IsKeyFrame == 1)
             {
                 byte[] sps = new byte[SPSLen];
-                Array.Copy(Data, 4, sps, 0, SPSLen);
+                Array.Copy(GetData(), 4, sps, 0, SPSLen);
                 return sps;
             }
             else
@@ -246,7 +269,7 @@ namespace StreamingKit
             if (this.IsAudio == 0 && this.IsKeyFrame == 1)
             {
                 byte[] pps = new byte[PPSLen];
-                Array.Copy(Data, SPSLen + 8, pps, 0, PPSLen);
+                Array.Copy(GetData(), SPSLen + 8, pps, 0, PPSLen);
                 return pps;
             }
             else
@@ -272,7 +295,6 @@ namespace StreamingKit
                 IsAudio = this.IsAudio,
                 NTimetick = 0,
                 Size = 0,
-                Data = Array.Empty<byte>(),
             };
         }
         public static MediaFrame CreateCommandMediaFrame(bool isAudio, MediaFrameCommandType cmd)
@@ -290,8 +312,8 @@ namespace StreamingKit
                 IsAudio = (byte)(isAudio ? 1 : 0),
                 NTimetick = 0,
                 Size = data.Length,
-                Data = data ?? Array.Empty<byte>(),
             };
+            mf.SetData(data ?? Array.Empty<byte>());
             return mf;
         }
         public static int H264Encoder = GetGeneralEncoder("H264");
@@ -402,15 +424,16 @@ namespace StreamingKit
                 throw new ArgumentNullException(nameof(cfg));
             }
 
-            MediaFrame mFrame = new MediaFrame(0)
+            var mFrame = new MediaFrame(0)
             {
                 IsAudio = 0,
                 IsKeyFrame = 0,
                 NTimetick = timetick,
                 Size = size,
                 Offset = offset,
-                Data = data
             };
+            mFrame.SetData(data);
+
             return mFrame;
         }
 
@@ -445,8 +468,8 @@ namespace StreamingKit
                 NTimetick = timetick,
                 Size = size,
                 Offset = offset,
-                Data = data
             };
+            mFrame.SetData(data);
             return mFrame;
         }
     }

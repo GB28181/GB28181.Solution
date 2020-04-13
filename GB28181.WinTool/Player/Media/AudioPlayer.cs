@@ -175,10 +175,10 @@ namespace SS.ClientBase.Media
          
             byte[] buf = null;
             if (_aac != null) {
-                buf = DecMultiAAC(frame.Data);
+                buf = DecMultiAAC(frame.GetData());
             }
             if (_speex != null) {
-                buf = DecSPEX(frame.Data);
+                buf = DecSPEX(frame.GetData());
             }
             if (buf != null && buf.Length > 0) {
                 _Play(buf);

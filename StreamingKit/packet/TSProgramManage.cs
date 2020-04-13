@@ -141,7 +141,7 @@ namespace StreamingKit.Media.TS
                         
                         var mediaFrame = mi.NextMediaFrame();
 
-                        if (mediaFrame != null &&  mediaFrame.Size == mediaFrame.Data.Length) {
+                        if (mediaFrame != null &&  mediaFrame.Size == mediaFrame.GetData().Length) {
                             OnNewMediaFrame(mediaFrame);
                         }
 
@@ -324,7 +324,6 @@ namespace StreamingKit.Media.TS
                     var mf = new MediaFrame() {
                         IsAudio = 0,
                         IsKeyFrame = 1,
-                        Data = data,
                         Size = data.Length,
                         Width = Width,
                         Height = Height,
@@ -335,6 +334,7 @@ namespace StreamingKit.Media.TS
                         NEncoder = MediaFrame.H264Encoder,
                         Ex = 1,
                     };
+                    mf.SetData(data);
                     mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                     VideoFrameCount++;
                     return mf;
@@ -343,7 +343,6 @@ namespace StreamingKit.Media.TS
                         var mf = new MediaFrame() {
                             IsAudio = 0,
                             IsKeyFrame = 0,
-                            Data = data,
                             Size = data.Length,
                             Width = Width,
                             Height = Height,
@@ -354,6 +353,7 @@ namespace StreamingKit.Media.TS
                             NEncoder = MediaFrame.H264Encoder,
                             Ex = 1,
                         };
+                        mf.SetData(data);
                         mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                         VideoFrameCount++;
                         return mf;
@@ -376,7 +376,6 @@ namespace StreamingKit.Media.TS
                 var mf = new MediaFrame() {
                     IsAudio = 1,
                     IsKeyFrame = 1,
-                    Data = data,
                     Size = data.Length,
                     Channel = Channel,
                     Frequency = Frequency,
@@ -387,6 +386,7 @@ namespace StreamingKit.Media.TS
                     Ex = (byte)(_firstAudioFrame ? 0 : 1),
                     MediaFrameVersion = 1,
                 };
+                mf.SetData(data);
                 _firstAudioFrame = false;
 
                 return mf;

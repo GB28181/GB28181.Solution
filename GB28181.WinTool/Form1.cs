@@ -123,8 +123,8 @@ namespace Win.GB28181.Client
             cbxRecordType.ValueMember = "Key";
 
             //SIPSqlite.Instance.Read();
-          //  var cameras = new List<CameraInfo>();
-           // var account = SIPSqlite.Instance.Accounts.First();
+            //  var cameras = new List<CameraInfo>();
+            // var account = SIPSqlite.Instance.Accounts.First();
             //if (account == null)
             //{
             //    logger.Error("Account Config NULL,SIP not started");
@@ -133,7 +133,7 @@ namespace Win.GB28181.Client
             _keepaliveTime = DateTime.Now;
             _cataThread = new Thread(new ThreadStart(HandleCata));
             _keepaliveThread = new Thread(new ThreadStart(HandleKeepalive));
-           // _messageCore = new SIPMessageCore(cameras, account);
+            // _messageCore = new SIPMessageCore(cameras, account);
         }
         #endregion
 
@@ -512,10 +512,9 @@ namespace Win.GB28181.Client
         }
         public byte[] ConvertUnicodeToUTF8(string message)
         {
-            System.Text.Encoding utf8, gb2312;
-            utf8 = System.Text.Encoding.GetEncoding("utf-8");
+            // var utf8 = Encoding.GetEncoding("utf-8");
             byte[] array = Encoding.Default.GetBytes(message);
-            byte[] s4 = System.Text.Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), System.Text.Encoding.UTF8, array);
+            byte[] s4 = Encoding.Convert(System.Text.Encoding.GetEncoding("gb2312"), Encoding.UTF8, array);
             return s4;
 
         }
@@ -583,7 +582,7 @@ namespace Win.GB28181.Client
         //停止实时视频
         private void BtnBye_Click(object sender, EventArgs e)
         {
-           _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady -= Form1_OnStreamReady;
+            _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady -= Form1_OnStreamReady;
             _messageCore.NodeMonitorService[DevKey.ToString()].ByeVideoReq();
         }
 
@@ -647,7 +646,7 @@ namespace Win.GB28181.Client
             DateTime startTime = DateTime.Parse(txtStartTime.Text.Trim());
             DateTime stopTime = DateTime.Parse(txtStopTime.Text.Trim());
             _messageCore.NodeMonitorService[key.ToString()].BackVideoReq(startTime, stopTime);
-      //      _messageCore.NodeMonitorService[key.ToString()].OnStreamReady += Form1_OnStreamReady;
+            //      _messageCore.NodeMonitorService[key.ToString()].OnStreamReady += Form1_OnStreamReady;
         }
 
         //终止点播(停止)
@@ -1052,16 +1051,16 @@ namespace Win.GB28181.Client
                 videoPESList.Clear();
 
                 _analyzer.InputData(1, buffer, (uint)buffer.Length, 0, 0, (int)0, 0);
-                MediaFramePacket packet = _analyzer.GetMediaFramePacket();
-                MediaFrame frame = new MediaFrame()
+                var packet = _analyzer.GetMediaFramePacket();
+                var frame = new MediaFrame()
                 {
-                    Data = packet.Buffer,
                     IsAudio = 0,
                     IsKeyFrame = packet.KeyFrame,
                     Height = packet.Height,
                     Width = packet.Width,
                     Channel = 1
                 };
+                frame.SetData(packet.Buffer);
                 playerWin.Play(frame);
             }
             catch (Exception ex)
@@ -1090,8 +1089,8 @@ namespace Win.GB28181.Client
             //header.GetBytes();
             //packet.Header = header;
             //packet.Payload = buffer;
-            
-           // string viaStr = via.ToString();
+
+            // string viaStr = via.ToString();
 
             Console.WriteLine("");
 

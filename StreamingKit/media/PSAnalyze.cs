@@ -12,10 +12,12 @@ using System.Threading;
 namespace StreamingKit.Media.TS
 {
 
-    public class HikPSAnalyze : PSAnalyze {
+    public class HikPSAnalyze : PSAnalyze
+    {
     }
- 
-    public partial class PSAnalyze {
+
+    public partial class PSAnalyze
+    {
 
         private readonly object _lock = new object();
         private IOMemoryStream ms = new IOMemoryStream();
@@ -40,15 +42,17 @@ namespace StreamingKit.Media.TS
         public short Samples;
         public int VideoFrameCount;
         public int AudioFrameCount;
- 
-        public void Start() {
+
+        public void Start()
+        {
             if (_isWorking)
                 return;
             _isWorking = true;
             _analyzeThead = ThreadEx.ThreadCall(AnalyzeThead);
         }
 
-        public void Stop() {
+        public void Stop()
+        {
             if (!_isWorking)
                 return;
             _isWorking = false;
@@ -59,25 +63,30 @@ namespace StreamingKit.Media.TS
             ms.Close();
         }
 
-        public List<MediaFrame> ReadFrames() {
+        public List<MediaFrame> ReadFrames()
+        {
             if (!_isWorking)
                 return new List<MediaFrame>();
 
             var result = new List<MediaFrame>();
-            while (_queueFrame.Count > 0) {
+            while (_queueFrame.Count > 0)
+            {
                 var item = _queueFrame.Dequeue();
                 result.Add(item);
             }
             return result;
         }
 
-        public void Write(byte[] psdata) {
+        public void Write(byte[] psdata)
+        {
             if (!_isWorking)
                 return;
-            while (ms.Length - ms.ReadPosition > 1024 * 1024) {
+            while (ms.Length - ms.ReadPosition > 1024 * 1024)
+            {
                 Thread.Sleep(10);
             }
-            lock (_lock) {
+            lock (_lock)
+            {
                 ms.Write(psdata, 0, psdata.Length);
             }
         }
@@ -160,19 +169,24 @@ namespace StreamingKit.Media.TS
                 }
             }
         }
-        private MediaFrame AnalyzeNewFrame(PESPacket pes, bool isAudio) {
+        private MediaFrame AnalyzeNewFrame(PESPacket pes, bool isAudio)
+        {
             MediaFrame result = null; ;
-            if (!isAudio) {
+            if (!isAudio)
+            {
                 var esdata = pes.PES_Packet_Data;
-                if (_listVideoPES.Count > 0 && esdata[0] == 0 && esdata[1] == 0 && esdata[2] == 0 && esdata[3] == 1) {
+                if (_listVideoPES.Count > 0 && esdata[0] == 0 && esdata[1] == 0 && esdata[2] == 0 && esdata[3] == 1)
+                {
                     var stream = new MemoryStream();
-                    foreach (var item in _listVideoPES) {
+                    foreach (var item in _listVideoPES)
+                    {
                         stream.Write(item.PES_Packet_Data, 0, item.PES_Packet_Data.Length);
                     }
                     long tick = _listVideoPES.FirstOrDefault().GetVideoTimetick();
                     esdata = stream.ToArray();
                     var frame = CreateVideoMediaFrame(esdata, tick);
-                    if (frame != null) {
+                    if (frame != null)
+                    {
                         result = frame;
                         _queueFrame.Enqueue(frame);
                     }
@@ -180,7 +194,9 @@ namespace StreamingKit.Media.TS
                 }
                 _listVideoPES.Add(pes);
 
-            } else {
+            }
+            else
+            {
                 //不处理音频
                 //var esdata = pes.PES_Packet_Data;
                 //if (_listAudioPES.Count > 0 && esdata[0] == 0xFF && (esdata[1] & 0xF0) == 0xF0) {
@@ -199,18 +215,24 @@ namespace StreamingKit.Media.TS
             return result;
         }
 
-        private MediaFrame CreateVideoMediaFrame(byte[] data, long tick) {
+        private MediaFrame CreateVideoMediaFrame(byte[] data, long tick)
+        {
 
             int keyFrameFlagOffset = 0;
-            if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 1 && data[4] == 0x09) {
+            if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 1 && data[4] == 0x09)
+            {
                 keyFrameFlagOffset = 6;
             }
-            if (data[keyFrameFlagOffset + 4] == 0x67 || data[keyFrameFlagOffset + 4] == 0x68 | data[keyFrameFlagOffset + 4] == 0x27) {//sps ,这里sps及pps及载荷会被放置到不同的pes包里
-                try {
+            if (data[keyFrameFlagOffset + 4] == 0x67 || data[keyFrameFlagOffset + 4] == 0x68 | data[keyFrameFlagOffset + 4] == 0x27)
+            {//sps ,这里sps及pps及载荷会被放置到不同的pes包里
+                try
+                {
                     #region
-                    if (this.SPS == null || this.PPS == null) {
+                    if (this.SPS == null || this.PPS == null)
+                    {
                         var tdata = data;
-                        if (keyFrameFlagOffset > 0) {
+                        if (keyFrameFlagOffset > 0)
+                        {
                             tdata = new byte[data.Length - keyFrameFlagOffset];
                             Array.Copy(data, keyFrameFlagOffset, tdata, 0, tdata.Length);
                         }
@@ -223,17 +245,22 @@ namespace StreamingKit.Media.TS
                         this.PPS = sps_pps[1];
                     }
                     #endregion
-                } catch {
-                    if (this.SPS == null && data[keyFrameFlagOffset + 4] == 0x67) {
+                }
+                catch
+                {
+                    if (this.SPS == null && data[keyFrameFlagOffset + 4] == 0x67)
+                    {
                         SPS = data.Skip(4).ToArray();
                     }
-                    if (this.PPS == null && data[keyFrameFlagOffset + 4] == 0x68) {
+                    if (this.PPS == null && data[keyFrameFlagOffset + 4] == 0x68)
+                    {
                         PPS = data.Skip(4).ToArray();
                     }
-                    if (this.SPS != null && this.PPS != null) {
+                    if (this.SPS != null && this.PPS != null)
+                    {
 
                         var sps = mp4parser.h264.model.SeqParameterSet.Read(new MemoryStream(this.SPS, 1, this.SPS.Length - 1));
-                       // var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(this.PPS, 1, this.PPS.Length - 1));
+                        // var pps = mp4parser.h264.model.PictureParameterSet.read(new MemoryStream(this.PPS, 1, this.PPS.Length - 1));
                         Width = (sps.pic_width_in_mbs_minus1 + 1) * 16 - 2 * sps.frame_crop_left_offset - 2 * sps.frame_crop_right_offset;
                         Height = (sps.pic_height_in_map_units_minus1 + 1) * 16 - 2 * sps.frame_crop_top_offset - 2 * sps.frame_crop_bottom_offset;
                     }
@@ -244,9 +271,11 @@ namespace StreamingKit.Media.TS
                 if (data[keyFrameFlagOffset + 4] == 0x68 && this.PPS != null && data.Length == this.PPS.Length + 4)
                     return null;
             }
-            if (this.SPS != null && this.PPS != null) {
+            if (this.SPS != null && this.PPS != null)
+            {
 
-                if (data[keyFrameFlagOffset + 4] == 0x65) {
+                if (data[keyFrameFlagOffset + 4] == 0x65)
+                {
 
                     var h264 = new MemoryStream();
                     h264.Write(new byte[] { 0, 0, 0, 1 }, 0, 4);
@@ -256,10 +285,10 @@ namespace StreamingKit.Media.TS
                     // h264.Write(new byte[] { 0, 0, 0, 1 }, 0, 4);
                     h264.Write(data, 0, data.Length);
 
-                    var mf = new MediaFrame() {
+                    var mf = new MediaFrame()
+                    {
                         IsAudio = 0,
                         IsKeyFrame = 1,
-                        Data = h264.ToArray(),
                         Size = (int)h264.Length,
                         Width = Width,
                         Height = Height,
@@ -270,15 +299,19 @@ namespace StreamingKit.Media.TS
                         NEncoder = MediaFrame.H264Encoder,
                         Ex = 1,
                     };
+                    mf.SetData(h264.ToArray());
                     mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                     VideoFrameCount++;
                     return mf;
-                } else {
-                    if (this.SPS != null) {
-                        var mf = new MediaFrame() {
+                }
+                else
+                {
+                    if (this.SPS != null)
+                    {
+                        var mf = new MediaFrame()
+                        {
                             IsAudio = 0,
                             IsKeyFrame = 0,
-                            Data = data,
                             Size = data.Length,
                             Width = Width,
                             Height = Height,
@@ -289,6 +322,7 @@ namespace StreamingKit.Media.TS
                             NEncoder = MediaFrame.H264Encoder,
                             Ex = 1,
                         };
+                        mf.SetData(data);
                         mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
                         VideoFrameCount++;
                         return mf;
@@ -299,8 +333,10 @@ namespace StreamingKit.Media.TS
 
         }
 
-        private MediaFrame CreateAudioMediaFrame(byte[] data, long tick) {
-            if (_firstAudioFrame) {
+        private MediaFrame CreateAudioMediaFrame(byte[] data, long tick)
+        {
+            if (_firstAudioFrame)
+            {
                 var adts = new AAC_ADTS(data);
                 var frequencys = new int[] { 96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 2000, 11025 };
                 Frequency = frequencys[adts.MPEG_4_Sampling_Frequency_Index];
@@ -309,10 +345,10 @@ namespace StreamingKit.Media.TS
                 Samples = 0;
             }
             VideoFrameCount++;
-            var mf = new MediaFrame() {
+            var mf = new MediaFrame()
+            {
                 IsAudio = 1,
                 IsKeyFrame = 1,
-                Data = data,
                 Size = data.Length,
                 Channel = Channel,
                 Frequency = Frequency,
@@ -323,6 +359,7 @@ namespace StreamingKit.Media.TS
                 Ex = (byte)(_firstAudioFrame ? 0 : 1),
                 MediaFrameVersion = 1,
             };
+            mf.SetData(data);
             _firstAudioFrame = false;
 
             return mf;

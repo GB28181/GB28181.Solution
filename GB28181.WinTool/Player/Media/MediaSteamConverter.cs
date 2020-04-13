@@ -12,33 +12,35 @@ namespace SS.ClientBase.Media
 {
 
 
-    public class MediaSteamConverter {
+    public class MediaSteamConverter
+    {
 
         public class StreamInfo
         {
-            public int Video_FPS;
-            public byte[] Video_SPS;
-            public byte[] Video_PPS;
-            public String Video_SPSString;
-            public String Video_PPSString;
-            public bool SPS_PPSInited = false;
-            public bool IsFirstAudioFrame = true;
-            public int Width = -1;
-            public int Height = -1;
+            public int Video_FPS { get; set; }
+            public byte[] Video_SPS { get; set; }
+            public byte[] Video_PPS { get; set; }
+            public string Video_SPSString { get; set; }
+            public string Video_PPSString { get; set; }
+            public bool SPS_PPSInited { get; set; } = false;
+            public bool IsFirstAudioFrame { get; set; } = true;
+            public int Width { get; set; } = -1;
+            public int Height { get; set; } = -1;
 
         }
-        public static MediaFrame MediaSteamEntity2MediaFrame(MediaFrameEntity entity, ref StreamInfo streamInfo) {
-            if (entity.MediaType == MediaType.VideoES) {
+        public static MediaFrame MediaSteamEntity2MediaFrame(MediaFrameEntity entity, ref StreamInfo streamInfo)
+        {
+            if (entity.MediaType == MediaType.VideoES)
+            {
                 if (entity.KeyFrame == 0)
                 {
                     MediaFrame mf = null;
-                    if (streamInfo != null && streamInfo.SPS_PPSInited && streamInfo.Width == entity.Width && streamInfo.Height==entity.Height)
+                    if (streamInfo != null && streamInfo.SPS_PPSInited && streamInfo.Width == entity.Width && streamInfo.Height == entity.Height)
                     {
                         mf = new MediaFrame()
                         {
                             IsAudio = 0,
                             IsKeyFrame = 0,
-                            Data = entity.Buffer,
                             Size = entity.Length,
                             Height = entity.Height,
                             Width = entity.Width,
@@ -50,6 +52,7 @@ namespace SS.ClientBase.Media
                             Ex = 1,
                             MediaFrameVersion = 0x00,
                         };
+                        mf.SetData(entity.Buffer);
                     }
                     return mf;
                 }
@@ -78,7 +81,6 @@ namespace SS.ClientBase.Media
                         {
                             IsAudio = 0,
                             IsKeyFrame = 1,
-                            Data = entity.Buffer,
                             Size = entity.Length,
                             Height = entity.Height,
                             Width = entity.Width,
@@ -91,6 +93,7 @@ namespace SS.ClientBase.Media
                             //nEx=(byte)entity.Ex,
                             MediaFrameVersion = 0x01,
                         };
+                        mf.SetData(entity.Buffer);
                         return mf;
                     }
                     else
@@ -99,7 +102,6 @@ namespace SS.ClientBase.Media
                         {
                             IsAudio = 0,
                             IsKeyFrame = 1,
-                            Data = entity.Buffer,
                             Size = entity.Length,
                             Height = entity.Height,
                             Width = entity.Width,
@@ -112,6 +114,7 @@ namespace SS.ClientBase.Media
                             //nEx=(byte)entity.Ex,
                             MediaFrameVersion = 0x01,
                         };
+                        mf.SetData(entity.Buffer);
                         return mf;
                     }
                 }
@@ -121,16 +124,20 @@ namespace SS.ClientBase.Media
                 }
 
 
-              
-            } else if (entity.MediaType == MediaType.AudioES) {
-                if (streamInfo == null) {
+
+            }
+            else if (entity.MediaType == MediaType.AudioES)
+            {
+                if (streamInfo == null)
+                {
                     streamInfo = new StreamInfo();
                 }
-                try {
-                    var mf = new MediaFrame() {
+                try
+                {
+                    var mf = new MediaFrame()
+                    {
                         IsAudio = 1,
                         IsKeyFrame = 1,
-                        Data = entity.Buffer,
                         Size = entity.Length,
                         Channel = 1,
                         Frequency = 32000,
@@ -141,38 +148,47 @@ namespace SS.ClientBase.Media
                         Ex = 1,
                         MediaFrameVersion = 0x01,
                     };
+                    mf.SetData(entity.Buffer);
                     //if (mf.nIsKeyFrame == 1)
                     //    mf.nEx = 0;
                     mf.StreamID = (short)entity.Index;//区分俩路音频数据
                     streamInfo.IsFirstAudioFrame = false;
                     return mf;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
 
                     throw ex;
                 }
 
-            } else {
+            }
+            else
+            {
                 throw new Exception("流类型错误");
             }
         }
 
-        public static MediaFrameEntity MediaFrame2MediaSteamEntity(MediaFrame frame) {
-      
-            var result= new MediaFrameEntity() {
-                Buffer = frame.Data,
+        public static MediaFrameEntity MediaFrame2MediaSteamEntity(MediaFrame frame)
+        {
+
+            var result = new MediaFrameEntity()
+            {
+                Buffer = frame.GetData(),
                 Length = (ushort)frame.Size,
                 EncodTime = frame.NTimetick,
                 MediaType = frame.IsAudio == 1 ? MediaType.AudioES : MediaType.VideoES,
                 SampleRate = 32000,
                 FrameRate = 25,
-                Width=(ushort)frame.Width,
-                Height=(ushort)frame.Height,
+                Width = (ushort)frame.Width,
+                Height = (ushort)frame.Height,
                 KeyFrame = (byte)(frame.IsAudio == 0 && frame.IsKeyFrame == 1 ? 1 : 0),
             };
-            if (frame.IsAudio == 1 && frame.IsKeyFrame == 1) {
+            if (frame.IsAudio == 1 && frame.IsKeyFrame == 1)
+            {
                 result.SampleRate = (ushort)frame.Frequency;
             }
-            if (frame.IsCommandMediaFrame()) {
+            if (frame.IsCommandMediaFrame())
+            {
                 result.Buffer = new byte[0];
                 result.Length = 0;
             }
@@ -180,18 +196,23 @@ namespace SS.ClientBase.Media
 
         }
 
-        public static byte[][] GetSPS_PPS(byte[] enc) {
+        public static byte[][] GetSPS_PPS(byte[] enc)
+        {
             int i = 4, sps_len = 0, pps_len = 0;
-            while (i < enc.Length - 4) {
-                if (enc[i] == 0 && enc[i + 1] == 0 && enc[i + 2] == 0 && enc[i + 3] == 1) {
+            while (i < enc.Length - 4)
+            {
+                if (enc[i] == 0 && enc[i + 1] == 0 && enc[i + 2] == 0 && enc[i + 3] == 1)
+                {
                     sps_len = i;
                     break;
                 }
                 i++;
             }
             i += 1;
-            while (i < enc.Length - 4) {
-                if (enc[i] == 0 && enc[i + 1] == 0 && enc[i + 2] == 0 && enc[i + 3] == 1) {
+            while (i < enc.Length - 4)
+            {
+                if (enc[i] == 0 && enc[i + 1] == 0 && enc[i + 2] == 0 && enc[i + 3] == 1)
+                {
                     pps_len = i - sps_len;
                     break;
                 }
@@ -207,7 +228,7 @@ namespace SS.ClientBase.Media
             if (sps_len < 0 || pps_len < 0)
             {
                 sps_len = 11;
-                 pps_len = 4;
+                pps_len = 4;
             }
             byte[] sps = new byte[sps_len];
             byte[] pps = new byte[pps_len];
@@ -242,7 +263,8 @@ namespace SS.ClientBase.Media
             return r;
         }
 
-        public static MediaFrameEntity GetMediaFrameEntity(byte[] bytes) {
+        public static MediaFrameEntity GetMediaFrameEntity(byte[] bytes)
+        {
             var ms = new MemoryStream(bytes);
             var br = new BinaryReader(ms);
             MediaFrameEntity entity = new MediaFrameEntity();
@@ -261,7 +283,7 @@ namespace SS.ClientBase.Media
 
             return entity;
         }
-      
+
     }
 
 

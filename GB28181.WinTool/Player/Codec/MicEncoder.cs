@@ -154,10 +154,9 @@ namespace SS.ClientBase.Codec
                 IsAudio = 1,
                 NTimetick = Environment.TickCount,
                 Ex = 1,
-                Data = buf,
                 Size = buf.Length,
             };
-
+            mf.SetData(buf);
             mf.MediaFrameVersion = (byte)(mf.IsKeyFrame == 1 ? 1 : 0);
             mf.Ex = (byte)(mf.IsKeyFrame == 1 ? 0 : 1);
 
@@ -193,11 +192,8 @@ namespace SS.ClientBase.Codec
                 IsAudio = mf.IsAudio,
                 NTimetick = mf.NTimetick,
                 Ex = mf.Ex,
-
-                Data = new byte[0],
                 Size = 0,
             };
-
             var resetCodecMediaFrame = MediaFrame.CreateCommandMediaFrame(true, MediaFrameCommandType.ResetCodec, infoMediaFrame.GetBytes());
             return resetCodecMediaFrame;
         }

@@ -59,7 +59,7 @@ namespace StreamingKit.Media
             var list = GetMediaFrameByFile(file1);
             var fsOut = new FileStream(file2, FileMode.Create);
             foreach (var item in list)
-                fsOut.Write(item.Data, 0, item.Data.Length);
+                fsOut.Write(item.GetData(), 0, item.GetData().Length);
             fsOut.Flush();
             fsOut.Close();
         }
@@ -68,8 +68,8 @@ namespace StreamingKit.Media
             var list = GetMediaFrameByFile(file1);
             var fsOut = new FileStream(file2, FileMode.CreateNew);
             foreach (var item in list) {
-                fsOut.Write(BitConverter.GetBytes(item.Data.Length), 0, 4);
-                fsOut.Write(item.Data, 0, item.Data.Length);
+                fsOut.Write(BitConverter.GetBytes(item.GetData().Length), 0, 4);
+                fsOut.Write(item.GetData(), 0, item.GetData().Length);
             }
             fsOut.Flush(); fsOut.Close();
         }
@@ -79,7 +79,7 @@ namespace StreamingKit.Media
             var fsOut = new FileStream(file2, FileMode.Create);
             foreach (var item in list) {
 
-                fsOut.Write(item.Data, 0, item.Data.Length);
+                fsOut.Write(item.GetData(), 0, item.GetData().Length);
             }
             fsOut.Flush(); fsOut.Close();
         }

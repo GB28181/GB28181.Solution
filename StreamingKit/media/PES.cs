@@ -152,7 +152,7 @@ namespace StreamingKit.Media.TS
         {
             if (MediaFrame != null)
             {
-                return MediaFrame.Data;
+                return MediaFrame.GetData();
             }
             else if (PES_Packet_Data != null)
                 return PES_Packet_Data;
@@ -215,7 +215,7 @@ namespace StreamingKit.Media.TS
             try
             {
                 List<PESPacket> packs = new List<PESPacket>();
-                var ms = new MemoryStream(frame.Data)
+                var ms = new MemoryStream(frame.GetData())
                 {
                     Position = 0
                 };
@@ -233,11 +233,11 @@ namespace StreamingKit.Media.TS
                         buf[3] = 0x01;
                         buf[4] = 0x09;
                         buf[5] = 0xF0;
-                        Array.Copy(frame.Data, 0, buf, 6, size);
+                        Array.Copy(frame.GetData(), 0, buf, 6, size);
                     }
                     else
                     {
-                        buf = frame.Data;
+                        buf = frame.GetData();
                     }
                     var pack = new PESPacket(buf, frame.IsAudio == 0, tick);
                     return pack;
