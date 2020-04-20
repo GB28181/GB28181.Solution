@@ -413,15 +413,15 @@ namespace GB28181.SIPSorcery.SIP
 					"SIP/2.0 200 OK" + m_CRLF +
 					"From: Blue Face<sip:3000@127.0.0.1>;tag=as5fd53de7" + m_CRLF +
 					"To: sip:xxx@127.0.0.1;tag=MTHf2-ol1Yn0" + m_CRLF +
-					"Call-ID: 3e7df9d805ac596f3f091510164115e2@212.159.110.30:5061" + m_CRLF +
+					"Call-ID: 3e7df9d805ac596f3f091510164115e2@212.159.110.30:5060" + m_CRLF +
 					"CSeq: 102 INVITE" + m_CRLF +
 					"Via: SIP/2.0/UDP 213.168.225.133:5060;branch=z9hG4bKG+WGOVwLyT6vOW9s" + m_CRLF +
-					"Via: SIP/2.0/UDP 213.168.225.133:5061;branch=z9hG4bK09db9c73" + m_CRLF +
-					"Contact: +3535xxx<sip:xxx@127.0.0.1:5061>" + m_CRLF +
+					"Via: SIP/2.0/UDP 213.168.225.133:5060;branch=z9hG4bK09db9c73" + m_CRLF +
+					"Contact: +3535xxx<sip:xxx@127.0.0.1:5060>" + m_CRLF +
 					"User-Agent: MSC/VC510  Build-Date Nov  7 2005" + m_CRLF +
 					"Allow: INVITE,BYE,CANCEL,OPTIONS,PRACK,NOTIFY,UPDATE,REFER" + m_CRLF +
 					"Supported: timer,replaces" + m_CRLF +
-					"Record-Route: <sip:213.168.225.133:5060;lr>,<sip:213.168.225.133:5061;lr>" + m_CRLF +
+					"Record-Route: <sip:213.168.225.133:5060;lr>,<sip:213.168.225.133:5060;lr>" + m_CRLF +
 					"Content-Type: application/sdp" + m_CRLF +
 					"Content-Length: 182" + m_CRLF +
 					m_CRLF +
@@ -532,9 +532,9 @@ namespace GB28181.SIPSorcery.SIP
 
                 string sipMsg =
                     "SIP/2.0 200 OK" + m_CRLF +
-                    "Via: SIP/2.0/UDP 194.213.29.100:5060;branch=z9hG4bK5feb18267ce40fb05969b4ba843681dbfc9ffcff, SIP/2.0/UDP 194.213.29.54:5061;branch=z9hG4bK52b6a8b7" + m_CRLF +
+                    "Via: SIP/2.0/UDP 194.213.29.100:5060;branch=z9hG4bK5feb18267ce40fb05969b4ba843681dbfc9ffcff, SIP/2.0/UDP 194.213.29.54:5060;branch=z9hG4bK52b6a8b7" + m_CRLF +
                     "Record-Route: <sip:194.213.29.100:5060;lr>" + m_CRLF +
-                    "From: Unknown <sip:Unknown@194.213.29.54:5061>;tag=as58cbdbd1" + m_CRLF +
+                    "From: Unknown <sip:Unknown@194.213.29.54:5060>;tag=as58cbdbd1" + m_CRLF +
                     "To: <sip:designersink01@10.10.49.155:5060>;tag=1144090013" + m_CRLF +
                     "Call-ID: 40741a72794b85ed197e1e020bf42bb9@194.213.29.54" + m_CRLF +
                     "CSeq: 102 INVITE" + m_CRLF +

@@ -42,9 +42,9 @@ message GBPlatformConfig{
     string Id = 1;//标识符，例如：6a1da008-e7ba-4f3b-90f2-e43073fd1ea8
     string Name = 2;//名称，例如：GB28181
     string GbVersion = 3;//版本，例如：GB-2018
-    string LocalID = 4;//SIP服务器编号*，例如：42010000002100000002
+    string LocalID = 4;//SIP服务器编号*，例如：34020000002000000001
     string LocalIP = 5;//SIP服务器IP*，例如：10.78.115.182
-    string LocalPort = 6;//SIP服务器端口号*，例如：5061
+    string LocalPort = 6;//SIP服务器端口号*，例如：5060
     string RemotePort = 7;//Device本地端口*，例如：5060
     string Authentication = 8;//授权，例如：false
     string SIPUsername = 9;//帐号*，例如：admin

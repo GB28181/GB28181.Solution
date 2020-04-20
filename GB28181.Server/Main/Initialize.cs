@@ -28,9 +28,9 @@ namespace GB28181.Server.Main
                 obj.Id = Guid.NewGuid();
                 //obj.Owner = item.Name;
                 obj.GbVersion = string.IsNullOrEmpty(item.GbVersion) ? "GB-2016" : item.GbVersion;
-                obj.LocalID = string.IsNullOrEmpty(item.LocalID) ? "42010000002100000002" : item.LocalID;
+                obj.LocalID = string.IsNullOrEmpty(item.LocalID) ? "34020000002000000001" : item.LocalID;
                 obj.LocalIP = HostsEnv.GetRawIP();
-                obj.LocalPort = string.IsNullOrEmpty(item.LocalPort) ? Convert.ToUInt16(5061) : Convert.ToUInt16(item.LocalPort);
+                obj.LocalPort = string.IsNullOrEmpty(item.LocalPort) ? Convert.ToUInt16(5060) : Convert.ToUInt16(item.LocalPort);
                 obj.RemotePort = string.IsNullOrEmpty(item.RemotePort) ? Convert.ToUInt16(5060) : Convert.ToUInt16(item.RemotePort);
                 obj.Authentication = string.IsNullOrEmpty(item.Authentication) ? false : bool.Parse(item.Authentication);
                 obj.SIPUsername = string.IsNullOrEmpty(item.SIPUsername) ? "admin" : item.SIPUsername;
