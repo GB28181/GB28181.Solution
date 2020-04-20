@@ -6,9 +6,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RootNamespace>Win.GB28181.Client</RootNamespace>
-    <AssemblyName>GB28181.WinClient</AssemblyName>
+    <RootNamespace>GB28181.WinTool</RootNamespace>
+    <AssemblyName>GB28181.WinTool</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,4 +50,8 @@
       <HintPath>WinLibs\Tao.Sdl.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir $(TargetDir)\Config\&#xD;&#xA;copy /y $(ProjectDir)\Config\*.* $(TargetDir)\Config\" />
+  </Target>
 </Project>

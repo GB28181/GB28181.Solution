@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Win.GB28181.Client.test
+namespace GB28181.WinTool.test
 {
     class Test264
     {

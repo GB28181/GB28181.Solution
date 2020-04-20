@@ -1,4 +1,4 @@
-﻿namespace Win.GB28181.Client
+﻿namespace GB28181.WinTool
 {
     partial class Form1
     {
@@ -1540,9 +1540,9 @@
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnStart);
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "Win.GB28181.Client(Alpha) - This is a Test Tool";
+            this.Name = "GB28181.WinTool(Alpha) - This is a Test Tool";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Win.GB28181.Client(Alpha) - This is a Test Tool";
+            this.Text = "GB28181.WinTool(Alpha) - This is a Test Tool";
             this.tabControl1.ResumeLayout(false);
             this.tbReal.ResumeLayout(false);
             this.tbRecord.ResumeLayout(false);

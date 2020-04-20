@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Win.GB28181.Client.Player.Analyzer
+namespace GB28181.WinTool.Player.Analyzer
 {
     /// <summary>
     /// 分析视频流

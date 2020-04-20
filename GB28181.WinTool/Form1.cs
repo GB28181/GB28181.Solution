@@ -18,9 +18,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Win.GB28181.Client.Player.Analyzer;
+using GB28181.WinTool.Player.Analyzer;
+using GB28181.SIPSorcery.SIP.App;
+using GB28181.SIPSorcery.Sys.Cache;
+using System.Threading.Tasks;
 
-namespace Win.GB28181.Client
+namespace GB28181.WinTool
 {
     public partial class Form1 : Form
     {
@@ -35,6 +38,8 @@ namespace Win.GB28181.Client
         private Queue<Keep> _keepQueue = new Queue<Keep>();
         private int _count = 0;
         private SIPMessageCore _messageCore;
+        private readonly CancellationTokenSource _registryServiceToken = new CancellationTokenSource();
+
         #endregion
 
         #region 私有属性
@@ -134,6 +139,26 @@ namespace Win.GB28181.Client
             _cataThread = new Thread(new ThreadStart(HandleCata));
             _keepaliveThread = new Thread(new ThreadStart(HandleKeepalive));
             // _messageCore = new SIPMessageCore(cameras, account);
+
+
+
+
+            SIPTransport m_sipTransport;
+
+            m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
+            m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
+            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+            var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
+            m_sipTransport.AddSIPChannel(sipChannels);
+
+            SipAccountStorage sipAccountStorage = new SipAccountStorage();
+            IMemoCache<Camera> memocache = new DeviceObjectCache();
+            SIPRegistrarCore sipRegistrarCore = new SIPRegistrarCore(m_sipTransport, sipAccountStorage, memocache, true, true);
+            // _messageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+            _messageCore = new SIPMessageCore(sipRegistrarCore, m_sipTransport, sipAccountStorage, memocache);
+
+            Task.Factory.StartNew(() => sipRegistrarCore.ProcessRegisterRequest(), _registryServiceToken.Token);
+
         }
         #endregion
 
@@ -155,6 +180,7 @@ namespace Win.GB28181.Client
 
             //tvCalatog.Nodes.Add(_tn);
             _keepaliveTime = DateTime.Now;
+            playerWin = new SS.ClientBase.PlayerControl();
             playerWin.Start();
             Initialize();
 
@@ -574,7 +600,9 @@ namespace Win.GB28181.Client
         //开始实时视频
         private void BtnReal_Click(object sender, EventArgs e)
         {
+            int[] mediaPort = { 6000, 7000 };
             _analyzer = new StreamAnalyzer();
+            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, "192.168.197.108", true);
             _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
             _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady += Form1_OnStreamReady;
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Win.GB28181.Client
+namespace GB28181.WinTool
 {
     static class Program
     {
