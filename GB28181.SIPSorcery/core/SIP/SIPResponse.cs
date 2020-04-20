@@ -43,122 +43,122 @@ using NUnit.Framework;
 
 namespace GB28181.SIPSorcery.SIP
 {
-    public enum SIPResponseParserError
-    {
-        None = 0,
+	public enum SIPResponseParserError
+	{
+		None = 0,
 
-        TooLarge = 1,
-    }
-    
-    /// <bnf>
+		TooLarge = 1,
+	}
+
+	/// <bnf>
 	/// SIP-Version SP Status-Code SP Reason-Phrase CRLF
 	/// *message-header
 	///	CRLF
 	///	[ message-body ]
 	///	</bnf>
-    /// <summary>
+	/// <summary>
 	///  Status Codes:	
 	///  1xx: Provisional -- request received, continuing to process the request;
 	///  2xx: Success -- the action was successfully received, understood, and accepted;
-    ///  3xx: Redirection -- further action needs to be taken in order to complete the request;
-    ///  4xx: Client Error -- the request contains bad syntax or cannot be fulfilled at this server;
-    ///  5xx: Server Error -- the server failed to fulfill an apparently valid request;
-    ///  6xx: Global Failure -- the request cannot be fulfilled at any server.
+	///  3xx: Redirection -- further action needs to be taken in order to complete the request;
+	///  4xx: Client Error -- the request contains bad syntax or cannot be fulfilled at this server;
+	///  5xx: Server Error -- the server failed to fulfill an apparently valid request;
+	///  6xx: Global Failure -- the request cannot be fulfilled at any server.
 	///	 
 	/// </summary>
 	public class SIPResponse
 	{
-        private static ILog logger = AssemblyState.logger;
-		
+		private static ILog logger = AssemblyState.logger;
+
 		private static string m_CRLF = SIPConstants.CRLF;
 		private static string m_sipVersion = SIPConstants.SIP_FULLVERSION_STRING;
-	
+
 		public string SIPVersion;
 		public SIPResponseStatusCodesEnum Status;
 		public int StatusCode;
 		public string ReasonPhrase;
 		public string Body;
-        public SIPHeader Header = new SIPHeader();
+		public SIPHeader Header = new SIPHeader();
 
-        public DateTime Created = DateTime.Now;
-        public SIPEndPoint RemoteSIPEndPoint;               // The remote IP socket the response was received from or sent to.
-        public SIPEndPoint LocalSIPEndPoint;                // The local SIP socket the response was received on or sent from.
+		public DateTime Created = DateTime.Now;
+		public SIPEndPoint RemoteSIPEndPoint;               // The remote IP socket the response was received from or sent to.
+		public SIPEndPoint LocalSIPEndPoint;                // The local SIP socket the response was received on or sent from.
 
 		private SIPResponse()
-		{}
+		{ }
 
-        public SIPResponse(SIPResponseStatusCodesEnum responseType, string reasonPhrase, SIPEndPoint localSIPEndPoint)
+		public SIPResponse(SIPResponseStatusCodesEnum responseType, string reasonPhrase, SIPEndPoint localSIPEndPoint)
 		{
 			SIPVersion = m_sipVersion;
 			StatusCode = (int)responseType;
-            Status = responseType;
-            ReasonPhrase = reasonPhrase;
+			Status = responseType;
+			ReasonPhrase = reasonPhrase;
 			ReasonPhrase = responseType.ToString();
-            LocalSIPEndPoint = localSIPEndPoint;
+			LocalSIPEndPoint = localSIPEndPoint;
 		}
 
 		public static SIPResponse ParseSIPResponse(SIPMessage sipMessage)
 		{
-            try
-            {
-                SIPResponse sipResponse = new SIPResponse();
-                sipResponse.LocalSIPEndPoint = sipMessage.LocalSIPEndPoint;
-                sipResponse.RemoteSIPEndPoint = sipMessage.RemoteSIPEndPoint;
-                string statusLine = sipMessage.FirstLine;
+			try
+			{
+				SIPResponse sipResponse = new SIPResponse();
+				sipResponse.LocalSIPEndPoint = sipMessage.LocalSIPEndPoint;
+				sipResponse.RemoteSIPEndPoint = sipMessage.RemoteSIPEndPoint;
+				string statusLine = sipMessage.FirstLine;
 
-                int firstSpacePosn = statusLine.IndexOf(" ");
+				int firstSpacePosn = statusLine.IndexOf(" ");
 
-                sipResponse.SIPVersion = statusLine.Substring(0, firstSpacePosn).Trim();
-                statusLine = statusLine.Substring(firstSpacePosn).Trim();
-                sipResponse.StatusCode = Convert.ToInt32(statusLine.Substring(0, 3));
-                sipResponse.Status = SIPResponseStatusCodes.GetStatusTypeForCode(sipResponse.StatusCode);
-                sipResponse.ReasonPhrase = statusLine.Substring(3).Trim();
+				sipResponse.SIPVersion = statusLine.Substring(0, firstSpacePosn).Trim();
+				statusLine = statusLine.Substring(firstSpacePosn).Trim();
+				sipResponse.StatusCode = Convert.ToInt32(statusLine.Substring(0, 3));
+				sipResponse.Status = SIPResponseStatusCodes.GetStatusTypeForCode(sipResponse.StatusCode);
+				sipResponse.ReasonPhrase = statusLine.Substring(3).Trim();
 
-                sipResponse.Header = SIPHeader.ParseSIPHeaders(sipMessage.SIPHeaders);
-                sipResponse.Body = sipMessage.Body;
+				sipResponse.Header = SIPHeader.ParseSIPHeaders(sipMessage.SIPHeaders);
+				sipResponse.Body = sipMessage.Body;
 
-                return sipResponse;
-            }
-            catch (SIPValidationException)
-            {
-                throw;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception ParseSIPResponse. " + excp.Message);
-                logger.Error(sipMessage.RawMessage);
-                throw new SIPValidationException(SIPValidationFieldsEnum.Response, "Error parsing SIP Response");
-            }
+				return sipResponse;
+			}
+			catch (SIPValidationException)
+			{
+				throw;
+			}
+			catch (Exception excp)
+			{
+				logger.Error("Exception ParseSIPResponse. " + excp.Message);
+				logger.Error(sipMessage.RawMessage);
+				throw new SIPValidationException(SIPValidationFieldsEnum.Response, "Error parsing SIP Response");
+			}
 		}
 
-        public static SIPResponse ParseSIPResponse(string sipMessageStr)
-        {
-            try
-            {
-                SIPMessage sipMessage = SIPMessage.ParseSIPMessage(sipMessageStr, null, null);
-                return SIPResponse.ParseSIPResponse(sipMessage);
-            }
-            catch (SIPValidationException)
-            {
-                throw;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception ParseSIPResponse. " + excp.Message);
-                logger.Error(sipMessageStr);
-                throw new SIPValidationException(SIPValidationFieldsEnum.Response, "Error parsing SIP Response");
-            }
-        }
+		public static SIPResponse ParseSIPResponse(string sipMessageStr)
+		{
+			try
+			{
+				SIPMessage sipMessage = SIPMessage.ParseSIPMessage(sipMessageStr, null, null);
+				return SIPResponse.ParseSIPResponse(sipMessage);
+			}
+			catch (SIPValidationException)
+			{
+				throw;
+			}
+			catch (Exception excp)
+			{
+				logger.Error("Exception ParseSIPResponse. " + excp.Message);
+				logger.Error(sipMessageStr);
+				throw new SIPValidationException(SIPValidationFieldsEnum.Response, "Error parsing SIP Response");
+			}
+		}
 
 		public new string ToString()
 		{
 			string reasonPhrase = (!ReasonPhrase.IsNullOrBlank()) ? " " + ReasonPhrase : null;
 
-			string message = 
+			string message =
 				SIPVersion + " " + StatusCode + reasonPhrase + m_CRLF +
 				this.Header.ToString();
 
-			if(Body != null)
+			if (Body != null)
 			{
 				message += m_CRLF + Body;
 			}
@@ -166,22 +166,22 @@ namespace GB28181.SIPSorcery.SIP
 			{
 				message += m_CRLF;
 			}
-			
+
 			return message;
 		}
 
-        /// <summary>
-        /// Creates an identical copy of the SIP Response for the caller.
-        /// </summary>
-        /// <returns>New copy of the SIPResponse.</returns>
-        public SIPResponse Copy()
-        {
-            return ParseSIPResponse(this.ToString());
-        }
+		/// <summary>
+		/// Creates an identical copy of the SIP Response for the caller.
+		/// </summary>
+		/// <returns>New copy of the SIPResponse.</returns>
+		public SIPResponse Copy()
+		{
+			return ParseSIPResponse(this.ToString());
+		}
 
 		#region Unit testing.
 
-		#if UNITTEST
+#if UNITTEST
 	
 		[TestFixture]
 		public class SIPResponseUnitTest
@@ -413,15 +413,15 @@ namespace GB28181.SIPSorcery.SIP
 					"SIP/2.0 200 OK" + m_CRLF +
 					"From: Blue Face<sip:3000@127.0.0.1>;tag=as5fd53de7" + m_CRLF +
 					"To: sip:xxx@127.0.0.1;tag=MTHf2-ol1Yn0" + m_CRLF +
-					"Call-ID: 3e7df9d805ac596f3f091510164115e2@212.159.110.30:5060" + m_CRLF +
+					"Call-ID: 3e7df9d805ac596f3f091510164115e2@212.159.110.30:5061" + m_CRLF +
 					"CSeq: 102 INVITE" + m_CRLF +
 					"Via: SIP/2.0/UDP 213.168.225.133:5060;branch=z9hG4bKG+WGOVwLyT6vOW9s" + m_CRLF +
-					"Via: SIP/2.0/UDP 213.168.225.133:5060;branch=z9hG4bK09db9c73" + m_CRLF +
-					"Contact: +3535xxx<sip:xxx@127.0.0.1:5060>" + m_CRLF +
+					"Via: SIP/2.0/UDP 213.168.225.133:5061;branch=z9hG4bK09db9c73" + m_CRLF +
+					"Contact: +3535xxx<sip:xxx@127.0.0.1:5061>" + m_CRLF +
 					"User-Agent: MSC/VC510  Build-Date Nov  7 2005" + m_CRLF +
 					"Allow: INVITE,BYE,CANCEL,OPTIONS,PRACK,NOTIFY,UPDATE,REFER" + m_CRLF +
 					"Supported: timer,replaces" + m_CRLF +
-					"Record-Route: <sip:213.168.225.133:5060;lr>,<sip:213.168.225.133:5060;lr>" + m_CRLF +
+					"Record-Route: <sip:213.168.225.133:5060;lr>,<sip:213.168.225.133:5061;lr>" + m_CRLF +
 					"Content-Type: application/sdp" + m_CRLF +
 					"Content-Length: 182" + m_CRLF +
 					m_CRLF +
@@ -532,9 +532,9 @@ namespace GB28181.SIPSorcery.SIP
 
                 string sipMsg =
                     "SIP/2.0 200 OK" + m_CRLF +
-                    "Via: SIP/2.0/UDP 194.213.29.100:5060;branch=z9hG4bK5feb18267ce40fb05969b4ba843681dbfc9ffcff, SIP/2.0/UDP 194.213.29.54:5060;branch=z9hG4bK52b6a8b7" + m_CRLF +
+                    "Via: SIP/2.0/UDP 194.213.29.100:5060;branch=z9hG4bK5feb18267ce40fb05969b4ba843681dbfc9ffcff, SIP/2.0/UDP 194.213.29.54:5061;branch=z9hG4bK52b6a8b7" + m_CRLF +
                     "Record-Route: <sip:194.213.29.100:5060;lr>" + m_CRLF +
-                    "From: Unknown <sip:Unknown@194.213.29.54:5060>;tag=as58cbdbd1" + m_CRLF +
+                    "From: Unknown <sip:Unknown@194.213.29.54:5061>;tag=as58cbdbd1" + m_CRLF +
                     "To: <sip:designersink01@10.10.49.155:5060>;tag=1144090013" + m_CRLF +
                     "Call-ID: 40741a72794b85ed197e1e020bf42bb9@194.213.29.54" + m_CRLF +
                     "CSeq: 102 INVITE" + m_CRLF +
@@ -569,7 +569,7 @@ namespace GB28181.SIPSorcery.SIP
             }
 		}
 
-		#endif
+#endif
 
 		#endregion
 	}

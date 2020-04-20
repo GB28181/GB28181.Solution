@@ -5,7 +5,7 @@
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34020000002000000001</LocalID>
     <LocalIP>127.0.0.1</LocalIP>
-    <LocalPort>5060</LocalPort>
+    <LocalPort>5061</LocalPort>
     <RemotePort>5060</RemotePort>
     <Authentication>false</Authentication>
     <SIPUsername>admin</SIPUsername>

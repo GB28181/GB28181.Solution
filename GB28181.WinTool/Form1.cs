@@ -601,8 +601,9 @@ namespace GB28181.WinTool
         private void BtnReal_Click(object sender, EventArgs e)
         {
             int[] mediaPort = { 6000, 7000 };
+            string ip = "192.168.197.108";
             _analyzer = new StreamAnalyzer();
-            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, "192.168.197.108", true);
+            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, ip, true);
             _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
             _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady += Form1_OnStreamReady;
         }

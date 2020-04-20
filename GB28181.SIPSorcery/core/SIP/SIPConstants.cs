@@ -65,7 +65,7 @@ namespace GB28181.SIPSorcery.SIP
 		public const int DEFAULT_MAX_FORWARDS = 70;
 		public const int DEFAULT_REGISTEREXPIRY_SECONDS = 600;
 		public const int DEFAULT_SIP_PORT = 5060;
-        public const int DEFAULT_SIP_TLS_PORT = 5060;
+        public const int DEFAULT_SIP_TLS_PORT = 5061;
         public const int DEFAULT_SIP_WEBSOCKET_PORT = 80;
         public const int DEFAULT_SIPS_WEBSOCKET_PORT = 443;
         public const int MAX_SIP_PORT = 65535;
