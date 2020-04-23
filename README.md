@@ -37,9 +37,10 @@ running on aspnetcore 3.1+
   + [ ] 为配置接口和流媒体服务接口提供mock数据,使得服务可以独立运行
   + [ ] 以GRPC方式对接流媒体服务【[monibuca](https://github.com/langhuihui/monibuca)】
   + [ ] 以GRPC方式从系统配置服务(或者数据服务)中获取GB信令服务的配置信息，包括名称、ID、端口、协议等
-  + [ ] 使服务注册组件变成可配置的，(当前是consul，并且k8s环境中也不需要)
+  + [ ] 使服务注册组件变成可配置的（或者移除），(当前是consul，并且k8s环境中也不需要)
   + [x] 将GRPC服务的实现改为apsnetcore3.1+的内置实现方式.
-  + [ ] 从GB28181.Sipsorcery项目中将原始的Sipsorcery项目分离出来
+  + [ ] 从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来
+  + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
 
 + SIP信令服务
   + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
@@ -54,8 +55,10 @@ running on aspnetcore 3.1+
   + [ ] 注册到服务的平台信息缓存，待进一步测试
 
 + Streaming Media(流媒体，以【[monibuca](https://github.com/langhuihui/monibuca)】为基础)
-  + [x] 定义SIP信令服务与流媒体服务交互的RTSP接口
-  + [ ] 定义SIP信令服务与流媒体服务交互的GRPC接口
+  + [x] 修复视频测试工具(WinTool)
+  + [x] 完善项目视频组件功能相关的测试流程文档
+  + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
+  + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
   + [ ] 实现完整的实时视频播放功能, Video Live Play
   + [ ] 实现完整的历史视频搜索功能，History Video Record Search
   + [ ] 实现完整的历史视频播放功能, History Video PlayBack
