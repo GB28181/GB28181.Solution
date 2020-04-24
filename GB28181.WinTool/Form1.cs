@@ -600,8 +600,8 @@ namespace GB28181.WinTool
         //开始实时视频
         private void BtnReal_Click(object sender, EventArgs e)
         {
-            int[] mediaPort = { 6000, 7000 };
-            string ip = "192.168.197.108";
+            int[] mediaPort = { 9000, 7000 };
+            string ip = "47.115.51.118";
             _analyzer = new StreamAnalyzer();
             _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, ip, true);
             _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
