@@ -55,7 +55,7 @@ running on aspnetcore 3.1+
   + [ ] 注册到服务的平台信息缓存，待进一步测试
 
 + Streaming Media(流媒体，以【[monibuca](https://github.com/langhuihui/monibuca)】为基础)
-  + [x] 修复视频测试工具(WinTool)
+  + [ ] 修复视频测试工具(WinTool)
   + [x] 完善项目视频组件功能相关的测试流程文档
   + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
   + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
