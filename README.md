@@ -53,8 +53,8 @@ running on aspnetcore 3.1+
   + [ ] 注册到服务的平台信息缓存，待进一步测试
 
 + Streaming Media(流媒体，以【[monibuca](https://github.com/langhuihui/monibuca)】为基础)
-  + [x] 定义SIP信令服务与流媒体服务交互的RTSP接口
-  + [ ] 定义SIP信令服务与流媒体服务交互的GRPC接口
+  + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
+  + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
   + [ ] 实现完整的实时视频播放功能, Video Live Play
   + [ ] 实现完整的历史视频搜索功能，History Video Record Search
   + [ ] 实现完整的历史视频播放功能, History Video PlayBack
