@@ -28,7 +28,7 @@ running on aspnetcore 3.1+
 
 项目希望达到的目标功能,如下:
 
-打勾的是已完成的，没打勾的是正在做的，需要大家一起完成的。
+打勾的是已完成的，没打勾的是正在做的，需要大家一起完成的.
 
 + Architecture & framework
   + [x] 设计与流媒体服务交互的GRPC接口
@@ -39,7 +39,7 @@ running on aspnetcore 3.1+
   + [ ] 以GRPC方式从系统配置服务(或者数据服务)中获取GB信令服务的配置信息，包括名称、ID、端口、协议等
   + [ ] 使服务注册组件变成可配置的（或者移除），(当前是consul，并且k8s环境中也不需要)
   + [x] 将GRPC服务的实现改为apsnetcore3.1+的内置实现方式.
-  + [ ] 从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来
+  + [ ] 从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
   + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
 
 + SIP信令服务
@@ -55,7 +55,7 @@ running on aspnetcore 3.1+
   + [ ] 注册到服务的平台信息缓存，待进一步测试
 
 + Streaming Media(流媒体，以【[monibuca](https://github.com/langhuihui/monibuca)】为基础)
-  + [ ] 修复视频测试工具(WinTool)
+  + [x] 修复视频测试工具(WinTool)
   + [x] 完善项目视频组件功能相关的测试流程文档
   + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
   + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
@@ -106,3 +106,6 @@ GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licen
 关于GPL的更多了解：[开源中国GPL](https://www.oschina.net/question/12_2826)、[百科 GPL](https://baike.baidu.com/item/GPL/2357903)
 
 
+## 其他
+
+[WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
