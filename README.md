@@ -13,7 +13,7 @@ running in docker
 running on Linux
 running on aspnetcore 3.1+
 ~~~
-+ [Linux/Windows版测试工具](https://github.com/GB28181/GB28181-Simulation-Tool)
++ [可以协同测试的Linux/Windows版工具](https://github.com/GB28181/GB28181-Simulation-Tool)
 
 ## 说明(instruction)
 
