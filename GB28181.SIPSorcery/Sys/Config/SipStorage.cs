@@ -15,9 +15,9 @@ namespace GB28181.SIPSorcery.Sys.Config
     public class SipAccountStorage : ISipAccountStorage
     {
         private static ILog logger = AppState.logger;
-        private static readonly string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
-        private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
-        private static readonly string m_XMLFilename = "gb28181.xml"; //default storage filename
+        private const string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
+        private const string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
+        private const string m_XMLFilename = "gb28181.xml"; //default storage filename
 
         public static readonly SipAccountStorage Instance = new SipAccountStorage();
         //数据存储类型，比如xml,json,sqlite.postgresql
