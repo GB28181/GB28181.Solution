@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SS.ClientBase.Mixer.Audio
+namespace GB28181.WinTool.Mixer.Audio
 {
 
     public class AacEnc : IDisposable

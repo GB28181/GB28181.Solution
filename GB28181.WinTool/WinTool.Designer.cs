@@ -1690,7 +1690,7 @@
         private System.Windows.Forms.Button btnKeyFrame;
         private System.Windows.Forms.TreeView tvCalatog;
         private System.Windows.Forms.Button button2;
-        private SS.ClientBase.PlayerControl playerWin;
+        private GB28181.WinTool.PlayerControl playerWin;
     }
 }
 

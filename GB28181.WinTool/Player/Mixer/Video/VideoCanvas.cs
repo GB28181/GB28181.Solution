@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace SS.ClientBase.Mixer.Video
+namespace GB28181.WinTool.Mixer.Video
 {
     public class VideoCanvas : Canvas, IYUVDraw
     {

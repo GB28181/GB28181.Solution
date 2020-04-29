@@ -7,10 +7,10 @@ using System.Windows.Forms;
 using Helpers;
 using Common.Generic;
 using GB28181.WinTool.Codec;
-using SS.ClientBase.Media;
+using GB28181.WinTool.Media;
 using StreamingKit;
 
-namespace SS.ClientBase.Media {
+namespace GB28181.WinTool.Media {
     public class MediaPlayer : IDisposable {
 
         private WaveAudioPlayer _ap;

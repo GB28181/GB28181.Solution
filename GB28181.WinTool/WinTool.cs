@@ -180,7 +180,7 @@ namespace GB28181.WinTool
 
             //tvCalatog.Nodes.Add(_tn);
             _keepaliveTime = DateTime.Now;
-            playerWin = new SS.ClientBase.PlayerControl();
+            playerWin = new GB28181.WinTool.PlayerControl();
             playerWin.Start();
             Initialize();
 

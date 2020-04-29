@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using StreamingKit;
 using System.Runtime.InteropServices;
-using StreamingKit;
-using System.IO;
 
 namespace GB28181.WinTool.Codec
 {
@@ -47,16 +42,18 @@ namespace GB28181.WinTool.Codec
         }
         public static AVCodecCfg CreateVideo(int width, int height, int codec_id = (int)AVCode.CODEC_ID_H264, int bit_rate = 98000)
         {
-            var r = new AVCodecCfg();
-            r.codec_id = codec_id;
-            r.width = width;
-            r.height = height;
-            r.codec_type = (int)AVCode.CODEC_TYPE_VIDEO;
-            r.bit_rate = bit_rate;
-            r.time_base_den = 15;
-            r.time_base_num = 2;
-            r.gop_size = 15;
-            r.pix_fmt = (int)AVCode.PIX_FMT_YUV420P;
+            var r = new AVCodecCfg
+            {
+                codec_id = codec_id,
+                width = width,
+                height = height,
+                codec_type = (int)AVCode.CODEC_TYPE_VIDEO,
+                bit_rate = bit_rate,
+                time_base_den = 15,
+                time_base_num = 2,
+                gop_size = 15,
+                pix_fmt = (int)AVCode.PIX_FMT_YUV420P
+            };
             return r;
 
         }
@@ -102,15 +99,17 @@ namespace GB28181.WinTool.Codec
  
 
         public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null) {
-            VideoEncodeCfg encCfg = new VideoEncodeCfg();
+            VideoEncodeCfg encCfg = new VideoEncodeCfg
+            {
+                VideoBitRate = 256 * 1000,
+                FrameRate = 10,
+                Height = 240,
+                Width = 320,
+                CameraId = 0,
+                Draw = _Draw
+            };
 
             encCfg.SetEncoder("H264");
-            encCfg.VideoBitRate = 256 * 1000;
-            encCfg.FrameRate = 10;
-            encCfg.Height = 240;
-            encCfg.Width = 320;
-            encCfg.CameraId = 0;
-            encCfg.Draw = _Draw;
             return encCfg;
         }
 

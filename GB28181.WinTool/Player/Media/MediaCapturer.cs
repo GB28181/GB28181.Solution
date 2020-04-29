@@ -5,7 +5,7 @@ using StreamingKit;
 using System;
 
 
-namespace SS.ClientBase.Media
+namespace GB28181.WinTool.Media
 {
 
     public class MediaCapturer : IDisposable

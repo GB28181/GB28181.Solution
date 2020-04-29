@@ -1,4 +1,4 @@
-﻿namespace SS.ClientBase.Mixer.Video
+﻿namespace GB28181.WinTool.Mixer.Video
 {
     public enum CanvasStyle : byte
     {

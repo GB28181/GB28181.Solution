@@ -3,7 +3,7 @@ using StreamingKit;
 using System;
 using System.IO;
 
-namespace SS.ClientBase.Mixer.Audio
+namespace GB28181.WinTool.Mixer.Audio
 {
     internal class AacDec : DecoderLine
     {

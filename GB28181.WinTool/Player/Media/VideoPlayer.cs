@@ -9,7 +9,7 @@ using System.Threading;
 using Helpers;
 using Common.Generic;
 
-namespace SS.ClientBase.Media {
+namespace GB28181.WinTool.Media {
     public class VideoPlayer : IDisposable {
         private IYUVDraw _yuvDraw = null;
         private FFImp _ffimp = null;

@@ -8,7 +8,7 @@ using StreamingKit;
 using System;
 using System.IO;
 
-namespace SS.ClientBase.Media
+namespace GB28181.WinTool.Media
 {
 
 

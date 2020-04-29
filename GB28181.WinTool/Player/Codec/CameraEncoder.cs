@@ -1,7 +1,7 @@
 ﻿using DirectShowLib;
 using Helpers;
 using Common.Generic;
-using SS.ClientBase.Mixer.Video;
+using GB28181.WinTool.Mixer.Video;
 using StreamingKit;
 using SS.WPFClient.DShow;
 using System;

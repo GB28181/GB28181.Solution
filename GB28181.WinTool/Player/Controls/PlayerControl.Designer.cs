@@ -1,4 +1,4 @@
-﻿namespace SS.ClientBase
+﻿namespace GB28181.WinTool
 {
     partial class PlayerControl
     {

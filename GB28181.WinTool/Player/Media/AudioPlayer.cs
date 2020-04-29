@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Threading;
 
-namespace SS.ClientBase.Media
+namespace GB28181.WinTool.Media
 {
     /// <summary>
     /// 音频播放器
