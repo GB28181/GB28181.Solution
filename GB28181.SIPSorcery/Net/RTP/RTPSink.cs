@@ -210,9 +210,8 @@ namespace GB28181.SIPSorcery.Net
 		{
             m_udpListener = NetServices.CreateRandomUDPListener(localAddress, RTP_PORTRANGE_START, RTP_PORTRANGE_END, inUsePorts, out m_localEndPoint);
 
-            int typeOfService = TYPEOFSERVICE_RTPSEND;
             // If a setting has been supplied in the config file use that.
-            Int32.TryParse(m_typeOfService, out typeOfService);
+            _ = int.TryParse(m_typeOfService, out int typeOfService);
 
             try
             {
@@ -235,10 +234,9 @@ namespace GB28181.SIPSorcery.Net
 
 			m_udpListener = new UdpClient(m_localEndPoint);
 
-            int typeOfService = TYPEOFSERVICE_RTPSEND;
             // If a setting has been supplied in the config file use that.
-            Int32.TryParse(m_typeOfService, out typeOfService);
-            
+            _ = int.TryParse(m_typeOfService, out int typeOfService);
+
             try
             {
                 m_udpListener.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.TypeOfService, typeOfService);
@@ -271,8 +269,8 @@ namespace GB28181.SIPSorcery.Net
 			catch(Exception excp)
 			{
 				logger.Error("Exception Starting RTP Listener Threads. " + excp.Message);
-				throw excp;
-			}
+                throw;
+            }
 		}
 	
 		private void Listen()
@@ -298,8 +296,8 @@ namespace GB28181.SIPSorcery.Net
                 m_lastRTPReceivedTime = DateTime.MinValue;
                 DateTime previousRTPReceiveTime = DateTime.MinValue;
                 uint previousTimestamp = 0;
-                UInt16 sequenceNumber = 0;
-                UInt16 previousSeqNum = 0;
+                ushort sequenceNumber = 0;
+                ushort previousSeqNum = 0;
                 uint senderSendSpacing = 0;
                 uint lastSenderSendSpacing = 0;
 
