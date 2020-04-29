@@ -1,6 +1,6 @@
 ﻿namespace GB28181.WinTool
 {
-    partial class Form1
+    partial class WinTool
     {
         /// <summary>
         /// 必需的设计器变量。

@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace GB28181.WinTool
 {
-    public partial class Form1 : Form
+    public partial class WinTool : Form
     {
         #region 私有字段
         private Queue<Catalog> _catalogQueue = new Queue<Catalog>();
@@ -91,7 +91,7 @@ namespace GB28181.WinTool
         #endregion
 
         #region 初始化服务
-        public Form1()
+        public WinTool()
         {
             InitializeComponent();
         }
