@@ -9,7 +9,7 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using System.Drawing.Imaging;
 using SS.ClientBase.Media;
 

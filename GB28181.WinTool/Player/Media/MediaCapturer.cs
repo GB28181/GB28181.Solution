@@ -1,6 +1,6 @@
 ﻿using Common.Generic;
 using GB28181.Logger4Net.DebugEx;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using StreamingKit;
 using System;
 

@@ -1,4 +1,4 @@
-﻿using SS.ClientBase.Codec;
+﻿using GB28181.WinTool.Codec;
 using StreamingKit;
 using System;
 using System.IO;

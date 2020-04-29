@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using GB28181.Logger4Net.DebugEx;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     public class CameraCapturer : IDisposable
     {

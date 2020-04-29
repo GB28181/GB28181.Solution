@@ -1,4 +1,4 @@
-﻿using SS.ClientBase.Codec;
+﻿using GB28181.WinTool.Codec;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;

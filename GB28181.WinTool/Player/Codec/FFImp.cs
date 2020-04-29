@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
 
 

@@ -7,7 +7,7 @@ using Helpers;
 using System.IO;
 using System.Threading;
 
-namespace SS.ClientBase.Codec {
+namespace GB28181.WinTool.Codec {
     public class FaacImp : IDisposable {
         private IntPtr _handle = IntPtr.Zero;
         private int _channel = 0;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using StreamingKit;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using System.Threading;
 using Helpers;
 using Common.Generic;

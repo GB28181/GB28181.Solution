@@ -38,7 +38,7 @@ using GB28181.Logger4Net;
 using System;
 using System.Xml;
 
-namespace Gb28181_Client.Message
+namespace GB28181.WinTool.Message
 {
     /// <summary>
     /// Retrieves application conifguration settings from App.Config.

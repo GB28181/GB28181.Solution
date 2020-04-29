@@ -6,7 +6,7 @@ using System;
 using System.IO;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
 
 

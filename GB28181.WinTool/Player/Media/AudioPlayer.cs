@@ -1,6 +1,6 @@
 ﻿using Common.Generic;
 using Helpers;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using StreamingKit;
 using StreamingKit.Wave.Wave;
 using StreamingKit.Media;

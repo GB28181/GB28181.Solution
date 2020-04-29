@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     /// <summary>
     /// SPEEX编码器

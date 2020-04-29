@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using SS.ClientBase.Media;
 using StreamingKit;
 

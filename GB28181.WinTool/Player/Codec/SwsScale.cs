@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     public class FFScale {
 

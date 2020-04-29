@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Helpers;
 using Common.Generic;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using SS.ClientBase.Media;
 using StreamingKit;
 

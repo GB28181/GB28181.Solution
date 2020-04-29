@@ -1,5 +1,5 @@
 ﻿using Helpers;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;

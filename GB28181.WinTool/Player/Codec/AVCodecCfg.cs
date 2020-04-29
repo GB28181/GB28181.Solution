@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using StreamingKit;
 using System.IO;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     /// <summary>
     /// 音视频编码参数设置

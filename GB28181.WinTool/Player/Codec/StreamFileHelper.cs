@@ -5,7 +5,7 @@
 //using System.Text;
 //using StreamingKit;
 
-//namespace SS.ClientBase.Codec {
+//namespace GB28181.WinTool.Codec {
 //    public class ReadFile {
 //        public static List<byte[]> GetBuffByFile1(string file) {
 //            var q = GetBuffByFile(file);

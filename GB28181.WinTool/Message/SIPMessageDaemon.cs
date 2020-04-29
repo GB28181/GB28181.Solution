@@ -45,7 +45,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Gb28181_Client.Message
+namespace GB28181.WinTool.Message
 {
     public class SIPMessageDaemon
     {
