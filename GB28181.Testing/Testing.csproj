@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GB28181.Server\GB28181.Server.csproj" />
-    <ProjectReference Include="..\StreamingKit\StreamingKit.csproj" />
+    <ProjectReference Include="..\GB28181.WinTool\GB28181.WinTool.csproj" />
   </ItemGroup>
 
   <ItemGroup>
