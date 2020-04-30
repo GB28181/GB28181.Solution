@@ -7,7 +7,7 @@ package systemConfig;
 //service and action definition
 service ServiceConfig {
 
-    rpc GetGB28181ServiceConfig (QueryGb28181ConfigRequest) returns (QueryGb28181ConfigReply) {}
+    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {}
 
     rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){}
 

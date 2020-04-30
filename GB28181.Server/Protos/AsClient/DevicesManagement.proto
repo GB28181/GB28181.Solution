@@ -152,10 +152,6 @@ message QuerySimpleDeviceResponse{
     SimpleDevice simple_device = 2; 
 }
 
-message QuerySimpleViewResponse{
-    SEARCH_STATUS status=1;
-    repeated SimpleView simple_views = 2;
-}
 
 enum ProtoType {
     PROTO_GB28181 = 0;
