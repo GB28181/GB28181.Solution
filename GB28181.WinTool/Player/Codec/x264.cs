@@ -51,7 +51,7 @@ namespace GB28181.WinTool.Codec
            return _lastEncodeIsIFrame;
            //return X264Native_IsKeyFrame(obj);
        }
-       private Boolean _lastEncodeIsIFrame = false;
+       private bool _lastEncodeIsIFrame = false;
        public byte[] Encode(byte[] inBuf) {
            lock (_sync) {
                if (_isReleased) {

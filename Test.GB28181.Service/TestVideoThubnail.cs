@@ -5,8 +5,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using videoconver;
-using VideoEncoder;
 using Xunit;
 
 namespace Test.VideoThumbnail

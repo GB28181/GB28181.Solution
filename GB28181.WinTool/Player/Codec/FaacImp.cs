@@ -82,7 +82,7 @@ namespace GB28181.WinTool.Codec {
         }
 
 
-
+        //libfaac用来处理音频，比如压缩pcm为aac
         const string DLLFile = @"libfaac.dll";
 
         [DllImport(DLLFile, CallingConvention = CallingConvention.StdCall)]
