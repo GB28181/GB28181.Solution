@@ -12,24 +12,12 @@ service Manage {
     rpc QueryDevice(QueryRequest) returns (QueryDeviceResponse) {}
 
     rpc QueryDeviceById(QueryDeviceRequest) returns (QueryDeviceResponse){}
-    rpc CheckDupl(CheckDupRequest) returns (CheckDupResponse){}
 
-    rpc AddView(AddViewRequest) returns (AddViewResponse){}
-    rpc DeleteView(DeleteViewRequest) returns (DeleteViewResponse){}
-    rpc UpdateView(UpdateViewRequest) returns (UpdateViewResponse){}
-
-    rpc QuerySimpleView(QuerySimpleRequest) returns (QuerySimpleViewResponse){}
-
-    rpc QuerySimpleDeviceByIds(QuerySimpleDevicesRequest) returns (QuerySimpleDevicesResponse){}
-
-    rpc FuzzyQueryDeviceByName(FuzzyQueryDeviceRequest) returns (FuzzyQueryDeviceResponse){}
+    rpc CheckDuplicate(CheckDupRequest) returns (CheckDupResponse){}
 
     rpc QueryChannelDevices(QueryChannelRequest) returns(QueryChannelResponse){}
 
     rpc QueryParentDeviceByChildID(QueryParentDeviceRequest) returns (QueryParentDeviceResponse){}
-    rpc UpdateViewName(UpdateViewNameRequest) returns (UpdateViewResponse){}
-
-    rpc QueryDevicesByProtoTypes(QueryByProtoTypesRequest) returns(QueryByProtoTypesResponse){}
 
     rpc QueryDeviceProfile(QueryDeviceProfileRequest) returns (QueryDeviceProfileResponse){}
 
@@ -127,53 +115,10 @@ message QueryChannelResponse{
     repeated SimpleDevice channel_devices=1;
 }
 
-message View{
-    string guid = 1;
-    string name =2;
-    string description = 3;
-    string parent_id = 4;
-    repeated string child_view_ids=5;
-    repeated string device_ids = 6;
-    string owner_id = 7;
-}
-
-message SimpleView{
-    string guid = 1;
-    string name =2;
-    string description = 3;    
-    repeated SimpleView child_simple_views = 4;
-    repeated SimpleDevice devices = 5;
-    string owner_id = 6;
-    int32 total_device_count=7;
-    int32 total_online_count=8;
-}
 
 message KeyValuePair{
     string id=1;
     string name = 2;
-}
-
-message AddViewRequest{
-    repeated View views =1;
-}
-
-message AddViewResponse {
-    OP_RESULT_STATUS status= 1;
-}
-
-message UpdateViewRequest{
-    repeated View views =1;
-}
-
-message UpdateViewResponse {
-    OP_RESULT_STATUS status= 1;      
-}
-message DeleteViewRequest {
-    repeated string view_ids = 1;
-}
-
-message DeleteViewResponse {
-    OP_RESULT_STATUS status= 1;
 }
 
 message QuerySimpleRequest{
