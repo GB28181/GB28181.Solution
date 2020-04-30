@@ -7,7 +7,7 @@ option objc_class_prefix = "ms";
 package MediaContract;
 
 // The Video Control service definition.
-service VideoControl {
+service VideoSession {
   //LivePlay
   rpc StartLive (StartLiveRequest) returns (StartLiveReply) {}
   //Playback

@@ -18,7 +18,7 @@ namespace GB28181.Server.Main
                 logger.Debug("System Configuration Service Address: " + SystemConfigurationServiceAddress);
                 //var channel = new  Channel(SystemConfigurationServiceAddress, ChannelCredentials.Insecure);
                 var channel = GrpcChannel.ForAddress(SystemConfigurationServiceAddress);
-                var client = new Manage.ManageClient(channel);
+                var client = new ServiceConfig.ServiceConfigClient(channel);
                 GetIntegratedPlatformConfigRequest req = new GetIntegratedPlatformConfigRequest();
                 GetIntegratedPlatformConfigResponse rep = client.GetIntegratedPlatformConfig(req);
                 logger.Debug("GetIntegratedPlatformConfigResponse: " + rep.Config.ToString());

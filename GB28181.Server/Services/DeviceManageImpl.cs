@@ -7,7 +7,7 @@ using Grpc.Net.Client;
 
 namespace GB28181.Service.Protos.AsClient.DeviceManagement
 {
-    public class DeviceManageImpl : Manage.ManageClient
+    public class DeviceManageImpl : DevicesManager.DevicesManagerClient
     {
         private static ILog logger = LogManager.GetLogger("RpcServer");
         private ISIPRegistrarCore _sipRegistrarCore = null;
@@ -38,7 +38,7 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
                  var channel =  GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080");
 
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 AddDeviceRequest _AddDeviceRequest = new AddDeviceRequest();
                 _AddDeviceRequest.Device.Add(_device);
                 _AddDeviceRequest.LoginRoleId = "XXXX";

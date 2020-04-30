@@ -117,7 +117,7 @@ namespace GB28181.WinTool.Codec
         public void Dispose()
         {
             Dispose(true);
-
+            GC.SuppressFinalize(this);
         }
     }
 

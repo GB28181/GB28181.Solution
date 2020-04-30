@@ -212,9 +212,9 @@ namespace GB28181.Server.Main
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 logger.Debug("Device Management Service Address: " + GBServerChannelAddress);
                 var channel = GrpcChannel.ForAddress(GBServerChannelAddress);
-                var client = new Manage.ManageClient(channel);
-                QueryGBDeviceByGBIDsResponse _rep = new QueryGBDeviceByGBIDsResponse();
-                QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
+                var client = new DevicesManager.DevicesManagerClient(channel);
+                var _rep = new QueryGBDeviceByGBIDsResponse();
+                var req = new QueryGBDeviceByGBIDsRequest();
                 logger.Debug("OnAlarmReceived Alarm: " + JsonConvert.SerializeObject(alarm));
                 req.GbIds.Add(alarm.DeviceID);
                 _rep = client.QueryGBDeviceByGBIDs(req);
@@ -311,7 +311,7 @@ namespace GB28181.Server.Main
                         #endregion
                         string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                         var channel = GrpcChannel.ForAddress(GBServerChannelAddress); // ChannelCredentials.Insecure);
-                        var client = new Manage.ManageClient(channel);
+                        var client = new DevicesManager.DevicesManagerClient(channel);
                         QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
                         QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
                         req.GbIds.Add(deviceid);
@@ -403,7 +403,7 @@ namespace GB28181.Server.Main
                 //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 //if (!_sipCoreMessageService.NodeMonitorService.ContainsKey(_device.GBID))
                 //{
                 //    AddDeviceRequest _AddDeviceRequest = new AddDeviceRequest();
@@ -467,7 +467,7 @@ namespace GB28181.Server.Main
             //   Channel channel = new Channel(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080", ChannelCredentials.Insecure);
             var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
             logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-            var client = new Manage.ManageClient(channel);
+            var client = new DevicesManager.DevicesManagerClient(channel);
             QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
             QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
             req.GbIds.Add(deviceid);
@@ -491,7 +491,7 @@ namespace GB28181.Server.Main
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 // Channel channel = new Channel(GBServerChannelAddress, ChannelCredentials.Insecure);
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
                 QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
                 req.GbIds.Add(DeviceID);

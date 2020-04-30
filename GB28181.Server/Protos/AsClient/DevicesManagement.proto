@@ -2,10 +2,10 @@ syntax = "proto3";
 
 option csharp_namespace = "GB28181.Service.Protos.AsClient.DeviceManagement";
 
-package manage;
+package devices;
 
 //service and action definition
-service Manage {
+service DevicesManager {
     rpc AddDevice(AddDeviceRequest) returns (AddDeviceResponse) {}
 	rpc DeleteDevice(DeleteDeviceRequest) returns (DeleteDeviceResponse) {}
 	rpc UpdateDevice(UpdateDeviceRequest) returns (UpdateDeviceResponse) {}
