@@ -416,7 +416,7 @@ namespace Helpers
 		{
 			while (true)
 			{
-				bool flag = true;
+				//bool flag = true;
 				long tickCount = TickCount;
 				lock (_dicTimers)
 				{
@@ -442,7 +442,7 @@ namespace Helpers
 
 		private static void Thread2()
 		{
-			int num = 200;
+			//int num = 200;
 			while (true)
 			{
 				bool flag = true;
@@ -493,7 +493,7 @@ namespace Helpers
 		private static void ThreadCompleted(TimerExecuter executer)
 		{
 			_ = _DEBUG;
-			bool flag = 1 == 0;
+		//	bool flag = 1 == 0;
 			lock (_queueCompleteThreads)
 			{
 				_queueCompleteThreads.Enqueue(executer);

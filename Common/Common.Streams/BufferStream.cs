@@ -81,7 +81,7 @@ namespace Common.Streams
 			while (_size < len)
 			{
 				Thread.Sleep(10);
-				bool flag = true;
+		//		bool flag = true;
 			}
 			int size = _size;
 			byte[] array = new byte[len];

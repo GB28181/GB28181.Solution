@@ -178,7 +178,7 @@ namespace Common.Networks
 					if (num == 0)
 					{
 						_ = _socket.Connected;
-						bool flag = 1 == 0;
+						//bool flag = 1 == 0;
 						if (_DisoconnectHandle != null)
 						{
 							_DisoconnectHandle.BeginInvoke(null, null);

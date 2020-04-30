@@ -4,7 +4,7 @@ namespace Helpers
 {
 	public class RuntimeExceptionEx : Exception
 	{
-		private bool _setMsged = false;
+		//private bool _setMsged = false;
 
 		public new string Message = null;
 

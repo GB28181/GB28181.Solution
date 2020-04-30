@@ -36,7 +36,7 @@ namespace StreamingKit.VideoEncoder
 
 		private static string SVGA = "svga";
 
-		private static string N43 = "480x360";
+	//	private static string N43 = "480x360";
 
 		public static string FLVLowQualityQCIF = $"-y -b {LQVideoBitrate} -ab {LQAudioBitrate} -ar {LQAudioSamplingFrequency} -s {QVGA} -f flv";
 

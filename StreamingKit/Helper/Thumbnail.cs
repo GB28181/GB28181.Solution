@@ -22,7 +22,7 @@ namespace StreamingKit.Helper
 
 		public static event Action<string> OnProcessData;
 
-		public static event Action<string> Trace;
+		//public static event Action<string> Trace;
 
 
 		public static void CreateThumbnails(string iFile, string oFile)
