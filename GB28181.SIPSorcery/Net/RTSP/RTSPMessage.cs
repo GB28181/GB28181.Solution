@@ -50,16 +50,16 @@ namespace GB28181.SIPSorcery.Net
         private static string m_CRLF = RTSPConstants.CRLF;
         private static int m_minFirstLineLength = 7;
         
-        public string RawMessage;
-		public RTSPMessageTypesEnum RTSPMessageType = RTSPMessageTypesEnum.Unknown;
-		public string FirstLine;
-		public string[] RTSPHeaders;
-		public string Body;
-		public byte[] RawBuffer;
+        public string RawMessage { get; set; }
+        public RTSPMessageTypesEnum RTSPMessageType { get; set; } = RTSPMessageTypesEnum.Unknown;
+		public string FirstLine { get; set; }
+        public string[] RTSPHeaders;
+		public string Body { get; set; }
+        public byte[] RawBuffer;
 
-        public DateTime ReceivedAt = DateTime.MinValue;
-        public IPEndPoint ReceivedFrom;
-        public IPEndPoint ReceivedOn;
+        public DateTime ReceivedAt { get; set; } = DateTime.MinValue;
+        public IPEndPoint ReceivedFrom { get; set; }
+        public IPEndPoint ReceivedOn { get; set; }
 
         public static RTSPMessage ParseRTSPMessage(byte[] buffer, IPEndPoint receivedFrom, IPEndPoint receivedOn)
         {

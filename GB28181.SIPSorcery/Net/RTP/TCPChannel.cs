@@ -181,7 +181,7 @@ namespace GB28181.SIPSorcery.Net.RTP
             }
         }
         #region 处理数据
-        private byte[] tempBuffer = new byte[0];
+        private byte[] tempBuffer = Array.Empty<byte>();
         //private void HandleTcpDatagramReceived(IAsyncResult ar)
         //{
         //    if (IsRunning)

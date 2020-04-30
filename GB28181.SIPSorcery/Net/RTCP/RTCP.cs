@@ -34,7 +34,7 @@ namespace GB28181.SIPSorcery.Net
 	{
 		//public DateTime SendTime;                 // The send time of the RTP packet adjusted to be local time using a rolling avergae tranist time to calculate.
 		public DateTime ReceiveTime;                // Local time the RTP packet was received.
-		public UInt16 SequenceNumber;
+		public ushort SequenceNumber;
 		public long RTPBytes;			            // Includes RTP Header and payload.
         public uint Jitter;
 		public int Duplicates;
