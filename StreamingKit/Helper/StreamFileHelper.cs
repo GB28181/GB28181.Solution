@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace StreamingKit.Codec
+namespace StreamingKit.Helper
 {
-    public class ReadFile
+    public class FileStreamHelper
     {
         public static List<byte[]> GetBuffByFile1(string file)
         {
-            var q = GetBuffByFile(file);
+            var q = GetBuffQueueByFile(file);
             return q.Select(p => p.Item2).ToList();
         }
-        public static Queue<Tuple<int, byte[]>> GetBuffByFile(string file)
+        public static Queue<Tuple<int, byte[]>> GetBuffQueueByFile(string file)
         {
             var r = new Queue<Tuple<int, byte[]>>();
             var fs = new System.IO.FileStream(file, System.IO.FileMode.Open);
@@ -111,7 +111,7 @@ namespace StreamingKit.Codec
 
 
     }
-    public class StreamFileHelper : ReadFile
+    public class StreamFileHelper : FileStreamHelper
     {
     }
 }
