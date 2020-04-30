@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.WinTool", "GB28181.WinTool\GB28181.WinTool.csproj", "{FA44F0AF-F0A0-4442-868E-378627504161}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "GB28181.Testing\Testing.csproj", "{8FB617A6-C3FB-4751-9639-0CA47BF0ACA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{8FB617A6-C3FB-4751-9639-0CA47BF0ACA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
