@@ -17,13 +17,13 @@ namespace Test.VideoThumbnail
 
         private const string ffmpeg_param_format = " -y  -i {0} {1}";
 
-        private static string ffmpeg = "ffmpeg.exe";
+       // private static string ffmpeg = "ffmpeg.exe";
 
         private static List<Process> ProcessList = new List<Process>();
 
-        public static event Action<string> OnProcessData;
+      //  public static event Action<string> OnProcessData;
 
-        public static event Action<string> Trace;
+     //   public static event Action<string> Trace;
 
         [Fact]
         public void Test()
