@@ -12,7 +12,7 @@ namespace GB28181.SIPSorcery.Sys.XML
     /// sip服务器配置
     /// </summary>
     [XmlRoot("sipaccounts")]
-    public class SipServer:XmlHelper<SipServer>
+    public class SipServer : XmlHelper<SipServer>
     {
         private string _xml = AppDomain.CurrentDomain.BaseDirectory + "Config\\gb28181.xml";
 
@@ -57,14 +57,14 @@ namespace GB28181.SIPSorcery.Sys.XML
             public string localSocket { get; set; }
         }
 
-        public new void  Save<T>(T t)
+        public new void Save<T>(T t)
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
-            MemoryStream stream = new MemoryStream();
+            using var stream = new MemoryStream();
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.NewLineChars = "\r\n";
-            
+
             using (XmlWriter writer = XmlWriter.Create(_xml, settings))
             {
                 var xns = new XmlSerializerNamespaces();

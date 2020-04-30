@@ -33,7 +33,7 @@ namespace GB28181.SIPSorcery.Net
                 primaryListener.MessageReceived += new STUNMessageReceived(stunServer.STUNPrimaryReceived);
                 secondaryListener.MessageReceived += new STUNMessageReceived(stunServer.STUNSecondaryReceived);
 
-                ManualResetEvent dontStopEvent = new ManualResetEvent(false);
+                using var dontStopEvent = new ManualResetEvent(false);
                 dontStopEvent.WaitOne();
             }
             catch (Exception excp)

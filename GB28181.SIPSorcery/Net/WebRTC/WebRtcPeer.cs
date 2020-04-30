@@ -668,7 +668,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                 turnPermissionRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Nonce, Encoding.UTF8.GetBytes(localTurnIceCandidate.TurnServer.Nonce)));
                 turnPermissionRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Realm, Encoding.UTF8.GetBytes(localTurnIceCandidate.TurnServer.Realm)));
 
-                MD5 md5 = new MD5CryptoServiceProvider();
+                using var md5 = new MD5CryptoServiceProvider();
                 byte[] hmacKey = md5.ComputeHash(Encoding.UTF8.GetBytes(localTurnIceCandidate.TurnServer.Username + ":" + localTurnIceCandidate.TurnServer.Realm + ":" + localTurnIceCandidate.TurnServer.Password));
 
                 byte[] turnPermissionReqBytes = turnPermissionRequest.ToByteBuffer(hmacKey, false);

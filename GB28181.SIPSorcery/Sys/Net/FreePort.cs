@@ -81,8 +81,7 @@ namespace GB28181.SIPSorcery.Sys.Net
             int port = startPort;
             bool isAvailable = true;
 
-            var mutex = new Mutex(false,
-                string.Concat("Global/", PortReleaseGuid));
+            using var mutex = new Mutex(false,string.Concat("Global/", PortReleaseGuid));
             mutex.WaitOne();
             try
             {

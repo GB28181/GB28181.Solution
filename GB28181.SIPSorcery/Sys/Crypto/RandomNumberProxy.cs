@@ -43,10 +43,10 @@ namespace Aza.Configuration
         }
 
         //[System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="RandomDotOrg", ResponseNamespace="RandomDotOrg")]
-        [return: System.Xml.Serialization.SoapElementAttribute("return")]
+        [return: System.Xml.Serialization.SoapElement("return")]
 		public long Mrand48() 
 		{
-			object[] results = this.Invoke("mrand48", new object[0]);
+			var results = Invoke("mrand48", Array.Empty<object>());
 			return ((long)(results[0]));
 		}
 	}

@@ -317,7 +317,7 @@ namespace GB28181.SIPSorcery.SIP
 
         public static string GetMD5HashBinHex(string val)
         {
-            MD5 md5 = new MD5CryptoServiceProvider();
+            using var md5 = new MD5CryptoServiceProvider();
             byte[] bHA1 = md5.ComputeHash(Encoding.UTF8.GetBytes(val));
             string HA1 = null;
             for (int i = 0; i < 16; i++)

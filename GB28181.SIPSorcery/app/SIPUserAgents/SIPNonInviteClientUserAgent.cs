@@ -84,16 +84,17 @@ namespace GB28181.SIPSorcery.SIP.App
         {
             try
             {
-                SIPRequest req = GetRequest(method);
-                SIPNonInviteTransaction tran = m_sipTransport.CreateNonInviteTransaction(req, null, m_sipTransport.GetDefaultSIPEndPoint(), m_outboundProxy);
-                
-                ManualResetEvent waitForResponse = new ManualResetEvent(false);
+                var req = GetRequest(method);
+                var tran = m_sipTransport.CreateNonInviteTransaction(req, null, m_sipTransport.GetDefaultSIPEndPoint(), m_outboundProxy);
+
+                using var waitForResponse = new ManualResetEvent(false);
                 tran.NonInviteTransactionTimedOut += RequestTimedOut;
                 tran.NonInviteTransactionFinalResponseReceived += ServerResponseReceived;
                 tran.SendReliableRequest();
             }
             catch (Exception excp)
             {
+                
                 logger.Error("Exception SIPNonInviteClientUserAgent SendRequest to " + m_callDescriptor.Uri + ". " + excp.Message);
                 throw;
             }
