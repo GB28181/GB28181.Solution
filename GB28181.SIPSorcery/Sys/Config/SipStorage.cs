@@ -14,7 +14,7 @@ namespace GB28181.SIPSorcery.Sys.Config
 {
     public class SipAccountStorage : ISipAccountStorage
     {
-        private static ILog logger = AppState.logger;
+        private static readonly ILog logger = AppState.logger;
         private const string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private const string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private const string m_XMLFilename = "gb28181.xml"; //default storage filename
@@ -74,7 +74,8 @@ namespace GB28181.SIPSorcery.Sys.Config
             }
             if (m_storageType == StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
-                throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
+                logger.Error($"The SIP Registrar cannot start with no persistence settings:m_storageType: {m_storageType},m_connStr :{m_connStr}.");
+                //throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
             }
         }
 
