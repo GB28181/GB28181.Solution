@@ -95,7 +95,7 @@ namespace GB28181.WinTool.Codec
 
     public class VideoEncodeCfg : StreamingKit.Codec.VideoEncodeCfg {
        
-        public IYUVDraw Draw;
+        public IYUVDraw Draw { get; set; }
  
 
         public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null) {
@@ -116,27 +116,10 @@ namespace GB28181.WinTool.Codec
     }
 
 
+    public class AudioEncodeCfg : StreamingKit.Codec.AudioEncodeCfg
+    {
 
-    public class AudioEncodeCfg : StreamingKit.Codec.AudioEncodeCfg {
-        public int micId = 0;
-        public int frequency = 8000;// 采样
-        public int format = 16;// 位元
-        public int channel = 2;// 通道模式
-        public int samples = 160;// 这个参数设置小了可以降底延迟
-        public int keyFrameRate = 50;// 关键帧间隔
-        public int bitrate = 32000;// 比特率
-
-
-
-        public static AudioEncodeCfg GetDefault() {
-            AudioEncodeCfg r = new AudioEncodeCfg();
-            r.SetEncoder("AAC_");
-            r.frequency = 32000;
-            r.format = 16;
-            r.channel = 1;
-            r.samples = 1024 * 2;
-            r.micId = 0;
-            return r;
-        }
     }
+
+
 }

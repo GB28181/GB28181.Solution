@@ -108,9 +108,9 @@ namespace GB28181.WinTool.Codec
         public MicEncoder(AudioEncodeCfg audioCfg, Action<MediaFrame> callback)
         {
             _audioCfg = audioCfg;
-            _channels = audioCfg.channel;
-            _frequency = audioCfg.frequency;
-            _capturer = new MicCapturer(audioCfg.micId, _channels, _frequency, audioCfg.samples, MicCapturer_CallBack);
+            _channels = audioCfg.Channel;
+            _frequency = audioCfg.Frequency;
+            _capturer = new MicCapturer(audioCfg.MicId, _channels, _frequency, audioCfg.Samples, MicCapturer_CallBack);
             if (audioCfg.encodeName.EqIgnoreCase("SPEX"))
                 _speex = new Speex(4);
             else if (audioCfg.encodeName.EqIgnoreCase("AAC_"))
@@ -125,7 +125,7 @@ namespace GB28181.WinTool.Codec
                     _faacImp.Encode(new byte[2048]);
                 }
                 else
-                    _faacImp = new FaacImp(_channels, _frequency, audioCfg.bitrate);
+                    _faacImp = new FaacImp(_channels, _frequency, audioCfg.Bitrate);
             }
 
             _callBack = callback;
@@ -145,7 +145,7 @@ namespace GB28181.WinTool.Codec
             var mf = new StreamingKit.MediaFrame()
             {
                 Frequency = _frequency,
-                Samples = (short)_audioCfg.samples,
+                Samples = (short)_audioCfg.Samples,
                 IsKeyFrame = (byte)((_audioFrameIndex++ % 50) == 0 ? 1 : 0),
                 Encoder = _audioCfg.encoder,
                 MediaFrameVersion = 0,

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Helpers;
+using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using Helpers;
-using System.IO;
 using System.Threading;
 
-namespace GB28181.WinTool.Codec {
+namespace GB28181.WinTool.Codec
+{
     public class FaacImp : IDisposable {
         private IntPtr _handle = IntPtr.Zero;
         private int _channel = 0;

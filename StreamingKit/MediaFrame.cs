@@ -430,10 +430,10 @@ namespace StreamingKit
             // 1);
             mFrame.MediaFrameVersion = 1;
             mFrame.IsKeyFrame = 1;
-            mFrame.Frequency = cfg.frequency;
-            mFrame.Channel = cfg.channel;
-            mFrame.AudioFormat = (short)cfg.format;
-            mFrame.Samples = (short)cfg.samples;
+            mFrame.Frequency = cfg.Frequency;
+            mFrame.Channel = cfg.Channel;
+            mFrame.AudioFormat = (short)cfg.Format;
+            mFrame.Samples = (short)cfg.Samples;
             mFrame.Encoder = cfg.encoder;
 
             return mFrame;

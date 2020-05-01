@@ -17,7 +17,7 @@ namespace SIPSorcery.SIP.UnitTests
     [Trait("Category", "unit")]
     public class SIPAuthorisationDigestUnitTest
     {
-        private Microsoft.Extensions.Logging.ILogger logger = null;
+        private ILogger logger = null;
 
         public SIPAuthorisationDigestUnitTest(Xunit.Abstractions.ITestOutputHelper output)
         {
