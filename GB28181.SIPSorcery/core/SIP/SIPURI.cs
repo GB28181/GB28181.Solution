@@ -38,6 +38,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.SIP
 {
@@ -475,7 +476,7 @@ namespace GB28181.SIPSorcery.SIP
 
         public SIPEndPoint ToSIPEndPoint()
         {
-            if (IPSocket.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
+            if (Sys.Net.IPSocket.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
             {
                 if (Host.IndexOf(":") != -1)
                 {

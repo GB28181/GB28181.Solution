@@ -40,6 +40,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.Net
 {
@@ -173,8 +174,8 @@ namespace GB28181.SIPSorcery.Net
 
                 if (hostname.Contains(':'))
                 {
-                    port = GB28181.SIPSorcery.Sys.IPSocket.ParsePortFromSocket(hostname);
-                    hostname = GB28181.SIPSorcery.Sys.IPSocket.ParseHostFromSocket(hostname);
+                    port = IPSocket.ParsePortFromSocket(hostname);
+                    hostname = IPSocket.ParseHostFromSocket(hostname);
                 }
 
                 logger.Debug("RTSP client connecting to " + hostname + ", port " + port + ".");

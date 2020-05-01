@@ -37,6 +37,7 @@ using System.Net.Sockets;
 using System.Text;
 using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -75,8 +76,9 @@ namespace GB28181.SIPSorcery.Net
             m_secondaryEndPoint = secondaryEndPoint;
             m_secondarySend = secondarySend;
 
-            m_primaryDiffPortSocket = NetServices.CreateRandomUDPListener(m_primaryEndPoint.Address, out m_primaryDiffPortEndPoint);
-            m_secondaryDiffPortSocket = NetServices.CreateRandomUDPListener(m_secondaryEndPoint.Address, out m_secondaryDiffPortEndPoint);
+            m_primaryDiffPortSocket = Sys.NetServices.CreateRandomUDPListener(m_primaryEndPoint.Address, out m_primaryDiffPortEndPoint);
+            
+            m_secondaryDiffPortSocket = Sys.NetServices.CreateRandomUDPListener(m_secondaryEndPoint.Address, out m_secondaryDiffPortEndPoint);
 
             logger.Debug("STUN Server additional sockets, primary=" + IPSocket.GetSocketString(m_primaryDiffPortEndPoint) + ", secondary=" + IPSocket.GetSocketString(m_secondaryDiffPortEndPoint) + ".");
         }
