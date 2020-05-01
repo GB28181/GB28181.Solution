@@ -31,12 +31,10 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;

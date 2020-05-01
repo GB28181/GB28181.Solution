@@ -32,15 +32,14 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.Net
-{    
+{
     public class NetTestDescriptor
     {   
         public const int MAXIMUM_PAYLOAD_SIZE = 1460;			// Ethernet MTU = 1500. (12B RTP header, 8B UDP Header, 20B IP Header, TOTAL = 40B).

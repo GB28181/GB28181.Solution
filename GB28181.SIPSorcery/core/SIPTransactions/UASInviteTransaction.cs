@@ -31,10 +31,10 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Sys;
 using System;
 using System.Linq;
 using System.Net;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
