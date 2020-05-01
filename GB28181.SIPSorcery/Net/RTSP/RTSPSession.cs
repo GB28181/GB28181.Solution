@@ -365,7 +365,7 @@ namespace GB28181.SIPSorcery.Net
 
         public bool HasRTPPacket()
         {
-            return _packets.Count() > 0;
+            return _packets.Count > 0;
         }
 
         public RTPPacket GetNextRTPPacket()

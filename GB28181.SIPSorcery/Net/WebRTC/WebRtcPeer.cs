@@ -414,7 +414,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                         }
                         else
                         {
-                            if (_remoteIceCandidates.Count() > 0)
+                            if (_remoteIceCandidates.Count > 0)
                             {
                                 foreach (var localIceCandidate in LocalIceCandidates.Where(x => x.IsStunLocalExchangeComplete == false && x.StunConnectionRequestAttempts < MAXIMUM_STUN_CONNECTION_ATTEMPTS))
                                 {
