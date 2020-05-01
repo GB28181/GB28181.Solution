@@ -72,7 +72,7 @@ namespace System.Linq.Dynamic
         }
 
         public static IQueryable Skip(this IQueryable source, int count) {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Skip",
