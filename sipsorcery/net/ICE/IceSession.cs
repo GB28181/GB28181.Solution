@@ -30,7 +30,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Sys;
 
-[assembly:InternalsVisibleToAttribute("SIPSorcery.UnitTests")]
+[assembly: InternalsVisibleToAttribute("SIPSorcery.UnitTests")]
 
 namespace SIPSorcery.Net
 {
@@ -80,6 +80,37 @@ namespace SIPSorcery.Net
             /// pair is unfrozen and moved into the Waiting state.
             /// </summary>
             Frozen
+        }
+
+        /// <summary>
+        /// Represents the state of the ICE checks for a checklist.
+        /// </summary>
+        /// <remarks>
+        /// As specified in https://tools.ietf.org/html/rfc8445#section-6.1.2.1.
+        /// </remarks>
+        internal enum ChecklistState
+        {
+            /// <summary>
+            /// The checklist is neither Completed nor Failed yet.
+            /// Checklists are initially set to the Running state.
+            /// </summary>
+            Running,
+
+            /// <summary>
+            /// The checklist contains a nominated pair for each
+            /// component of the data stream.
+            /// </summary>
+            Completed,
+
+            /// <summary>
+            /// The checklist does not have a valid pair for each component
+            /// of the data stream, and all of the candidate pairs in the
+            /// checklist are in either the Failed or the Succeeded state.  In
+            /// other words, at least one component of the checklist has candidate
+            /// pairs that are all in the Failed state, which means the component
+            /// has failed, which means the checklist has failed.
+            /// </summary>
+            Failed
         }
 
         internal class ChecklistEntry : IComparable
@@ -213,6 +244,11 @@ namespace SIPSorcery.Net
         private List<RTCIceCandidate> _remoteCandidates = new List<RTCIceCandidate>();
 
         /// <summary>
+        /// The state of the checklist as the ICE checks are carried out.
+        /// </summary>
+        internal ChecklistState _checklistState = ChecklistState.Running;
+
+        /// <summary>
         /// The checklist of local and remote candidate pairs
         /// </summary>
         internal List<ChecklistEntry> _checklist = new List<ChecklistEntry>();
@@ -291,13 +327,18 @@ namespace SIPSorcery.Net
             ConnectionState = RTCIceConnectionState.checking;
             OnIceConnectionStateChange?.Invoke(RTCIceConnectionState.checking);
 
-            _stunChecksTimer = new Timer(SendStunConnectivityChecks, null, 0, Ta);
+            _stunChecksTimer = new Timer(ProcessChecklist, null, 0, Ta);
         }
 
         public void SetRemoteCredentials(string username, string password)
         {
             RemoteIceUser = username;
             RemoteIcePassword = password;
+
+            // Once the remote party's ICE credentials are known connection checking can 
+            // commence immediately as candidates trickle in.
+            ConnectionState = RTCIceConnectionState.checking;
+            OnIceConnectionStateChange?.Invoke(ConnectionState);
         }
 
         public void Close(string reason)
@@ -317,6 +358,9 @@ namespace SIPSorcery.Net
         {
             if (!_remoteCandidates.Any(x => x.foundation == candidate.foundation))
             {
+                // Have a remote candidate. Connectivity checks can start. Note because we support ICE trickle
+                // we may also still be gathering candidates. Connectivity checks and gathering can be done in parallel.
+
                 _remoteCandidates.Add(candidate);
                 UpdateChecklist(candidate);
             }
@@ -393,10 +437,12 @@ namespace SIPSorcery.Net
         {
             lock (_checklist)
             {
-                // TODO: Check for duplicate entries and adjust reflexive local candidates to use the base address
-                // as per https://tools.ietf.org/html/rfc8445#section-6.1.2.4.
+                // Local server reflexive candidates don't get added to the checklist since they are just local
+                // "host" candidates with an extra NAT address mapping. The NAT address mapping is needed for the
+                // remote ICE peer but locally a server reflexive candidate is always going to be represented by
+                // a "host" candidate.
 
-                foreach (var localCandidate in Candidates)
+                foreach (var localCandidate in Candidates.Where(x => x.type != RTCIceCandidateType.srflx))
                 {
                     if (localCandidate.CandidateAddress != null && remoteCandidate.CandidateAddress != null &&
                         localCandidate.CandidateAddress.AddressFamily == remoteCandidate.CandidateAddress.AddressFamily)
@@ -407,20 +453,32 @@ namespace SIPSorcery.Net
                             {
                                 // Only pair IPv6 link local candidates if both are link local.
                                 ChecklistEntry entry = new ChecklistEntry(localCandidate, remoteCandidate, IsController);
+
+                                // Because only ONE checklist is currently supported each candidate pair can be set to
+                                // a "waiting" state. If an additional checklist is ever added then only one candidate
+                                // pair with the same foundation should be set to waiting across all checklists.
+                                // See https://tools.ietf.org/html/rfc8445#section-6.1.2.6 for a somewhat convoluted
+                                // explanation and example.
+                                entry.State = ChecklistEntryState.Waiting;
+
                                 _checklist.Add(entry);
-                                _checklist.Sort();
                             }
                         }
                         else
                         {
                             ChecklistEntry entry = new ChecklistEntry(localCandidate, remoteCandidate, IsController);
+                            // See comment above about why the candidate state is adjusted.
+                            entry.State = ChecklistEntryState.Waiting;
                             _checklist.Add(entry);
-                            _checklist.Sort();
                         }
                     }
                 }
 
-                while(_checklist.Count > MAX_CHECKLIST_ENTRIES)
+                // Finally sort the checklist to put it in priority order and if necessary remove lower 
+                // priority pairs.
+                _checklist.Sort();
+
+                while (_checklist.Count > MAX_CHECKLIST_ENTRIES)
                 {
                     _checklist.RemoveAt(_checklist.Count - 1);
                 }
@@ -502,11 +560,6 @@ namespace SIPSorcery.Net
                     peerRflxCandidate.SetAddressProperties(RTCIceProtocol.udp, remoteEndPoint.Address, (ushort)remoteEndPoint.Port, RTCIceCandidateType.prflx, null, 0);
                     logger.LogDebug($"Adding peer reflex ICE candidate for {remoteEndPoint}.");
                     _remoteCandidates.Add(peerRflxCandidate);
-
-                    // Some browsers require a STUN binding request from our end before the DTLS handshake will be initiated.
-                    // The STUN connectivity checks are already scheduled but we can speed things up by sending a binding
-                    // request immediately.
-                    SendStunConnectivityChecks(null);
                 }
             }
             else if (stunMessage.Header.MessageType == STUNv2MessageTypesEnum.BindingSuccessResponse)
@@ -567,102 +620,114 @@ namespace SIPSorcery.Net
             }
         }
 
-        private void SendStunConnectivityChecks(Object stateInfo)
+        /// <summary>
+        /// Processes the checklist and sends any required STUN requests to perform connectivity checks.
+        /// </summary>
+        /// <remarks>
+        /// The scheduling mechanism for ICE is specified in https://tools.ietf.org/html/rfc8445#section-6.1.4.
+        /// </remarks>
+        private void ProcessChecklist(Object stateInfo)
         {
             try
             {
-                lock (_stunChecksTimer)
+                if (ConnectionState == RTCIceConnectionState.checking && _checklist != null && _checklist.Count > 0)
                 {
-                    //logger.LogDebug($"Send STUN connectivity checks, local candidates {_candidates?.Count()}, remote candidates {_remoteCandidates?.Count()}.");
-
-                    // If one of the ICE candidates has the remote RTP socket set then the negotiation is complete and the STUN checks are to keep the connection alive.
-                    if (RemoteIceUser != null && RemoteIcePassword != null)
+                    if (RemoteIceUser == null || RemoteIcePassword == null)
                     {
-                        if (ConnectionState == RTCIceConnectionState.connected)
+                        logger.LogWarning("ICE session checklist processing cannot occur as either the remote ICE user or password are not set.");
+                        ConnectionState = RTCIceConnectionState.failed;
+                    }
+                    else
+                    {
+                        lock (_checklist)
                         {
-                            // Remote RTP endpoint gets set when the DTLS negotiation is finished.
-                            if (_connectedRemoteEndPoint != null)
+                            // The checklist gets sorted into priority order whenever a remote candidate and its corresponding candidate pairs
+                            // are added. At this point it can be relied upon that the checklist is correctly sorted by candidate pair priority.
+
+                            var nextEntry = _checklist.Where(x => x.State == ChecklistEntryState.Waiting).FirstOrDefault();
+
+                            if (nextEntry != null)
                             {
-                                //logger.LogDebug("Sending STUN connectivity check to client " + iceCandidate.RemoteRtpEndPoint + ".");
-
-                                string localUser = LocalIceUser;
-
-                                STUNv2Message stunRequest = new STUNv2Message(STUNv2MessageTypesEnum.BindingRequest);
-                                stunRequest.Header.TransactionId = Guid.NewGuid().ToByteArray().Take(12).ToArray();
-                                stunRequest.AddUsernameAttribute(RemoteIceUser + ":" + localUser);
-                                stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Priority, new byte[] { 0x6e, 0x7f, 0x1e, 0xff }));
-                                stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.UseCandidate, null));   // Must send this to get DTLS started.
-                                byte[] stunReqBytes = stunRequest.ToByteBufferStringKey(RemoteIcePassword, true);
-
-                                _rtpChannel.SendAsync(RTPChannelSocketsEnum.RTP, _connectedRemoteEndPoint, stunReqBytes);
-
-                                //_lastStunSentAt = DateTime.Now;
+                                DoConnectivityCheck(nextEntry);
                             }
-                        }
-                        else
-                        {
+
+                            //logger.LogDebug($"Send STUN connectivity checks, local candidates {_candidates?.Count()}, remote candidates {_remoteCandidates?.Count()}.");
+
+                            // If one of the ICE candidates has the remote RTP socket set then the negotiation is complete and the STUN checks are to keep the connection alive.
+                            //if (ConnectionState == RTCIceConnectionState.connected)
+                            //{
+                            //    // Remote RTP endpoint gets set when the DTLS negotiation is finished.
+                            //    if (_connectedRemoteEndPoint != null)
+                            //    {
+                            //        //logger.LogDebug("Sending STUN connectivity check to client " + iceCandidate.RemoteRtpEndPoint + ".");
+
+                            //        string localUser = LocalIceUser;
+
+                            //        STUNv2Message stunRequest = new STUNv2Message(STUNv2MessageTypesEnum.BindingRequest);
+                            //        stunRequest.Header.TransactionId = Guid.NewGuid().ToByteArray().Take(12).ToArray();
+                            //        stunRequest.AddUsernameAttribute(RemoteIceUser + ":" + localUser);
+                            //        stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Priority, new byte[] { 0x6e, 0x7f, 0x1e, 0xff }));
+                            //        stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.UseCandidate, null));   // Must send this to get DTLS started.
+                            //        byte[] stunReqBytes = stunRequest.ToByteBufferStringKey(RemoteIcePassword, true);
+
+                            //        _rtpChannel.SendAsync(RTPChannelSocketsEnum.RTP, _connectedRemoteEndPoint, stunReqBytes);
+
+                            //        //_lastStunSentAt = DateTime.Now;
+                            //    }
+                            //}
+                            //else
+                            //{
                             if (_remoteCandidates.Count() > 0 && _candidates != null)
                             {
                                 foreach (var localIceCandidate in _candidates.Where(x => x.IsStunLocalExchangeComplete == false && x.StunConnectionRequestAttempts < MAXIMUM_STUN_CONNECTION_ATTEMPTS))
                                 {
                                     localIceCandidate.StunConnectionRequestAttempts++;
 
-                                    // ToDo: Include srflx and relay addresses.
-
-                                    // Only supporting UDP candidates at this stage.
                                     foreach (var remoteIceCandidate in _remoteCandidates.Where(x => x.protocol == RTCIceProtocol.udp
                                         && x.address.NotNullOrBlank() && x.HasConnectionError == false))
                                     {
-                                        try
-                                        {
-                                            IPAddress remoteAddress = IPAddress.Parse(remoteIceCandidate.address);
 
-                                            logger.LogDebug($"Sending authenticated STUN binding request {localIceCandidate.StunConnectionRequestAttempts} from {_rtpChannel.RTPLocalEndPoint} to WebRTC peer at {remoteIceCandidate.address}:{remoteIceCandidate.port}.");
-
-                                            string localUser = LocalIceUser;
-
-                                            STUNv2Message stunRequest = new STUNv2Message(STUNv2MessageTypesEnum.BindingRequest);
-                                            stunRequest.Header.TransactionId = Guid.NewGuid().ToByteArray().Take(12).ToArray();
-                                            stunRequest.AddUsernameAttribute(RemoteIceUser + ":" + localUser);
-                                            stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Priority, new byte[] { 0x6e, 0x7f, 0x1e, 0xff }));
-                                            stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.UseCandidate, null));
-                                            byte[] stunReqBytes = stunRequest.ToByteBufferStringKey(RemoteIcePassword, true);
-
-                                            _rtpChannel.SendAsync(RTPChannelSocketsEnum.RTP, new IPEndPoint(IPAddress.Parse(remoteIceCandidate.address), remoteIceCandidate.port), stunReqBytes);
-
-                                            localIceCandidate.LastSTUNSendAt = DateTime.Now;
-                                        }
-                                        catch (System.Net.Sockets.SocketException sockExcp)
-                                        {
-                                            logger.LogWarning($"SocketException sending STUN request to {remoteIceCandidate.address}:{remoteIceCandidate.port}, removing candidate. {sockExcp.Message}");
-                                            remoteIceCandidate.HasConnectionError = true;
-                                        }
                                     }
                                 }
                             }
+                            //}
                         }
                     }
-
-                    //if (!_closed)
-                    //{
-                    //    var interval = GetNextStunCheckInterval(STUN_CHECK_BASE_PERIOD_MILLISECONDS);
-
-                    //    if (m_stunChecksTimer == null)
-                    //    {
-                    //        m_stunChecksTimer = new Timer(SendStunConnectivityChecks, null, interval, interval);
-                    //    }
-                    //    else
-                    //    {
-                    //        m_stunChecksTimer.Change(interval, interval);
-                    //    }
-                    //}
                 }
             }
             catch (Exception excp)
             {
-                logger.LogError("Exception SendStunConnectivityCheck. " + excp);
+                logger.LogError("Exception ProcessChecklist. " + excp);
                 //m_stunChecksTimer?.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Performs a connectivity check for a single candidate pair entry.
+        /// </summary>
+        /// <param name="candidatePair">The candidate pair to perform a connectivity check for.</param>
+        /// <remarks>As specified in https://tools.ietf.org/html/rfc8445#section-7.2.4.</remarks>
+        private void DoConnectivityCheck(ChecklistEntry candidatePair)
+        {
+            candidatePair.State = ChecklistEntryState.InProgress;
+
+            IPAddress remoteAddress = IPAddress.Parse(candidatePair.RemoteCandidate.address);
+            IPEndPoint remoteEndPoint = new IPEndPoint(remoteAddress, candidatePair.RemoteCandidate.port);
+
+            logger.LogDebug($"Sending ICE connectivity check from {_rtpChannel.RTPLocalEndPoint} to {remoteEndPoint}.");
+
+            string localUser = LocalIceUser;
+
+            STUNv2Message stunRequest = new STUNv2Message(STUNv2MessageTypesEnum.BindingRequest);
+            stunRequest.Header.TransactionId = Guid.NewGuid().ToByteArray().Take(12).ToArray();
+            stunRequest.AddUsernameAttribute(RemoteIceUser + ":" + localUser);
+            stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.Priority, new byte[] { 0x6e, 0x7f, 0x1e, 0xff }));
+            stunRequest.Attributes.Add(new STUNv2Attribute(STUNv2AttributeTypesEnum.UseCandidate, null));
+            byte[] stunReqBytes = stunRequest.ToByteBufferStringKey(RemoteIcePassword, true);
+
+            _rtpChannel.SendAsync(RTPChannelSocketsEnum.RTP, remoteEndPoint, stunReqBytes);
+
+            //localIceCandidate.LastSTUNSendAt = DateTime.Now;
         }
 
         //private async Task SendTurnServerBindingRequest(IceCandidate iceCandidate)
@@ -687,17 +752,6 @@ namespace SIPSorcery.Net
         //    }
 
         //    iceCandidate.IsGatheringComplete = true;
-        //}
-
-        /// <summary>
-        /// Gets a pseudo-randomised interval for the next STUN check period.
-        /// </summary>
-        /// <param name="baseInterval">The base check interval to randomise.</param>
-        /// <returns>A value in milliseconds to wait before performing the next STUN check.</returns>
-        //private int GetNextStunCheckInterval(int baseInterval)
-        //{
-        //    return Crypto.GetRandomInt((int)(STUN_CHECK_LOW_RANDOMISATION_FACTOR * baseInterval),
-        //        (int)(STUN_CHECK_HIGH_RANDOMISATION_FACTOR * baseInterval));
         //}
 
         //private void AllocateTurn(IceCandidate iceCandidate)

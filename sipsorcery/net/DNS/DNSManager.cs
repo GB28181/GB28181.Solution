@@ -337,7 +337,7 @@ namespace SIPSorcery.Net
             {
                 string host = null;
                 int port = 0;
-                if (IPSocket.Parse(hostname, out host, out port))
+                if (SIPSorcery.Sys.IPSocket.Parse(hostname, out host, out port))
                 {
                     DNSResponse result = new DNSResponse(IPAddress.Parse(host));
                     return result;

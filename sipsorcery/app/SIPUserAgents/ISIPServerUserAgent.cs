@@ -28,6 +28,7 @@ namespace SIPSorcery.SIP.App
     {
         SIPCallDirection CallDirection { get; }
         SIPDialogue SIPDialogue { get; }
+        UASInviteTransaction ClientTransaction { get; }
         SIPAccount SIPAccount { get; set; }
         bool IsAuthenticated { get; set; }
         bool IsB2B { get; }
@@ -49,7 +50,7 @@ namespace SIPSorcery.SIP.App
         SIPDialogue Answer(string contentType, string body, string toTag, SIPDialogueTransferModesEnum transferMode);
         SIPDialogue Answer(string contentType, string body, SIPDialogueTransferModesEnum transferMode, string[] customHeaders);
         SIPDialogue Answer(string contentType, string body, string toTag, SIPDialogueTransferModesEnum transferMode, string[] customHeaders);
-        void Reject(SIPResponseStatusCodesEnum failureStatus, string reasonPhrase); 
+        void Reject(SIPResponseStatusCodesEnum failureStatus, string reasonPhrase);
         void Reject(SIPResponseStatusCodesEnum failureStatus, string reasonPhrase, string[] customHeaders);
         void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI);
         void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI, string[] customHeaders);
