@@ -42,8 +42,8 @@ running on aspnetcore 3.1+
   + [ ] 以GRPC方式对接流媒体服务【[monibuca](https://github.com/langhuihui/monibuca)】
   + [x] 提供GRPC接口，是服务能从从系统的其他配置服务(或者数据服务)中获取需要配置信息，包括名称、ID、端口、协议等
   + [ ] 使服务注册组件变成可配置的（或者移除），(当前是consul，并且k8s环境中也不需要)
-  + [x] 将GRPC服务的实现改为apsnetcore3.1+的内置实现方式.
-  + [ ] 从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
+  + [x] 将GRPC服务的升级到apsnetcore3.1+的内置实现方式.
+  + [ ] [WIP]从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
   + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
 
 + SIP
@@ -55,8 +55,8 @@ running on aspnetcore 3.1+
     + [x] Device Live Video
     + [x] Device History Video Query
   + [x] 对接GB28181平台，实现完整的平台级联控制。
-  + [x] 注册到服务的设备信息缓存
-  + [ ] 注册到服务的平台信息缓存，待进一步测试
+  + [x] 缓存注册上来的的设备信息
+  + [ ] 缓存注册到上来的平台信息，待进一步测试
 
 + Streaming [Golang] [以【[monibuca](https://github.com/langhuihui/monibuca)】为基础]
   + [x] 修复视频测试工具(WinTool)

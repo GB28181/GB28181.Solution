@@ -45,6 +45,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Net;
+using SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.Net
 {
@@ -299,7 +301,7 @@ a=rtpmap:" + PAYLOAD_TYPE_ID + @" VP8/90000
                 logger.Debug("Attempting to create RTP socket with IP address " + address.Address + ".");
 
 
-                NetServices.CreateRtpSocket(address.Address, WEBRTC_START_PORT, WEBRTC_END_PORT, false, out Socket rtpSocket, out Socket controlSocket);
+                GB28181.SIPSorcery.Sys.NetServices.CreateRtpSocket(address.Address, WEBRTC_START_PORT, WEBRTC_END_PORT, false, out Socket rtpSocket, out Socket controlSocket);
 
                 if (rtpSocket != null)
                 {

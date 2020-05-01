@@ -21,6 +21,7 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 namespace GB28181.SIPSorcery.Sys
 {
@@ -29,9 +30,9 @@ namespace GB28181.SIPSorcery.Sys
         Windows = 1,
         Linux = 2,
     }
-    
+
     public class NetServices
-	{
+    {
         public const int UDP_PORT_START = 1025;
         public const int UDP_PORT_END = 65535;
         private const int RTP_RECEIVE_BUFFER_SIZE = 100000000;
@@ -65,7 +66,7 @@ namespace GB28181.SIPSorcery.Sys
                 var inUseUDPPorts = (from p in System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners() where p.Port >= startPort && p.Port <= endPort && p.Address.ToString() == localAddress.ToString() select p.Port).OrderBy(x => x).ToList();
 
                 // Make the RTP port start on an even port. Some legacy systems require the RTP port to be an even port number.
-                if(startPort % 2 != 0)
+                if (startPort % 2 != 0)
                 {
                     startPort += 1;
                 }
@@ -256,7 +257,7 @@ namespace GB28181.SIPSorcery.Sys
             {
                 string[] gatewayOctets = Regex.Split(defaultGateway.ToString(), @"\.");
 
-                IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName()); 
+                IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
                 ArrayList possibleMatches = new ArrayList();
                 foreach (IPAddress localAddress in hostEntry.AddressList)
@@ -335,5 +336,5 @@ namespace GB28181.SIPSorcery.Sys
             osProcess.WaitForExit();
             return osProcess.StandardOutput.ReadToEnd();
         }
-	}
+    }
 }
