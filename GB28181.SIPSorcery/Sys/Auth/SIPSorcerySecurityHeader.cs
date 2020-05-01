@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
