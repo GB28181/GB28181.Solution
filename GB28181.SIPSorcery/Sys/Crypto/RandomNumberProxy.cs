@@ -33,7 +33,7 @@ namespace Aza.Configuration
 		[return: System.Xml.Serialization.SoapElementAttribute("return")]
 		public int Lrand48() 
 		{
-			object[] results = this.Invoke("lrand48", new object[0]);
+			object[] results = this.Invoke("lrand48", Array.Empty<object>());
 			return ((int)(results[0]));
 		}
 

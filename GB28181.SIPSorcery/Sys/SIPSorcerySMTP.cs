@@ -20,20 +20,20 @@ using GB28181.Logger4Net;
 
 namespace GB28181.SIPSorcery.Sys
 {
-	public class SIPSorcerySMTP
-	{
-		private static readonly ILog logger = AppState.logger;
-        // 以下，如果用到须要对应的配置
+    public class SIPSorcerySMTP
+    {
+        private static readonly ILog logger = AppState.logger;
+        // 浠ヤ笅锛屽鏋滅敤鍒伴』瑕佸搴旂殑閰嶇疆
         private static readonly string m_smtpServer = AppState.GetConfigSetting("SMTPServer");
         private static readonly string m_smtpServerPort = AppState.GetConfigSetting("SMTPServerPort");
         private static readonly string m_smtpServerUseSSL = AppState.GetConfigSetting("SMTPServerUseSSL");
         private static readonly string m_smtpSendUsername = AppState.GetConfigSetting("SMTPServerUsername");
         private static readonly string m_smtpSendPassword = AppState.GetConfigSetting("SMTPServerPassword");
 
-		public static void SendEmail(string toAddress, string fromAddress, string subject, string messageBody)
-		{
+        public static void SendEmail(string toAddress, string fromAddress, string subject, string messageBody)
+        {
             ThreadPool.QueueUserWorkItem(delegate { SendEmailAsync(toAddress, fromAddress, null, null, subject, messageBody); });
-		}
+        }
 
         public static void SendEmail(string toAddress, string fromAddress, string ccAddress, string bccAddress, string subject, string messageBody)
         {
@@ -41,18 +41,18 @@ namespace GB28181.SIPSorcery.Sys
         }
 
         private static void SendEmailAsync(string toAddress, string fromAddress, string ccAddress, string bccAddress, string subject, string messageBody)
-		{
+        {
             if (toAddress.IsNullOrBlank())
             {
                 throw new ApplicationException("An email cannot be sent with an empty To address.");
             }
             else
-			{
-            
+            {
+
                 try
-				{
+                {
                     // Send an email.
-                    var email = new MailMessage(fromAddress, toAddress, subject, messageBody)
+                    using var email = new MailMessage(fromAddress, toAddress, subject, messageBody)
                     {
                         BodyEncoding = Encoding.UTF8
                     };
@@ -86,14 +86,14 @@ namespace GB28181.SIPSorcery.Sys
                         smtpClient.Send(email);
                         logger.Debug("Email sent to " + toAddress);
                     }
-				}
-				catch(Exception excp)
-				{
+                }
+                catch (Exception excp)
+                {
                     logger.Error("Exception SendEmailAsync (To=" + toAddress + "). " + excp.Message);
-				}
-			}
-		}
-    
+                }
+            }
+        }
+
         private static void RelayMail(MailMessage email)
         {
             try
@@ -121,7 +121,7 @@ namespace GB28181.SIPSorcery.Sys
             }
             catch (Exception ex)
             {
-                 logger.Error("Exception RelayMail. " + ex.Message);
+                logger.Error("Exception RelayMail. " + ex.Message);
                 throw;
             }
         }
