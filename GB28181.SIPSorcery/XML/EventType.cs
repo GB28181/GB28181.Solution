@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GB28181.SIPSorcery.Sys.XML
+﻿namespace GB28181.SIPSorcery.Sys.XML
 {
     /// <summary>
     /// 状态改变事件类型
     /// </summary>
-    public enum EventType : byte
+    public enum EventType : int
     {
         /// <summary>
         /// 上线
