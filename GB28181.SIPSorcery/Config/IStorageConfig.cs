@@ -1,7 +1,7 @@
 ﻿using GB28181.SIPSorcery.SIP.App;
 using System.Collections.Generic;
 
-namespace GB28181.SIPSorcery.Sys.Config
+namespace GB28181.SIPSorcery.Config
 {
     public interface ISipAccountStorage
     {

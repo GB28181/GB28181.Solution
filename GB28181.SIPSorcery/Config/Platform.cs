@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using GB28181.SIPSorcery.Sys.XML;
 
-namespace GB28181.SIPSorcery.Sys.Config
+namespace GB28181.SIPSorcery.Config
 {
     /// <summary>
     /// 平台配置
@@ -26,6 +23,6 @@ namespace GB28181.SIPSorcery.Sys.Config
         /// </summary>
         public int RemotePort { get; set; }
 
-        public XML.DevStatus Status { get; set; }
+        public DevStatus Status { get; set; }
     }
 }

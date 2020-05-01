@@ -4,7 +4,7 @@ using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.Servers.SIPMonitor;
 using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
+using GB28181.SIPSorcery.Config;
 using GB28181.SIPSorcery.Sys.Model;
 using GB28181.SIPSorcery.Sys.XML;
 using GB28181.Logger4Net;
@@ -20,7 +20,7 @@ using System.Threading;
 using System.Windows.Forms;
 using GB28181.WinTool.Player.Analyzer;
 using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys.Cache;
+using GB28181.SIPSorcery.Cache;
 using System.Threading.Tasks;
 
 namespace GB28181.WinTool

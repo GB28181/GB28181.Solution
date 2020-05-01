@@ -1,14 +1,14 @@
-﻿using GB28181.Logger4Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using GB28181.Logger4Net;
 using GB28181.SIPSorcery.Persistence;
 using GB28181.SIPSorcery.SIP.App;
 using SIPSorcery.Sys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GB28181.SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Sys.Config
+
+namespace GB28181.SIPSorcery.Config
 {
     public class SIPSqlite
     {
@@ -16,7 +16,7 @@ namespace GB28181.SIPSorcery.Sys.Config
         private static readonly string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private static readonly string m_XMLFilename = "gb28181.xml";
         private static readonly ILog logger = AppState.logger;
-        private static StorageTypes m_storageType;
+        private static Sys.StorageTypes m_storageType;
         private static string m_connStr;
 
         private static SIPSqlite _instance;
@@ -50,14 +50,14 @@ namespace GB28181.SIPSorcery.Sys.Config
         static SIPSqlite()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + "Config\\";
-            m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : StorageTypes.Unknown;
+            m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? Sys.StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : Sys.StorageTypes.Unknown;
             m_connStr = AppState.GetConfigSetting(m_connStrKey);
-            if (m_storageType == StorageTypes.SQLite)
+            if (m_storageType == Sys.StorageTypes.SQLite)
             {
                 m_connStr = string.Format(m_connStr, path);
 
             }
-            if (m_storageType == StorageTypes.Unknown || m_connStr.IsNullOrBlank())
+            if (m_storageType == Sys.StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
                 logger.Error($"The SIP Registrar cannot start with no persistence settings:m_storageType: {m_storageType},m_connStr :{m_connStr}.");
               //  throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
@@ -66,7 +66,7 @@ namespace GB28181.SIPSorcery.Sys.Config
 
         public void Read()
         {
-            SIPAssetPersistor<SIPAccount> account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
+            var account = SIPAssetPersistorFactory<SIPAccount>.CreateSIPAssetPersistor(m_storageType, m_connStr, m_XMLFilename);
             _sipAccount = account;
             _accounts = account.Get();
         }

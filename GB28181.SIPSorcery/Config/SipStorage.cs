@@ -7,11 +7,11 @@ using System.IO;
 using GB28181.SIPSorcery.SIP;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
-
+using GB28181.SIPSorcery.Sys;
 /// <summary>
 /// read configuraton and config the data storage
 /// </summary>
-namespace GB28181.SIPSorcery.Sys.Config
+namespace GB28181.SIPSorcery.Config
 {
     public class SipAccountStorage : ISipAccountStorage
     {
@@ -22,7 +22,7 @@ namespace GB28181.SIPSorcery.Sys.Config
 
         public static readonly SipAccountStorage Instance = new SipAccountStorage();
         //数据存储类型，比如xml,json,sqlite.postgresql
-        private static StorageTypes m_storageType;
+        private static Sys.StorageTypes m_storageType;
         //连接字符串
         private static string m_connStr;
 
@@ -65,15 +65,15 @@ namespace GB28181.SIPSorcery.Sys.Config
         // here init the gb28181.xml file setting from app.config
         static SipAccountStorage()
         {
-            m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : StorageTypes.Unknown;
+            m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? Sys.StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : Sys.StorageTypes.Unknown;
 
             var rootPath = AppDomain.CurrentDomain.BaseDirectory;
             m_connStr = Path.Combine(rootPath, AppState.GetConfigSetting(m_connStrKey));
-            if (m_storageType == StorageTypes.SQLite)
+            if (m_storageType == Sys.StorageTypes.SQLite)
             {
                 m_connStr = string.Format(m_connStr, rootPath);
             }
-            if (m_storageType == StorageTypes.Unknown || m_connStr.IsNullOrBlank())
+            if (m_storageType == Sys.StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
                 logger.Error($"The SIP Registrar cannot start with no persistence settings:m_storageType: {m_storageType},m_connStr :{m_connStr}.");
                 //throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");

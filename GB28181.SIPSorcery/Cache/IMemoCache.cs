@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GB28181.SIPSorcery.Sys.Cache
+namespace GB28181.SIPSorcery.Cache
 {
     /// <summary>
     /// cache device object in memory 

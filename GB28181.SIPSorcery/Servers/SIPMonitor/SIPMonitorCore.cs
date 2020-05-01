@@ -4,7 +4,7 @@ using GB28181.SIPSorcery.Servers.SIPMessage;
 using GB28181.SIPSorcery.SIP;
 using GB28181.SIPSorcery.SIP.App;
 using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
+using GB28181.SIPSorcery.Config;
 using GB28181.SIPSorcery.Sys.XML;
 using System;
 using System.Collections.Concurrent;
