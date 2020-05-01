@@ -36,14 +36,10 @@
 // ============================================================================
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
-
+using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Sys;
 namespace GB28181.SIPSorcery.SIP.App
 {
     public class SIPNonInviteClientUserAgent
