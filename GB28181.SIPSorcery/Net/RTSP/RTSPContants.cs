@@ -31,8 +31,6 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GB28181.SIPSorcery.Net
 {

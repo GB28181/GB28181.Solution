@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GB28181.Logger4Net;
 
+//SIPSorcery.Sys中有相同的类型但是不支持SQLite，所以扩展
 namespace GB28181.SIPSorcery.Sys
 {
     public enum StorageTypes
