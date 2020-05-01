@@ -1,8 +1,8 @@
 ﻿using System;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Servers;
+using GB28181.SIP;
+using GB28181.Sys;
 using Grpc.Net.Client;
 
 namespace GB28181.Service.Protos.AsClient.DeviceManagement
@@ -18,7 +18,7 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
             //_sipRegistrarCore.RPCDmsRegisterReceived += _sipRegistrarCore_RPCDmsRegisterReceived;
         }
 
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIPSorcery.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIP.App.SIPAccount sIPAccount)
         {
             try
             {

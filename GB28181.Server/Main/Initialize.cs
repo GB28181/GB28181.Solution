@@ -1,16 +1,16 @@
 ﻿using GB28181.Server.Utils;
 using GB28181.Service.Protos.AsClient.SystemConfig;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
-
+using GB28181.SIP.App;
 
 namespace GB28181.Server.Main
 {
     public partial class MainProcess
     {
-        private List<SIPSorcery.SIP.App.SIPAccount> SipAccountStorage_RPCGBServerConfigReceived()
+        private List<SIPAccount> SipAccountStorage_RPCGBServerConfigReceived()
         {
             try
             {
@@ -23,8 +23,8 @@ namespace GB28181.Server.Main
                 GetIntegratedPlatformConfigResponse rep = client.GetIntegratedPlatformConfig(req);
                 logger.Debug("GetIntegratedPlatformConfigResponse: " + rep.Config.ToString());
                 GBPlatformConfig item = rep.Config;
-                List<GB28181.SIPSorcery.SIP.App.SIPAccount> _lstSIPAccount = new List<GB28181.SIPSorcery.SIP.App.SIPAccount>();
-                GB28181.SIPSorcery.SIP.App.SIPAccount obj = new GB28181.SIPSorcery.SIP.App.SIPAccount();
+                List<GB28181.SIP.App.SIPAccount> _lstSIPAccount = new List<GB28181.SIP.App.SIPAccount>();
+                GB28181.SIP.App.SIPAccount obj = new GB28181.SIP.App.SIPAccount();
                 obj.Id = Guid.NewGuid();
                 //obj.Owner = item.Name;
                 obj.GbVersion = string.IsNullOrEmpty(item.GbVersion) ? "GB-2016" : item.GbVersion;
@@ -37,7 +37,7 @@ namespace GB28181.Server.Main
                 obj.SIPPassword = string.IsNullOrEmpty(item.SIPPassword) ? "123456" : item.SIPPassword;
                 obj.MsgProtocol = System.Net.Sockets.ProtocolType.Udp;
                 obj.StreamProtocol = System.Net.Sockets.ProtocolType.Udp;
-                obj.TcpMode = GB28181.SIPSorcery.Net.RTP.TcpConnectMode.passive;
+                obj.TcpMode = GB28181.Net.RTP.TcpConnectMode.passive;
                 obj.MsgEncode = string.IsNullOrEmpty(item.MsgEncode) ? "GB2312" : item.MsgEncode;
                 obj.PacketOutOrder = string.IsNullOrEmpty(item.PacketOutOrder) ? true : bool.Parse(item.PacketOutOrder);
                 obj.KeepaliveInterval = string.IsNullOrEmpty(item.KeepaliveInterval) ? Convert.ToUInt16(5000) : Convert.ToUInt16(item.KeepaliveInterval);

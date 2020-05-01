@@ -2,16 +2,17 @@
 using GB28181.Logger4Net;
 using NATS.Client;
 using Newtonsoft.Json;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.SIP;
+using GB28181.Sys;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
+using GB28181.SIP.App;
 
 namespace GB28181.Server.Main
 {
@@ -31,7 +32,7 @@ namespace GB28181.Server.Main
         public Dictionary<string, Catalog> Catalogs { get; } = new Dictionary<string, Catalog>();
         public Dictionary<string, SIPTransaction> GBSIPTransactions { get; } = new Dictionary<string, SIPTransaction>();
        
-        SIPSorcery.SIP.App.SIPAccount _SIPAccount;
+        SIPAccount _SIPAccount;
 
         public MessageHub(ISipMessageCore sipCoreMessageService, ISIPMonitorCore sIPMonitorCore, ISIPRegistrarCore sipRegistrarCore)
         {
@@ -356,7 +357,7 @@ namespace GB28181.Server.Main
         /// </summary>
         /// <param name="sipTransaction"></param>
         /// <param name="sIPAccount"></param>
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIPSorcery.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIP.App.SIPAccount sIPAccount)
         {
             try
             {

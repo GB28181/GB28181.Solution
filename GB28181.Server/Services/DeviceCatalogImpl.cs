@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Grpc.Core;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Servers;
+using GB28181.Sys.XML;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
