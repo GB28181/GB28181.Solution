@@ -1,12 +1,12 @@
-﻿using GB28181.SIPSorcery.Net;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.Servers.SIPMonitor;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Config;
-using GB28181.SIPSorcery.Sys.Model;
-using GB28181.SIPSorcery.Sys.XML;
+﻿using GB28181.Net;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.Servers.SIPMonitor;
+using GB28181.SIP;
+using GB28181.Sys;
+using GB28181.Config;
+using GB28181.Sys.Model;
+using GB28181.Sys.XML;
 using GB28181.Logger4Net;
 using StreamingKit;
 using StreamingKit.Media.TS;
@@ -19,8 +19,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using GB28181.WinTool.Player.Analyzer;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Cache;
+using GB28181.SIP.App;
+using GB28181.Cache;
 using System.Threading.Tasks;
 
 namespace GB28181.WinTool
@@ -1182,7 +1182,7 @@ namespace GB28181.WinTool
             //        HeartBeatCount = 1
             //    }
             //};
-            //string xmlBody = GB28181.SIPSorcery.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
+            //string xmlBody = GB28181.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
         }
 
         private int test()
