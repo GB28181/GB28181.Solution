@@ -13,12 +13,12 @@ namespace GB28181.WinTool.Codec
     public class MicCapturer : IDisposable
     {
         private bool _isworking = false;
-        private int _mic = 0;
-        private int _channels = 0;
-        private int _samples = 0;
-        private int _bufferSize = 0;
-        private WaveIn _waveIn = null;//音频输入
-        private Action<byte[]> _callBack;
+        private readonly int _mic = 0;
+        private readonly int _channels = 0;
+        private readonly int _samples = 0;
+        private readonly int _bufferSize = 0;
+        private readonly WaveIn _waveIn = null;//音频输入
+        private readonly Action<byte[]> _callBack;
         public MicCapturer(int mic, int channels, int samples, int bufferSize, Action<byte[]> callback)
         {
             _mic = mic;
@@ -31,7 +31,7 @@ namespace GB28181.WinTool.Codec
                 _waveIn = new WaveIn(WaveIn.Devices[mic], _samples, 16, _channels, bufferSize);
                 _waveIn.BufferFull += new BufferFullHandler(WaveIn_BufferFull);
             }
-            catch (Exception e)
+            catch (Exception )
             {
 
             }
@@ -76,19 +76,23 @@ namespace GB28181.WinTool.Codec
             }
         }
 
-        public void Dispose()
-        {
 
-            try
+
+        protected virtual void Dispose(bool disposeNative)
+        {
+            Stop();
+            if (disposeNative)
             {
-                Stop();
                 _waveIn.Dispose();
             }
-            catch (Exception e)
-            {
-                throw;
-            }
+        
         }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
 
     }
 
@@ -168,10 +172,9 @@ namespace GB28181.WinTool.Codec
                     _callBack(resetCodecMediaFrame);
             }
 
-            if (_callBack != null)
-                _callBack(mf);
-            if (bw == null)
-                bw = new BinaryWriter(new System.IO.FileStream(@"D:\aac5.aac", System.IO.FileMode.Create));
+
+            _callBack?.Invoke(mf);
+            bw ??= new BinaryWriter(new System.IO.FileStream(@"D:\aac5.aac", System.IO.FileMode.Create));
             byte[] bufs = mf.GetBytes();
             bw.Write(bufs.Length);
             bw.Write(bufs);
@@ -227,20 +230,19 @@ namespace GB28181.WinTool.Codec
 
         }
 
+        protected virtual void Dispose(bool disposeNative)
+        {
+            if (disposeNative)
+            {
+                _capturer?.Dispose();
+                _speex?.Dispose();
+                _faacImp?.Dispose();
+            }
+        }
         public void Dispose()
         {
-            try
-            {
-                if (_capturer != null)
-                    _capturer.Dispose();
-                if (_speex != null)
-                    _speex.Dispose();
-                if (_faacImp != null)
-                    _faacImp.Dispose();
-            }
-            catch (Exception e)
-            {
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

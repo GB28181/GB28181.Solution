@@ -691,7 +691,7 @@ namespace GB28181.WinTool.Codec
     }
     public class CameraEncoder : IDisposable
     {
-        public static int CameraCapturerMode = System.Configuration.ConfigurationSettings.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
+        public static int CameraCapturerMode = System.Configuration.ConfigurationManager.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
         protected bool _isworking = false;
         protected CameraCapturer _capturer = null;
         protected X264Native _x264;
