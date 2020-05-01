@@ -1,4 +1,4 @@
-﻿namespace GB28181.SIPSorcery.Sys.XML
+﻿namespace GB28181.Sys.XML
 {
     /// <summary>
     /// 状态改变事件类型

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
     /// <summary>
     /// 强制关键帧命令

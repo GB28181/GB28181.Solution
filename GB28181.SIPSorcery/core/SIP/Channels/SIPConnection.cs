@@ -39,7 +39,7 @@ using System.Text;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public delegate void SIPConnectionDisconnectedDelegate(IPEndPoint remoteEndPoint);
 

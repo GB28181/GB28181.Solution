@@ -40,14 +40,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Xml;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 
 #if !SILVERLIGHT
 using System.Data;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     // // [Table(Name = "sipdialplans")]
     [DataContractAttribute]

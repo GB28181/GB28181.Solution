@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Xml.Serialization;
-using GB28181.SIPSorcery.Config;
+using GB28181.Config;
 
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
     /// <summary>
     /// 设备平台配置信息

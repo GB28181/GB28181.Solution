@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GB28181.SIPSorcery.Sys.Model
+namespace GB28181.Sys.Model
 {
     public class Camera
     {

@@ -1,6 +1,6 @@
-﻿using GB28181.SIPSorcery.SIP;
+﻿using GB28181.SIP;
 
-namespace GB28181.SIPSorcery.Servers
+namespace GB28181.Servers
 {
     public interface ISIPRegistrarCore
     {

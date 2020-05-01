@@ -35,9 +35,9 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Persistence;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Persistence;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace SIPSorcery.GB28181.Persistence
+namespace GB28181.Persistence
 {
     public class SQLAssetPersistor<T> : SIPAssetPersistor<T> where T : class, ISIPAsset, new()
     {

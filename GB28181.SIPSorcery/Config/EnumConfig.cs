@@ -1,4 +1,4 @@
-﻿namespace GB28181.SIPSorcery.Config
+﻿namespace GB28181.Config
 {
     /// <summary>
     /// 图像分辨率

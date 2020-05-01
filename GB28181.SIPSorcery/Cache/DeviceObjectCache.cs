@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using GB28181.SIPSorcery.Sys.Model;
+using GB28181.Sys.Model;
 
-namespace GB28181.SIPSorcery.Cache
+namespace GB28181.Cache
 {
     public class DeviceObjectCache : IMemoCache<Camera>
     {

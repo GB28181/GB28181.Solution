@@ -1,4 +1,4 @@
-﻿using GB28181.SIPSorcery.Sys.XML;
+﻿using GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
      [XmlRoot("Control")]
     public class Control : XmlHelper<Control>

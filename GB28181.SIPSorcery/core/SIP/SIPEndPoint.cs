@@ -1,10 +1,10 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 using System;
 using System.Net;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     /// <summary>
     /// This class must remain immutable otherwise the SIP stack can develop problems. SIP end points can get

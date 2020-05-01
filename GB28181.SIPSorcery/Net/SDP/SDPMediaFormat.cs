@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public enum SDPMediaFormatsEnum
     {

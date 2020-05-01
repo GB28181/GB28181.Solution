@@ -34,7 +34,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-namespace GB28181.SIPSorcery.Sys.Auth
+namespace GB28181.Sys.Auth
 {
     public class ServiceAuthToken
     {

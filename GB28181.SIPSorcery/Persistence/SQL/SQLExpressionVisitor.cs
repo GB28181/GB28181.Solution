@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
 
     internal class SQLExpressionVisitor : ExpressionVisitor {

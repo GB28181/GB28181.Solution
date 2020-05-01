@@ -37,8 +37,8 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Persistence;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Persistence;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     public delegate string GetCanonicalDomainDelegate(string host, bool wildCardOk);     // Used to get the canonical domain from a host portion of a SIP URI.
 

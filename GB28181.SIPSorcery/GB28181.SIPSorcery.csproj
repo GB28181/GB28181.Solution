@@ -6,8 +6,8 @@
     <ProjectGuid>{42050B07-B393-4292-A89F-7ECE14989E0F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GB28181.SIPSorcery</RootNamespace>
-    <AssemblyName>GB28181.SIPSorcery</AssemblyName>
+    <RootNamespace>GB28181</RootNamespace>
+    <AssemblyName>GB28181</AssemblyName>
     <TargetFramework>netstandard2.1</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <NeutralLanguage>en-US</NeutralLanguage>

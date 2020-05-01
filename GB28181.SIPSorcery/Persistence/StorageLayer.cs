@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 //using Npgsql;
 //using NpgsqlTypes;
@@ -31,7 +31,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
     public class StorageLayer
 	{

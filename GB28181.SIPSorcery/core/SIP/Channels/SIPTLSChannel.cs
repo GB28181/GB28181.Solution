@@ -39,10 +39,10 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public class SIPTLSChannel : SIPChannel
     {

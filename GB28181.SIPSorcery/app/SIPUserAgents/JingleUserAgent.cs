@@ -4,10 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using GB28181.SIPSorcery.Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Net;
+using GB28181.Sys;
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     public class JingleUserAgent : ISIPClientUserAgent
     {

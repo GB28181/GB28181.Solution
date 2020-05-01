@@ -1,8 +1,8 @@
-﻿using GB28181.SIPSorcery.Net;
-using GB28181.SIPSorcery.SIP;
+﻿using GB28181.Net;
+using GB28181.SIP;
 using System;
 
-namespace GB28181.SIPSorcery.Servers
+namespace GB28181.Servers
 {
     public interface IMediaAction
     {

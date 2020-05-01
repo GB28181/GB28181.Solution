@@ -20,14 +20,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
 	public delegate void RTPSinkClosed(Guid streamId, Guid callId);
 	public delegate void RTPDataReceived(Guid streamId, byte[] rtpPayload, IPEndPoint remoteEndPoint);

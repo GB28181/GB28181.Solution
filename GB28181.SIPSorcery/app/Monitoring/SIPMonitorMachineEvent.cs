@@ -47,7 +47,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
@@ -55,7 +55,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     /// <summary>
     /// Describes monitoring events that are for machine notifications to initiate actions such as

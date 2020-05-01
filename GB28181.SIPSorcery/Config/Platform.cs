@@ -1,7 +1,7 @@
 ﻿
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Sys.XML;
 
-namespace GB28181.SIPSorcery.Config
+namespace GB28181.Config
 {
     /// <summary>
     /// 平台配置

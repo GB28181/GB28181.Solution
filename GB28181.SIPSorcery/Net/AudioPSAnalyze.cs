@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public partial class AudioPSAnalyze
     {

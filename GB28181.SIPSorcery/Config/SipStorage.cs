@@ -1,17 +1,17 @@
-﻿using GB28181.SIPSorcery.Persistence;
-using GB28181.SIPSorcery.SIP.App;
+﻿using GB28181.Persistence;
+using GB28181.SIP.App;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using GB28181.SIPSorcery.SIP;
+using GB28181.SIP;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 /// <summary>
 /// read configuraton and config the data storage
 /// </summary>
-namespace GB28181.SIPSorcery.Config
+namespace GB28181.Config
 {
     public class SipAccountStorage : ISipAccountStorage
     {

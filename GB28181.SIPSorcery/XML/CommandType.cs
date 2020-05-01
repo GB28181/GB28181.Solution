@@ -1,5 +1,5 @@
 ﻿
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
     /// <summary>
     /// 命令类型

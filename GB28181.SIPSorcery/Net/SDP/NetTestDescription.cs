@@ -46,7 +46,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class NetTestDescription
     {

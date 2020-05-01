@@ -43,14 +43,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     public enum SIPMonitorClientTypesEnum
     {

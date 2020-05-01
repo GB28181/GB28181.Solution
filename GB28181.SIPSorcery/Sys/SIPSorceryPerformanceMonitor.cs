@@ -45,7 +45,7 @@ using System.Diagnostics;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     public class SIPSorceryPerformanceMonitor
     {

@@ -31,14 +31,14 @@
 //-----------------------------------------------------------------------------
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using System.Runtime.Serialization;
 
 #if !SILVERLIGHT
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public delegate void CDRReadyDelegate(SIPCDR cdr);                // Used to inform CDR handlers when a CDR has been udpated.
 

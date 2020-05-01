@@ -5,12 +5,12 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Transactions;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
 
     public class SQLQueryProvider : QueryProvider

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
     [XmlRoot("sipServer")]
     public class SipSocket : XmlHelper<SipSocket>

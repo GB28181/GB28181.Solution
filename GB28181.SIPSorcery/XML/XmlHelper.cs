@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace GB28181.SIPSorcery.Sys.XML
+namespace GB28181.Sys.XML
 {
     /// <summary>
     /// XML操作访问类

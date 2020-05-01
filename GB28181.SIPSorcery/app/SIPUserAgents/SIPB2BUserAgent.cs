@@ -36,10 +36,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     /// <summary>
     /// This class represents a back-to-back (B2B) user agent (UA) that is used to attach an outgoing

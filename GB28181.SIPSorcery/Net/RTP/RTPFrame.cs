@@ -30,13 +30,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Net.RTP;
+using GB28181.Net.RTP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class RTPFrame
     {

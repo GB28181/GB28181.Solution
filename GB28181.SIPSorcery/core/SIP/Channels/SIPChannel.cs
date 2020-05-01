@@ -46,7 +46,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
 	public class IncomingMessage
 	{

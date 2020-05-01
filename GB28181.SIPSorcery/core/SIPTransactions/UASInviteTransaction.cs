@@ -40,7 +40,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     /// <summary>
     /// The server transaction for an INVITE request. This transaction processes incoming calls RECEIVED by the application.

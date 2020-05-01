@@ -36,7 +36,7 @@ using System.Collections.Generic;
 using System.Text;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public enum RTSPRequestParserError
     {

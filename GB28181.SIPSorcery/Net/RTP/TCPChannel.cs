@@ -1,5 +1,5 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GB28181.SIPSorcery.Net.RTP
+namespace GB28181.Net.RTP
 {
     /// <summary>
     /// TCP连接模式

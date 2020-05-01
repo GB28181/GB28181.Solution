@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
 
     public abstract class ExpressionVisitor {

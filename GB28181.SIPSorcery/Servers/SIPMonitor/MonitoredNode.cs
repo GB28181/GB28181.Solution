@@ -1,4 +1,4 @@
-﻿namespace GB28181.SIPSorcery.Servers
+﻿namespace GB28181.Servers
 {
 
     /// <summary>

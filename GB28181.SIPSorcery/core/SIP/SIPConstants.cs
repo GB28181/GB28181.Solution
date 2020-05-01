@@ -36,7 +36,7 @@ using SIPSorcery.Sys;
 
 
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
 	public class SIPConstants
 	{

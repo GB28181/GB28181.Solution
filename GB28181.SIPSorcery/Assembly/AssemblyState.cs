@@ -35,18 +35,18 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System.Reflection;
 
 
 [assembly: AssemblyCulture("")]
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public static class AssemblyState
 	{
 
-		public static readonly ILog logger = AppState.GetLogger("GB28181.SIPSorcery");
+		public static readonly ILog logger = AppState.GetLogger("GB28181");
 
         public const string XML_DOMAINS_FILENAME = "sipdomains.xml";
         public const string XML_SIPACCOUNTS_FILENAME = "sipaccounts.xml";

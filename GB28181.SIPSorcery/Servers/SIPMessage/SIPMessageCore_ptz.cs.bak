@@ -1,16 +1,16 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers.SIPMonitor;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Servers.SIPMonitor;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace GB28181.SIPSorcery.Servers.SIPMessage
+namespace GB28181.Servers.SIPMessage
 {
     /// <summary>
     /// SIP服务状态

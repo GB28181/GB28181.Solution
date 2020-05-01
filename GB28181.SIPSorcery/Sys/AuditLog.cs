@@ -11,8 +11,8 @@
 //-----------------------------------------------------------------------------
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Persistence;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Persistence;
+using GB28181.Sys;
 
 #if UNITTEST
 using NUnit.Framework;

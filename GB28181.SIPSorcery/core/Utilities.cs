@@ -30,7 +30,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 using System;
 using System.Text.RegularExpressions;
@@ -39,7 +39,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public class CallProperties
     {
@@ -54,7 +54,7 @@ namespace GB28181.SIPSorcery.SIP
         }
 
         /// <summary>
-        /// ´´½¨CSeq
+        /// ï¿½ï¿½ï¿½ï¿½CSeq
         /// </summary>
         /// <returns></returns>
         public static int CreateNewCSeq()

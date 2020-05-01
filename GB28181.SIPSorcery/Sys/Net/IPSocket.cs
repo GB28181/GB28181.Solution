@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace GB28181.SIPSorcery.Sys.Net
+namespace GB28181.Sys.Net
 {
 
     public class IPSocket

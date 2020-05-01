@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class SessionDescriptionTypes
     {
