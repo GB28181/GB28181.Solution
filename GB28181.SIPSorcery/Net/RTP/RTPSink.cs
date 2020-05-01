@@ -209,7 +209,7 @@ namespace GB28181.Net
 
         public RTPSink(IPAddress localAddress, ArrayList inUsePorts)
 		{
-            m_udpListener = Sys.NetServices.CreateRandomUDPListener(localAddress, RTP_PORTRANGE_START, RTP_PORTRANGE_END, inUsePorts, out m_localEndPoint);
+            m_udpListener = NetServices.CreateRandomUDPListener(localAddress, RTP_PORTRANGE_START, RTP_PORTRANGE_END, inUsePorts, out m_localEndPoint);
 
             // If a setting has been supplied in the config file use that.
             _ = int.TryParse(m_typeOfService, out int typeOfService);
