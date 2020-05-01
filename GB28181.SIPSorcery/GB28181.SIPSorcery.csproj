@@ -24,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Logger4Net\Logger4Net.csproj" />
-    <ProjectReference Include="..\sipsorcery\SIPSorcery.csproj" />
+    <ProjectReference Include="..\sipsorcery\sipsorcery\SIPSorcery.csproj" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
