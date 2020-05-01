@@ -1,7 +1,7 @@
 ﻿# 模块关系说明
 
 + **GB28181.Server** GB28181服务启动和服务承载(HOST)模块,是服务的入口，服务从这里启动.
-+ **GB28181.SIPSorcery** GB28181的业务模块，依赖sipsorcery，其中有一部分代码与sipsorcery是重合的，正在除去重合的部分.
++ **GB28181.SIPSorcery** GB28181的业务模块，依赖并在逻辑关系上继承sipsorcery，其中有一部分代码与sipsorcery是重合的，正在除去重合的部分.
 + **Logger4Net** 兼容Log4net日志接口的日志类库，可以在这里扩展log逻辑将日志输入/输出到需要目标
 + **Common** 通用模块，主要提供泛型，网络，流相关的一些操作，以及一些帮助类
 + **sipsorcery** SIP媒体协议栈以及相关的实现，支持WebRTC/WebSocket.
