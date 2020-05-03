@@ -5,8 +5,10 @@
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34020000002000000001</LocalID>
     <LocalIP>127.0.0.1</LocalIP>
-    <LocalPort>5060</LocalPort>
+    <LocalPort>5061</LocalPort>
     <RemotePort>5060</RemotePort>
+    <MediaIP>47.115.1.118</MediaIP>
+    <MediaPort>9000</MediaPort>
     <Authentication>false</Authentication>
     <SIPUsername>admin</SIPUsername>
     <SIPPassword>123456</SIPPassword>
@@ -17,6 +19,7 @@
     <PacketOutOrder>true</PacketOutOrder>
     <KeepaliveInterval>5000</KeepaliveInterval>
     <KeepaliveNumber>3</KeepaliveNumber>
+  
     <!--<ServiceType>GBToGB</ServiceType>-->
     <!--<ServiceType>GBToDevice</ServiceType>-->
   </sipaccount>
