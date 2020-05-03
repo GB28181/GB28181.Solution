@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using System.Linq;
 
 namespace GB28181.Servers.SIPMonitor
 {
@@ -426,7 +427,7 @@ namespace GB28181.Servers.SIPMonitor
             _mediaPort = _sipMsgCoreService.SetMediaPort();
 
             uint startTime = TimeConvert.DateToTimeStamp(beginTime);
-            uint stopTime = TimeConvert.DateToTimeStamp(endTime);
+            uint stopTime =  TimeConvert.DateToTimeStamp(endTime);
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
@@ -598,8 +599,9 @@ namespace GB28181.Servers.SIPMonitor
         /// <returns></returns>
         private string SetMediaReq(string localIp, int[] mediaPort, ulong startTime, ulong stopTime)
         {
+            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
 
-            var sdpConn = new SDPConnectionInformation(localIp);
+            var sdpConn = new SDPConnectionInformation(account.MediaIP.ToString());
 
             SDP sdp = new SDP
             {
@@ -609,8 +611,8 @@ namespace GB28181.Servers.SIPMonitor
                 SessionName = CommandType.Playback.ToString(),
                 Connection = sdpConn,
                 Timing = startTime + " " + stopTime,
-                Address = localIp,
-                URI = DeviceId + ":" + 3
+                Address = account.MediaIP.ToString(),// localIp,
+                URI = DeviceId + ":" + 0
             };
 
             SDPMediaFormat psFormat = new SDPMediaFormat(SDPMediaFormatsEnum.PS)
@@ -642,7 +644,7 @@ namespace GB28181.Servers.SIPMonitor
             }
             media.AddFormatParameterAttribute(psFormat.FormatID, psFormat.Name);
             media.AddFormatParameterAttribute(h264Format.FormatID, h264Format.Name);
-            media.Port = mediaPort[0];
+            media.Port = account.MediaPort;// mediaPort[0];
 
             sdp.Media.Add(media);
 
@@ -1375,7 +1377,7 @@ namespace GB28181.Servers.SIPMonitor
         /// <param name="dwSpeed">速度</param>
         /// <returns></returns>
         private string GetPtzCmd(PTZCommand ucommand, int dwSpeed)
-        {
+        {//10进制
             List<int> cmdList = new List<int>(8)
             {
                 0xA5,
@@ -1507,7 +1509,7 @@ namespace GB28181.Servers.SIPMonitor
             string cmdStr = string.Empty;
             foreach (var cmdItemStr in cmdList)
             {
-                cmdStr += cmdItemStr.ToString("X").PadLeft(2, '0');
+                cmdStr += cmdItemStr.ToString("X").PadLeft(2, '0'); //10进制转换为16进制
             }
             return cmdStr;
         }

@@ -4,8 +4,8 @@
     <Name>上级平台</Name>
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34020000002000000001</LocalID>
-    <LocalIP>192.168.197.108</LocalIP>
-    <LocalPort>5060</LocalPort>
+    <LocalIP>192.168.197.33</LocalIP>
+    <LocalPort>5061</LocalPort>
     <RemotePort>5060</RemotePort>
     <Authentication>false</Authentication>
     <SIPUsername>admin</SIPUsername>
@@ -17,6 +17,8 @@
     <PacketOutOrder>true</PacketOutOrder>
     <KeepaliveInterval>5000</KeepaliveInterval>
     <KeepaliveNumber>3</KeepaliveNumber>
+    <MediaIP>47.115.1.118</MediaIP>
+    <MediaPort>9000</MediaPort>
     <!--<ServiceType>GBToGB</ServiceType>-->
     <!--<ServiceType>GBToDevice</ServiceType>-->
   </sipaccount>

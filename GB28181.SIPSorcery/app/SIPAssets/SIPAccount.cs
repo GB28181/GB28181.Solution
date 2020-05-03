@@ -98,6 +98,8 @@ namespace GB28181.SIP.App
         #region 国标属性
         private IPAddress m_localIP;
         private ushort m_localPort;
+        private IPAddress mediaIP;//流媒体IP
+        private ushort mediaPort;////流媒体port
         private bool m_authentication;
         private string m_sipUsername;
         private string m_sipPassword;
@@ -135,6 +137,24 @@ namespace GB28181.SIP.App
         {
             get { return m_localPort; }
             set { m_localPort = value; }
+        }
+
+        /// <summary>
+        /// 流媒体IP
+        /// </summary>
+        public IPAddress MediaIP
+        {
+            get { return mediaIP; }
+            set { mediaIP = value; }
+        }
+
+        /// <summary>
+        /// 流媒体port
+        /// </summary>
+        public ushort MediaPort
+        {
+            get { return mediaPort; }
+            set { mediaPort = value; }
         }
 
         /// <summary>
@@ -520,6 +540,11 @@ namespace GB28181.SIP.App
                 LocalID = row["LocalID"].ToString();
                 IPAddress.TryParse(row["LocalIP"].ToString(), out m_localIP);
                 ushort.TryParse(row["LocalPort"].ToString(), out m_localPort);
+
+                IPAddress.TryParse(row["MediaIP"].ToString(), out mediaIP);
+                ushort.TryParse(row["MediaPort"].ToString(), out mediaPort);
+
+
                 bool.TryParse(row["Authentication"].ToString(), out m_authentication);
                 m_sipUsername = row["SIPUsername"].ToString();
                 m_sipPassword = row["SIPPassword"].ToString();

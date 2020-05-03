@@ -32,7 +32,7 @@ namespace GB28181.WinTool
         private Thread _cataThread;
         private static ILog logger = AppState.logger;
         private bool _isStop = true;
-        private string _dir = AppDomain.CurrentDomain.BaseDirectory + "Config";
+        //private string _dir = AppDomain.CurrentDomain.BaseDirectory + "Config";
         private DateTime _keepaliveTime;
         private Thread _keepaliveThread;
         private Queue<Keep> _keepQueue = new Queue<Keep>();
@@ -99,8 +99,8 @@ namespace GB28181.WinTool
         private void Initialize()
         {
             _devList = new List<ListViewItem>();
-            txtStartTime.Text = DateTime.Now.ToString("yyyy-MM-dd 8:00:00");
-            txtStopTime.Text = DateTime.Now.ToString("yyyy-MM-dd 9:00:00");
+            txtStartTime.Text = DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd 8:00:00");
+            txtStopTime.Text = DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd 9:00:00");
             //txtDragDrop.Text = DateTime.Now.ToString("yyyy-MM-dd 14:00:00");
 
             Dictionary<string, string> configType = new Dictionary<string, string>();
@@ -600,10 +600,13 @@ namespace GB28181.WinTool
         //开始实时视频
         private void BtnReal_Click(object sender, EventArgs e)
         {
-            int[] mediaPort = { 6000, 7000 };
+            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+
+            int[] mediaPort =  { account.MediaPort };
+            string ip = account.MediaIP.ToString();
             _analyzer = new StreamAnalyzer();
-            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, "192.168.197.108", true);
-            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
+            _messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq(mediaPort, ip, true);
+            //_messageCore.NodeMonitorService[DevKey.ToString()].RealVideoReq();
             _messageCore.NodeMonitorService[DevKey.ToString()].OnStreamReady += Form1_OnStreamReady;
         }
 
@@ -1163,8 +1166,8 @@ namespace GB28181.WinTool
             ////t=
             uint time = 1516084912;
             uint end = 1516085076;
-            DateTime start = TimeConvert.TimeStampToDate(time);
-            DateTime stop = TimeConvert.TimeStampToDate(end);
+            //DateTime start = TimeConvert.TimeStampToDate(time);
+           // DateTime stop = TimeConvert.TimeStampToDate(end);
             //int a = 0xfc;
             //byte[] buffer = BitConverter.GetBytes(a);
             //buffer = BitConverter.GetBytes(System.Net.IPAddress.HostToNetworkOrder((short)a));

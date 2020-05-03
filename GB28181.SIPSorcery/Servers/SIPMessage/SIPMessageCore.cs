@@ -586,6 +586,7 @@ namespace GB28181.Servers.SIPMessage
         /// <param name="localEP">本地终结点</param>
         /// <param name="remoteEP">远程终结点</param>
         /// <param name="response">sip响应</param>
+
         public void AddMessageResponse(SIPEndPoint localEP, SIPEndPoint remoteEP, SIPResponse response)
         {
             if (response == null)
