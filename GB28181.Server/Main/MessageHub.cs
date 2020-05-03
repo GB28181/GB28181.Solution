@@ -210,6 +210,10 @@ namespace GB28181.Server.Main
                 alm.Detail = alarm.AlarmDescription ?? string.Empty;
                 //alm.DeviceID = alarm.DeviceID;//dms deviceid
                 //alm.DeviceName = alarm.DeviceID;//dms name
+
+                //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
+                //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
+                //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 logger.Debug("Device Management Service Address: " + GBServerChannelAddress);
                 var channel = GrpcChannel.ForAddress(GBServerChannelAddress);
@@ -310,6 +314,9 @@ namespace GB28181.Server.Main
                             }
                         }
                         #endregion
+                        //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
+                        //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
+                        //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
                         string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                         var channel = GrpcChannel.ForAddress(GBServerChannelAddress); // ChannelCredentials.Insecure);
                         var client = new DevicesManager.DevicesManagerClient(channel);
@@ -402,6 +409,10 @@ namespace GB28181.Server.Main
                 _device.ProtocolType = 0;
                 _device.ShapeType = ShapeType.Dome;
                 //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
+                
+                //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
+                //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
+                //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
                 var client = new DevicesManager.DevicesManagerClient(channel);
@@ -466,6 +477,9 @@ namespace GB28181.Server.Main
             bool tf = false;
             //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
             //   Channel channel = new Channel(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080", ChannelCredentials.Insecure);
+            //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
+            //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
+            //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
             var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
             logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
             var client = new DevicesManager.DevicesManagerClient(channel);
@@ -491,6 +505,10 @@ namespace GB28181.Server.Main
 
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 // Channel channel = new Channel(GBServerChannelAddress, ChannelCredentials.Insecure);
+                
+                //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
+                //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
+                //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
                 var client = new DevicesManager.DevicesManagerClient(channel);
                 QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
