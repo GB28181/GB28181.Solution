@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using System.Linq;
 
 namespace GB28181.SIPSorcery.Servers.SIPMonitor
 {
@@ -598,8 +599,9 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
         /// <returns></returns>
         private string SetMediaReq(string localIp, int[] mediaPort, ulong startTime, ulong stopTime)
         {
+            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
 
-            var sdpConn = new SDPConnectionInformation("47.115.51.118");
+            var sdpConn = new SDPConnectionInformation(account.MediaIP.ToString());
 
             SDP sdp = new SDP
             {
@@ -609,7 +611,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
                 SessionName = CommandType.Playback.ToString(),
                 Connection = sdpConn,
                 Timing = startTime + " " + stopTime,
-                Address = "47.115.51.118",// localIp,
+                Address = account.MediaIP.ToString(),// localIp,
                 URI = DeviceId + ":" + 0
             };
 
@@ -642,7 +644,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
             }
             media.AddFormatParameterAttribute(psFormat.FormatID, psFormat.Name);
             media.AddFormatParameterAttribute(h264Format.FormatID, h264Format.Name);
-            media.Port = 9000;// mediaPort[0];
+            media.Port = account.MediaPort;// mediaPort[0];
 
             sdp.Media.Add(media);
 

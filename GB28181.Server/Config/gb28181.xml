@@ -17,6 +17,8 @@
     <PacketOutOrder>true</PacketOutOrder>
     <KeepaliveInterval>5000</KeepaliveInterval>
     <KeepaliveNumber>3</KeepaliveNumber>
+    <MediaIP>47.115.1.118</MediaIP>
+    <MediaPort>9000</MediaPort>
     <!--<ServiceType>GBToGB</ServiceType>-->
     <!--<ServiceType>GBToDevice</ServiceType>-->
   </sipaccount>
