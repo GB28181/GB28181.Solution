@@ -4,7 +4,7 @@
     <Name>上级平台</Name>
     <GbVersion>GB-2016</GbVersion>
     <LocalID>34020000002000000001</LocalID>
-    <LocalIP>192.168.197.108</LocalIP>
+    <LocalIP>192.168.197.33</LocalIP>
     <LocalPort>5061</LocalPort>
     <RemotePort>5060</RemotePort>
     <Authentication>false</Authentication>

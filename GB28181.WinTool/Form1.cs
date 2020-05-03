@@ -1164,8 +1164,8 @@ namespace GB28181.WinTool
             ////t=
             uint time = 1516084912;
             uint end = 1516085076;
-            DateTime start = TimeConvert.TimeStampToDate(time);
-            DateTime stop = TimeConvert.TimeStampToDate(end);
+            //DateTime start = TimeConvert.TimeStampToDate(time);
+           // DateTime stop = TimeConvert.TimeStampToDate(end);
             //int a = 0xfc;
             //byte[] buffer = BitConverter.GetBytes(a);
             //buffer = BitConverter.GetBytes(System.Net.IPAddress.HostToNetworkOrder((short)a));
