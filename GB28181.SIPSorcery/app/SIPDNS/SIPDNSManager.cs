@@ -31,13 +31,13 @@
 //-----------------------------------------------------------------------------
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     /// <summary>
     /// 

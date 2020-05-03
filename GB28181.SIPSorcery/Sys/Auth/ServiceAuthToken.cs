@@ -34,13 +34,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using System;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
-namespace GB28181.SIPSorcery.Sys.Auth
+namespace GB28181.Sys.Auth
 {
     public class ServiceAuthToken
     {

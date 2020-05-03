@@ -34,8 +34,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,7 +48,7 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 
-namespace GB28181.SIPSorcery.Persistence.XML
+namespace GB28181.Persistence.XML
 {
     public class XMLAssetPersistor<T> : SIPAssetPersistor<T> where T : ISIPAsset, new()
     {

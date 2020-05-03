@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Persistence {
+namespace GB28181.Persistence {
 
     public abstract class QueryProvider : IQueryProvider {
 

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using StreamingKit;
 using System.Runtime.InteropServices;
-using StreamingKit;
-using System.IO;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     /// <summary>
     /// 音视频编码参数设置
@@ -47,16 +42,18 @@ namespace SS.ClientBase.Codec
         }
         public static AVCodecCfg CreateVideo(int width, int height, int codec_id = (int)AVCode.CODEC_ID_H264, int bit_rate = 98000)
         {
-            var r = new AVCodecCfg();
-            r.codec_id = codec_id;
-            r.width = width;
-            r.height = height;
-            r.codec_type = (int)AVCode.CODEC_TYPE_VIDEO;
-            r.bit_rate = bit_rate;
-            r.time_base_den = 15;
-            r.time_base_num = 2;
-            r.gop_size = 15;
-            r.pix_fmt = (int)AVCode.PIX_FMT_YUV420P;
+            var r = new AVCodecCfg
+            {
+                codec_id = codec_id,
+                width = width,
+                height = height,
+                codec_type = (int)AVCode.CODEC_TYPE_VIDEO,
+                bit_rate = bit_rate,
+                time_base_den = 15,
+                time_base_num = 2,
+                gop_size = 15,
+                pix_fmt = (int)AVCode.PIX_FMT_YUV420P
+            };
             return r;
 
         }
@@ -98,46 +95,31 @@ namespace SS.ClientBase.Codec
 
     public class VideoEncodeCfg : StreamingKit.Codec.VideoEncodeCfg {
        
-        public IYUVDraw Draw;
+        public IYUVDraw Draw { get; set; }
  
 
         public static VideoEncodeCfg GetDefaule(IYUVDraw _Draw = null) {
-            VideoEncodeCfg encCfg = new VideoEncodeCfg();
+            VideoEncodeCfg encCfg = new VideoEncodeCfg
+            {
+                VideoBitRate = 256 * 1000,
+                FrameRate = 10,
+                Height = 240,
+                Width = 320,
+                CameraId = 0,
+                Draw = _Draw
+            };
 
             encCfg.SetEncoder("H264");
-            encCfg.VideoBitRate = 256 * 1000;
-            encCfg.FrameRate = 10;
-            encCfg.Height = 240;
-            encCfg.Width = 320;
-            encCfg.CameraId = 0;
-            encCfg.Draw = _Draw;
             return encCfg;
         }
 
     }
 
 
+    public class AudioEncodeCfg : StreamingKit.Codec.AudioEncodeCfg
+    {
 
-    public class AudioEncodeCfg : StreamingKit.Codec.AudioEncodeCfg {
-        public int micId = 0;
-        public int frequency = 8000;// 采样
-        public int format = 16;// 位元
-        public int channel = 2;// 通道模式
-        public int samples = 160;// 这个参数设置小了可以降底延迟
-        public int keyFrameRate = 50;// 关键帧间隔
-        public int bitrate = 32000;// 比特率
-
-
-
-        public static AudioEncodeCfg GetDefault() {
-            AudioEncodeCfg r = new AudioEncodeCfg();
-            r.SetEncoder("AAC_");
-            r.frequency = 32000;
-            r.format = 16;
-            r.channel = 1;
-            r.samples = 1024 * 2;
-            r.micId = 0;
-            return r;
-        }
     }
+
+
 }

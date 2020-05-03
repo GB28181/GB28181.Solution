@@ -36,22 +36,23 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Cache;
-using GB28181.SIPSorcery.Sys.Config;
-using GB28181.SIPSorcery.Sys.Model;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
+using GB28181.Cache;
+using GB28181.Config;
+using GB28181.Sys.Model;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Servers
+namespace GB28181.Servers
 {
     public enum RegisterResultEnum
     {
@@ -132,7 +133,7 @@ namespace GB28181.SIPSorcery.Servers
         private IMemoCache<Camera> _cameraCache = null;
 
         /// <summary>
-        /// 设备注册到DMS
+        /// 锟借备注锟结到DMS
         /// </summary>
         public event RPCDmsRegisterDelegate RPCDmsRegisterReceived;
         public event DeviceAlarmSubscribeDelegate DeviceAlarmSubscribe;

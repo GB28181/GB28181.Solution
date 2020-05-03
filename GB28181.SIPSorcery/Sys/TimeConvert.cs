@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     /// <summary>
     /// 日期/时间戳转换

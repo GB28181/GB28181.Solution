@@ -43,7 +43,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     /// <summary>
     /// RFC2326 3.2:

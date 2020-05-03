@@ -36,8 +36,9 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Net.RTP;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Net.RTP;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,7 +49,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     /// <remarks>
     /// SIP account usernames can be treated by some SIP Sorcery server agents as domain name like structures where a username of

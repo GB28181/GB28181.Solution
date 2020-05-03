@@ -456,20 +456,17 @@ namespace Common.Streams
 			}
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(sbyte bits)
 		{
 			Write(bits, 0, 8);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(sbyte bits, int bitIndex, int count)
 		{
 			byte bits2 = (byte)bits;
 			Write(bits2, bitIndex, count);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(sbyte[] bits)
 		{
 			if (!_blnIsOpen)
@@ -483,7 +480,6 @@ namespace Common.Streams
 			Write(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(sbyte[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -516,13 +512,11 @@ namespace Common.Streams
 			Write(value);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(char bits)
 		{
 			Write(bits, 0, 128);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(char bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -547,7 +541,6 @@ namespace Common.Streams
 			Write(ref bits2, ref bitIndex2, ref count2);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(char[] bits)
 		{
 			if (!_blnIsOpen)
@@ -561,7 +554,6 @@ namespace Common.Streams
 			Write(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(char[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -591,13 +583,12 @@ namespace Common.Streams
 			}
 		}
 
-		[CLSCompliant(false)]
 		public virtual void Write(ushort bits)
 		{
 			Write(bits, 0, 16);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ushort bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -622,7 +613,7 @@ namespace Common.Streams
 			Write(ref bits2, ref bitIndex2, ref count2);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ushort[] bits)
 		{
 			if (!_blnIsOpen)
@@ -636,7 +627,7 @@ namespace Common.Streams
 			Write(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ushort[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -717,13 +708,13 @@ namespace Common.Streams
 			Write(array, 0, count);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(uint bits)
 		{
 			Write(bits, 0, 32);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(uint bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -747,7 +738,7 @@ namespace Common.Streams
 			Write(ref bits, ref bitIndex2, ref count2);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(uint[] bits)
 		{
 			if (!_blnIsOpen)
@@ -761,7 +752,7 @@ namespace Common.Streams
 			Write(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(uint[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -895,13 +886,13 @@ namespace Common.Streams
 			}
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ulong bits)
 		{
 			Write(bits, 0, 64);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ulong bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -940,7 +931,7 @@ namespace Common.Streams
 			}
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ulong[] bits)
 		{
 			if (!_blnIsOpen)
@@ -954,7 +945,7 @@ namespace Common.Streams
 			Write(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual void Write(ulong[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -1269,13 +1260,13 @@ namespace Common.Streams
 			return num2;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out sbyte bits)
 		{
 			return Read(out bits, 0, 8);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out sbyte bits, int bitIndex, int count)
 		{
 			byte bits2 = 0;
@@ -1284,7 +1275,7 @@ namespace Common.Streams
 			return result;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(sbyte[] bits)
 		{
 			if (!_blnIsOpen)
@@ -1298,7 +1289,7 @@ namespace Common.Streams
 			return Read(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(sbyte[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -1427,13 +1418,13 @@ namespace Common.Streams
 			return num2;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out ushort bits)
 		{
 			return Read(out bits, 0, 16);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out ushort bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -1460,7 +1451,7 @@ namespace Common.Streams
 			return (int)result;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(ushort[] bits)
 		{
 			if (!_blnIsOpen)
@@ -1474,7 +1465,7 @@ namespace Common.Streams
 			return Read(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(ushort[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -1563,13 +1554,13 @@ namespace Common.Streams
 			return num2;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out uint bits)
 		{
 			return Read(out bits, 0, 32);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out uint bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -1596,7 +1587,7 @@ namespace Common.Streams
 			return (int)result;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(uint[] bits)
 		{
 			if (!_blnIsOpen)
@@ -1610,7 +1601,7 @@ namespace Common.Streams
 			return Read(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(uint[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -1756,13 +1747,13 @@ namespace Common.Streams
 			return num2;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out ulong bits)
 		{
 			return Read(out bits, 0, 64);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(out ulong bits, int bitIndex, int count)
 		{
 			if (!_blnIsOpen)
@@ -1804,7 +1795,7 @@ namespace Common.Streams
 			return (int)num5;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(ulong[] bits)
 		{
 			if (!_blnIsOpen)
@@ -1818,7 +1809,7 @@ namespace Common.Streams
 			return Read(bits, 0, bits.Length);
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual int Read(ulong[] bits, int offset, int count)
 		{
 			if (!_blnIsOpen)
@@ -2220,7 +2211,7 @@ namespace Common.Streams
 			return stringBuilder.ToString();
 		}
 
-		[CLSCompliant(false)]
+		
 		public static string ToString(sbyte bits)
 		{
 			byte b = (byte)bits;
@@ -2264,7 +2255,7 @@ namespace Common.Streams
 			return stringBuilder.ToString();
 		}
 
-		[CLSCompliant(false)]
+		
 		public static string ToString(ushort bits)
 		{
 			short num = (short)bits;
@@ -2308,7 +2299,7 @@ namespace Common.Streams
 			return stringBuilder.ToString();
 		}
 
-		[CLSCompliant(false)]
+		
 		public static string ToString(uint bits)
 		{
 			StringBuilder stringBuilder = new StringBuilder(32);
@@ -2351,7 +2342,7 @@ namespace Common.Streams
 			return stringBuilder.ToString();
 		}
 
-		[CLSCompliant(false)]
+		
 		public static string ToString(ulong bits)
 		{
 			StringBuilder stringBuilder = new StringBuilder(64);
@@ -2500,7 +2491,7 @@ namespace Common.Streams
 			_uiBitBuffer_BitIndex = 0u;
 		}
 
-		[CLSCompliant(false)]
+		
 		public virtual uint[] GetBuffer()
 		{
 			return _auiBitBuffer;

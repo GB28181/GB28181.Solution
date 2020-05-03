@@ -36,9 +36,11 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
+using SIPSorcery.Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public enum IceCandidateTypesEnum
     {
@@ -89,15 +91,15 @@ namespace GB28181.SIPSorcery.Net
 
         public static IceCandidate Parse(string candidateLine)
         {
-            IceCandidate candidate = new IceCandidate();
-
-            candidate.RawString = candidateLine;
-
-            string[] candidateFields = candidateLine.Trim().Split(' ');
-            candidate.Transport = candidateFields[2];
-            candidate.NetworkAddress = candidateFields[4];
-            candidate.Port = Convert.ToInt32(candidateFields[5]);
-            Enum.TryParse<IceCandidateTypesEnum>(candidateFields[7], out candidate.CandidateType);
+            var candidateFields = candidateLine.Trim().Split(' ');
+            IceCandidate candidate = new IceCandidate
+            {
+                RawString = candidateLine,
+                Transport = candidateFields[2],
+                NetworkAddress = candidateFields[4],
+                Port = Convert.ToInt32(candidateFields[5])
+            };
+            Enum.TryParse(candidateFields[7], out candidate.CandidateType);
 
             if (candidateFields.Length > 8 && candidateFields[8] == REMOTE_ADDRESS_KEY)
             {
@@ -115,11 +117,13 @@ namespace GB28181.SIPSorcery.Net
 #if !SILVERLIGHT
         public override string ToString()
         {
-            var candidateStr = String.Format("a=candidate:{0} {1} udp {2} {3} {4} typ host generation 0\r\n", Crypto.GetRandomInt(10).ToString(), "1", Crypto.GetRandomInt(10).ToString(), LocalAddress.ToString(), (LocalRtpSocket.LocalEndPoint as IPEndPoint).Port);
+            //  var candidateStr = string.Format("a=candidate:{0} {1} udp {2} {3} {4} typ host generation 0\r\n", Crypto.GetRandomInt(10).ToString(), "1", Crypto.GetRandomInt(10).ToString(), LocalAddress.ToString(), (LocalRtpSocket.LocalEndPoint as IPEndPoint).Port);
+
+            var candidateStr = $"a=candidate:{Crypto.GetRandomInt(10)} 1 udp {Crypto.GetRandomInt(10)} {LocalAddress} {(LocalRtpSocket.LocalEndPoint as IPEndPoint).Port} typ host generation 0\r\n";
 
             if (StunRflxIPEndPoint != null)
             {
-                candidateStr += String.Format("a=candidate:{0} {1} udp {2} {3} {4} typ srflx raddr {5} rport {6} generation 0\r\n", Crypto.GetRandomInt(10).ToString(), "1", Crypto.GetRandomInt(10).ToString(), StunRflxIPEndPoint.Address, StunRflxIPEndPoint.Port, LocalAddress.ToString(), (LocalRtpSocket.LocalEndPoint as IPEndPoint).Port);
+                candidateStr += string.Format("a=candidate:{0} {1} udp {2} {3} {4} typ srflx raddr {5} rport {6} generation 0\r\n", Crypto.GetRandomInt(10).ToString(), "1", Crypto.GetRandomInt(10).ToString(), StunRflxIPEndPoint.Address, StunRflxIPEndPoint.Port, LocalAddress.ToString(), (LocalRtpSocket.LocalEndPoint as IPEndPoint).Port);
                 //logger.Debug(" " + srflxCandidateStr);
                 //iceCandidateString += srflxCandidateStr;
             }

@@ -50,12 +50,13 @@
 // Aaron Clauson
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 using System;
 using System.Collections;
 using System.Net;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class RTPHeader
     {
@@ -65,18 +66,18 @@ namespace GB28181.SIPSorcery.Net
 
         public const int RTP_VERSION = 2;
 
-        public int Version = RTP_VERSION;						// 2 bits.
-        public int PaddingFlag = 0;								// 1 bit.
-        public int HeaderExtensionFlag = 0;						// 1 bit.
-        public int CSRCCount = 0;								// 4 bits
-        public int MarkerBit = 0;								// 1 bit.
-        public int PayloadType = (int)RTPPayloadTypesEnum.PCMU;	// 7 bits.
-        public UInt16 SequenceNumber;							// 16 bits.
-        public uint Timestamp;									// 32 bits.
-        public uint SyncSource;									// 32 bits.
+        public int Version { get; set; } = RTP_VERSION;						// 2 bits.
+        public int PaddingFlag { get; set; } = 0;								// 1 bit.
+        public int HeaderExtensionFlag { get; set; } = 0;						// 1 bit.
+        public int CSRCCount { get; set; } = 0;								// 4 bits
+        public int MarkerBit { get; set; } = 0;								// 1 bit.
+        public int PayloadType { get; set; } = (int)RTPPayloadTypesEnum.PCMU;	// 7 bits.
+        public ushort SequenceNumber { get; set; }							// 16 bits.
+        public uint Timestamp { get; set; }								// 32 bits.
+        public uint SyncSource { get; set; }								// 32 bits.
         public int[] CSRCList;									// 32 bits.
-        public UInt16 ExtensionProfile;                         // 16 bits.
-        public UInt16 ExtensionLength;                          // 16 bits,  length of the header extensions in 32 bit words.
+        public ushort ExtensionProfile { get; set; }                        // 16 bits.
+        public ushort ExtensionLength { get; set; }                          // 16 bits,  length of the header extensions in 32 bit words.
         public byte[] ExtensionPayload;
 
         public int Length

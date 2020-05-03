@@ -38,14 +38,15 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 #if !SILVERLIGHT
 using System.Data;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     public enum ProviderTypes
     {

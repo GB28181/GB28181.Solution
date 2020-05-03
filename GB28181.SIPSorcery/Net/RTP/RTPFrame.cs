@@ -30,28 +30,23 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Net.RTP;
+using GB28181.Net.RTP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class RTPFrame
     {
-        public uint Timestamp;
-        public bool HasMarker;
-        public bool HasBeenProcessed;
+        public uint Timestamp { get; set; }
+        public bool HasMarker { get; set; }
+        public bool HasBeenProcessed { get; set; }
         //public int FrameHeaderLength = 0;   // Some media types, such as VP8 video, have a header at the start of each RTP data payload. It needs to be stripped.
-        public FrameTypesEnum FrameType;
+        public FrameTypesEnum FrameType { get; set; }
 
-        private List<RTPPacket> _packets = new List<RTPPacket>();
-
-        public List<RTPPacket> FramePackets
-        {
-            get { return _packets; }
-        }
+        public List<RTPPacket> FramePackets { get; } = new List<RTPPacket>();
 
         /// <summary>
         /// 包数量
@@ -60,7 +55,7 @@ namespace GB28181.SIPSorcery.Net
         {
             get
             {
-                return _packets.Count;
+                return FramePackets.Count;
             }
         }
 
@@ -68,7 +63,7 @@ namespace GB28181.SIPSorcery.Net
         {
             get
             {
-                var startPacket = _packets.OrderBy(x => x.Header.SequenceNumber).FirstOrDefault();
+                var startPacket = FramePackets.OrderBy(x => x.Header.SequenceNumber).FirstOrDefault();
 
                 if (startPacket != null)
                 {
@@ -85,7 +80,7 @@ namespace GB28181.SIPSorcery.Net
         {
             get
             {
-                var finalPacket = _packets.OrderByDescending(x => x.Header.SequenceNumber).FirstOrDefault();
+                var finalPacket = FramePackets.OrderByDescending(x => x.Header.SequenceNumber).FirstOrDefault();
 
                 if (finalPacket != null)
                 {
@@ -116,7 +111,7 @@ namespace GB28181.SIPSorcery.Net
 
         public void AddRTPPacket(RTPPacket rtpPacket)
         {
-            _packets.Add(rtpPacket);
+            FramePackets.Add(rtpPacket);
 
             //if (HasMarker && FramePayload == null)
             //{
@@ -136,7 +131,7 @@ namespace GB28181.SIPSorcery.Net
                 // The frame has the marker bit set. Check that there are no missing sequence numbers.
                 uint previousSeqNum = 0;
 
-                foreach (var rtpPacket in _packets.OrderBy(x => x.Header.SequenceNumber))
+                foreach (var rtpPacket in FramePackets.OrderBy(x => x.Header.SequenceNumber))
                 {
                     if (previousSeqNum == 0)
                     {
@@ -186,8 +181,8 @@ namespace GB28181.SIPSorcery.Net
 
         public byte[] GetFramePayload()
         {
-            System.IO.MemoryStream buffer = new System.IO.MemoryStream();
-            foreach (var packet in _packets.OrderBy(x => x.Header.SequenceNumber))
+           var buffer = new System.IO.MemoryStream();
+            foreach (var packet in FramePackets.OrderBy(x => x.Header.SequenceNumber))
             {
                 buffer.Write(packet.Payload, 0, packet.Payload.Length);
             }

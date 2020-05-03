@@ -30,13 +30,14 @@
 using System;
 using System.Collections;
 using System.Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
 	public class RTCPHeader
 	{
@@ -44,13 +45,13 @@ namespace GB28181.SIPSorcery.Net
         public const int MAX_RECEPTIONREPORT_COUNT = 32;
 
 		public const int RTCP_VERSION = 2;
-        public const UInt16 RTCP_PACKET_TYPE = 200;
+        public const ushort RTCP_PACKET_TYPE = 200;
 
-		public int Version = RTCP_VERSION;						// 2 bits.
-		public int PaddingFlag = 0;								// 1 bit.
-        public int ReceptionReportCount = 0;                    // 5 bits.
-        public UInt16 PacketType = RTCP_PACKET_TYPE;            // 8 bits.
-        public UInt16 Length;                                   // 16 bits.
+		public int Version { get; set; } = RTCP_VERSION;						// 2 bits.
+		public int PaddingFlag { get; set; } = 0;								// 1 bit.
+        public int ReceptionReportCount { get; set; } = 0;                    // 5 bits.
+        public ushort PacketType { get; set; } = RTCP_PACKET_TYPE;            // 8 bits.
+        public ushort Length { get; set; }                                // 16 bits.
 
 		public RTCPHeader()
 		{}

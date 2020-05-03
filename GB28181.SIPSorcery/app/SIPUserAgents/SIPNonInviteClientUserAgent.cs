@@ -36,15 +36,11 @@
 // ============================================================================
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
-
-namespace GB28181.SIPSorcery.SIP.App
+using GB28181.Sys;
+using SIPSorcery.Sys;
+namespace GB28181.SIP.App
 {
     public class SIPNonInviteClientUserAgent
     {
@@ -84,16 +80,17 @@ namespace GB28181.SIPSorcery.SIP.App
         {
             try
             {
-                SIPRequest req = GetRequest(method);
-                SIPNonInviteTransaction tran = m_sipTransport.CreateNonInviteTransaction(req, null, m_sipTransport.GetDefaultSIPEndPoint(), m_outboundProxy);
-                
-                ManualResetEvent waitForResponse = new ManualResetEvent(false);
+                var req = GetRequest(method);
+                var tran = m_sipTransport.CreateNonInviteTransaction(req, null, m_sipTransport.GetDefaultSIPEndPoint(), m_outboundProxy);
+
+                using var waitForResponse = new ManualResetEvent(false);
                 tran.NonInviteTransactionTimedOut += RequestTimedOut;
                 tran.NonInviteTransactionFinalResponseReceived += ServerResponseReceived;
                 tran.SendReliableRequest();
             }
             catch (Exception excp)
             {
+                
                 logger.Error("Exception SIPNonInviteClientUserAgent SendRequest to " + m_callDescriptor.Uri + ". " + excp.Message);
                 throw;
             }

@@ -1,0 +1,234 @@
+syntax = "proto3";
+
+option csharp_namespace = "GB28181.Service.Protos.AsClient.SystemConfig";
+
+package systemConfig;
+
+//service and action definition
+service ServiceConfig {
+
+    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {}
+
+    rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){}
+
+    rpc QueryReserveConfig(QueryConfigRequest) returns(QueryReserveConfigResponse){}
+
+    rpc QueryResources(QueryRequest) returns(QueryResponse){}
+
+    rpc QueryProductionData(QueryRequest) returns(QueryResponse){}
+
+    rpc SetIntegratedPlatformConfig (SetIntegratedPlatformConfigRequest) returns (SetIntegratedPlatformConfigResponse){}
+
+    rpc GetIntegratedPlatformConfig (GetIntegratedPlatformConfigRequest) returns (GetIntegratedPlatformConfigResponse){}
+}
+
+// The request message.
+message QueryGB28181ConfigRequest {
+}
+
+// The response message.
+message QueryGB28181ConfigReply {
+  repeated GBPlatformConfig sipaccount = 1;
+}
+
+message SetIntegratedPlatformConfigRequest{
+    GBPlatformConfig config = 1;
+}
+
+message SetIntegratedPlatformConfigResponse{
+
+}
+
+message GetIntegratedPlatformConfigRequest{
+
+}
+message GetIntegratedPlatformConfigResponse{
+    GBPlatformConfig config =1;
+}
+
+message GBPlatformConfig{
+    string Id = 1;//标识符，例如：6a1da008-e7ba-4f3b-90f2-e43073fd1ea8
+    string Name = 2;//名称，例如：GB28181
+    string GbVersion = 3;//版本，例如：GB-2018
+    string LocalID = 4;//SIP服务器编号*，例如：34020000002000000001
+    string LocalIP = 5;//SIP服务器IP*，例如：10.78.115.182
+    string LocalPort = 6;//SIP服务器端口号*，例如：5060
+    string RemotePort = 7;//Device本地端口*，例如：5060
+    string Authentication = 8;//授权，例如：false
+    string SIPUsername = 9;//帐号*，例如：admin
+    string SIPPassword = 10;//密码*，例如：123456
+    string MsgProtocol = 11;//协议类型*，例如：Udp
+    string StreamProtocol = 12;//协议流类型*，例如：Udp
+    string TcpMode = 13;//协议连接模式，例如：passive
+    string MsgEncode = 14;//编码格式，例如：GB2312
+    string PacketOutOrder = 15;//输出序，例如：true
+    string KeepaliveInterval = 16;//心跳周期（秒）*，例如：3600
+    string KeepaliveNumber = 17;//最大心跳超时次数*，例如：3
+}
+
+
+message Resource{
+    string key= 1;
+    string value =2;
+}
+
+message QueryRequest{
+    string language = 1;
+}
+
+message QueryResponse{
+    repeated Resource resources =1;
+}
+
+message SaveReserveDurationRequest{
+    string reserve_alarm_duration = 1;
+    string reserve_log_duration=2;
+}
+
+message SaveReserveDurationResponse{
+
+}
+
+message QueryConfigRequest{}
+
+message QueryConfigResponse{
+    repeated string value=1;
+}
+
+message QueryReserveConfigResponse{
+    string reserve_alarm_duration = 1;
+    string reserve_log_duration =2;
+}
+
+
+/*
+
+//
+    // Summary:
+    //     Specifies the protocols that the System.Net.Sockets.Socket class supports.
+    public enum ProtocolType
+    {
+        //
+        // Summary:
+        //     Unknown protocol.
+        Unknown = -1,
+        //
+        // Summary:
+        //     Internet Protocol.
+        IP = 0,
+        //
+        // Summary:
+        //     IPv6 Hop by Hop Options header.
+        IPv6HopByHopOptions = 0,
+        //
+        // Summary:
+        //     Unspecified protocol.
+        Unspecified = 0,
+        //
+        // Summary:
+        //     Internet Control Message Protocol.
+        Icmp = 1,
+        //
+        // Summary:
+        //     Internet Group Management Protocol.
+        Igmp = 2,
+        //
+        // Summary:
+        //     Gateway To Gateway Protocol.
+        Ggp = 3,
+        //
+        // Summary:
+        //     Internet Protocol version 4.
+        IPv4 = 4,
+        //
+        // Summary:
+        //     Transmission Control Protocol.
+        Tcp = 6,
+        //
+        // Summary:
+        //     PARC Universal Packet Protocol.
+        Pup = 12,
+        //
+        // Summary:
+        //     User Datagram Protocol.
+        Udp = 17,
+        //
+        // Summary:
+        //     Internet Datagram Protocol.
+        Idp = 22,
+        //
+        // Summary:
+        //     Internet Protocol version 6 (IPv6).
+        IPv6 = 41,
+        //
+        // Summary:
+        //     IPv6 Routing header.
+        IPv6RoutingHeader = 43,
+        //
+        // Summary:
+        //     IPv6 Fragment header.
+        IPv6FragmentHeader = 44,
+        //
+        // Summary:
+        //     IPv6 Encapsulating Security Payload header.
+        IPSecEncapsulatingSecurityPayload = 50,
+        //
+        // Summary:
+        //     IPv6 Authentication header. For details, see RFC 2292 section 2.2.1, available
+        //     at http://www.ietf.org.
+        IPSecAuthenticationHeader = 51,
+        //
+        // Summary:
+        //     Internet Control Message Protocol for IPv6.
+        IcmpV6 = 58,
+        //
+        // Summary:
+        //     IPv6 No next header.
+        IPv6NoNextHeader = 59,
+        //
+        // Summary:
+        //     IPv6 Destination Options header.
+        IPv6DestinationOptions = 60,
+        //
+        // Summary:
+        //     Net Disk Protocol (unofficial).
+        ND = 77,
+        //
+        // Summary:
+        //     Raw IP packet protocol.
+        Raw = 255,
+        //
+        // Summary:
+        //     Internet Packet Exchange Protocol.
+        Ipx = 1000,
+        //
+        // Summary:
+        //     Sequenced Packet Exchange protocol.
+        Spx = 1256,
+        //
+        // Summary:
+        //     Sequenced Packet Exchange version 2 protocol.
+        SpxII = 1257
+    }
+
+
+
+
+
+ public enum TcpConnectMode
+    {
+        /// <summary>
+        /// 主动连接
+        /// </summary>
+        active = 1,
+        /// <summary>
+        /// 被动连接
+        /// </summary>
+        passive = 2
+    }
+
+
+
+
+
+*/

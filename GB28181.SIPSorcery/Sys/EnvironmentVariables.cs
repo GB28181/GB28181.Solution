@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     public class EnvironmentVariables
     {

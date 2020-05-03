@@ -35,7 +35,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -44,7 +45,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     public class SIPMonitorFilter
     {

@@ -1,11 +1,7 @@
-﻿using SS.ClientBase.Codec;
+﻿using GB28181.WinTool.Codec;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SS.ClientBase.Mixer.Audio
+namespace GB28181.WinTool.Mixer.Audio
 {
 
     public class AacEnc : IDisposable
@@ -23,7 +19,7 @@ namespace SS.ClientBase.Mixer.Audio
         public AacEnc()
         {
 
-            _faacImp = new FaacImp(1, 32000,32000);
+            _faacImp = new FaacImp(1, 32000, 32000);
             //_faacImp = new FaacImp(1, 32000, 32000);
         }
 
@@ -36,16 +32,18 @@ namespace SS.ClientBase.Mixer.Audio
         }
 
 
+        protected virtual void Dispose(bool disposeNative)
+        {
+            if (disposeNative)
+            {
+                _faacImp?.Dispose();
+            }
+        }
+
         public void Dispose()
         {
-            try
-            {
-                if (_faacImp != null)
-                    _faacImp.Dispose();
-            }
-            catch (Exception e)
-            {
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

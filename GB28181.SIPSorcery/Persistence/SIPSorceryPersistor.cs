@@ -37,12 +37,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
     public class SIPSorceryPersistor
     {

@@ -1,8 +1,8 @@
-﻿using GB28181.SIPSorcery.SIP.App;
+﻿using GB28181.SIP.App;
 using System;
 using System.Collections.Generic;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
 
     public class ObjectMapper<T> {

@@ -22,17 +22,17 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys.Net
 {
     public enum PlatformEnum
     {
         Windows = 1,
         Linux = 2,
     }
-    
+
     public class NetServices
-	{
-        public const int UDP_PORT_START = 1025;
+    {
+        public const int UDP_PORT_START  = 1025;
         public const int UDP_PORT_END = 65535;
         private const int RTP_RECEIVE_BUFFER_SIZE = 100000000;
         private const int RTP_SEND_BUFFER_SIZE = 100000000;
@@ -46,7 +46,7 @@ namespace GB28181.SIPSorcery.Sys
 
         public static UdpClient CreateRandomUDPListener(IPAddress localAddress, out IPEndPoint localEndPoint)
         {
-            return CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
+            return SIPSorcery.Sys.NetServices.CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
         }
 
         public static void CreateRtpSocket(IPAddress localAddress, int startPort, int endPort, bool createControlSocket, out Socket rtpSocket, out Socket controlSocket)
@@ -65,7 +65,7 @@ namespace GB28181.SIPSorcery.Sys
                 var inUseUDPPorts = (from p in System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners() where p.Port >= startPort && p.Port <= endPort && p.Address.ToString() == localAddress.ToString() select p.Port).OrderBy(x => x).ToList();
 
                 // Make the RTP port start on an even port. Some legacy systems require the RTP port to be an even port number.
-                if(startPort % 2 != 0)
+                if (startPort % 2 != 0)
                 {
                     startPort += 1;
                 }
@@ -164,45 +164,7 @@ namespace GB28181.SIPSorcery.Sys
             }
         }
 
-        public static UdpClient CreateRandomUDPListener(IPAddress localAddress, int start, int end, ArrayList inUsePorts, out IPEndPoint localEndPoint)
-        {
-            try
-            {
-                UdpClient randomClient = null;
-                int attempts = 1;
-
-                localEndPoint = null;
-
-                while (attempts < 50)
-                {
-                    int port = Crypto.GetRandomInt(start, end);
-                    if (inUsePorts == null || !inUsePorts.Contains(port))
-                    {
-                        try
-                        {
-                            localEndPoint = new IPEndPoint(localAddress, port);
-                            randomClient = new UdpClient(localEndPoint);
-                            break;
-                        }
-                        catch
-                        {
-                            //logger.Warn("Warning couldn't create UDP end point for " + localAddress + ":" + port + "." + excp.Message);
-                        }
-
-                        attempts++;
-                    }
-                }
-
-                //logger.Debug("Attempts to create UDP end point for " + localAddress + ":" + port + " was " + attempts);
-
-                return randomClient;
-            }
-            catch
-            {
-                throw new ApplicationException("Unable to create a random UDP listener between " + start + " and " + end);
-            }
-        }
-
+ 
         /// <summary>
         /// Extracts the default gateway from the route print command
         /// </summary>
@@ -256,7 +218,7 @@ namespace GB28181.SIPSorcery.Sys
             {
                 string[] gatewayOctets = Regex.Split(defaultGateway.ToString(), @"\.");
 
-                IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName()); 
+                IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
                 ArrayList possibleMatches = new ArrayList();
                 foreach (IPAddress localAddress in hostEntry.AddressList)
@@ -335,5 +297,5 @@ namespace GB28181.SIPSorcery.Sys
             osProcess.WaitForExit();
             return osProcess.StandardOutput.ReadToEnd();
         }
-	}
+    }
 }

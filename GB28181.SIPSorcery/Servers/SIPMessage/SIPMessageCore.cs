@@ -1,13 +1,13 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Net;
-using GB28181.SIPSorcery.Net.RTP;
-using GB28181.SIPSorcery.Servers.SIPMonitor;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
-using GB28181.SIPSorcery.Sys.Model;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Net;
+using GB28181.Net.RTP;
+using GB28181.Servers.SIPMonitor;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
+using GB28181.Config;
+using GB28181.Sys.Model;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,10 +18,9 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
-using GB28181.SIPSorcery.Sys.Cache;
-using System.Threading.Tasks;
+using GB28181.Cache;
 
-namespace GB28181.SIPSorcery.Servers.SIPMessage
+namespace GB28181.Servers.SIPMessage
 {
 
     public struct MonitorKey

@@ -36,10 +36,11 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     /// <summary>
     /// Implements the the absoluteURI structure from the SIP RFC (incomplete as at 17 nov 2006, AC).
@@ -475,7 +476,7 @@ namespace GB28181.SIPSorcery.SIP
 
         public SIPEndPoint ToSIPEndPoint()
         {
-            if (IPSocket.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
+            if (Sys.Net.IPSocket.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
             {
                 if (Host.IndexOf(":") != -1)
                 {

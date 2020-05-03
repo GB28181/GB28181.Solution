@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace GB28181.SIPSorcery.Persistence
+namespace GB28181.Persistence
 {
 
     public static class Evaluator {

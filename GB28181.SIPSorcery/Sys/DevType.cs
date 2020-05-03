@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GB28181.SIPSorcery.Sys.XML
+﻿namespace GB28181.Sys.XML
 {
     /// <summary>
     /// 设备状态

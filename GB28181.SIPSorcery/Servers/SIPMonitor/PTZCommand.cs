@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace GB28181.SIPSorcery.Servers.SIPMonitor
+namespace GB28181.Servers.SIPMonitor
 {
     #region 云台控制命令
     /// <summary>

@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Persistence {
+namespace GB28181.Persistence {
 
     public class SQLObjectReader<T> : IEnumerable<T>, IEnumerable where T : class, ISIPAsset, new()
     {

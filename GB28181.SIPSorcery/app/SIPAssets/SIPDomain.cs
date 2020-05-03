@@ -39,16 +39,17 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 using System.Linq;
 using System.Xml;
+using SIPSorcery.Sys;
 
 #if !SILVERLIGHT
 using System.Data;
 #endif
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
     /// <remarks>
     /// The mechanism to load the SIP domain records differs for XML and SQL data stores. Because the domain and domain alias

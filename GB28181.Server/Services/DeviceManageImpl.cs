@@ -1,13 +1,13 @@
 ﻿using System;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Servers;
+using GB28181.SIP;
+using GB28181.Sys;
 using Grpc.Net.Client;
 
 namespace GB28181.Service.Protos.AsClient.DeviceManagement
 {
-    public class DeviceManageImpl : Manage.ManageClient
+    public class DeviceManageImpl : DevicesManager.DevicesManagerClient
     {
         private static ILog logger = LogManager.GetLogger("RpcServer");
         private ISIPRegistrarCore _sipRegistrarCore = null;
@@ -18,7 +18,7 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
             //_sipRegistrarCore.RPCDmsRegisterReceived += _sipRegistrarCore_RPCDmsRegisterReceived;
         }
 
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIPSorcery.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIP.App.SIPAccount sIPAccount)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
                  var channel =  GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080");
 
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 AddDeviceRequest _AddDeviceRequest = new AddDeviceRequest();
                 _AddDeviceRequest.Device.Add(_device);
                 _AddDeviceRequest.LoginRoleId = "XXXX";

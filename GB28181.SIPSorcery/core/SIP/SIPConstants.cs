@@ -32,11 +32,11 @@
 
 using System;
 using System.Collections.Generic;
-using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Sys;
 
 
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
 	public class SIPConstants
 	{

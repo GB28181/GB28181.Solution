@@ -36,11 +36,11 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
 using System.Xml;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     public static class LocalIPConfig
     {

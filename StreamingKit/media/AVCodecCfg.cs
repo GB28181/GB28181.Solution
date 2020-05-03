@@ -99,13 +99,13 @@ namespace StreamingKit.Codec
 
     public class AudioEncodeCfg : CodecCfgBase
     {
-        public int micId = 0;
-        public int frequency = 8000;// 采样
-        public int format = 16;// 位元
-        public int channel = 2;// 通道模式
-        public int samples = 160;// 这个参数设置小了可以降底延迟
-        public int keyFrameRate = 50;// 关键帧间隔
-        public int bitrate = 32000;// 比特率
+        public int MicId { get; set; }  = 0;
+        public int Frequency { get; set; } = 8000;// 采样
+        public int Format { get; set; } = 16;// 位元
+        public int Channel { get; set; } = 2;// 通道模式
+        public int Samples { get; set; } = 160;// 这个参数设置小了可以降底延迟
+        public int KeyFrameRate { get; set; } = 50;// 关键帧间隔
+        public int Bitrate { get; set; } = 32000;// 比特率
 
 
 
@@ -113,11 +113,11 @@ namespace StreamingKit.Codec
         {
             var r = new AudioEncodeCfg
             {
-                frequency = 32000,
-                format = 16,
-                channel = 1,
-                samples = 1024 * 2,
-                micId = 0
+                Frequency = 32000,
+                Format = 16,
+                Channel = 1,
+                Samples = 1024 * 2,
+                MicId = 0
             };
             r.SetEncoder("AAC_");
             return r;

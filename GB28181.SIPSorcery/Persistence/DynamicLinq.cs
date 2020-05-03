@@ -72,7 +72,7 @@ namespace System.Linq.Dynamic
         }
 
         public static IQueryable Skip(this IQueryable source, int count) {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Skip",
@@ -372,6 +372,7 @@ namespace System.Linq.Dynamic
     public sealed class ParseException : Exception
     {
         int position;
+
 
         public ParseException(string message, int position)
             : base(message) {
@@ -1187,7 +1188,7 @@ namespace System.Linq.Dynamic
         Expression[] ParseArgumentList() {
             ValidateToken(TokenId.OpenParen, Res.OpenParenExpected);
             NextToken();
-            Expression[] args = token.id != TokenId.CloseParen ? ParseArguments() : new Expression[0];
+            Expression[] args = token.id != TokenId.CloseParen ? ParseArguments() : Array.Empty<Expression>();
             ValidateToken(TokenId.CloseParen, Res.CloseParenOrCommaExpected);
             NextToken();
             return args;

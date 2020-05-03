@@ -36,14 +36,14 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using SIPSorcery.Sys;
 using GB28181.Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     /// <bnf>
     /// Via               =  ( "Via" / "v" ) HCOLON via-parm *(COMMA via-parm)
@@ -1585,32 +1585,20 @@ namespace GB28181.SIPSorcery.SIP
     {
         private static string m_CRLF = SIPConstants.CRLF;
 
-        private List<SIPViaHeader> m_viaHeaders = new List<SIPViaHeader>();
-
         public int Length
         {
-            get { return m_viaHeaders.Count; }
+            get { return Via.Count; }
         }
 
-        public List<SIPViaHeader> Via
-        {
-            get
-            {
-                return m_viaHeaders;
-            }
-            set
-            {
-                m_viaHeaders = value;
-            }
-        }
+        public List<SIPViaHeader> Via { get; set; } = new List<SIPViaHeader>();
 
         public SIPViaHeader TopViaHeader
         {
             get
             {
-                if (m_viaHeaders != null && m_viaHeaders.Count > 0)
+                if (Via != null && Via.Count > 0)
                 {
-                    return m_viaHeaders[0];
+                    return Via[0];
                 }
                 else
                 {
@@ -1623,9 +1611,9 @@ namespace GB28181.SIPSorcery.SIP
         {
             get
             {
-                if (m_viaHeaders != null && m_viaHeaders.Count > 0)
+                if (Via != null && Via.Count > 0)
                 {
-                    return m_viaHeaders[m_viaHeaders.Count - 1];
+                    return Via[Via.Count - 1];
                 }
                 else
                 {
@@ -1639,15 +1627,15 @@ namespace GB28181.SIPSorcery.SIP
         /// </summary>
         public SIPViaHeader PopTopViaHeader()
         {
-            SIPViaHeader topHeader = m_viaHeaders[0];
-            m_viaHeaders.RemoveAt(0);
+            SIPViaHeader topHeader = Via[0];
+            Via.RemoveAt(0);
 
             return topHeader;
         }
 
         public void AddBottomViaHeader(SIPViaHeader viaHeader)
         {
-            m_viaHeaders.Add(viaHeader);
+            Via.Add(viaHeader);
         }
 
         /// <summary>
@@ -1676,18 +1664,18 @@ namespace GB28181.SIPSorcery.SIP
         /// </summary>
         public void PushViaHeader(SIPViaHeader viaHeader)
         {
-            m_viaHeaders.Insert(0, viaHeader);
+            Via.Insert(0, viaHeader);
         }
 
         public new string ToString()
         {
             string viaStr = null;
 
-            if (m_viaHeaders != null && m_viaHeaders.Count > 0)
+            if (Via != null && Via.Count > 0)
             {
-                for (int viaIndex = 0; viaIndex < m_viaHeaders.Count; viaIndex++)
+                for (int viaIndex = 0; viaIndex < Via.Count; viaIndex++)
                 {
-                    viaStr += (m_viaHeaders[viaIndex]).ToString() + m_CRLF;
+                    viaStr += (Via[viaIndex]).ToString() + m_CRLF;
                 }
             }
 

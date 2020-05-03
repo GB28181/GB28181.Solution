@@ -1,12 +1,12 @@
-﻿using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.Sys.XML;
+﻿using GB28181.Servers.SIPMessage;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GB28181.SIPSorcery.Servers
+namespace GB28181.Servers
 {
     public class GB28181Catalog
     {

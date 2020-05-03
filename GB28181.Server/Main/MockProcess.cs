@@ -1,5 +1,5 @@
-﻿using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Sys;
+﻿using GB28181.Servers;
+using GB28181.Sys;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

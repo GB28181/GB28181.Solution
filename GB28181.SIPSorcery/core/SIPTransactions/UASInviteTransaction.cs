@@ -31,16 +31,16 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-using GB28181.SIPSorcery.Sys;
 using System;
 using System.Linq;
 using System.Net;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     /// <summary>
     /// The server transaction for an INVITE request. This transaction processes incoming calls RECEIVED by the application.

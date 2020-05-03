@@ -1,11 +1,11 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Net;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Net;
+using GB28181.Servers.SIPMessage;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
+using GB28181.Config;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Linq;
 
-namespace GB28181.SIPSorcery.Servers.SIPMonitor
+namespace GB28181.Servers.SIPMonitor
 {
     /// <summary>
     /// sip监控核心服务，每一个接入节点都有一个监控服务实例
@@ -2097,7 +2097,7 @@ namespace GB28181.SIPSorcery.Servers.SIPMonitor
                     HeartBeatCount = heartBeatCount
                 }
             };
-            string xmlBody = GB28181.SIPSorcery.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
+            string xmlBody = GB28181.Sys.XML.DeviceConfig.Instance.Save<DeviceConfig>(config);
             configReq.Body = xmlBody;
             _sipMsgCoreService.SendRequest(RemoteEndPoint, configReq);
         }

@@ -32,16 +32,17 @@
 
 using System.Linq;
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
-using GB28181.SIPSorcery.SIP.App;
+using GB28181.SIP.App;
 using System.Net.Sockets;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public static class SIPTransportConfig
     {

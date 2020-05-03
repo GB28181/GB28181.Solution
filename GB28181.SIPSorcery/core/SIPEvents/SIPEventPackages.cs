@@ -39,9 +39,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public class SIPEventConsts
     {

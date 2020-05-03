@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SS.ClientBase.Mixer.Video;
+using GB28181.WinTool.Mixer.Video;
 using System.Drawing;
 using System.Collections;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using System.Drawing.Imaging;
-using SS.ClientBase.Media;
+using GB28181.WinTool.Media;
 
-namespace SS.ClientBase.Mixer
+namespace GB28181.WinTool.Mixer
 {
     public sealed class MediaMixerCanvas
     {

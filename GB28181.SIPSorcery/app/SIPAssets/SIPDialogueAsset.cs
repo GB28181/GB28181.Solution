@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Linq;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System.Data;
+using SIPSorcery.Sys;
 
-
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
    // // [Table(Name = "sipdialogues")]
     public class SIPDialogueAsset: ISIPAsset

@@ -2,16 +2,17 @@
 using GB28181.Logger4Net;
 using NATS.Client;
 using Newtonsoft.Json;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.SIP;
+using GB28181.Sys;
+using GB28181.Sys.XML;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
+using GB28181.SIP.App;
 
 namespace GB28181.Server.Main
 {
@@ -31,7 +32,7 @@ namespace GB28181.Server.Main
         public Dictionary<string, Catalog> Catalogs { get; } = new Dictionary<string, Catalog>();
         public Dictionary<string, SIPTransaction> GBSIPTransactions { get; } = new Dictionary<string, SIPTransaction>();
        
-        SIPSorcery.SIP.App.SIPAccount _SIPAccount;
+        SIPAccount _SIPAccount;
 
         public MessageHub(ISipMessageCore sipCoreMessageService, ISIPMonitorCore sIPMonitorCore, ISIPRegistrarCore sipRegistrarCore)
         {
@@ -212,9 +213,9 @@ namespace GB28181.Server.Main
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 logger.Debug("Device Management Service Address: " + GBServerChannelAddress);
                 var channel = GrpcChannel.ForAddress(GBServerChannelAddress);
-                var client = new Manage.ManageClient(channel);
-                QueryGBDeviceByGBIDsResponse _rep = new QueryGBDeviceByGBIDsResponse();
-                QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
+                var client = new DevicesManager.DevicesManagerClient(channel);
+                var _rep = new QueryGBDeviceByGBIDsResponse();
+                var req = new QueryGBDeviceByGBIDsRequest();
                 logger.Debug("OnAlarmReceived Alarm: " + JsonConvert.SerializeObject(alarm));
                 req.GbIds.Add(alarm.DeviceID);
                 _rep = client.QueryGBDeviceByGBIDs(req);
@@ -311,7 +312,7 @@ namespace GB28181.Server.Main
                         #endregion
                         string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                         var channel = GrpcChannel.ForAddress(GBServerChannelAddress); // ChannelCredentials.Insecure);
-                        var client = new Manage.ManageClient(channel);
+                        var client = new DevicesManager.DevicesManagerClient(channel);
                         QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
                         QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
                         req.GbIds.Add(deviceid);
@@ -356,7 +357,7 @@ namespace GB28181.Server.Main
         /// </summary>
         /// <param name="sipTransaction"></param>
         /// <param name="sIPAccount"></param>
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIPSorcery.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIP.App.SIPAccount sIPAccount)
         {
             try
             {
@@ -403,7 +404,7 @@ namespace GB28181.Server.Main
                 //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 //if (!_sipCoreMessageService.NodeMonitorService.ContainsKey(_device.GBID))
                 //{
                 //    AddDeviceRequest _AddDeviceRequest = new AddDeviceRequest();
@@ -467,7 +468,7 @@ namespace GB28181.Server.Main
             //   Channel channel = new Channel(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080", ChannelCredentials.Insecure);
             var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
             logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
-            var client = new Manage.ManageClient(channel);
+            var client = new DevicesManager.DevicesManagerClient(channel);
             QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
             QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
             req.GbIds.Add(deviceid);
@@ -491,7 +492,7 @@ namespace GB28181.Server.Main
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 // Channel channel = new Channel(GBServerChannelAddress, ChannelCredentials.Insecure);
                 var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"); //, ChannelCredentials.Insecure);
-                var client = new Manage.ManageClient(channel);
+                var client = new DevicesManager.DevicesManagerClient(channel);
                 QueryGBDeviceByGBIDsResponse rep = new QueryGBDeviceByGBIDsResponse();
                 QueryGBDeviceByGBIDsRequest req = new QueryGBDeviceByGBIDsRequest();
                 req.GbIds.Add(DeviceID);

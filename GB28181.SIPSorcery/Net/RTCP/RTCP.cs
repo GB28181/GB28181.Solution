@@ -11,30 +11,25 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 //using SIPSorcery.SIP;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.Net
-{	   
+namespace GB28181.Net
+{
     public class RTPReceiveRecord
 	{
 		//public DateTime SendTime;                 // The send time of the RTP packet adjusted to be local time using a rolling avergae tranist time to calculate.
 		public DateTime ReceiveTime;                // Local time the RTP packet was received.
-		public UInt16 SequenceNumber;
+		public ushort SequenceNumber;
 		public long RTPBytes;			            // Includes RTP Header and payload.
         public uint Jitter;
 		public int Duplicates;
@@ -240,7 +235,7 @@ namespace GB28181.SIPSorcery.Net
         private const string RTCP_FORMAT_STRING = "syncsrc={0}, ts={1} ,te={2} , dur={3} ,seqs={4,-5:S} ,seqe={5,-5:S} ,pkttot={6,-3:S} ,jitmax={7,-3:S}, jitavg={8,-4:S} " + 
                                     ",transit={9,-5:S} ,pktrate={10,-5:S} ,bytestot={11,-5:S} ,bw={12,-9:S} ,drops={13} ,jitdrops={14} ,duplicates={15} ,outoforder={16}";
 
-		private static ILog logger = GB28181.Logger4Net.LogManager.GetLogger("rtcp");
+		private static ILog logger = LogManager.GetLogger("rtcp");
 
 		public int JitterBufferMilliseconds = 150;	// The size of a the theoretical jitter buffer.
 		public int ReportSampleDuration = 1500;		// Sample time in milliseconds after which a new sample is generated.

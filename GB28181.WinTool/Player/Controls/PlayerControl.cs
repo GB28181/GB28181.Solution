@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SS.ClientBase.Codec;
-using SS.ClientBase.Media;
+using GB28181.WinTool.Codec;
+using GB28181.WinTool.Media;
 using StreamingKit;
 
-namespace SS.ClientBase
+namespace GB28181.WinTool
 {
     public partial class PlayerControl : UserControl
     {

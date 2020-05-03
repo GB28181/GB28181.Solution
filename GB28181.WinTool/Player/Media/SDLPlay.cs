@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using Tao.Sdl;
 
 
-namespace SS.ClientBase.Media
+namespace GB28181.WinTool.Media
 {
     public class SDLPlay
     {

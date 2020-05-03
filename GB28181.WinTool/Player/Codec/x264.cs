@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     public class X264Native {
        public static X264Native _DLastX264Native = null;
@@ -51,7 +51,7 @@ namespace SS.ClientBase.Codec
            return _lastEncodeIsIFrame;
            //return X264Native_IsKeyFrame(obj);
        }
-       private Boolean _lastEncodeIsIFrame = false;
+       private bool _lastEncodeIsIFrame = false;
        public byte[] Encode(byte[] inBuf) {
            lock (_sync) {
                if (_isReleased) {

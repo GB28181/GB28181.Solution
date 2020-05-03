@@ -37,7 +37,7 @@ using NUnit.Framework;
 
 using SIPSorcery.SIP;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public class SIPNonInviteTransaction : SIPTransaction
 	{

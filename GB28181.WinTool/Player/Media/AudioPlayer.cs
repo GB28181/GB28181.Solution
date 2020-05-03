@@ -1,6 +1,6 @@
 ﻿using Common.Generic;
 using Helpers;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using StreamingKit;
 using StreamingKit.Wave.Wave;
 using StreamingKit.Media;
@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Threading;
 
-namespace SS.ClientBase.Media
+namespace GB28181.WinTool.Media
 {
     /// <summary>
     /// 音频播放器

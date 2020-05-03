@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
     public class SIPEvent
     {

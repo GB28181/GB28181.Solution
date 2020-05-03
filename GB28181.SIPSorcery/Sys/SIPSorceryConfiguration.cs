@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     public class SIPSorceryConfiguration
     {

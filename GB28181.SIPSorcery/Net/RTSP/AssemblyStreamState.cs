@@ -34,11 +34,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     /// <summary>
     /// This class maintains static application configuration settings that can be used by all classes within

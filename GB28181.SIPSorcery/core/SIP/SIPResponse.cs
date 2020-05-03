@@ -31,17 +31,14 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIPSorcery.SIP
+namespace GB28181.SIP
 {
 	public enum SIPResponseParserError
 	{

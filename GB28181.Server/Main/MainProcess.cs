@@ -1,13 +1,12 @@
-﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GB28181.Logger4Net;
+using GB28181.Config;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.Sys;
+using Microsoft.Extensions.Configuration;
 
 namespace GB28181.Server.Main
 {
@@ -36,6 +35,7 @@ namespace GB28181.Server.Main
         private MessageHub messageCenter;
         private ISIPRegistrarCore registry;
 
+        public MainProcess() { }
         public MainProcess(ISipMessageCore sipMessageCore, MessageHub messageHub, ISIPRegistrarCore sipRegistrarCore)
         {
             _mainSipService = sipMessageCore;

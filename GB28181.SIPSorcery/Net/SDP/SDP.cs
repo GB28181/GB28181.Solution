@@ -93,14 +93,13 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class SDP
     {
@@ -328,7 +327,7 @@ namespace GB28181.SIPSorcery.Net
 
         public override string ToString()
         {
-            //SDPË³ÐòÅÅÁÐ
+            //SDPË³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             /*
              * v=0
              * o=34020000002000000001 0 0 IN IP4 192.168.10.60
@@ -347,7 +346,7 @@ namespace GB28181.SIPSorcery.Net
                 "v=" + SDP_PROTOCOL_VERSION + CRLF +
                 "o=" + Owner + CRLF +
                 "s=" + SessionName + CRLF;
-            //º£¿µÂ¼Ïñµã²¥sdpË³Ðò
+            //ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ã²¥sdpË³ï¿½ï¿½
             sdp += string.IsNullOrWhiteSpace(URI) ? null : "u=" + URI + CRLF;
             sdp += ((Connection != null) ? Connection.ToString() : null);
             foreach (string bandwidth in BandwidthAttributes)

@@ -31,14 +31,12 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
-using GB28181.SIPSorcery.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Net
+namespace GB28181.Net
 {
     public class RTSPMessage
     {
@@ -50,16 +48,16 @@ namespace GB28181.SIPSorcery.Net
         private static string m_CRLF = RTSPConstants.CRLF;
         private static int m_minFirstLineLength = 7;
         
-        public string RawMessage;
-		public RTSPMessageTypesEnum RTSPMessageType = RTSPMessageTypesEnum.Unknown;
-		public string FirstLine;
-		public string[] RTSPHeaders;
-		public string Body;
-		public byte[] RawBuffer;
+        public string RawMessage { get; set; }
+        public RTSPMessageTypesEnum RTSPMessageType { get; set; } = RTSPMessageTypesEnum.Unknown;
+		public string FirstLine { get; set; }
+        public string[] RTSPHeaders;
+		public string Body { get; set; }
+        public byte[] RawBuffer;
 
-        public DateTime ReceivedAt = DateTime.MinValue;
-        public IPEndPoint ReceivedFrom;
-        public IPEndPoint ReceivedOn;
+        public DateTime ReceivedAt { get; set; } = DateTime.MinValue;
+        public IPEndPoint ReceivedFrom { get; set; }
+        public IPEndPoint ReceivedOn { get; set; }
 
         public static RTSPMessage ParseRTSPMessage(byte[] buffer, IPEndPoint receivedFrom, IPEndPoint receivedOn)
         {

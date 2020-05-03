@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using GB28181.Logger4Net;
 using Newtonsoft.Json;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Sys.XML;
+using GB28181.Servers;
+using GB28181.Sys.XML;
 
 namespace GB28181.Service.Protos.VideoRecord
 {

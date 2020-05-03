@@ -24,8 +24,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Sys
+namespace GB28181.Sys
 {
     public class AppState : IConfigurationSectionHandler
     {

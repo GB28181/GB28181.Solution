@@ -13,7 +13,11 @@ running in docker
 running on Linux
 running on aspnetcore 3.1+
 ~~~
-+ [Linux/Windows版测试工具](https://github.com/GB28181/GB28181-Simulation-Tool)
+
++ [GB28181.Solution的模块说明](./SolutionModules.md)
++ [可以协同测试的Linux/Windows版工具](https://github.com/GB28181/GB28181-Simulation-Tool)
++ [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
++ [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
 
 ## 说明(instruction)
 
@@ -28,7 +32,7 @@ running on aspnetcore 3.1+
 
 项目希望达到的目标功能,如下:
 
-打勾的是已完成的，没打勾的是正在做的，需要大家一起完成的。
+打勾的是已完成的，没打勾的是正在做的，需要大家一起完成的.
 
 + Architecture & framework
   + [x] 设计与流媒体服务交互的GRPC接口
@@ -36,12 +40,13 @@ running on aspnetcore 3.1+
   + [x] 精简服务模块，调整代码结构关系
   + [ ] 为配置接口和流媒体服务接口提供mock数据,使得服务可以独立运行
   + [ ] 以GRPC方式对接流媒体服务【[monibuca](https://github.com/langhuihui/monibuca)】
-  + [ ] 以GRPC方式从系统配置服务(或者数据服务)中获取GB信令服务的配置信息，包括名称、ID、端口、协议等
-  + [ ] 使服务注册组件变成可配置的，(当前是consul，并且k8s环境中也不需要)
-  + [x] 将GRPC服务的实现改为apsnetcore3.1+的内置实现方式.
-  + [ ] 从GB28181.Sipsorcery项目中将原始的Sipsorcery项目分离出来
+  + [x] 提供GRPC接口，是服务能从从系统的其他配置服务(或者数据服务)中获取需要配置信息，包括名称、ID、端口、协议等
+  + [ ] 使服务注册组件变成可配置的（或者移除），(当前是consul，并且k8s环境中也不需要)
+  + [x] 将GRPC服务的升级到apsnetcore3.1+的内置实现方式.
+  + [ ] [WIP]从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
+  + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
 
-+ SIP信令服务
++ SIP
   + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
     + [x] Device Registering And management
     + [x] Device Controlling Service such as :PTZ
@@ -50,15 +55,22 @@ running on aspnetcore 3.1+
     + [x] Device Live Video
     + [x] Device History Video Query
   + [x] 对接GB28181平台，实现完整的平台级联控制。
-  + [x] 注册到服务的设备信息缓存
-  + [ ] 注册到服务的平台信息缓存，待进一步测试
+  + [x] 缓存注册上来的的设备信息
+  + [ ] 缓存注册到上来的平台信息，待进一步测试
 
-+ Streaming Media(流媒体，以【[monibuca](https://github.com/langhuihui/monibuca)】为基础)
-  + [x] 定义SIP信令服务与流媒体服务交互的RTSP接口
-  + [ ] 定义SIP信令服务与流媒体服务交互的GRPC接口
++ Streaming [Golang] [以【[monibuca](https://github.com/langhuihui/monibuca)】为基础]
+  + [x] 修复视频测试工具(WinTool)
+  + [x] 完善项目视频组件功能相关的测试流程文档
+  + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
+  + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
   + [ ] 实现完整的实时视频播放功能, Video Live Play
   + [ ] 实现完整的历史视频搜索功能，History Video Record Search
   + [ ] 实现完整的历史视频播放功能, History Video PlayBack
+
++ Streaming [C#/netcore] [目前只是想法]
+  + [ ] 拆分StreamingKit 形成单独的媒体流服务模块
+  + [ ] 增加单独的GRPC服务承载Streaming
+  + [ ] 提供流的接收和转发能力
 
 ## 模块在系统内架构关系
 
@@ -72,7 +84,7 @@ running on aspnetcore 3.1+
 
 ## 讨论、成为共同作者、近距离贡献
 
-微信扫描二维码，添加好友，进入微信讨论群(注明：GB28181+公司+姓名)：
+微信扫描二维码，添加好友，进入微信讨论群(注明：GB28181-公司-姓名)：
 
 ![qrcode](./docs/crazybber.jpg)
 
@@ -103,3 +115,9 @@ GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licen
 关于GPL的更多了解：[开源中国GPL](https://www.oschina.net/question/12_2826)、[百科 GPL](https://baike.baidu.com/item/GPL/2357903)
 
 
+## 其他
+
++ [GB28181.Solution的模块说明](./SolutionModules.md)
++ [可以协同测试的Linux/Windows版工具](https://github.com/GB28181/GB28181-Simulation-Tool)
++ [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
++ [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)

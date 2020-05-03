@@ -1,6 +1,6 @@
 ﻿using Grpc.Core;
 using System.Threading.Tasks;
-using GB28181.SIPSorcery.Servers;
+using GB28181.Servers;
 using System;
 using GB28181.Logger4Net;
 using System.Collections.Generic;
@@ -209,7 +209,7 @@ namespace GB28181.Service.Protos.Video
             }
         }
 
-        private Header GetHeaderBySipHeader(GB28181.SIPSorcery.SIP.SIPHeader sipHeader)
+        private Header GetHeaderBySipHeader(GB28181.SIP.SIPHeader sipHeader)
         {
             Header header = new Header();
             header.Sequence = sipHeader.CSeq;

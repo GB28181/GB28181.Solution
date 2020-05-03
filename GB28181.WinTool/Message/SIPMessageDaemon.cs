@@ -35,17 +35,17 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Servers;
-using GB28181.SIPSorcery.Servers.SIPMessage;
-using GB28181.SIPSorcery.SIP;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
-using GB28181.SIPSorcery.Sys.Config;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.SIP;
+using GB28181.SIP.App;
+using GB28181.Sys;
+using GB28181.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Gb28181_Client.Message
+namespace GB28181.WinTool.Message
 {
     public class SIPMessageDaemon
     {

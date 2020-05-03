@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     /// <summary>
     /// SPEEX编码器
@@ -12,7 +12,7 @@ namespace SS.ClientBase.Codec
     {
 
         public IntPtr pSpx = IntPtr.Zero;
-        private int Samples = 160;
+        private readonly int Samples = 160;
         private bool _isDisoseing = false;
         private bool _isDisosed = false;
         public Speex(int quality, int samples = 160)
@@ -22,7 +22,7 @@ namespace SS.ClientBase.Codec
             {
                 throw new Exception("quality value must be between 0 and 10.");
             }
-            pSpx = Speex.SpeexOpen(quality);
+            pSpx = SpeexOpen(quality);
         }
 
         //编码
@@ -47,7 +47,7 @@ namespace SS.ClientBase.Codec
                 return null;
             var pData = FunctionEx.BytesToIntPtr(data);
             var pOut = Marshal.AllocHGlobal(Samples * 2);
-            var decSize = Speex.SpeexDecode(this.pSpx, data.Length, pData, pOut);
+            var decSize = SpeexDecode(this.pSpx, data.Length, pData, pOut);
             var bytes = FunctionEx.IntPtrToBytes(pOut, 0, decSize);
             Marshal.FreeHGlobal(pOut);
             Marshal.FreeHGlobal(pData);
@@ -62,7 +62,7 @@ namespace SS.ClientBase.Codec
             var pPlay = FunctionEx.BytesToIntPtr(play);
             var pMic = FunctionEx.BytesToIntPtr(mic);
             var pOut = Marshal.AllocHGlobal(mic.Length);
-            Speex.SpeexEchoCancellation(pSpx, pPlay, pMic, pOut);
+            SpeexEchoCancellation(pSpx, pPlay, pMic, pOut);
             var data = FunctionEx.IntPtrToBytes(pOut, 0, mic.Length);
             Marshal.FreeHGlobal(pPlay);
             Marshal.FreeHGlobal(pMic);
@@ -74,39 +74,50 @@ namespace SS.ClientBase.Codec
         {
             if (_isDisoseing || _isDisosed)
                 return;
-            Speex.SpeexDenoise(pSpx, noiseSuppress);
+            SpeexDenoise(pSpx, noiseSuppress);
         }
         public void SpeexAGC(int level = 24000)
         {
             if (_isDisoseing || _isDisosed)
                 return ;
-            Speex.SpeexAGC(pSpx, level);
+            SpeexAGC(pSpx, level);
         }
         public void SpeexVAD(int vadProbStart = 80, int vadProbContinue = 65)
         {
             if (_isDisoseing || _isDisosed)
                 return ;
-            Speex.SpeexVAD(pSpx, vadProbStart, vadProbContinue);
+            SpeexVAD(pSpx, vadProbStart, vadProbContinue);
         }
 
 
-        public void Dispose()
+        protected virtual void Dispose(bool cleanNative)
         {
 
             _isDisoseing = true;
-            try
+            if (cleanNative)
             {
-                Speex.SpeexClose(this.pSpx);
+                //clean native
+                try
+                {
+                    SpeexClose(pSpx);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _isDisoseing = false;
+                    _isDisosed = true;
+                }
             }
-            catch
-            {
-            }
-            finally
-            {
-                _isDisoseing = false;
-                _isDisosed = true;
-            }
- 
+            //clean managed
+
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 
@@ -116,28 +127,28 @@ namespace SS.ClientBase.Codec
         const string DLLFile = @"speexNet.dll";
 
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static IntPtr SpeexOpen(int quality);
+       static extern IntPtr SpeexOpen(int quality);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexClose(IntPtr pSpx);
+        static extern void SpeexClose(IntPtr pSpx);
 
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexDenoise(IntPtr pSpx, int noiseSuppress = -25);
+       static extern void SpeexDenoise(IntPtr pSpx, int noiseSuppress = -25);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexAGC(IntPtr pSpx, float level = 24000);
+        static extern void SpeexAGC(IntPtr pSpx, float level = 24000);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexVAD(IntPtr pSpx, int vadProbStart = 80, int vadProbContinue = 65);
+       static extern void SpeexVAD(IntPtr pSpx, int vadProbStart = 80, int vadProbContinue = 65);
 
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static int SpeexEncode(IntPtr pSpx, IntPtr data, IntPtr output);
+       static extern int SpeexEncode(IntPtr pSpx, IntPtr data, IntPtr output);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static int SpeexDecode(IntPtr pSpx, int nbBytes, IntPtr data, IntPtr output);
+       static extern int SpeexDecode(IntPtr pSpx, int nbBytes, IntPtr data, IntPtr output);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexEchoCancellation(IntPtr pSpx, IntPtr play, IntPtr mic, IntPtr output);
+       static extern void SpeexEchoCancellation(IntPtr pSpx, IntPtr play, IntPtr mic, IntPtr output);
 
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexEchoCapture(IntPtr pSpx, IntPtr mic, IntPtr output);
+       static extern void SpeexEchoCapture(IntPtr pSpx, IntPtr mic, IntPtr output);
         [DllImport(DLLFile, CallingConvention = CallingConvention.Cdecl)]
-        public extern static void SpeexEchoPlayback(IntPtr pSpx, IntPtr play);
+       static extern void SpeexEchoPlayback(IntPtr pSpx, IntPtr play);
          
 
 

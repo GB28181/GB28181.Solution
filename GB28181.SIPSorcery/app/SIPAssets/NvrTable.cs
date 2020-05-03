@@ -1,4 +1,4 @@
-﻿namespace GB28181.SIPSorcery.Sys.Config
+﻿namespace GB28181.Sys.Config
 {
     ///// <summary>
     ///// 设备列表

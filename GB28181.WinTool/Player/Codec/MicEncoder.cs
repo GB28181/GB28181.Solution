@@ -6,19 +6,19 @@ using System;
 using System.IO;
 
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
 
 
     public class MicCapturer : IDisposable
     {
         private bool _isworking = false;
-        private int _mic = 0;
-        private int _channels = 0;
-        private int _samples = 0;
-        private int _bufferSize = 0;
-        private WaveIn _waveIn = null;//音频输入
-        private Action<byte[]> _callBack;
+        private readonly int _mic = 0;
+        private readonly int _channels = 0;
+        private readonly int _samples = 0;
+        private readonly int _bufferSize = 0;
+        private readonly WaveIn _waveIn = null;//音频输入
+        private readonly Action<byte[]> _callBack;
         public MicCapturer(int mic, int channels, int samples, int bufferSize, Action<byte[]> callback)
         {
             _mic = mic;
@@ -31,7 +31,7 @@ namespace SS.ClientBase.Codec
                 _waveIn = new WaveIn(WaveIn.Devices[mic], _samples, 16, _channels, bufferSize);
                 _waveIn.BufferFull += new BufferFullHandler(WaveIn_BufferFull);
             }
-            catch (Exception e)
+            catch (Exception )
             {
 
             }
@@ -76,19 +76,23 @@ namespace SS.ClientBase.Codec
             }
         }
 
-        public void Dispose()
-        {
 
-            try
+
+        protected virtual void Dispose(bool disposeNative)
+        {
+            Stop();
+            if (disposeNative)
             {
-                Stop();
                 _waveIn.Dispose();
             }
-            catch (Exception e)
-            {
-                throw;
-            }
+        
         }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
 
     }
 
@@ -108,9 +112,9 @@ namespace SS.ClientBase.Codec
         public MicEncoder(AudioEncodeCfg audioCfg, Action<MediaFrame> callback)
         {
             _audioCfg = audioCfg;
-            _channels = audioCfg.channel;
-            _frequency = audioCfg.frequency;
-            _capturer = new MicCapturer(audioCfg.micId, _channels, _frequency, audioCfg.samples, MicCapturer_CallBack);
+            _channels = audioCfg.Channel;
+            _frequency = audioCfg.Frequency;
+            _capturer = new MicCapturer(audioCfg.MicId, _channels, _frequency, audioCfg.Samples, MicCapturer_CallBack);
             if (audioCfg.encodeName.EqIgnoreCase("SPEX"))
                 _speex = new Speex(4);
             else if (audioCfg.encodeName.EqIgnoreCase("AAC_"))
@@ -125,7 +129,7 @@ namespace SS.ClientBase.Codec
                     _faacImp.Encode(new byte[2048]);
                 }
                 else
-                    _faacImp = new FaacImp(_channels, _frequency, audioCfg.bitrate);
+                    _faacImp = new FaacImp(_channels, _frequency, audioCfg.Bitrate);
             }
 
             _callBack = callback;
@@ -145,7 +149,7 @@ namespace SS.ClientBase.Codec
             var mf = new StreamingKit.MediaFrame()
             {
                 Frequency = _frequency,
-                Samples = (short)_audioCfg.samples,
+                Samples = (short)_audioCfg.Samples,
                 IsKeyFrame = (byte)((_audioFrameIndex++ % 50) == 0 ? 1 : 0),
                 Encoder = _audioCfg.encoder,
                 MediaFrameVersion = 0,
@@ -168,10 +172,9 @@ namespace SS.ClientBase.Codec
                     _callBack(resetCodecMediaFrame);
             }
 
-            if (_callBack != null)
-                _callBack(mf);
-            if (bw == null)
-                bw = new BinaryWriter(new System.IO.FileStream(@"D:\aac5.aac", System.IO.FileMode.Create));
+
+            _callBack?.Invoke(mf);
+            bw ??= new BinaryWriter(new System.IO.FileStream(@"D:\aac5.aac", System.IO.FileMode.Create));
             byte[] bufs = mf.GetBytes();
             bw.Write(bufs.Length);
             bw.Write(bufs);
@@ -227,20 +230,19 @@ namespace SS.ClientBase.Codec
 
         }
 
+        protected virtual void Dispose(bool disposeNative)
+        {
+            if (disposeNative)
+            {
+                _capturer?.Dispose();
+                _speex?.Dispose();
+                _faacImp?.Dispose();
+            }
+        }
         public void Dispose()
         {
-            try
-            {
-                if (_capturer != null)
-                    _capturer.Dispose();
-                if (_speex != null)
-                    _speex.Dispose();
-                if (_faacImp != null)
-                    _faacImp.Dispose();
-            }
-            catch (Exception e)
-            {
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

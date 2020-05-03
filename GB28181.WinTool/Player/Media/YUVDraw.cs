@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
 
     public interface IYUVDraw {

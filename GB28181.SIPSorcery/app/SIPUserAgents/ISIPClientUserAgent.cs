@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 
 
-namespace GB28181.SIPSorcery.SIP.App
+namespace GB28181.SIP.App
 {
 
     public interface ISIPClientUserAgent {

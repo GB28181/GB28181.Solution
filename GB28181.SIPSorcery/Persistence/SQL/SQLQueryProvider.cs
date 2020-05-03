@@ -5,13 +5,16 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Transactions;
-using GB28181.SIPSorcery.SIP.App;
-using GB28181.SIPSorcery.Sys;
+using GB28181.SIP.App;
+using GB28181.Sys;
 using GB28181.Logger4Net;
+using SIPSorcery.Sys;
 
-namespace GB28181.SIPSorcery.Persistence {
+namespace GB28181.Persistence
+{
 
-    public class SQLQueryProvider : QueryProvider {
+    public class SQLQueryProvider : QueryProvider
+    {
 
         private static ILog logger = AppState.logger;
 
@@ -24,7 +27,8 @@ namespace GB28181.SIPSorcery.Persistence {
         public int Offset;
         public int Count = Int32.MaxValue;
 
-        public SQLQueryProvider(DbProviderFactory dbFactory, string dbConnStr, string tableName, SetterDelegate setter) {
+        public SQLQueryProvider(DbProviderFactory dbFactory, string dbConnStr, string tableName, SetterDelegate setter)
+        {
 
             m_dbFactory = dbFactory;
             m_dbConnStr = dbConnStr;
@@ -32,13 +36,16 @@ namespace GB28181.SIPSorcery.Persistence {
             m_setter = setter;
         }
 
-        public override string GetQueryText(Expression expression) {
+        public override string GetQueryText(Expression expression)
+        {
             return this.Translate(expression);
         }
 
-        public override object Execute(Expression expression) {
+        public override object Execute(Expression expression)
+        {
 
-            try {
+            try
+            {
                 Type elementType = TypeSystem.GetElementType(expression.Type);
                 string methodName = ((MethodCallExpression)expression).Method.Name;
                 bool isIQueryable = (expression.Type.FullName.StartsWith("System.Linq.IQueryable") || expression.Type.FullName.StartsWith("System.Linq.IOrderedQueryable"));
@@ -48,87 +55,95 @@ namespace GB28181.SIPSorcery.Persistence {
                 {
                     Console.WriteLine();
                 }
-                if (!OrderBy.IsNullOrBlank()) {
+                if (!OrderBy.IsNullOrBlank())
+                {
                     queryString += " order by " + OrderBy;
                 }
 
-                if (Count != Int32.MaxValue) {
+                if (Count != Int32.MaxValue)
+                {
                     queryString += " limit " + Count;
                 }
 
-                if (Offset != 0) {
+                if (Offset != 0)
+                {
                     queryString += " offset " + Offset;
                 }
 
                 //logger.Debug(queryString);
 
-                if (!queryString.IsNullOrBlank()) {
+                if (!queryString.IsNullOrBlank())
+                {
 
-                    using(TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Suppress))
+                    using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Suppress))
                     {
-                    using (IDbConnection connection = m_dbFactory.CreateConnection()) {
-                        connection.ConnectionString = m_dbConnStr;
-                        connection.Open();
-
-                        if (elementType == typeof(Int32))
+                        using (IDbConnection connection = m_dbFactory.CreateConnection())
                         {
-                            // This is a count.
-                            IDbCommand command = connection.CreateCommand();
-                            command.CommandText = queryString;
-                            return Convert.ToInt32(command.ExecuteScalar());
-                        }
-                        else
-                        {
-                            //logger.Debug("SimpleDB select: " + queryString + ".");
-                            IDbCommand command = connection.CreateCommand();
-                            command.CommandText = queryString;
-                            IDbDataAdapter adapter = m_dbFactory.CreateDataAdapter();
-                            adapter.SelectCommand = command;
-                            DataSet resultSet = new DataSet();
-                            adapter.Fill(resultSet);
+                            connection.ConnectionString = m_dbConnStr;
+                            connection.Open();
 
-                            if (resultSet != null && resultSet.Tables[0] != null)
+                            if (elementType == typeof(Int32))
                             {
+                                // This is a count.
+                                IDbCommand command = connection.CreateCommand();
+                                command.CommandText = queryString;
+                                return Convert.ToInt32(command.ExecuteScalar());
+                            }
+                            else
+                            {
+                                //logger.Debug("SimpleDB select: " + queryString + ".");
+                                IDbCommand command = connection.CreateCommand();
+                                command.CommandText = queryString;
+                                IDbDataAdapter adapter = m_dbFactory.CreateDataAdapter();
+                                adapter.SelectCommand = command;
+                                using var resultSet = new DataSet();
+                                adapter.Fill(resultSet);
 
-                                object result = Activator.CreateInstance(
-                                typeof(SQLObjectReader<>).MakeGenericType(elementType),
-                                BindingFlags.Instance | BindingFlags.Public, null,
-                                new object[] { resultSet, m_setter },
-                                null);
+                                if (resultSet != null && resultSet.Tables[0] != null)
+                                {
 
-                                if (isIQueryable)
-                                {
-                                    return result;
-                                }
-                                else
-                                {
-                                    IEnumerator enumerator = ((IEnumerable)result).GetEnumerator();
-                                    if (enumerator.MoveNext())
+                                    object result = Activator.CreateInstance(
+                                    typeof(SQLObjectReader<>).MakeGenericType(elementType),
+                                    BindingFlags.Instance | BindingFlags.Public, null,
+                                    new object[] { resultSet, m_setter },
+                                    null);
+
+                                    if (isIQueryable)
                                     {
-                                        return enumerator.Current;
+                                        return result;
                                     }
                                     else
                                     {
-                                        return null;
+                                        IEnumerator enumerator = ((IEnumerable)result).GetEnumerator();
+                                        if (enumerator.MoveNext())
+                                        {
+                                            return enumerator.Current;
+                                        }
+                                        else
+                                        {
+                                            return null;
+                                        }
                                     }
                                 }
                             }
                         }
-                        }
                         throw new ApplicationException("No results for SQL query.");
                     }
                 }
-                else {
+                else
+                {
                     throw new ApplicationException("The expression translation by the SQLQueryProvider resulted in an empty select string.");
                 }
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 logger.Error("Exception SQLQueryProvider Execute. " + expression.ToString() + ". " + excp.Message);
                 throw;
             }
         }
 
-        private string Translate(Expression expression) {
+        private string Translate(Expression expression)
+        {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
             expression = Evaluator.PartialEval(expression);
@@ -140,7 +155,7 @@ namespace GB28181.SIPSorcery.Persistence {
 
         #region Unit testing.
 
-        #if UNITTEST
+#if UNITTEST
 
         [TestFixture]
         public class SQLQueryProviderUnitTest {
@@ -419,7 +434,7 @@ namespace GB28181.SIPSorcery.Persistence {
             }
         }
         
-        #endif
+#endif
 
         #endregion
     }

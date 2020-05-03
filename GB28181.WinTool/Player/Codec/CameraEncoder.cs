@@ -1,7 +1,7 @@
 ﻿using DirectShowLib;
 using Helpers;
 using Common.Generic;
-using SS.ClientBase.Mixer.Video;
+using GB28181.WinTool.Mixer.Video;
 using StreamingKit;
 using SS.WPFClient.DShow;
 using System;
@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using GB28181.Logger4Net.DebugEx;
 
-namespace SS.ClientBase.Codec
+namespace GB28181.WinTool.Codec
 {
     public class CameraCapturer : IDisposable
     {
@@ -691,7 +691,7 @@ namespace SS.ClientBase.Codec
     }
     public class CameraEncoder : IDisposable
     {
-        public static int CameraCapturerMode = System.Configuration.ConfigurationSettings.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
+        public static int CameraCapturerMode = System.Configuration.ConfigurationManager.AppSettings["CameraCapturerMode"] == "1" ? 1 : 0;
         protected bool _isworking = false;
         protected CameraCapturer _capturer = null;
         protected X264Native _x264;

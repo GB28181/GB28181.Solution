@@ -1,4 +1,4 @@
-﻿using GB28181.SIPSorcery.SIP;
+﻿using GB28181.SIP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace GB28181.SIPSorcery.Servers
+namespace GB28181.Servers
 {
     /// <summary>
     /// 计时器任务

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using StreamingKit;
-using SS.ClientBase.Codec;
+using GB28181.WinTool.Codec;
 using System.Threading;
 using Helpers;
 using Common.Generic;
 
-namespace SS.ClientBase.Media {
+namespace GB28181.WinTool.Media {
     public class VideoPlayer : IDisposable {
         private IYUVDraw _yuvDraw = null;
         private FFImp _ffimp = null;

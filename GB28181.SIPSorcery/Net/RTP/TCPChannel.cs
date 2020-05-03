@@ -1,5 +1,5 @@
 ﻿using GB28181.Logger4Net;
-using GB28181.SIPSorcery.Sys;
+using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GB28181.SIPSorcery.Net.RTP
+namespace GB28181.Net.RTP
 {
     /// <summary>
     /// TCP连接模式
@@ -181,7 +181,7 @@ namespace GB28181.SIPSorcery.Net.RTP
             }
         }
         #region 处理数据
-        private byte[] tempBuffer = new byte[0];
+        private byte[] tempBuffer = Array.Empty<byte>();
         //private void HandleTcpDatagramReceived(IAsyncResult ar)
         //{
         //    if (IsRunning)
