@@ -22,7 +22,7 @@ running on aspnetcore 3.1+
 ## 说明(instruction)
 
 + Mainly on `develop` branch ,in order to support .net core3.1+.
-  + 以develop分支为主.
+  + develop分支为主分支(默认分支).
 + The windows function part was not maintained .
   + Form Client Project Need to be fixed.
 + you can refer to other branch in this repo , `PRs` are always welcome.
@@ -45,6 +45,7 @@ running on aspnetcore 3.1+
   + [x] 将GRPC服务的升级到apsnetcore3.1+的内置实现方式.
   + [ ] [WIP]从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
   + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
+  + [ ][WIP] 为GB28181信令，增加REST API.
 
 + SIP
   + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
@@ -95,7 +96,7 @@ running on aspnetcore 3.1+
 
 + [sipsorcery](https://github.com/sipsorcery/sipsorcery)
 
-+ [GB28181-2016(C/C++)](https://github.com/usecpp/gb28181-2016)
++ [GB28181-2016(C/C++)](https://github.com/unitycs/GB28181Platform)
 
 ## License
 
