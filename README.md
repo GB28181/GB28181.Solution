@@ -45,9 +45,9 @@ running on aspnetcore 3.1+
   + [x] 将GRPC服务的升级到apsnetcore3.1+的内置实现方式.
   + [ ] [WIP]从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
   + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
-  + [ ][WIP] 为GB28181信令，增加REST API.
+  + [ ] [WIP] 为GB28181信令，增加REST API.
 
-+ SIP
++ GB28181协议/SIP信令
   + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
     + [x] Device Registering And management
     + [x] Device Controlling Service such as :PTZ
