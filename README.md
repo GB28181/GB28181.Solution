@@ -33,46 +33,7 @@ running on aspnetcore 3.1+
 
 项目希望达到的目标功能,如下:
 
-打勾的是已完成的，没打勾的是正在做的，需要大家一起完成的.
-
-+ Architecture & framework
-  + [x] 设计与流媒体服务交互的GRPC接口
-  + [x] 设计与系统配置服务(或数据服务)交互的GRPC接口
-  + [x] 精简服务模块，调整代码结构关系
-  + [ ] 为配置接口和流媒体服务接口提供mock数据,使得服务可以独立运行
-  + [ ] 以GRPC方式对接流媒体服务【[monibuca](https://github.com/langhuihui/monibuca)】
-  + [x] 提供GRPC接口，是服务能从从系统的其他配置服务(或者数据服务)中获取需要配置信息，包括名称、ID、端口、协议等
-  + [ ] 使服务注册组件变成可配置的（或者移除），(当前是consul，并且k8s环境中也不需要)
-  + [x] 将GRPC服务的升级到apsnetcore3.1+的内置实现方式.
-  + [ ] [WIP]从GB28181.Sipsorcery项目中将原始的sipsorcery项目分离出来 
-  + [x] 剥离删除DNS组件,直接使用sipsorcery项目的原始功能.
-  + [ ] [WIP] 为GB28181信令，增加REST API.
-
-+ GB28181协议/SIP信令
-  + [x] 对接GB28181设备,实现基本的设备控制(暂不含双向语音和巡航等功能)
-    + [x] Device Registering And management
-    + [x] Device Controlling Service such as :PTZ
-    + [x] Device Catalog Query
-    + [x] Device Info Query
-    + [x] Device Live Video
-    + [x] Device History Video Query
-  + [x] 对接GB28181平台，实现完整的平台级联控制。
-  + [x] 缓存注册上来的的设备信息
-  + [ ] 缓存注册到上来的平台信息，待进一步测试
-
-+ Streaming [Golang] [以【[monibuca](https://github.com/langhuihui/monibuca)】为基础]
-  + [x] 修复视频测试工具(WinTool)
-  + [x] 完善项目视频组件功能相关的测试流程文档
-  + [ ] 定义SIP信令服务与流媒体服务交互的RTSP接口
-  + [x] 定义SIP信令服务与流媒体服务交互的GRPC接口
-  + [ ] 实现完整的实时视频播放功能, Video Live Play
-  + [ ] 实现完整的历史视频搜索功能，History Video Record Search
-  + [ ] 实现完整的历史视频播放功能, History Video PlayBack
-
-+ Streaming [C#/netcore] [目前只是想法]
-  + [ ] 拆分StreamingKit 形成单独的媒体流服务模块
-  + [ ] 增加单独的GRPC服务承载Streaming
-  + [ ] 提供流的接收和转发能力
+看这里：[项目的技术需求和TODO列表](https://github.com/GB28181/GB28181.Solution/wiki/%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82%E5%92%8CTODO%E5%88%97%E8%A1%A8)
 
 ## 模块在系统内架构关系
 
