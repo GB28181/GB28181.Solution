@@ -16,6 +16,7 @@ running on aspnetcore 3.1+
 
 + [GB28181.Solution的模块说明](./SolutionModules.md)
 + [可以协同测试的Linux/Windows版工具](https://github.com/GB28181/GB28181-Simulation-Tool)
++ [wiki](https://github.com/GB28181/GB28181.Solution/wiki)
 + [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
 + [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
 
@@ -120,5 +121,6 @@ GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licen
 
 + [GB28181.Solution的模块说明](./SolutionModules.md)
 + [可以协同测试的Linux/Windows版工具](https://github.com/GB28181/GB28181-Simulation-Tool)
++ [wiki](https://github.com/GB28181/GB28181.Solution/wiki)
 + [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
 + [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
