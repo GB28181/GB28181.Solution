@@ -5,6 +5,7 @@
 + 项目结构、代码结仍存在不少问题，待完善,因为时间问题，也是希望大家能一起完善
 + 希望每一个对本项目感兴趣的朋友，都能成为本项目的共同作者或者贡献者
 + 注意：**代码一直在更新，GB28181系列项目，并不是生产就绪的，往往须要根据自己的项目和产品架构，做适当的调整和适配！！**
++ 仓库体积较大，为加快clone速度，建议的使用：`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
 
 ## 运行环境(environment)
 
@@ -31,9 +32,7 @@ running on aspnetcore 3.1+
 
 ## 一些要做的事情(TODO List)
 
-项目希望达到的目标功能,如下:
-
-看这里：[项目的技术需求和TODO列表](https://github.com/GB28181/GB28181.Solution/wiki/%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82%E5%92%8CTODO%E5%88%97%E8%A1%A8)
+项目希望达到的目标功能,看这里：[项目的技术需求和TODO列表](https://github.com/GB28181/GB28181.Solution/wiki/%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82%E5%92%8CTODO%E5%88%97%E8%A1%A8)
 
 ## 模块在系统内架构关系
 
