@@ -20,7 +20,7 @@ running on aspnetcore 3.1+
 + [Wiki](https://github.com/GB28181/GB28181.Solution/wiki) 和 [相关资源](https://gb28181.github.io/Awesome)
 + [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
 + [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
-
++ [使用WinTool推流到SRS并通过VLC观看](https://github.com/GB28181/GB28181.Solution/wiki/%E4%BD%BF%E7%94%A8WinTool%E6%8E%A8%E6%B5%81%E5%88%B0SRS%E5%B9%B6%E9%80%9A%E8%BF%87VLC%E8%A7%82%E7%9C%8B)
 ## 说明(instruction)
 
 + Mainly on `develop` branch ,in order to support .net core3.1+.
@@ -84,3 +84,4 @@ GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licen
 + [wiki](https://github.com/GB28181/GB28181.Solution/wiki)
 + [FAQ:常见的一些问题](https://github.com/GB28181/GB28181.Solution/wiki/FAQ:%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98)
 + [WinTool视频播放测试指南](https://github.com/GB28181/GB28181.Solution/wiki/WinTool%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E6%B5%8B%E8%AF%95%E6%8C%87%E5%8D%97)
++ [使用WinTool推流到SRS并通过VLC观看](https://github.com/GB28181/GB28181.Solution/wiki/%E4%BD%BF%E7%94%A8WinTool%E6%8E%A8%E6%B5%81%E5%88%B0SRS%E5%B9%B6%E9%80%9A%E8%BF%87VLC%E8%A7%82%E7%9C%8B)
