@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-//1.Ìí¼ÓgoogleµÄprotoÒıÓÃ¡£×¢ÒâÒıÓÃÄ¿Â¼£¬×¢ÒâÁ½¸ögoogleµÄÎÄ¼şÖ®¼äÒ²ÓĞÒıÓÃ£¬ĞèÒª¸ù¾İËù·ÅÄ¿Â¼½øĞĞĞŞ¸Ä
+//1.æ·»åŠ googleçš„protoå¼•ç”¨ã€‚æ³¨æ„å¼•ç”¨ç›®å½•ï¼Œæ³¨æ„ä¸¤ä¸ªgoogleçš„æ–‡ä»¶ä¹‹é—´ä¹Ÿæœ‰å¼•ç”¨ï¼Œéœ€è¦æ ¹æ®æ‰€æ”¾ç›®å½•è¿›è¡Œä¿®æ”¹
 import "Protos/google/api/annotations.proto";
 
 option csharp_namespace = "GB28181.Service.Protos.Ptz";
@@ -8,12 +8,12 @@ option csharp_namespace = "GB28181.Service.Protos.Ptz";
 package GrpcPtzControl;
 
 /// <summary>
-/// ptz¿ØÖÆ 
+/// ptzæ§åˆ¶ 
 ///</summary>
 service PtzControl {
   // Sends a greeting
   rpc PtzDirect (PtzDirectRequest) returns (PtzDirectReply) {
-  // Ìí¼Ówebapi ÉèÖÃ£¬Ğèµ÷ÓÃÉÏÃæÒıÓÃµÄgoogle apiÊµÏÖ£¨google.api.http£©£¬±¾ÀıÎ½´ÊÑ¡ÓÃpost£¨ºóÃæÊÇurl)£¬bodyÉèÖÃÍ¨Åä·û£¬ËùÒÔ¿ÉÒÔ½ÓÊÕ´«ÈëµÄ²ÎÊı
+  // æ·»åŠ webapi è®¾ç½®ï¼Œéœ€è°ƒç”¨ä¸Šé¢å¼•ç”¨çš„google apiå®ç°ï¼ˆgoogle.api.httpï¼‰ï¼Œæœ¬ä¾‹è°“è¯é€‰ç”¨postï¼ˆåé¢æ˜¯url)ï¼Œbodyè®¾ç½®é€šé…ç¬¦ï¼Œæ‰€ä»¥å¯ä»¥æ¥æ”¶ä¼ å…¥çš„å‚æ•°
     option (google.api.http) = {
       post: "/v1/PtzControl/PtzDirect"
       body: "*"
@@ -33,7 +33,7 @@ message PtzDirectReply {
   string message = 1;
 }
 
-//ptz µÄxyzÆ«ÒÆ
+//ptz çš„xyzåç§»
 message PtzXYZ {
 	int32 X = 1;
 	int32 Y = 2;
