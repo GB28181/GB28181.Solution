@@ -1,12 +1,22 @@
 syntax = "proto3";
 
+//1.添加google的proto引用。注意引用目录，注意两个google的文件之间也有引用，需要根据所放目录进行修改
+import "Protos/google/api/annotations.proto";
+
 option csharp_namespace = "GB28181.Service.Protos.Ptz";
 
 package GrpcPtzControl;
 
+//ptz控制
 service PtzControl {
   // Sends a greeting
-  rpc PtzDirect (PtzDirectRequest) returns (PtzDirectReply) {}
+  rpc PtzDirect (PtzDirectRequest) returns (PtzDirectReply) {
+  // 添加webapi 设置，需调用上面引用的google api实现（google.api.http），本例谓词选用post（后面是url)，body设置通配符，所以可以接收传入的参数
+    option (google.api.http) = {
+      post: "/v1/PtzControl/PtzDirect"
+      body: "*"
+    };
+  }
 }
 
 // The request message.
@@ -21,6 +31,7 @@ message PtzDirectReply {
   string message = 1;
 }
 
+//ptz 的xyz偏移
 message PtzXYZ {
 	int32 X = 1;
 	int32 Y = 2;
