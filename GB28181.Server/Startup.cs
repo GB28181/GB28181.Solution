@@ -22,6 +22,7 @@ using GB28181.Logger4Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace GB28181.Service
 {
@@ -102,9 +103,16 @@ namespace GB28181.Service
             app.UseStaticFiles();
 
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(options =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC HTTP API Example V1");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC HTTP API Example V1");
+                options.DisplayOperationId();
+                options.DisplayRequestDuration();
+                options.DocExpansion(DocExpansion.None);
+                options.EnableDeepLinking();
+                options.EnableFilter();
+                options.ShowExtensions();
+                options.EnableValidator();
             });
 
             app.UseRouting();
