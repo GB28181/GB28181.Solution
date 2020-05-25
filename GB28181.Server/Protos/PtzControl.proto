@@ -7,7 +7,9 @@ option csharp_namespace = "GB28181.Service.Protos.Ptz";
 
 package GrpcPtzControl;
 
-//ptz¿ØÖÆ
+/// <summary>
+/// ptz¿ØÖÆ 
+///</summary>
 service PtzControl {
   // Sends a greeting
   rpc PtzDirect (PtzDirectRequest) returns (PtzDirectReply) {
