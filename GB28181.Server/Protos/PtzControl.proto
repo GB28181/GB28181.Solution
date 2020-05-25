@@ -15,7 +15,7 @@ service PtzControl {
     option (google.api.http) = {
       post: "/v1/PtzControl/PtzDirect"
       body: "*"
-    };+
+    };
   }
 }
 

@@ -21,6 +21,7 @@ using GB28181.Sys.Model;
 using GB28181.Logger4Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.OpenApi.Models;
 
 namespace GB28181.Service
 {
@@ -68,6 +69,12 @@ namespace GB28181.Service
                             .AddScoped<DeviceFeature.DeviceFeatureBase, DeviceFeatureImpl>()
                             .AddScoped<VideoOnDemand.VideoOnDemandBase, VideoOnDemandImpl>();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "gRPC HTTP API Example", Version = "v1" });
+            });
+            services.AddGrpcSwagger();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,7 +97,16 @@ namespace GB28181.Service
                 SupportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("zh-CN") }
             });
             // app.UseHttpsRedirection();
-            // app.UseStaticFiles();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC HTTP API Example V1");
+            });
+
             app.UseRouting();
 
             // app.UseAuthorization();
