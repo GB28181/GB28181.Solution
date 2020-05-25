@@ -43,6 +43,11 @@ namespace GB28181.Service
             services.AddSingleton<IMainProcess, MainProcess>();
             services.AddHostedService<GBService>();
             services.AddGrpc();
+
+            //添加grpchttpapi的引用
+            services.AddGrpcHttpApi();
+
+
             services.AddSingleton<ILog, Logger>()
                             .AddSingleton<ISipAccountStorage, SipAccountStorage>()
                             .AddSingleton<MediaEventSource>()

@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="0.7.2.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Grpc.HttpApi" Version="0.1.0-alpha.20254.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Proto.Actor" Version="0.3.0" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.28.1" />
