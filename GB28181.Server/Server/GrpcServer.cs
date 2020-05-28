@@ -1,5 +1,4 @@
-﻿using Grpc.HealthCheck;
-using GB28181.Logger4Net;
+﻿using GB28181.Logger4Net;
 using System;
 using System.Threading.Tasks;
 using GB28181.Service.Protos.Video;
@@ -48,7 +47,7 @@ namespace GB28181.Service
 
         public void Run()
         {
-            var healthService = new HealthServiceImpl();
+  //          var healthService = new HealthServiceImpl();
  //           _server = new Server
  //           {
  //               Services = { VideoSession.BindService(_videoSession),
