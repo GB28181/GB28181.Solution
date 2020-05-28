@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Swagger for gRPC ASP.NET Core</Description>
+    <PackageTags>gRPC RPC HTTP/2 REST Swagger OpenAPI</PackageTags>
+    <IsPackable>true</IsPackable>
+    <IsShipping>true</IsShipping>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+
+    <!-- Disable analysis for ConfigureAwait(false) -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CA2007</WarningsNotAsErrors>
+    <NoWarn>$(NoWarn);CA2007</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\ServiceDescriptorHelpers.cs" Link="Internal\Shared\ServiceDescriptorHelpers.cs" />
+
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.AspNetCore.Grpc.HttpApi\Microsoft.AspNetCore.Grpc.HttpApi.csproj" />
+  </ItemGroup>
+
+</Project>
