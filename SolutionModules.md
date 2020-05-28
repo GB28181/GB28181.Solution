@@ -9,3 +9,4 @@
 + **GB28181.WinTool** 一个只能运行windows OS上的工具，辅助开发和测试，主要依赖StreamingKit处理流.
 + **StreamingKit** 一个用于多媒体流处理的库，主要用于处理TS/PS流和mp4包.
 + **Testing** 面向GB28181业务开发装测试case.
++ **Microsoft.AspNetCore.Grpc.HttpApi**  与  **Microsoft.AspNetCore.Grpc.Swagger**  是来自微软AspLabs的REST to GRPC的扩展模块.
