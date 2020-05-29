@@ -31,14 +31,11 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Net;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
+using GB28181.Sys.Net;
 
 namespace GB28181.SIP
 {
@@ -476,7 +473,8 @@ namespace GB28181.SIP
 
         public SIPEndPoint ToSIPEndPoint()
         {
-            if (Sys.Net.IPSocket.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
+
+            if (IPSocketUtils.IsIPSocket(Host) || IPSocket.IsIPAddress(Host))
             {
                 if (Host.IndexOf(":") != -1)
                 {

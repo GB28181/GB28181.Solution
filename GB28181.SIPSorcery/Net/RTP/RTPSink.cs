@@ -13,23 +13,18 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using GB28181.Logger4Net;
 using GB28181.Sys;
+using GB28181.Sys.Net;
 using SIPSorcery.Sys;
 
-#if UNITTEST
-using NUnit.Framework;
-#endif
 
 namespace GB28181.Net
 {
-	public delegate void RTPSinkClosed(Guid streamId, Guid callId);
+    public delegate void RTPSinkClosed(Guid streamId, Guid callId);
 	public delegate void RTPDataReceived(Guid streamId, byte[] rtpPayload, IPEndPoint remoteEndPoint);
 	public delegate void RTPDataSent(Guid streamId, byte[] rtpPayload, IPEndPoint remoteEndPoint);
 	public delegate void RTPRemoteEndPointChanged(Guid streamId, IPEndPoint remoteEndPoint);
@@ -78,15 +73,6 @@ namespace GB28181.Net
 				else
 				{
                     m_rtpPacketSendSize = value;
-
-                    /*if(value < DATAGRAM_MAX_SIZE)
-					{
-						m_rtpPacketSendSize = value;
-					}
-					else
-					{
-						m_rtpPacketSendSize = DATAGRAM_MAX_SIZE;
-					}*/
 				}
 			}
 		}
@@ -209,7 +195,7 @@ namespace GB28181.Net
 
         public RTPSink(IPAddress localAddress, ArrayList inUsePorts)
 		{
-            m_udpListener = NetServices.CreateRandomUDPListener(localAddress, RTP_PORTRANGE_START, RTP_PORTRANGE_END, inUsePorts, out m_localEndPoint);
+            m_udpListener = Sys.Net.NetServices.CreateRandomUDPListener(localAddress, RTP_PORTRANGE_START, RTP_PORTRANGE_END, inUsePorts, out m_localEndPoint);
 
             // If a setting has been supplied in the config file use that.
             _ = int.TryParse(m_typeOfService, out int typeOfService);
