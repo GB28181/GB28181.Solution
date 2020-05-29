@@ -48,7 +48,7 @@ namespace SIPSorcery.Net
         {
             get
             {
-                if (!string.IsNullOrEmpty(address)) 
+                if (!string.IsNullOrEmpty(address))
                 {
                     return IPAddress.Parse(address);
                 }

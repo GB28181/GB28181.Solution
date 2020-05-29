@@ -81,6 +81,34 @@ namespace SIPSorcery.Net
         Error
     }
 
+    /// <summary>
+    /// This class represents the source for a real-time  stream. It can be thought
+    /// of as a source stream for any media that is being sent to a remote party.
+    /// </summary>
+    public class RTCRtpSender : IRTCRtpSender
+    {
+        public MediaStreamTrack track { get; private set;}
+
+        public RTCRtpSender(MediaStreamTrack localTrack)
+        {
+            track = localTrack;
+        }
+    }
+
+    /// <summary>
+    /// This class represents a remote real-time sourced stream. It can be thought of 
+    /// as the destination for a media stream being received from a remote party.
+    /// </summary>
+    public class RTCRtpReceiver : IRTCRtpReceiver
+    {
+        public MediaStreamTrack track { get; private set; }
+
+        public RTCRtpReceiver(MediaStreamTrack remoteTrack)
+        {
+            track = remoteTrack;
+        }
+    }
+
     public class MediaStreamTrack
     {
         /// <summary>
@@ -378,7 +406,11 @@ namespace SIPSorcery.Net
         /// </summary>
         public int RemoteRtpEventPayloadID { get; set; } = DEFAULT_DTMF_EVENT_PAYLOAD_ID;
 
-        public bool IsClosed { get { return m_isClosed; } }
+        /// <summary>
+        /// Indicates whether the session has been closed. Once a session is closed it cannot
+        /// be restarted.
+        /// </summary>
+        public bool IsClosed { get => m_isClosed; }
 
         /// <summary>
         /// Indicates whether this session is using audio.
@@ -831,6 +863,48 @@ namespace SIPSorcery.Net
         }
 
         /// <summary>
+        /// Gets a list of the RTP senders for this session.
+        /// </summary>
+        /// <returns>A list of the RTP senders for this session.</returns>
+        public List<IRTCRtpSender> getSenders()
+        {
+            List<IRTCRtpSender> senders = new List<IRTCRtpSender>();
+
+            if(AudioLocalTrack != null)
+            {
+                senders.Add(new RTCRtpSender(AudioLocalTrack));
+            }
+
+            if (VideoLocalTrack != null)
+            {
+                senders.Add(new RTCRtpSender(VideoLocalTrack));
+            }
+
+            return senders;
+        }
+        
+        /// <summary>
+        /// Gets a list of the RTP receivers for this session.
+        /// </summary>
+        /// <returns>A list of the RTP receivers for this session.</returns>
+        public List<IRTCRtpReceiver> getReceivers()
+        {
+            List<IRTCRtpReceiver> receivers = new List<IRTCRtpReceiver>();
+
+            if(AudioRemoteTrack != null)
+            {
+                receivers.Add(new RTCRtpReceiver(AudioRemoteTrack));
+            }
+
+            if(VideoRemoteTrack != null)
+            {
+                receivers.Add(new RTCRtpReceiver(VideoRemoteTrack));
+            }
+
+            return receivers;
+        }
+
+        /// <summary>
         /// Adds a local media stream to this session. Local media tracks should be added by the
         /// application to control what session description offers and answers can be made as
         /// well as being used to match up with remote tracks.
@@ -970,7 +1044,7 @@ namespace SIPSorcery.Net
                 else if (localEventFormat != null)
                 {
                     // Remote party does not support RTP events remove our capability.
-                    logger.LogWarning("REmote party does not support RTP events.");
+                    logger.LogWarning("Remote party does not support RTP events.");
                     AudioLocalTrack.Capabilities.Remove(localEventFormat);
                 }
             }
@@ -1429,7 +1503,7 @@ namespace SIPSorcery.Net
                         packetPayload.AddRange(jpegHeader);
                         packetPayload.AddRange(jpegBytes.Skip(index * RTP_MAX_PAYLOAD).Take(payloadLength));
 
-                        int markerBit = ((index + 1) * RTP_MAX_PAYLOAD < jpegBytes.Length) ? 0 : 1; ;
+                        int markerBit = ((index + 1) * RTP_MAX_PAYLOAD < jpegBytes.Length) ? 0 : 1;
                         SendRtpPacket(GetRtpChannel(SDPMediaTypesEnum.video), dstEndPoint, packetPayload.ToArray(), videoTrack.Timestamp, markerBit, payloadTypeID, videoTrack.Ssrc, videoTrack.SeqNum++, VideoRtcpSession);
                     }
 
