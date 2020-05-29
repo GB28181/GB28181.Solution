@@ -46,7 +46,47 @@ namespace GB28181.Sys.Net
 
         public static UdpClient CreateRandomUDPListener(IPAddress localAddress, out IPEndPoint localEndPoint)
         {
-            return SIPSorcery.Sys.NetServices.CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
+            //return SIPSorcery.Sys.NetServices.CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
+          return  CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
+        }
+
+        public static UdpClient CreateRandomUDPListener(IPAddress localAddress, int start, int end, ArrayList inUsePorts, out IPEndPoint localEndPoint)
+        {
+            try
+            {
+                UdpClient randomClient = null;
+                int attempts = 1;
+
+                localEndPoint = null;
+
+                while (attempts < 50)
+                {
+                    int port = SIPSorcery.Sys.Crypto.GetRandomInt(start, end);
+                    if (inUsePorts == null || !inUsePorts.Contains(port))
+                    {
+                        try
+                        {
+                            localEndPoint = new IPEndPoint(localAddress, port);
+                            randomClient = new UdpClient(localEndPoint);
+                            break;
+                        }
+                        catch(Exception excp)
+                        {
+                            logger.Warn("Warning couldn't create UDP end point for " + localAddress + ":" + port + "." + excp.Message);
+                        }
+
+                        attempts++;
+                    }
+                }
+
+               logger.Debug("Attempts to create UDP end point for " + localAddress  + " by randam port was " + attempts);
+
+                return randomClient;
+            }
+            catch
+            {
+                throw new ApplicationException("Unable to create a random UDP listener between " + start + " and " + end);
+            }
         }
 
         public static void CreateRtpSocket(IPAddress localAddress, int startPort, int endPort, bool createControlSocket, out Socket rtpSocket, out Socket controlSocket)
