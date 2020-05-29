@@ -1,11 +1,11 @@
 ﻿using System.Text.RegularExpressions;
+using SIPSorcery.Sys;
 
 namespace GB28181.Sys.Net
 {
 
-    public class IPSocket
+    public static class IPSocketUtils
     {
-
         public static bool IsIPSocket(string socket)
         {
             if (socket == null || socket.Trim().Length == 0)
@@ -20,20 +20,7 @@ namespace GB28181.Sys.Net
             }
         }
 
-        public static bool IsIPAddress(string socket)
-        {
-            if (socket == null || socket.Trim().Length == 0)
-            {
-                return false;
-            }
-            else
-            {
 
-                return Regex.Match(socket, @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", RegexOptions.Compiled).Success;
-            }
-        }
-
-       
     }
 
 
