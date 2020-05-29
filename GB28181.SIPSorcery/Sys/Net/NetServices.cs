@@ -30,7 +30,7 @@ namespace GB28181.Sys.Net
         Linux = 2,
     }
 
-    public class NetServices
+    public static class NetServices
     {
         public const int UDP_PORT_START  = 1025;
         public const int UDP_PORT_END = 65535;

@@ -11,7 +11,7 @@
 //
 // History:
 // 28 Feb 2010	Aaron Clauson	Created.
-//
+// 30 May 2020	Edward.
 // License: 
 // This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
 //
@@ -37,12 +37,8 @@
 // ============================================================================
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using GB28181.Sys;
+using SIPSorcery.SIP;
 using SIPSorcery.Sys;
 
 namespace GB28181.SIP
