@@ -1,7 +1,5 @@
 syntax = "proto3";
-//1.添加google的proto引用。注意引用目录，注意两个google的文件之间也有引用，需要根据所放目录进行修改
 import "Protos/google/api/annotations.proto";
-
 option csharp_namespace = "GB28181.Service.Protos.Video";
 
 option objc_class_prefix = "ms";
@@ -10,22 +8,42 @@ package MediaContract;
 
 // The Video Control service definition.
 service VideoSession {
-  //LivePlay 播放
-  //http://localhost:60500/v1/VideoSession/StartLive  json参数{"hdr":{"Version":"1","sequence":2,"sessionid":"3"},"trans_proto":1,"gbid":"78978201001320000027","ipaddr":"47.115.1.118","port":9000}
+  //LivePlay
   rpc StartLive (StartLiveRequest) returns (StartLiveReply) {
-  option (google.api.http) = {
-      get: "/v1/VideoSession/StartLive"
+    option (google.api.http) = {
+      post: "/v1/VideoSession/StartLive"
       body: "*"
-    };}
+    };
+  }
   //Playback
-  rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {}
+  rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/StartPlayback"
+      body: "*"
+    };
+  }
   //Stop Video
-  rpc Stop (StopRequest) returns (StopReply) {}
+  rpc Stop (StopRequest) returns (StopReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/Stop"
+      body: "*"
+    };
+  }
   //PlaybackControl
-  rpc PlaybackControl (PlaybackControlRequest) returns (PlaybackControlReply) {}
+  rpc PlaybackControl (PlaybackControlRequest) returns (PlaybackControlReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/PlaybackControl"
+      body: "*"
+    };
+  }
 
   //keepalive between two point
-  rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {}
+  rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/KeepAlive"
+      body: "*"
+    };
+  }
 }
 
 enum BusinessType {
@@ -55,9 +73,9 @@ message Status {
 message StartLiveRequest {
 	Header hdr =1;
 	TransportProtocol trans_proto = 2;
-	string gbid = 3;//设备通道号
-	string ipaddr = 4;//流媒体地址
-	int32 port = 5;//端口号
+	string gbid = 3;
+	string ipaddr = 4;
+	int32 port = 5;
 }
 message StartLiveReply {
 	Header hdr = 1;

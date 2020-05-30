@@ -1,10 +1,20 @@
 syntax = "proto3";
+
+import "Protos/google/api/annotations.proto";
+
 option csharp_namespace = "GB28181.Service.Protos.DeviceFeature";
 
 package GrpcDeviceFeature;
 
+// DeviceFeature
 service DeviceFeature {
-  rpc DeviceStateQuery (DeviceStateQueryRequest) returns (DeviceStateQueryReply) {}
+// DeviceStateQuery
+  rpc DeviceStateQuery (DeviceStateQueryRequest) returns (DeviceStateQueryReply) {
+    option (google.api.http) = {
+      post: "/v1/DeviceFeature/DeviceStateQuery"
+      body: "*"
+    };
+  }
 }
 
 // The request message.
@@ -17,6 +27,7 @@ message DeviceStateQueryReply {
   Instance DeviceStatus = 1;
 }
 
+// Instance
 message Instance{
   CommandType CmdType = 1;
   int32 SN = 2;
@@ -27,6 +38,7 @@ message Instance{
   string Reason = 7;
 }
 
+// CommandType
 enum CommandType {
   Unknown = 0;
   Keepalive = 1;

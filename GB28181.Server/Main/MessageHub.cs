@@ -4,7 +4,6 @@ using NATS.Client;
 using Newtonsoft.Json;
 using GB28181.Servers;
 using GB28181.Servers.SIPMessage;
-using GB28181;
 using GB28181.Sys;
 using GB28181.Sys.XML;
 using System;
@@ -13,7 +12,7 @@ using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
 using GB28181.App;
-
+using SIPSorcery.SIP;
 namespace GB28181.Server.Main
 {
     public class MessageHub

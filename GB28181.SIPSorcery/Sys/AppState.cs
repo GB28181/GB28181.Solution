@@ -9,7 +9,7 @@
 /// 
 /// History:
 /// 04 Nov 2004	Aaron Clauson	Created.
-///
+/// 30 May 2020	Edward Chen     Updated.
 /// License:
 /// Public Domain.
 ///----------------------------------------------------------------------------

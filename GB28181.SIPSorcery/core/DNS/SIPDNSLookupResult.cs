@@ -5,42 +5,18 @@
 //
 // History:
 // 10 Mar 2009	Aaron Clauson	Created.
-//
+// 30 May 2020	Edward Chen     Updated.
 // License: 
-// This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
+// BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GB28181.Logger4Net;
 using SIPSorcery.SIP;
 
 namespace GB28181
 {
-    public class SIPDNSServiceResult
-    {
-        public SIPServicesEnum SIPService;                  // The type of SIP NAPTR/SRV record that was resolved.
-        public int Priority;                                // The priority value assigned to the NAPTR/SRV record. A client MUST attempt to contact the target host with the lowest-numbered priority it can
-                                                            // reach; target hosts with the same priority SHOULD be tried in an order defined by the weight field.
-        public int Weight;                                  // The weight value assigned to the SRV record. Larger weights SHOULD be given a proportionately higher probability of being selected.
-        public int TTL;                                     // The time-to-live in seconds for this record.
-        public string Data;                                 // The SRV record for the NAPTR record and target for a SRV record.
-        public int Port;                                    // The SRV record port.
-        public DateTime? ResolvedAt;                        // Time this record was created.
-        public DateTime? EndPointsResolvedAt;               // The time an attempt was made to resolve the A records for the SRV.
-
-        public SIPDNSServiceResult(SIPServicesEnum sipService, int priority, int weight, int ttl, string data, int port, DateTime resolvedAt)
-        {
-            SIPService = sipService;
-            Priority = priority;
-            Weight = weight;
-            TTL = ttl;
-            Data = data;
-            Port = port;
-            ResolvedAt = resolvedAt;
-        }
-    }
 
     public class SIPDNSLookupEndPoint
     {
@@ -60,8 +36,6 @@ namespace GB28181
 
     public class SIPDNSLookupResult
     {
-        private static ILog logger = AssemblyState.logger;
-
         public SIPURI URI;
         public string LookupError;
         public DateTime? NAPTRTimedoutAt;

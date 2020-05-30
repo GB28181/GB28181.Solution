@@ -7,91 +7,24 @@
 // History:
 // 14 Feb 2006	Aaron Clauson	Created.
 // 26 Apr 2008  Aaron Clauson   Added TCP support.
-//
+// 30 May 2020	Edward Chen     Updated.
 // License: 
-// This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
-//
-// Copyright (c) 2006-2014 Aaron Clauson (aaron@sipsorcery.com), SIP Sorcery PTY LTD, Hobart, Australia (www.sipsorcery.com)
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without modification, are permitted provided that 
-// the following conditions are met:
-//
-// Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
-// Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
-// disclaimer in the documentation and/or other materials provided with the distribution. Neither the name of SIP Sorcery PTY LTD. 
-// nor the names of its contributors may be used to endorse or promote products derived from this software without specific 
-// prior written permission. 
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
-// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-// IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, 
-// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-// OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
-// POSSIBILITY OF SUCH DAMAGE.
-//-----------------------------------------------------------------------------
-using GB28181.Logger4Net;
-using GB28181.App;
-using GB28181.Sys;
+// BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using SIPSorcery.Sys;
+using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181
 {
-    /// <summary>
-    /// Record number of each type of request received.
-    /// </summary>
-    //public struct SIPTransportMetric
-    //{
-    //    public const string PACKET_VOLUMES_KEY = "pkts";
-    //    public const string SIPMETHOD_VOLUMES_KEY = "meth";
-    //    public const string TOPTALKERS_VOLUME_KEY = "talk";
-
-    //    public DateTime ReceivedAt;
-    //    public IPEndPoint RemoteEndPoint;
-    //    public SIPMessageTypesEnum SIPMessageType;
-    //    public SIPMethodsEnum SIPMethod;
-    //    public bool STUNRequest;
-    //    public bool UnrecognisedPacket;
-    //    public bool BadSIPMessage;                  // Set to true if the message appeared to be a SIP Message but then couldn't be parsed as one.
-    //    public bool Discard;                        // If true indicates the SIP message was not parsed due to the receive queue being full and was instead discarded.
-    //    public bool TooLarge;                       // If the message is greater than the max accepted length.
-    //    public bool Originated;                     // If true inidcates the SIP message was sent by the transport layer, false means it was received.
-    //    public double ParseDuration;                // Time it took to parse the message in milliseconds.
-
-    //    public SIPTransportMetric(
-    //        DateTime receivedAt,
-    //        IPEndPoint remoteEndPoint,
-    //        SIPMessageTypesEnum sipMessageType,
-    //        SIPMethodsEnum sipMethod,
-    //        bool stunRequest,
-    //        bool unrecognisedPacket,
-    //        bool badSIPMessage,
-    //        bool discard,
-    //        bool tooLarge,
-    //        bool originated,
-    //        double parseDuration)
-    //    {
-    //        ReceivedAt = receivedAt;
-    //        RemoteEndPoint = remoteEndPoint;
-    //        SIPMessageType = sipMessageType;
-    //        SIPMethod = sipMethod;
-    //        STUNRequest = stunRequest;
-    //        UnrecognisedPacket = unrecognisedPacket;
-    //        BadSIPMessage = badSIPMessage;
-    //        Discard = discard;
-    //        TooLarge = tooLarge;
-    //        Originated = originated;
-    //        ParseDuration = parseDuration;
-    //    }
-    //}
+   
     public class SIPTransport : ISIPTransport
     {
         private const string RECEIVE_THREAD_NAME = "siptransport-receive";
@@ -126,7 +59,7 @@ namespace GB28181
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
-        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External= SIPDNSManager.ResolveSIPService;
+        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = App.SIPDNSManager.ResolveSIPService;
 
         public event SIPTransportRequestDelegate SIPRequestInTraceEvent;
         public event SIPTransportRequestDelegate SIPRequestOutTraceEvent;

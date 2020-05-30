@@ -6,11 +6,10 @@
 // History:
 // 30 May 2020	Edward	Chen    Updated.
 // License: 
-// This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
+// BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 
 
 using System;
-
 namespace GB28181
 {
     public static class CallHelpers
@@ -25,5 +24,9 @@ namespace GB28181
             return r.Next(1, ushort.MaxValue);
         }
 
+
+       
+
     }
+
 }

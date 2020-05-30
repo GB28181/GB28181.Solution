@@ -1,31 +1,95 @@
 syntax = "proto3";
-
+import "Protos/google/api/annotations.proto";
 option csharp_namespace = "GB28181.Service.Protos.AsClient.DeviceManagement";
 
 package devices;
 
 //service and action definition
 service DevicesManager {
-    rpc AddDevice(AddDeviceRequest) returns (AddDeviceResponse) {}
-	rpc DeleteDevice(DeleteDeviceRequest) returns (DeleteDeviceResponse) {}
-	rpc UpdateDevice(UpdateDeviceRequest) returns (UpdateDeviceResponse) {}
-    rpc QueryDevice(QueryRequest) returns (QueryDeviceResponse) {}
+// AddDevice
+    rpc AddDevice(AddDeviceRequest) returns (AddDeviceResponse) {
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/AddDevice"
+      body: "*"
+    };
+  }
+  //DeleteDevice
+	rpc DeleteDevice(DeleteDeviceRequest) returns (DeleteDeviceResponse) {
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/DeleteDevice"
+      body: "*"
+    };
+  }
+  //UpdateDevice
+	rpc UpdateDevice(UpdateDeviceRequest) returns (UpdateDeviceResponse) {
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/UpdateDevice"
+      body: "*"
+    };
+  }
+  //QueryDevice
+    rpc QueryDevice(QueryRequest) returns (QueryDeviceResponse) {
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/QueryDevice"
+      body: "*"
+    };
+  }
+  //QueryDeviceById
+    rpc QueryDeviceById(QueryDeviceRequest) returns (QueryDeviceResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/QueryDeviceById"
+      body: "*"
+    };
+  }
+  //CheckDuplicate
+    rpc CheckDuplicate(CheckDupRequest) returns (CheckDupResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/CheckDuplicate"
+      body: "*"
+    };
+  }
+  //QueryChannelDevices
+    rpc QueryChannelDevices(QueryChannelRequest) returns(QueryChannelResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/QueryChannelDevices"
+      body: "*"
+    };
+  }
+  //QueryParentDeviceByChildID
+    rpc QueryParentDeviceByChildID(QueryParentDeviceRequest) returns (QueryParentDeviceResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/QueryParentDeviceByChildID"
+      body: "*"
+    };
+  }
 
-    rpc QueryDeviceById(QueryDeviceRequest) returns (QueryDeviceResponse){}
-
-    rpc CheckDuplicate(CheckDupRequest) returns (CheckDupResponse){}
-
-    rpc QueryChannelDevices(QueryChannelRequest) returns(QueryChannelResponse){}
-
-    rpc QueryParentDeviceByChildID(QueryParentDeviceRequest) returns (QueryParentDeviceResponse){}
-
-    rpc QueryDeviceProfile(QueryDeviceProfileRequest) returns (QueryDeviceProfileResponse){}
-
-    rpc RefreshDeviceProfile(RefreshDeviceProfileRequest) returns(RefreshDeviceProfileResponse){}
-
-    rpc SearchGlobalDevices(SearchGlobalDevicesRequest) returns(SearchGlobalDevicesResponse){}
-
-    rpc QueryGBDeviceByGBIDs(QueryGBDeviceByGBIDsRequest) returns(QueryGBDeviceByGBIDsResponse){}
+    rpc QueryDeviceProfile(QueryDeviceProfileRequest) returns (QueryDeviceProfileResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/AddDevice"
+      body: "*"
+    };
+  }
+  //RefreshDeviceProfile
+    rpc RefreshDeviceProfile(RefreshDeviceProfileRequest) returns(RefreshDeviceProfileResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/RefreshDeviceProfile"
+      body: "*"
+    };
+  }
+  //SearchGlobalDevices
+    rpc SearchGlobalDevices(SearchGlobalDevicesRequest) returns(SearchGlobalDevicesResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/SearchGlobalDevices"
+      body: "*"
+    };
+  }
+  //QueryGBDeviceByGBIDs
+    rpc QueryGBDeviceByGBIDs(QueryGBDeviceByGBIDsRequest) returns(QueryGBDeviceByGBIDsResponse){
+    option (google.api.http) = {
+      post: "/v1/DevicesManager/QueryGBDeviceByGBIDs"
+      body: "*"
+    };
+  }
 }
 
 message QueryGBDeviceByGBIDsRequest{
@@ -263,11 +327,13 @@ enum DeviceOperation {
     DOP_QUERY=4;
 }
 
+// AddDeviceRequest
 message AddDeviceRequest {
     repeated Device device=1;
     string login_role_id=2;
 }
 
+// AddDeviceResponse
 message AddDeviceResponse {
     repeated string duplicate_names =1;
     repeated string channel_create_failed_name=2;

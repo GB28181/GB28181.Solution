@@ -23,6 +23,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using GB28181.Service.Protos.AsClient.DeviceManagement;
 
 namespace GB28181.Service
 {
@@ -108,7 +109,7 @@ namespace GB28181.Service
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC HTTP API Example V1");
                 options.DisplayOperationId();
                 options.DisplayRequestDuration();
-                options.DocExpansion(DocExpansion.None);
+                options.DocExpansion(DocExpansion.Full);
                 options.EnableDeepLinking();
                 options.EnableFilter();
                 options.ShowExtensions();
@@ -126,6 +127,7 @@ namespace GB28181.Service
                 endpoints.MapGrpcService<DeviceCatalogImpl>();
                 endpoints.MapGrpcService<VideoOnDemandImpl>();
                 endpoints.MapGrpcService<SSMediaSessionImpl>();
+                //endpoints.MapGrpcService<DeviceManageImpl>(); // 没有加载
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");

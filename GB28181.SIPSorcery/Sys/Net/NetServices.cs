@@ -10,7 +10,6 @@
 //
 // History:
 // 26 Dec 2005	Aaron Clauson	Created.
-// ============================================================================
 
 using System;
 using System.Collections;

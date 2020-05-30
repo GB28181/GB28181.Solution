@@ -7,28 +7,9 @@
 // 17 Sep 2005	Aaron Clauson	Created.
 //
 // License: 
-// This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
+// BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
-// Copyright (c) 2006 Aaron Clauson (aaron@sipsorcery.com), SIP Sorcery PTY LTD, Hobart, Australia (www.sipsorcery.com)
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without modification, are permitted provided that 
-// the following conditions are met:
-//
-// Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
-// Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
-// disclaimer in the documentation and/or other materials provided with the distribution. Neither the name of SIP Sorcery PTY LTD. 
-// nor the names of its contributors may be used to endorse or promote products derived from this software without specific 
-// prior written permission. 
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
-// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-// IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, 
-// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-// OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
-// POSSIBILITY OF SUCH DAMAGE.
-//-----------------------------------------------------------------------------
+
 
 using System;
 using System.Collections.Generic;
@@ -74,29 +55,6 @@ namespace GB28181
 
         public const string ALLOWED_SIP_METHODS = "ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, PRACK, REFER, REGISTER, SUBSCRIBE";
 
-        /// <summary>
-        /// Gets the default SIP port for the protocol. 
-        /// </summary>
-        /// <param name="protocol">The transport layer protocol to get the port for.</param>
-        /// <returns>The default port to use.</returns>
-        public static int GetDefaultPort(SIPProtocolsEnum protocol)
-        {
-            switch (protocol)
-            {
-                case SIPProtocolsEnum.udp:
-                    return SIPConstants.DEFAULT_SIP_PORT;
-                case SIPProtocolsEnum.tcp:
-                    return SIPConstants.DEFAULT_SIP_PORT;
-                case SIPProtocolsEnum.tls:
-                    return SIPConstants.DEFAULT_SIP_TLS_PORT;
-                case SIPProtocolsEnum.ws:
-                    return SIPConstants.DEFAULT_SIP_WEBSOCKET_PORT;
-                case SIPProtocolsEnum.wss:
-                    return SIPConstants.DEFAULT_SIPS_WEBSOCKET_PORT;
-                default:
-                    throw new ApplicationException($"Protocol {protocol} was not recognised in GetDefaultPort.");
-            }
-        }
     }
 
 	public enum SIPMessageTypesEnum
@@ -114,82 +72,6 @@ namespace GB28181
         public const int MAX_RING_TIME = 180000;        // The number of milliseconds a transaction can stay in the proceeding state (i.e. an INVITE will ring for) before the call is given up and timed out.     
 	}
 
-    public enum SIPSchemesEnum
-    {
-        sip = 1,
-        sips = 2,
-    }
-
-    public class SIPSchemesType
-    {
-        public static SIPSchemesEnum GetSchemeType(string schemeType)
-        {
-            return (SIPSchemesEnum)Enum.Parse(typeof(SIPSchemesEnum), schemeType, true);
-        }
-
-        public static bool IsAllowedScheme(string schemeType)
-        {
-            try
-            {
-                Enum.Parse(typeof(SIPSchemesEnum), schemeType, true);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-    }
-
-    public enum SIPProtocolsEnum
-    {
-        /// <summary>
-        /// User Datagram Protocol.
-        /// </summary>
-        udp = 1,
-        /// <summary>.
-        /// Transmission Control Protocol
-        /// </summary>
-        tcp = 2,
-        /// <summary>
-        /// Transport Layer Security.
-        /// </summary>
-        tls = 3,
-        /// <summary>
-        /// Web Socket.
-        /// </summary>
-        ws = 4,
-        /// <summary>
-        /// Web Socket over TLS.
-        /// </summary>
-        wss = 5,
-    }
-
-    public class SIPProtocolsType
-    {
-        public static SIPProtocolsEnum GetProtocolType(string protocolType)
-        {
-            return (SIPProtocolsEnum)Enum.Parse(typeof(SIPProtocolsEnum), protocolType, true);
-        }
-
-        public static SIPProtocolsEnum GetProtocolTypeFromId(int protocolTypeId)
-        {
-            return (SIPProtocolsEnum)Enum.Parse(typeof(SIPProtocolsEnum), protocolTypeId.ToString(), true);
-        }
-
-        public static bool IsAllowedProtocol(string protocol)
-        {
-            try
-            {
-                Enum.Parse(typeof(SIPProtocolsEnum), protocol, true);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-    }
 
 	public class SIPHeaders
 	{

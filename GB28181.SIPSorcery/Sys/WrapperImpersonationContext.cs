@@ -12,7 +12,6 @@
 //
 // License: 
 // Public domain.
-// ============================================================================
 
 using System;
 using System.ComponentModel;
