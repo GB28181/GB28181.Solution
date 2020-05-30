@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "Protos/google/api/annotations.proto";
 option csharp_namespace = "GB28181.Service.Protos.Video";
 
 option objc_class_prefix = "ms";
@@ -9,16 +9,41 @@ package MediaContract;
 // The Video Control service definition.
 service VideoSession {
   //LivePlay
-  rpc StartLive (StartLiveRequest) returns (StartLiveReply) {}
+  rpc StartLive (StartLiveRequest) returns (StartLiveReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/StartLive"
+      body: "*"
+    };
+  }
   //Playback
-  rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {}
+  rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/StartPlayback"
+      body: "*"
+    };
+  }
   //Stop Video
-  rpc Stop (StopRequest) returns (StopReply) {}
+  rpc Stop (StopRequest) returns (StopReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/Stop"
+      body: "*"
+    };
+  }
   //PlaybackControl
-  rpc PlaybackControl (PlaybackControlRequest) returns (PlaybackControlReply) {}
+  rpc PlaybackControl (PlaybackControlRequest) returns (PlaybackControlReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/PlaybackControl"
+      body: "*"
+    };
+  }
 
   //keepalive between two point
-  rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {}
+  rpc KeepAlive (KeepAliveRequest) returns (KeepAliveReply) {
+    option (google.api.http) = {
+      post: "/v1/VideoSession/KeepAlive"
+      body: "*"
+    };
+  }
 }
 
 enum BusinessType {

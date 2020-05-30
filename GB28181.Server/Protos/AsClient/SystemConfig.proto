@@ -1,25 +1,60 @@
 syntax = "proto3";
-
+import "Protos/google/api/annotations.proto";
 option csharp_namespace = "GB28181.Service.Protos.AsClient.SystemConfig";
 
 package systemConfig;
 
 //service and action definition
 service ServiceConfig {
-
-    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {}
-
-    rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){}
-
-    rpc QueryReserveConfig(QueryConfigRequest) returns(QueryReserveConfigResponse){}
-
-    rpc QueryResources(QueryRequest) returns(QueryResponse){}
-
-    rpc QueryProductionData(QueryRequest) returns(QueryResponse){}
-
-    rpc SetIntegratedPlatformConfig (SetIntegratedPlatformConfigRequest) returns (SetIntegratedPlatformConfigResponse){}
-
-    rpc GetIntegratedPlatformConfig (GetIntegratedPlatformConfigRequest) returns (GetIntegratedPlatformConfigResponse){}
+// GetGB28181ServiceConfig
+    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/GetGB28181ServiceConfig"
+      body: "*"
+    };
+  }
+  // SaveReserveDuration
+    rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/SaveReserveDuration"
+      body: "*"
+    };
+  }
+  // QueryReserveConfig
+    rpc QueryReserveConfig(QueryConfigRequest) returns(QueryReserveConfigResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/QueryReserveConfig"
+      body: "*"
+    };
+  }
+  //QueryResources
+    rpc QueryResources(QueryRequest) returns(QueryResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/QueryResources"
+      body: "*"
+    };
+  }
+  //QueryProductionData
+    rpc QueryProductionData(QueryRequest) returns(QueryResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/QueryProductionData"
+      body: "*"
+    };
+  }
+  // SetIntegratedPlatformConfig
+    rpc SetIntegratedPlatformConfig (SetIntegratedPlatformConfigRequest) returns (SetIntegratedPlatformConfigResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/SetIntegratedPlatformConfig"
+      body: "*"
+    };
+  }
+  //GetIntegratedPlatformConfig
+    rpc GetIntegratedPlatformConfig (GetIntegratedPlatformConfigRequest) returns (GetIntegratedPlatformConfigResponse){
+    option (google.api.http) = {
+      post: "/v1/ServiceConfig/GetIntegratedPlatformConfig"
+      body: "*"
+    };
+  }
 }
 
 // The request message.
