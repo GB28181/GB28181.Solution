@@ -74,29 +74,6 @@ namespace GB28181
 
         public const string ALLOWED_SIP_METHODS = "ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, PRACK, REFER, REGISTER, SUBSCRIBE";
 
-        /// <summary>
-        /// Gets the default SIP port for the protocol. 
-        /// </summary>
-        /// <param name="protocol">The transport layer protocol to get the port for.</param>
-        /// <returns>The default port to use.</returns>
-        public static int GetDefaultPort(SIPProtocolsEnum protocol)
-        {
-            switch (protocol)
-            {
-                case SIPProtocolsEnum.udp:
-                    return SIPConstants.DEFAULT_SIP_PORT;
-                case SIPProtocolsEnum.tcp:
-                    return SIPConstants.DEFAULT_SIP_PORT;
-                case SIPProtocolsEnum.tls:
-                    return SIPConstants.DEFAULT_SIP_TLS_PORT;
-                case SIPProtocolsEnum.ws:
-                    return SIPConstants.DEFAULT_SIP_WEBSOCKET_PORT;
-                case SIPProtocolsEnum.wss:
-                    return SIPConstants.DEFAULT_SIPS_WEBSOCKET_PORT;
-                default:
-                    throw new ApplicationException($"Protocol {protocol} was not recognised in GetDefaultPort.");
-            }
-        }
     }
 
 	public enum SIPMessageTypesEnum
@@ -114,82 +91,6 @@ namespace GB28181
         public const int MAX_RING_TIME = 180000;        // The number of milliseconds a transaction can stay in the proceeding state (i.e. an INVITE will ring for) before the call is given up and timed out.     
 	}
 
-    public enum SIPSchemesEnum
-    {
-        sip = 1,
-        sips = 2,
-    }
-
-    public class SIPSchemesType
-    {
-        public static SIPSchemesEnum GetSchemeType(string schemeType)
-        {
-            return (SIPSchemesEnum)Enum.Parse(typeof(SIPSchemesEnum), schemeType, true);
-        }
-
-        public static bool IsAllowedScheme(string schemeType)
-        {
-            try
-            {
-                Enum.Parse(typeof(SIPSchemesEnum), schemeType, true);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-    }
-
-    public enum SIPProtocolsEnum
-    {
-        /// <summary>
-        /// User Datagram Protocol.
-        /// </summary>
-        udp = 1,
-        /// <summary>.
-        /// Transmission Control Protocol
-        /// </summary>
-        tcp = 2,
-        /// <summary>
-        /// Transport Layer Security.
-        /// </summary>
-        tls = 3,
-        /// <summary>
-        /// Web Socket.
-        /// </summary>
-        ws = 4,
-        /// <summary>
-        /// Web Socket over TLS.
-        /// </summary>
-        wss = 5,
-    }
-
-    public class SIPProtocolsType
-    {
-        public static SIPProtocolsEnum GetProtocolType(string protocolType)
-        {
-            return (SIPProtocolsEnum)Enum.Parse(typeof(SIPProtocolsEnum), protocolType, true);
-        }
-
-        public static SIPProtocolsEnum GetProtocolTypeFromId(int protocolTypeId)
-        {
-            return (SIPProtocolsEnum)Enum.Parse(typeof(SIPProtocolsEnum), protocolTypeId.ToString(), true);
-        }
-
-        public static bool IsAllowedProtocol(string protocol)
-        {
-            try
-            {
-                Enum.Parse(typeof(SIPProtocolsEnum), protocol, true);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-    }
 
 	public class SIPHeaders
 	{

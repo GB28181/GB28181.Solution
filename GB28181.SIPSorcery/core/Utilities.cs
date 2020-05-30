@@ -10,7 +10,7 @@
 
 
 using System;
-
+using  SIPSorcery.SIP;
 namespace GB28181
 {
     public static class CallHelpers
@@ -23,6 +23,18 @@ namespace GB28181
         {
             var r = new Random();
             return r.Next(1, ushort.MaxValue);
+        }
+
+
+       
+
+    }
+
+    public static class ExtensionSIPEndPoint
+    {
+        public static string Tohost(this SIPEndPoint sipEndPoint)
+        {
+            return sipEndPoint.Address + ":" + sipEndPoint.Port;
         }
 
     }
