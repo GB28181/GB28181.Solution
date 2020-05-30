@@ -126,7 +126,7 @@ namespace GB28181
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
-        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = SIPDNSManager.ResolveSIPService;
+        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External; // = SIPDNSManager.ResolveSIPService;
 
         public event SIPTransportRequestDelegate SIPRequestInTraceEvent;
         public event SIPTransportRequestDelegate SIPRequestOutTraceEvent;
