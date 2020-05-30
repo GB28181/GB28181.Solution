@@ -1,13 +1,21 @@
 syntax = "proto3";
 
+//1.添加google的proto引用。注意引用目录，注意两个google的文件之间也有引用，需要根据所放目录进行修改
+import "Protos/google/api/annotations.proto";
+
 option csharp_namespace = "GB28181.Service.Protos.AsClient.SystemConfig";
 
 package systemConfig;
 
 //service and action definition
 service ServiceConfig {
-
-    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {}
+    //http://localhost:60500/v1/ServiceConfig/GetGB28181ServiceConfig
+    rpc GetGB28181ServiceConfig (QueryGB28181ConfigRequest) returns (QueryGB28181ConfigReply) {
+      option (google.api.http) = {
+      get: "/v1/ServiceConfig/GetGB28181ServiceConfig"
+      body: "*"
+    };
+    }
 
     rpc SaveReserveDuration(SaveReserveDurationRequest) returns (SaveReserveDurationResponse){}
 

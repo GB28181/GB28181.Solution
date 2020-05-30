@@ -536,7 +536,7 @@ namespace GB28181.App
             {
                 Id = Guid.NewGuid();
 
-                GbVersion = row["GbVersion"].ToString();
+               GbVersion = row["GbVersion"].ToString();
                 LocalID = row["LocalID"].ToString();
                 IPAddress.TryParse(row["LocalIP"].ToString(), out m_localIP);
                 ushort.TryParse(row["LocalPort"].ToString(), out m_localPort);
