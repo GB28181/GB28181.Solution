@@ -1,4 +1,6 @@
 syntax = "proto3";
+//1.添加google的proto引用。注意引用目录，注意两个google的文件之间也有引用，需要根据所放目录进行修改
+import "Protos/google/api/annotations.proto";
 
 option csharp_namespace = "GB28181.Service.Protos.Video";
 
@@ -8,8 +10,13 @@ package MediaContract;
 
 // The Video Control service definition.
 service VideoSession {
-  //LivePlay
-  rpc StartLive (StartLiveRequest) returns (StartLiveReply) {}
+  //LivePlay 播放
+  //http://localhost:60500/v1/VideoSession/StartLive  json参数{"hdr":{"Version":"1","sequence":2,"sessionid":"3"},"trans_proto":1,"gbid":"78978201001320000027","ipaddr":"47.115.1.118","port":9000}
+  rpc StartLive (StartLiveRequest) returns (StartLiveReply) {
+  option (google.api.http) = {
+      get: "/v1/VideoSession/StartLive"
+      body: "*"
+    };}
   //Playback
   rpc StartPlayback (StartPlaybackRequest) returns (StartPlaybackReply) {}
   //Stop Video
@@ -48,9 +55,9 @@ message Status {
 message StartLiveRequest {
 	Header hdr =1;
 	TransportProtocol trans_proto = 2;
-	string gbid = 3;
-	string ipaddr = 4;
-	int32 port = 5;
+	string gbid = 3;//设备通道号
+	string ipaddr = 4;//流媒体地址
+	int32 port = 5;//端口号
 }
 message StartLiveReply {
 	Header hdr = 1;

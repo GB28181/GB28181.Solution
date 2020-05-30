@@ -333,7 +333,11 @@ namespace GB28181.Servers.SIPMonitor
                 media.AddExtra("a=setup:" + _sipAccount.TcpMode);
                 media.AddExtra("a=connection:new");
             }
+
             //media.AddExtra("y=0123456789");
+            //设置ssrc值
+            string ssrc = "0" + GetRandomNumber(100000000, 999999999);
+            media.AddExtra("y=" + ssrc);
             media.AddFormatParameterAttribute(psFormat.FormatID, psFormat.Name);
             media.AddFormatParameterAttribute(h264Format.FormatID, h264Format.Name);
             media.Port = mediaPort[0];
@@ -342,7 +346,17 @@ namespace GB28181.Servers.SIPMonitor
 
             return sdp.ToString();
         }
-
+        //定义随机数产生函数
+        public static int GetRandomNumber(int min, int max)
+        {
+            int rtn = 0;
+            Random r = new Random();
+            byte[] buffer = Guid.NewGuid().ToByteArray();
+            int iSeed = BitConverter.ToInt32(buffer, 0);
+            r = new Random(iSeed);
+            rtn = r.Next(min, max + 1);
+            return rtn;
+        }
         /// <summary>
         /// 设置sip主题
         /// </summary>
@@ -428,7 +442,7 @@ namespace GB28181.Servers.SIPMonitor
             _mediaPort = _sipMsgCoreService.SetMediaPort();
 
             uint startTime = TimeConvert.DateToTimeStamp(beginTime);
-            uint stopTime =  TimeConvert.DateToTimeStamp(endTime);
+            uint stopTime = TimeConvert.DateToTimeStamp(endTime);
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
