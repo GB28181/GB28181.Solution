@@ -1,16 +1,12 @@
-# webapi to grpc 改造方法
+# webapi to grpc 
 
-该特性属于试验特性,目的是使得服务在支持GRPC的同时也能支持REST API调用,目前以包引用的方式存在。
+该特性属于试验特性,目的是使服务在支持GRPC的同时也能支持REST API调用.
 
-1.  添加nuget包引用，在nuget管理器中增加包源:（不添加搜索不到）
-    - 名称：DotNet5 dev repository 源：https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json
-    - 搜索并添加 Microsoft.AspNetCore.Grpc.HttpApi  我的版本是：0.1.0-alpha.20254.1
+**添加了2个google 的Proto包  `annotations.proto 和 http.proto`**
 
-2. 添加2个google  api包引用  `annotations.proto、http.proto`
+**特别注意：** 根据添加文件的路径修改annotations.proto中的import引用http.proto的路径。description.proto引用路径不变
 
-**注意：** 根据添加文件的路径修改annotations.proto中的import引用http.proto的路径。descriptor.proto引用路径不变
-
-## 1. 改造grpc服务的proto（我们选择PtzControl.proto做试验）
+## 1. 改造grpc服务的proto（以PtzControl.proto为例进行说明）
 
  + 引入 import "Protos/google/api/annotations.proto";
  + 改造rpc 添加处理
