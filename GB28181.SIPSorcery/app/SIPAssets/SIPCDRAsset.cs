@@ -2,10 +2,8 @@
 using System.Runtime.Serialization;
 using GB28181.Sys;
 using SIPSorcery.Sys;
-
-#if !SILVERLIGHT
+using SIPSorcery.SIP;
 using System.Data;
-#endif
 
 namespace GB28181.App
 {

@@ -25,7 +25,6 @@
 //
 // License: 
 // Aaron Clauson
-//-----------------------------------------------------------------------------
 
 using System;
 using System.Collections;

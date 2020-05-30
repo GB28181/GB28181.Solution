@@ -11,7 +11,7 @@
 // 22 May 2005	Aaron Clauson Created.
 // 30 May 2020	Edward Chen   Updated.
 // License: 
-// This software is licensed under the BSD License http://www.opensource.org/licenses/bsd-license.php
+// BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 
 using GB28181.Logger4Net;
 using GB28181.Sys;

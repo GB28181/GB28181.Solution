@@ -8,7 +8,6 @@
 //
 // License: 
 // Public Domain
-//-----------------------------------------------------------------------------
 
 using GB28181.Logger4Net;
 using GB28181.Persistence;

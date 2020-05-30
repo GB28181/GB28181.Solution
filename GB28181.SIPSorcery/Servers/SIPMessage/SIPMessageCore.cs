@@ -210,8 +210,8 @@ namespace GB28181.Servers.SIPMessage
             {
                 var ipaddress = IPAddress.Parse(camera.IPAddress);
                 _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCore(this, _transport, sipAccountStorage: _sipAccountStorage)
-                {
-                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, ipaddress, camera.Port),
+                { 
+                    RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(ipaddress, camera.Port)),
                     DeviceId = camera.DeviceID
                 });
                 //logger.Debug("nodeMonitorService divces counts: " + _nodeMonitorService.Count);

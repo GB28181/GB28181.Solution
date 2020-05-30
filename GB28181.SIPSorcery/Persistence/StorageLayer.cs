@@ -16,7 +16,6 @@
 // ?            Aaron Clauson   Isolated the problem in Npgsql connection pooling and workaround is to set MinPoolSize=0 in the connection
 //                              string. Modified to work with connection pooling again.
 // 16 Dec 2007  Aaron Clauson   Added check for dangerous SQL.
-// ============================================================================
 
 using System;
 using System.Collections.Generic;
