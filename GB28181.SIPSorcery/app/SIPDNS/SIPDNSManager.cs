@@ -37,7 +37,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// 

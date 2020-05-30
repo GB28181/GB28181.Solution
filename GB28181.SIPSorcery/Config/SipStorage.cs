@@ -1,10 +1,10 @@
 ﻿using GB28181.Persistence;
-using GB28181.SIP.App;
+using GB28181.App;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using GB28181.SIP;
+using GB28181;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 using GB28181.Sys;

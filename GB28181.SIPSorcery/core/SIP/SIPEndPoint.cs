@@ -4,7 +4,7 @@ using SIPSorcery.Sys;
 using System;
 using System.Net;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// This class must remain immutable otherwise the SIP stack can develop problems. SIP end points can get

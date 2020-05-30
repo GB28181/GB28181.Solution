@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class SIPRequestAuthorisationResult
     {

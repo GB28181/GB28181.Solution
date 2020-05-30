@@ -7,7 +7,7 @@ using GB28181.Sys;
 using System.Data;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
    // // [Table(Name = "sipdialogues")]
     public class SIPDialogueAsset: ISIPAsset

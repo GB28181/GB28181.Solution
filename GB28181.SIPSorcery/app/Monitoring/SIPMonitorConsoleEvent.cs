@@ -54,7 +54,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// Describes the types of events that can be sent by the different SIP Servers to SIP

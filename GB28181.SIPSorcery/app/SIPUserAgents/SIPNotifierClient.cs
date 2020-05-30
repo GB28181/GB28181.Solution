@@ -45,7 +45,7 @@ using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 using SIPSorcery.SIP;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// This class represent a client for a SIP notifier server. The client can subscribe to notifications from the

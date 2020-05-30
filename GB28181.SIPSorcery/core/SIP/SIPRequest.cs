@@ -43,7 +43,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <bnf>
 	///  Method SP Request-URI SP SIP-Version CRLF

@@ -47,7 +47,7 @@ using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public enum SIPCallRedirectModesEnum
     {

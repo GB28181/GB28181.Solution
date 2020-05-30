@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public interface ISIPAsset
     {

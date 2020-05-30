@@ -37,7 +37,7 @@
 // ============================================================================
 
 using System;
-using GB28181.SIP.App;
+using GB28181.App;
 using GB28181.Sys;
 using GB28181.Logger4Net;
 using GB28181.Persistence.XML;

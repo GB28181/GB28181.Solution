@@ -1,4 +1,4 @@
-﻿using GB28181.SIP.App;
+﻿using GB28181.App;
 using System.Collections.Generic;
 
 namespace GB28181.Config

@@ -45,7 +45,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public class SIPMonitorFilter
     {

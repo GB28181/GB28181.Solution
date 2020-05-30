@@ -36,7 +36,7 @@
 
 using System.Net;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     // SIP Channel delegates.
     public delegate void SIPMessageSentDelegate(SIPChannel sipChannel, SIPEndPoint remoteEndPoint, byte[] buffer);

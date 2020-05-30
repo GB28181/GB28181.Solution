@@ -4,7 +4,7 @@ using GB28181.Sys;
 using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
-using GB28181.SIP.App;
+using GB28181.App;
 
 namespace GB28181.Server.Main
 {
@@ -23,8 +23,8 @@ namespace GB28181.Server.Main
                 GetIntegratedPlatformConfigResponse rep = client.GetIntegratedPlatformConfig(req);
                 logger.Debug("GetIntegratedPlatformConfigResponse: " + rep.Config.ToString());
                 GBPlatformConfig item = rep.Config;
-                List<GB28181.SIP.App.SIPAccount> _lstSIPAccount = new List<GB28181.SIP.App.SIPAccount>();
-                GB28181.SIP.App.SIPAccount obj = new GB28181.SIP.App.SIPAccount();
+                List<GB28181.App.SIPAccount> _lstSIPAccount = new List<GB28181.App.SIPAccount>();
+                GB28181.App.SIPAccount obj = new GB28181.App.SIPAccount();
                 obj.Id = Guid.NewGuid();
                 //obj.Owner = item.Name;
                 obj.GbVersion = string.IsNullOrEmpty(item.GbVersion) ? "GB-2016" : item.GbVersion;

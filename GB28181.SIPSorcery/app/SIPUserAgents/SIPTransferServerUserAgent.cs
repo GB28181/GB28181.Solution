@@ -38,7 +38,7 @@ using System.Text;
 using GB28181.Sys;
 using GB28181.Logger4Net;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// A server user agent that replaces an existing sip dialogue rather than creating a new dialogue with

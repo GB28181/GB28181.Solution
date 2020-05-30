@@ -41,7 +41,7 @@ using System.Reflection;
 
 [assembly: AssemblyCulture("")]
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public static class AssemblyState
 	{

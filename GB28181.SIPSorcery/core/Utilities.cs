@@ -39,7 +39,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class CallProperties
     {

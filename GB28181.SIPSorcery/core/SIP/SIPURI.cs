@@ -37,7 +37,7 @@ using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 using GB28181.Sys.Net;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// Implements the the absoluteURI structure from the SIP RFC (incomplete as at 17 nov 2006, AC).

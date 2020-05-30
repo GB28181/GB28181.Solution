@@ -43,7 +43,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <bnf>
     /// Via               =  ( "Via" / "v" ) HCOLON via-parm *(COMMA via-parm)

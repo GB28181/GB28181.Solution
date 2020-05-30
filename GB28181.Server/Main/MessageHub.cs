@@ -4,7 +4,7 @@ using NATS.Client;
 using Newtonsoft.Json;
 using GB28181.Servers;
 using GB28181.Servers.SIPMessage;
-using GB28181.SIP;
+using GB28181;
 using GB28181.Sys;
 using GB28181.Sys.XML;
 using System;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using GB28181.Service.Protos.AsClient.DeviceManagement;
 using Grpc.Net.Client;
-using GB28181.SIP.App;
+using GB28181.App;
 
 namespace GB28181.Server.Main
 {
@@ -364,7 +364,7 @@ namespace GB28181.Server.Main
         /// </summary>
         /// <param name="sipTransaction"></param>
         /// <param name="sIPAccount"></param>
-        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.SIP.App.SIPAccount sIPAccount)
+        private void _sipRegistrarCore_RPCDmsRegisterReceived(SIPTransaction sipTransaction, GB28181.App.SIPAccount sIPAccount)
         {
             try
             {

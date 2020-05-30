@@ -55,7 +55,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// Describes monitoring events that are for machine notifications to initiate actions such as

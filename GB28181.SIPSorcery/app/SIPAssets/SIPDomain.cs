@@ -49,7 +49,7 @@ using SIPSorcery.Sys;
 using System.Data;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <remarks>
     /// The mechanism to load the SIP domain records differs for XML and SQL data stores. Because the domain and domain alias

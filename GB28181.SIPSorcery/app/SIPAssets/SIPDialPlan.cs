@@ -47,7 +47,7 @@ using GB28181.Logger4Net;
 using System.Data;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     // // [Table(Name = "sipdialplans")]
     [DataContractAttribute]

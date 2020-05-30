@@ -41,7 +41,7 @@ using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// SIP transaction that initiates a call to a SIP User Agent Server. This transaction processes outgoing calls SENT by the application.

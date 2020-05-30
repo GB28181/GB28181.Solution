@@ -49,7 +49,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <remarks>
     /// SIP account usernames can be treated by some SIP Sorcery server agents as domain name like structures where a username of

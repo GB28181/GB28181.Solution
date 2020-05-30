@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using SIPSorcery.SIP;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class SIPEventPresenceTuple
     {

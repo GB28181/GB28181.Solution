@@ -44,7 +44,7 @@ using GB28181.Logger4Net;
 using System.Data;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public enum SIPBindingRemovalReason
     {

@@ -37,7 +37,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class SIPReplacesParameter
     {

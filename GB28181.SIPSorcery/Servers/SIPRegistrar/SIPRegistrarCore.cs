@@ -36,8 +36,8 @@
 // ============================================================================
 
 using GB28181.Logger4Net;
-using GB28181.SIP;
-using GB28181.SIP.App;
+using GB28181;
+using GB28181.App;
 using GB28181.Sys;
 using GB28181.Cache;
 using GB28181.Config;

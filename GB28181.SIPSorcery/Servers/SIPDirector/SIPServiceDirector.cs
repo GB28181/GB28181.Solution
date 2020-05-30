@@ -72,7 +72,7 @@ namespace GB28181.Servers
         /// <param name="mediaPort"></param>
         /// <param name="receiveIP"></param>
         /// <returns></returns>
-        async public Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP)
+        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP)
         {
             logger.Debug("Make video request started.");
             var target = GetTargetMonitorService(gbid);
@@ -100,7 +100,7 @@ namespace GB28181.Servers
         /// <param name="mediaPort"></param>
         /// <param name="receiveIP"></param>
         /// <returns></returns>
-        async public Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime)
+        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime)
         {
             logger.Debug("BackVideoReq started.");
             var target = GetTargetMonitorService(gbid);
@@ -203,7 +203,7 @@ namespace GB28181.Servers
         }
         #endregion
         #region 设备状态
-        private void _sipCoreMessageService_OnDeviceStatusReceived(SIP.SIPEndPoint arg1, DeviceStatus arg2)
+        private void _sipCoreMessageService_OnDeviceStatusReceived(SIPEndPoint arg1, DeviceStatus arg2)
         {
             if (!DeviceStatuses.ContainsKey(arg2.DeviceID))
             {
@@ -250,7 +250,7 @@ namespace GB28181.Servers
             return _sipCoreMessageService.RecordFileQuery(deviceId, startTime, endTime, type);
         }
 
-        async public Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP)
+        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP)
         {
             logger.Debug("Video Download Request started.");
             var target = GetTargetMonitorService(gbid);

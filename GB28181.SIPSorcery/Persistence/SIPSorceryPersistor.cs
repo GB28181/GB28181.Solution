@@ -37,8 +37,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using GB28181.SIP;
-using GB28181.SIP.App;
+using GB28181;
+using GB28181.App;
 using GB28181.Sys;
 using GB28181.Logger4Net;
 

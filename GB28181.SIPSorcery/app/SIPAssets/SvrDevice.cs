@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// 设备信息

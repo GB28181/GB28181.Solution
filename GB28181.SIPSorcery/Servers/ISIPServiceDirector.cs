@@ -16,8 +16,8 @@ namespace GB28181.Servers
         List<Dictionary<string, DateTime>> VideoSessionAlive { get; }
 
         //ip/port/protocol/ 
-        Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP);
-        Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime);
+        Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP);
+        Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime);
 
         //Stop 
         bool Stop(string gbid, string sessionid);
@@ -41,7 +41,7 @@ namespace GB28181.Servers
         void PtzControl(SIPMonitor.PTZCommand ptzCommand, int speed, string deviceid);
         void DeviceStateQuery(string deviceid);
         int RecordFileQuery(string deviceId, DateTime startTime, DateTime endTime, string type);
-        Task<Tuple<string, int, GB28181.SIP.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP);
+        Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP);
         bool BackVideoStopPlayingControlReq(string gbid, string sessionid);
         bool BackVideoPlaySpeedControlReq(string gbid, string sessionid, float scale);
         bool BackVideoPauseControlReq(string gbid, string sessionid);

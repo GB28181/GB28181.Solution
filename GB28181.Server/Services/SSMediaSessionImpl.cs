@@ -209,7 +209,7 @@ namespace GB28181.Service.Protos.Video
             }
         }
 
-        private Header GetHeaderBySipHeader(GB28181.SIP.SIPHeader sipHeader)
+        private Header GetHeaderBySipHeader(GB28181.SIPHeader sipHeader)
         {
             Header header = new Header();
             header.Sequence = sipHeader.CSeq;

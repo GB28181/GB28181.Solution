@@ -38,11 +38,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
-using GB28181.SIP.App;
+using GB28181.App;
 using System.Net.Sockets;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public static class SIPTransportConfig
     {

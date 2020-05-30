@@ -38,7 +38,7 @@ using System.Runtime.Serialization;
 #if !SILVERLIGHT
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public delegate void CDRReadyDelegate(SIPCDR cdr);                // Used to inform CDR handlers when a CDR has been udpated.
 

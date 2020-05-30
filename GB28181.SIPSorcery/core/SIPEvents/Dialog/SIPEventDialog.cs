@@ -45,7 +45,7 @@ using GB28181.Sys;
 using SIPSorcery.SIP;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class SIPEventDialog
     {

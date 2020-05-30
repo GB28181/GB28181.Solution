@@ -15,7 +15,7 @@ using GB28181.Server.Message;
 using GB28181.Servers;
 using GB28181.Servers.SIPMonitor;
 using GB28181.Servers.SIPMessage;
-using GB28181.SIP;
+using GB28181;
 using GB28181.Cache;
 using GB28181.Sys.Model;
 using GB28181.Logger4Net;

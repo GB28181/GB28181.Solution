@@ -44,7 +44,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// Represents a series of name value pairs that are optionally included in SIP URIs and also as an additional

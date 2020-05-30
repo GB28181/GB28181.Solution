@@ -32,7 +32,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 using GB28181.Logger4Net;
-using GB28181.SIP.App;
+using GB28181.App;
 using GB28181.Sys;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ using System.Text;
 using System.Threading;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// Record number of each type of request received.

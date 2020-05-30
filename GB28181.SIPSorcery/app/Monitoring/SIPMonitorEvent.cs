@@ -50,7 +50,7 @@ using GB28181.Logger4Net;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public enum SIPMonitorClientTypesEnum
     {

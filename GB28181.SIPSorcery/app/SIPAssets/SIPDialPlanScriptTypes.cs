@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Runtime.Serialization;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     [DataContractAttribute]
     public enum SIPDialPlanScriptTypesEnum

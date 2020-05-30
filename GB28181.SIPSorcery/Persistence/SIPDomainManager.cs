@@ -50,7 +50,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public delegate string GetCanonicalDomainDelegate(string host, bool wildCardOk);     // Used to get the canonical domain from a host portion of a SIP URI.
 

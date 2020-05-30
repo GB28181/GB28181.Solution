@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     public delegate List<string> GetNotificationsDelegate(string address, out string sessionID, out string sessionError);
 

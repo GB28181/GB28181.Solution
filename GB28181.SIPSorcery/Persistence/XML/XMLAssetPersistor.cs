@@ -34,7 +34,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // ============================================================================
 
-using GB28181.SIP.App;
+using GB28181.App;
 using GB28181.Sys;
 using System;
 using System.Collections.Generic;

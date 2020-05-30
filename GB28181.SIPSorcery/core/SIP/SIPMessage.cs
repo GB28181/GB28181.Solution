@@ -43,7 +43,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
 	/// <bnf>
 	/// generic-message  =  start-line

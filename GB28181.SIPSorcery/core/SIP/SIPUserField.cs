@@ -44,7 +44,7 @@ using SIPSorcery.Sys;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
 	/// <summary>
 	/// name-addr      =  [ display-name ] LAQUOT addr-spec RAQUOT

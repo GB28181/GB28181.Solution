@@ -48,7 +48,7 @@ using SIPSorcery.SIP;
 using NUnit.Framework;
 #endif
 
-namespace GB28181.SIP
+namespace GB28181
 {
     /// <summary>
     /// 

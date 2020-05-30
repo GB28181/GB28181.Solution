@@ -30,7 +30,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-namespace GB28181.SIP
+namespace GB28181
 {
     public class SIPDNSConstants
     {

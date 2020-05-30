@@ -39,7 +39,7 @@ using GB28181.Logger4Net;
 using GB28181.Sys;
 using SIPSorcery.Sys;
 
-namespace GB28181.SIP.App
+namespace GB28181.App
 {
     /// <summary>
     /// This class represents a back-to-back (B2B) user agent (UA) that is used to attach an outgoing
