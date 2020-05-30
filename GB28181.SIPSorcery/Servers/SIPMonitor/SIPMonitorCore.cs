@@ -13,6 +13,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Linq;
+using SIPSorcery.SIP;
 
 namespace GB28181.Servers.SIPMonitor
 {
@@ -82,7 +83,7 @@ namespace GB28181.Servers.SIPMonitor
             //_mediaPort = _msgCore.SetMediaPort();
             //string localIp = _msgCore.LocalEP.Address.ToString();
             //string fromTag = CallProperties.CreateNewTag();
-            //int cSeq = CallProperties.CreateNewCSeq();
+            //int cSeq = CallHelpers.CreateNewCSeq();
             //string callId = CallProperties.CreateNewCallId();
 
             //SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
@@ -120,7 +121,7 @@ namespace GB28181.Servers.SIPMonitor
             //  _mediaPort = _msgCore.SetMediaPort();
             //  string localIp = _msgCore.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             logger.Debug("RealVideoReq: DeviceId=" + DeviceId);
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -382,7 +383,7 @@ namespace GB28181.Servers.SIPMonitor
             recordFileReq.Header.From = from;
             recordFileReq.Header.To = to;
             recordFileReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
-            recordFileReq.Header.CSeq = CallProperties.CreateNewCSeq();
+            recordFileReq.Header.CSeq = CallHelpers.CreateNewCSeq();
             recordFileReq.Header.CallId = CallProperties.CreateNewCallId();
             recordFileReq.Header.ContentType = "application/MANSCDP+xml";
 
@@ -431,7 +432,7 @@ namespace GB28181.Servers.SIPMonitor
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             logger.Debug("BackVideoReq: DeviceId=" + DeviceId);
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -465,7 +466,7 @@ namespace GB28181.Servers.SIPMonitor
 
             //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -512,7 +513,7 @@ namespace GB28181.Servers.SIPMonitor
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -555,7 +556,7 @@ namespace GB28181.Servers.SIPMonitor
 
             //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -791,7 +792,7 @@ namespace GB28181.Servers.SIPMonitor
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPRequest realReq = BackVideoPlaySpeedControlReq(localIp, _mediaPort, range, fromTag, cSeq, callId);
@@ -806,7 +807,7 @@ namespace GB28181.Servers.SIPMonitor
                 //uint time = TimeConvert.DateToTimeStamp(range);
                 //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
                 string fromTag = CallProperties.CreateNewTag();
-                int cSeq = CallProperties.CreateNewCSeq();
+                int cSeq = CallHelpers.CreateNewCSeq();
                 string callId = CallProperties.CreateNewCallId();
                 SIPRequest realReq = BackVideoPlaySpeedControlReq(sessionid, scale, fromTag, cSeq, callId);
                 _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
@@ -945,7 +946,7 @@ namespace GB28181.Servers.SIPMonitor
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             //this.Stop();
             SIPRequest realReq = BackVideoContinuePlayingControlReq(localIp, _mediaPort, fromTag, cSeq, callId);
@@ -961,7 +962,7 @@ namespace GB28181.Servers.SIPMonitor
                 //}
                 string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
                 string fromTag = CallProperties.CreateNewTag();
-                int cSeq = CallProperties.CreateNewCSeq();
+                int cSeq = CallHelpers.CreateNewCSeq();
                 string callId = CallProperties.CreateNewCallId();
                 //this.Stop();
                 SIPRequest realReq = BackVideoContinuePlayingControlReq(sessionid, fromTag, cSeq, callId);
@@ -1061,7 +1062,7 @@ namespace GB28181.Servers.SIPMonitor
 
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             SIPRequest realReq = BackVideoPauseControlReq(localIp, _mediaPort, fromTag, cSeq, callId);
             _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
@@ -1076,7 +1077,7 @@ namespace GB28181.Servers.SIPMonitor
                 //}
                 //string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
                 string fromTag = CallProperties.CreateNewTag();
-                int cSeq = CallProperties.CreateNewCSeq();
+                int cSeq = CallHelpers.CreateNewCSeq();
                 string callId = CallProperties.CreateNewCallId();
                 SIPRequest realReq = BackVideoPauseControlReq(sessionid, fromTag, cSeq, callId);
                 _sipMsgCoreService.SendRequest(RemoteEndPoint, realReq);
@@ -1197,7 +1198,7 @@ namespace GB28181.Servers.SIPMonitor
             //uint time = TimeConvert.DateToTimeStamp(range);
             string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPRequest realReq = BackVideoPlayPositionControlReq(localIp, _mediaPort, range, fromTag, cSeq, callId);
@@ -1212,7 +1213,7 @@ namespace GB28181.Servers.SIPMonitor
                 //uint time = TimeConvert.DateToTimeStamp(range);
                 string localIp = _sipMsgCoreService.LocalEP.Address.ToString();
                 string fromTag = CallProperties.CreateNewTag();
-                int cSeq = CallProperties.CreateNewCSeq();
+                int cSeq = CallHelpers.CreateNewCSeq();
                 string callId = CallProperties.CreateNewCallId();
 
                 SIPRequest realReq = BackVideoPlayPositionControlReq(sessionid, time, fromTag, cSeq, callId);
@@ -1326,7 +1327,7 @@ namespace GB28181.Servers.SIPMonitor
         {
             string fromTag = CallProperties.CreateNewTag();
             string toTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             logger.Debug("PtzContrl() start to PTZRequest.");
             SIPRequest ptzReq = PTZRequest(fromTag, toTag, cSeq, callId);
@@ -1520,7 +1521,7 @@ namespace GB28181.Servers.SIPMonitor
         {
             string fromTag = CallProperties.CreateNewTag();
             string toTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
             SIPRequest catalogReq = ZoomRequest(fromTag, toTag, cSeq, callId);
 
@@ -1588,7 +1589,7 @@ namespace GB28181.Servers.SIPMonitor
         public void HomePositionControl(bool isEnabled)
         {
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");
@@ -1879,7 +1880,7 @@ namespace GB28181.Servers.SIPMonitor
         {
             string fromTag = CallProperties.CreateNewTag();
             string toTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(remoteSIPId, remoteEndPoint.ToHost(), "");
@@ -1908,7 +1909,7 @@ namespace GB28181.Servers.SIPMonitor
         {
             string fromTag = CallProperties.CreateNewTag();
             string toTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(remoteSIPId, remoteEndPoint.ToHost(), "");
@@ -1942,7 +1943,7 @@ namespace GB28181.Servers.SIPMonitor
             //_mediaPort = _msgCore.SetMediaPort();
             //string localIp = _msgCore.LocalEP.Address.ToString();
             //string fromTag = CallProperties.CreateNewTag();
-            //int cSeq = CallProperties.CreateNewCSeq();
+            //int cSeq = CallHelpers.CreateNewCSeq();
             //string callId = CallProperties.CreateNewCallId();
 
             //SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
@@ -1994,7 +1995,7 @@ namespace GB28181.Servers.SIPMonitor
 
 
         private string _fromTag = string.Empty;
-        int cSeq = CallProperties.CreateNewCSeq();
+        int cSeq = CallHelpers.CreateNewCSeq();
         SIPViaSet _vvia;
         //  private int sn = 1;
         /// <summary>
@@ -2013,7 +2014,7 @@ namespace GB28181.Servers.SIPMonitor
             //_mediaPort = _msgCore.SetMediaPort();
             //string localIp = _msgCore.LocalEP.Address.ToString();
             //string fromTag = CallProperties.CreateNewTag();
-            //int cSeq = CallProperties.CreateNewCSeq();
+            //int cSeq = CallHelpers.CreateNewCSeq();
             //string callId = CallProperties.CreateNewCallId();
 
             //SIPURI remoteUri = new SIPURI(_deviceId, _remoteEP.ToHost(), "");
@@ -2106,7 +2107,7 @@ namespace GB28181.Servers.SIPMonitor
         public void MakeKeyFrameRequest()
         {
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(DeviceId, RemoteEndPoint.ToHost(), "");

@@ -47,6 +47,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using SIPSorcery.Sys;
+using SIPSorcery.SIP;
 
 #if UNITTEST
 using NUnit.Framework;

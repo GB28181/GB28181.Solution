@@ -19,6 +19,7 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.Cache;
+using SIPSorcery.SIP;
 
 namespace GB28181.Servers.SIPMessage
 {
@@ -1148,7 +1149,7 @@ namespace GB28181.Servers.SIPMessage
         {
             string fromTag = CallProperties.CreateNewTag();
             string toTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(remoteSIPId, remoteEndPoint.ToHost(), "");
@@ -1215,7 +1216,7 @@ namespace GB28181.Servers.SIPMessage
         private SIPRequest SubscribeCatalog(SIPEndPoint remoteEndPoint, string remoteSIPId)
         {
             string fromTag = CallProperties.CreateNewTag();
-            int cSeq = CallProperties.CreateNewCSeq();
+            int cSeq = CallHelpers.CreateNewCSeq();
             string callId = CallProperties.CreateNewCallId();
 
             SIPURI remoteUri = new SIPURI(remoteSIPId, remoteEndPoint.ToHost(), "");

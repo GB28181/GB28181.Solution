@@ -40,6 +40,8 @@ using System.Threading;
 using GB28181.Logger4Net;
 using GB28181.Sys;
 using SIPSorcery.Sys;
+using SIPSorcery.SIP;
+
 namespace GB28181.App
 {
     public class SIPNonInviteClientUserAgent
