@@ -60,6 +60,7 @@ namespace GB28181.Service
                 .ConfigureHostConfiguration(config =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory());
+                    //config.AddJsonFile($"appsettings.json", true, reloadOnChange: true);
                     config.AddXmlFile("Config/gb28181.xml", false, reloadOnChange: true);
                 })
                 .ConfigureAppConfiguration(config =>
