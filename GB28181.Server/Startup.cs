@@ -43,6 +43,7 @@ namespace GB28181.Service
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(Configuration);
             services.AddSingleton<IMainProcess, MainProcess>();
             services.AddHostedService<GBService>();
             services.AddGrpc();

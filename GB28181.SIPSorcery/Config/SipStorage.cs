@@ -6,6 +6,7 @@ using GB28181.App;
 using GB28181.Logger4Net;
 using GB28181.Persistence;
 using GB28181.Sys;
+using Microsoft.Extensions.Configuration;
 using SIPSorcery.Sys;
 /// <summary>
 /// read configuraton and config the data storage
@@ -30,9 +31,21 @@ namespace GB28181.Config
         private static List<SIPAccount> _sipAccountsCache = null;
         private static bool _haveGBConfig = false;
         /// <summary>
-        /// 获取 GB Server Config
+        /// 读取本地的gb28181.xml获取 GB Server Config，作为默认
+        /// 微服务架构中，往往需要从Config Server中通过GRPC获取，项目中已经增了通过GRPC获取配置的实现
         /// </summary>
         public static event RPCGBServerConfigDelegate RPCGBServerConfigReceived;
+
+        private readonly IConfiguration _configuration;
+
+
+        public SipStorage(IConfiguration configuration)
+        {
+            //依赖注入的方式，获取appsettings.json的配置
+            _configuration = configuration;
+        }
+
+        SipStorage() { }
 
         public List<SIPAccount> Accounts
         {
@@ -62,7 +75,7 @@ namespace GB28181.Config
         public SIPAssetPersistor<SIPAccount> SipAccountDataStorage { get; private set; }
 
         // here init the gb28181.xml file setting from app.config
-        static SipStorage()
+       static SipStorage()
         {
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? Sys.StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : Sys.StorageTypes.Unknown;
 
@@ -86,11 +99,6 @@ namespace GB28181.Config
             {
                 throw new ApplicationException("Accounts is NULL,SIP not started");
             }
-            //else
-            //{
-            //    throw new ApplicationException("Accounts is not NULL:" + Accounts.Count);
-            //}
-
             var defaultAccount = Accounts.FirstOrDefault();
 
             if (defaultAccount == null)
