@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
+using System.Reflection;
 
 namespace GB28181.Sys
 {
@@ -34,7 +35,7 @@ namespace GB28181.Sys
         public const string DEFAULT_ERRRORLOG_FILE = @"c:\temp\appstate.error.log";
         public const string ENCRYPTED_SETTING_PREFIX = "$#";
         private const string ENCRYPTED_SETTINGS_CERTIFICATE_NAME = "EncryptedSettingsCertificateName";
-        private const string APP_LOGGING_ID = "sipsorcery"; // Name of GB28181.Logger4Net identifier.
+        private const string APP_LOGGING_ID = "GB28181.Logger4Net"; // Name of GB28181.Logger4Net identifier.
 
         // From http://fightingforalostcause.net/misc/2006/compare-email-regex.php.
         public const string EMAIL_VALIDATION_REGEX = @"^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-zA-Z0-9]{1}[a-zA-Z0-9\-]{0,62}[a-zA-Z0-9]{1})|[a-zA-Z])\.)+[a-zA-Z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$";
@@ -79,7 +80,7 @@ namespace GB28181.Sys
                     try
                     {
                         logger = LogManager.GetLogger(APP_LOGGING_ID);
-                        logger.Debug("Target framework: .Net Core 2.1");
+                        logger.Debug("Target framework: .Net Core 3.1");
                         logger.Debug("EnvironmentVariables.MICRO_REGISTRY_ADDRESS: " + EnvironmentVariables.MicroRegistryAddress);
                         logger.Debug("EnvironmentVariables.GB_NATS_CHANNEL_ADDRESS: " + EnvironmentVariables.GBNatsChannelAddress);
                         logger.Debug("EnvironmentVariables.DEVICE_MANAGEMENT_SERVICE_ADDRESS: " + EnvironmentVariables.DeviceManagementServiceAddress);
@@ -101,7 +102,7 @@ namespace GB28181.Sys
                 // Initialise the string dictionary to hold the application settings.
                 m_appConfigSettings = new StringDictionary();
 
-                CurrentDirectory = Regex.Replace(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase), @"^file:\\", ""); // There's undoubtedly a better way!
+                CurrentDirectory = Regex.Replace(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase), @"^file:\\", ""); // There's undoubtedly a better way!
             }
             catch (Exception excp)
             {
