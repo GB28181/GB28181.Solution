@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GB28181.Config
 {
-    public interface ISipAccountStorage
+    public interface ISipStorage
     {
 
         void Read();

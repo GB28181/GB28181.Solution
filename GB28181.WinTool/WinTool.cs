@@ -147,11 +147,11 @@ namespace GB28181.WinTool
 
             m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
             m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
-            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+            SIPAccount account = SipStorage.Instance.Accounts.FirstOrDefault();
             var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
             m_sipTransport.AddSIPChannel(sipChannels);
 
-            SipAccountStorage sipAccountStorage = new SipAccountStorage();
+            SipStorage sipAccountStorage = new SipStorage();
             IMemoCache<Camera> memocache = new DeviceObjectCache();
             SIPRegistrarCore sipRegistrarCore = new SIPRegistrarCore(m_sipTransport, sipAccountStorage, memocache, true, true);
             // _messageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
@@ -600,7 +600,7 @@ namespace GB28181.WinTool
         //开始实时视频
         private void BtnReal_Click(object sender, EventArgs e)
         {
-            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+            SIPAccount account = SipStorage.Instance.Accounts.FirstOrDefault();
 
             int[] mediaPort =  { account.MediaPort };
             string ip = account.MediaIP.ToString();

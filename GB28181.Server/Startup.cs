@@ -52,7 +52,7 @@ namespace GB28181.Service
 
 
             services.AddSingleton<ILog, Logger>()
-                            .AddSingleton<ISipAccountStorage, SipAccountStorage>()
+                            .AddSingleton<ISipStorage, SipStorage>()
                             .AddSingleton<MediaEventSource>()
                             .AddSingleton<MessageHub>()
                             .AddSingleton<CatalogEventsProc>()

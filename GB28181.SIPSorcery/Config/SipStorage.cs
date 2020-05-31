@@ -1,26 +1,25 @@
-﻿using GB28181.Persistence;
-using GB28181.App;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using GB28181;
+using System.Linq;
+using GB28181.App;
 using GB28181.Logger4Net;
-using SIPSorcery.Sys;
+using GB28181.Persistence;
 using GB28181.Sys;
+using SIPSorcery.Sys;
 /// <summary>
 /// read configuraton and config the data storage
 /// </summary>
 namespace GB28181.Config
 {
-    public class SipAccountStorage : ISipAccountStorage
+    public class SipStorage : ISipStorage
     {
         private static readonly ILog logger = AppState.logger;
         private const string m_storageTypeKey = SIPSorceryConfiguration.PERSISTENCE_STORAGETYPE_KEY;
         private const string m_connStrKey = SIPSorceryConfiguration.PERSISTENCE_STORAGECONNSTR_KEY;
         private const string m_XMLFilename = "gb28181.xml"; //default storage filename
 
-        public static readonly SipAccountStorage Instance = new SipAccountStorage();
+        public static readonly SipStorage Instance = new SipStorage();
         //数据存储类型，比如xml,json,sqlite.postgresql
         private static Sys.StorageTypes m_storageType;
         //连接字符串
@@ -63,7 +62,7 @@ namespace GB28181.Config
         public SIPAssetPersistor<SIPAccount> SipAccountDataStorage { get; private set; }
 
         // here init the gb28181.xml file setting from app.config
-        static SipAccountStorage()
+        static SipStorage()
         {
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? Sys.StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : Sys.StorageTypes.Unknown;
 

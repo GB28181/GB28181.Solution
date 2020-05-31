@@ -63,7 +63,7 @@ namespace GB28181.Servers.SIPMonitor
 
         #region 初始化监控
         //public SIPMonitorCore(ISipMessageCore sipMsgCoreService, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
-        public SIPMonitorCore(ISipMessageCore sipMessageCore, ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage)
+        public SIPMonitorCore(ISipMessageCore sipMessageCore, ISIPTransport sipTransport, ISipStorage sipAccountStorage)
         {
             _sipMsgCoreService = sipMessageCore;
             _sipTransport = sipTransport;
@@ -600,7 +600,7 @@ namespace GB28181.Servers.SIPMonitor
         /// <returns></returns>
         private string SetMediaReq(string localIp, int[] mediaPort, ulong startTime, ulong stopTime)
         {
-            SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+            SIPAccount account = SipStorage.Instance.Accounts.FirstOrDefault();
 
             var sdpConn = new SDPConnectionInformation(account.MediaIP.ToString());
 

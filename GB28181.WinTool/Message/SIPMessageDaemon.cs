@@ -60,7 +60,7 @@ namespace GB28181.WinTool.Message
                 // Configure the SIP transport layer.
                 m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
                 m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
-                SIPAccount account = SipAccountStorage.Instance.Accounts.FirstOrDefault();
+                SIPAccount account = SipStorage.Instance.Accounts.FirstOrDefault();
                 var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
                 m_sipTransport.AddSIPChannel(sipChannels);
 

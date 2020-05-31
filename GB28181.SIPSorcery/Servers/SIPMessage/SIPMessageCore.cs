@@ -54,7 +54,7 @@ namespace GB28181.Servers.SIPMessage
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
         private ISIPRegistrarCore _registrarCore;
-        private ISipAccountStorage _sipAccountStorage;
+        private ISipStorage _sipAccountStorage;
         private SIPAccount _LocalSipAccount;
         private ServiceStatus _serviceState;
         private SIPRequest _ackRequest;
@@ -180,7 +180,7 @@ namespace GB28181.Servers.SIPMessage
         public SIPMessageCore(
             ISIPRegistrarCore sipRegistrarCore,
             ISIPTransport sipTransport,
-            ISipAccountStorage sipAccountStorage,
+            ISipStorage sipAccountStorage,
             IMemoCache<Camera> cameraCache)
         {
             _registrarCore = sipRegistrarCore;

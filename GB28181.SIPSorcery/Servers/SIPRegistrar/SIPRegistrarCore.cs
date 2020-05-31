@@ -138,7 +138,7 @@ namespace GB28181.Servers
         public event RPCDmsRegisterDelegate RPCDmsRegisterReceived;
         public event DeviceAlarmSubscribeDelegate DeviceAlarmSubscribe;
 
-        public SIPRegistrarCore(ISIPTransport sipTransport, ISipAccountStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
+        public SIPRegistrarCore(ISIPTransport sipTransport, ISipStorage sipAccountStorage, IMemoCache<Camera> cameraCache, bool mangleUACContact = true, bool strictRealmHandling = true)
         {
             _sipTransport = sipTransport;
             m_mangleUACContact = mangleUACContact;

@@ -59,7 +59,7 @@ namespace GB28181.Server.Main
             var config = builder.Build();
 
             //InitServer
-            SipAccountStorage.RPCGBServerConfigReceived += SipAccountStorage_RPCGBServerConfigReceived;
+            SipStorage.RPCGBServerConfigReceived += SipAccountStorage_RPCGBServerConfigReceived;
 
             ////Config Service & and run
             //ConfigServices(config);
