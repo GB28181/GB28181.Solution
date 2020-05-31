@@ -1,29 +1,28 @@
-﻿using GB28181.Service.Protos.Ptz;
+﻿using System.Globalization;
+using GB28181.Cache;
+using GB28181.Config;
+using GB28181.Logger4Net;
+using GB28181.Server.Main;
+using GB28181.Server.Message;
+using GB28181.Server.Settings;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessage;
+using GB28181.Servers.SIPMonitor;
 using GB28181.Service.Protos.DeviceCatalog;
 using GB28181.Service.Protos.DeviceFeature;
+using GB28181.Service.Protos.Ptz;
 using GB28181.Service.Protos.Video;
 using GB28181.Service.Protos.VideoRecord;
+using GB28181.Sys.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using GB28181.Server.Main;
-using GB28181.Config;
-using GB28181.Server.Message;
-using GB28181.Servers;
-using GB28181.Servers.SIPMonitor;
-using GB28181.Servers.SIPMessage;
-using GB28181;
-using GB28181.Cache;
-using GB28181.Sys.Model;
-using GB28181.Logger4Net;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using GB28181.Service.Protos.AsClient.DeviceManagement;
 
 namespace GB28181.Service
 {
@@ -44,6 +43,7 @@ namespace GB28181.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
+            services.Configure<DbConfig>(Configuration.GetSection("DbConfig"));
             services.AddSingleton<IMainProcess, MainProcess>();
             services.AddHostedService<GBService>();
             services.AddGrpc();
