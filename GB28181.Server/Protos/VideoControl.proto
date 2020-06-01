@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 import "Protos/google/api/annotations.proto";
 option csharp_namespace = "GB28181.Service.Protos.Video";
 
