@@ -45,7 +45,7 @@ namespace GB28181.Config
             _configuration = configuration;
         }
 
-        SipStorage() { }
+       public SipStorage() { }
 
         public List<SIPAccount> Accounts
         {
