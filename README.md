@@ -2,10 +2,9 @@
 
 + GB28181开源的目标是：通过代码复用，适当降低工作难度和减少业务代码的重复性，并非替代你的开发工作或者让你几乎不用开发工作。
 + 最新国标是：【[GB28181-2016](docs/GBT%2028181-2016%20公共安全视频监控联网系统信息传输、交换、控制技术要求-目录版.pdf)】
-+ 项目结构、代码结仍存在不少问题，待完善,因为时间问题，也是希望大家能一起完善
-+ 希望每一个对本项目感兴趣的朋友，都能成为本项目的共同作者或者贡献者
++ 项目非常年轻，诚邀请大家能一起完善，希望每一个对本项目感兴趣的朋友，都能成为本项目的共同作者或者贡献者
 + 注意：**代码一直在更新，GB28181系列项目，并不是生产就绪的，往往须要根据自己的项目和产品架构，做适当的调整和适配！！**
-+ 仓库体积较大，为加快clone速度，建议的使用：`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
++ 仓库体积较大，为加快clone速度，建议使用：`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
 
 ## 运行环境(environment)
 
@@ -61,18 +60,9 @@ running on aspnetcore 3.1+
 
 ## License
 
-MIT & BSD v2 & BSD v3 & GPL
+MIT & BSD v3 and later
 
-
-***说明: 由于项目前期License问题的不严谨性，项目采用了诸多协议，如GPL、MIT、BSD v2 BSD v3等，但是,由于GPL License的存在以及[GPL License的约束和传染性](https://www.oschina.net/question/12_2826)，这对希望修改后闭源使用的朋友可能会造成较大影响.***
-
-***项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)中明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php), 比如: [DNSResponse](https://github.com/GB28181/GB28181.Solution/blob/dc38a76ddcd8b424768089ad4ba2f5bee4a2931c/GB28181.SIPSorcery/Net/DNS/DNSResponse.cs#L16)***
-
-***针对该License问题：项目的后续计划是将使用的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)中的相关代码更新为原作者使用[Code Project Open License (CPOL)](https://www.codeproject.com/info/cpol10.aspx)的版本, 比如：[使用CPOL版本DNSResponse](https://github.com/sipsorcery/sipsorcery/blob/e677393f7e8c30a10b311892eff78a86ddaa8aba/src/net/DNS/DNSResponse.cs#L17)，同时将其他代码的License也做适当的更宽泛化调整***
-
-
-
-GPL License 有三个版本:[GPL(GPL 1.0)](http://www.gnu.org/licenses/old-licenses/gpl-1.0.html)、[GPL 2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)、[GPL 3.0](http://www.gnu.org/licenses/gpl-3.0.html) 
+***注意：项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)类库中的部分代码，明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php)，详情请检索代码文件。
 
 关于GPL的更多了解：[开源中国GPL](https://www.oschina.net/question/12_2826)、[百科 GPL](https://baike.baidu.com/item/GPL/2357903)
 
