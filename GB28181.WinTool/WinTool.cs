@@ -148,7 +148,7 @@ namespace GB28181.WinTool
             m_sipTransport = new SIPTransport(SIPDNSManager.ResolveSIPService, new SIPTransactionEngine(), false);
             m_sipTransport.PerformanceMonitorPrefix = SIPSorceryPerformanceMonitor.REGISTRAR_PREFIX;
             SIPAccount account = SipStorage.Instance.Accounts.FirstOrDefault();
-            var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account.LocalIP, account.LocalPort);
+            var sipChannels = SIPTransportConfig.ParseSIPChannelsNode(account);
             m_sipTransport.AddSIPChannel(sipChannels);
 
             SipStorage sipAccountStorage = new SipStorage();
