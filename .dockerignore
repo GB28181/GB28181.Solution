@@ -8,3 +8,8 @@ docker-compose*
 README.md
 LICENSE
 .vscode
+**/*.md
+Testing
+.github
+.vs
+docs
