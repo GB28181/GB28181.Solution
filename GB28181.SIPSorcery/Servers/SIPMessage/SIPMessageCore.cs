@@ -642,13 +642,13 @@ namespace GB28181.Servers.SIPMessage
                     case SIPResponseStatusCodesEnum.InternalServerError:    //服务器内部错误
                     case SIPResponseStatusCodesEnum.RequestTerminated:      //请求终止
                     case SIPResponseStatusCodesEnum.CallLegTransactionDoesNotExist: //呼叫/事务不存在
-                        OnResponseCodeReceived(response.Status, "对方国标平台返回状态【失败】", remoteEP);
+                        OnResponseCodeReceived?.Invoke(response.Status, "对方国标平台返回状态【失败】", remoteEP);
                         break;
                     case SIPResponseStatusCodesEnum.Trying:                 //等待处理
-                        OnResponseCodeReceived(response.Status, "对方国标平台返回状态【正在尝试】", remoteEP);
+                        OnResponseCodeReceived?.Invoke(response.Status, "对方国标平台返回状态【正在尝试】", remoteEP);
                         break;
                     default:
-                        OnResponseCodeReceived(response.Status, "对方国标平台返回状态【其他】", remoteEP);
+                        OnResponseCodeReceived?.Invoke(response.Status, "对方国标平台返回状态【其他】", remoteEP);
                         break;
                 }
             }
