@@ -19,11 +19,11 @@ using Xunit;
 namespace SIPSorcery.Net.UnitTests
 {
     [Trait("Category", "unit")]
-    public class STUNv2UnitTest
+    public class STUNUnitTest
     {
         private Microsoft.Extensions.Logging.ILogger logger = null;
 
-        public STUNv2UnitTest(Xunit.Abstractions.ITestOutputHelper output)
+        public STUNUnitTest(Xunit.Abstractions.ITestOutputHelper output)
         {
             logger = SIPSorcery.UnitTests.TestLogHelper.InitTestLogger(output);
         }
@@ -49,14 +49,14 @@ namespace SIPSorcery.Net.UnitTests
                                          0x66, 0xb9, 0x48, 0x67, 0x83, 0x72, 0xd5, 0xa0, 0x7a, 0x87, 0xb5, 0x3f, 0x80, 0x28, 0x00, 0x04,
                                          0x49, 0x7e, 0x51, 0x17 };
 
-            STUNv2Message stunMessage = STUNv2Message.ParseSTUNMessage(stunReq, stunReq.Length);
-            STUNv2Header stunHeader = stunMessage.Header;
+            STUNMessage stunMessage = STUNMessage.ParseSTUNMessage(stunReq, stunReq.Length);
+            STUNHeader stunHeader = stunMessage.Header;
 
             logger.LogDebug("Request type = " + stunHeader.MessageType + ".");
             logger.LogDebug("Length = " + stunHeader.MessageLength + ".");
             logger.LogDebug("Transaction ID = " + BitConverter.ToString(stunHeader.TransactionId) + ".");
 
-            Assert.Equal(STUNv2MessageTypesEnum.BindingRequest, stunHeader.MessageType);
+            Assert.Equal(STUNMessageTypesEnum.BindingRequest, stunHeader.MessageType);
             Assert.Equal(96, stunHeader.MessageLength);
             Assert.Equal(6, stunMessage.Attributes.Count);
         }
@@ -70,7 +70,7 @@ namespace SIPSorcery.Net.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            STUNv2Message initMessage = new STUNv2Message(STUNv2MessageTypesEnum.BindingRequest);
+            STUNMessage initMessage = new STUNMessage(STUNMessageTypesEnum.BindingRequest);
             initMessage.AddUsernameAttribute("someusernamex");
             byte[] stunMessageBytes = initMessage.ToByteBuffer(null, false);
 
@@ -93,17 +93,17 @@ namespace SIPSorcery.Net.UnitTests
                     0x00, 0x08, 0x00, 0x14, 0x24, 0x37, 0x24, 0xa0, 0x05, 0x2d, 0x88, 0x97, 0xce, 0xa6, 0x4e, 0x90,
                     0x69, 0xf6, 0x39, 0x07, 0x7d, 0xb1, 0x6e, 0x71, 0x80, 0x28, 0x00, 0x04, 0xde, 0x6a, 0x05, 0xac};
 
-            STUNv2Message stunMessage = STUNv2Message.ParseSTUNMessage(stunResp, stunResp.Length);
+            STUNMessage stunMessage = STUNMessage.ParseSTUNMessage(stunResp, stunResp.Length);
 
-            STUNv2Header stunHeader = stunMessage.Header;
+            STUNHeader stunHeader = stunMessage.Header;
 
             logger.LogDebug("Request type = " + stunHeader.MessageType + ".");
             logger.LogDebug("Length = " + stunHeader.MessageLength + ".");
             logger.LogDebug("Transaction ID = " + BitConverter.ToString(stunHeader.TransactionId) + ".");
 
-            foreach (STUNv2Attribute attribute in stunMessage.Attributes)
+            foreach (STUNAttribute attribute in stunMessage.Attributes)
             {
-                if (attribute.AttributeType == STUNv2AttributeTypesEnum.Username)
+                if (attribute.AttributeType == STUNAttributeTypesEnum.Username)
                 {
                     logger.LogDebug(" " + attribute.AttributeType + " " + Encoding.UTF8.GetString(attribute.Value) + ".");
                 }
@@ -113,7 +113,7 @@ namespace SIPSorcery.Net.UnitTests
                 }
             }
 
-            Assert.Equal(STUNv2MessageTypesEnum.BindingSuccessResponse, stunHeader.MessageType);
+            Assert.Equal(STUNMessageTypesEnum.BindingSuccessResponse, stunHeader.MessageType);
             Assert.Equal(44, stunHeader.MessageLength);
             Assert.Equal(3, stunMessage.Attributes.Count);
         }
@@ -129,7 +129,7 @@ namespace SIPSorcery.Net.UnitTests
 
             byte[] stunAttribute = new byte[] { 0x00, 0x01, 0xe0, 0xda, 0xe1, 0xba, 0x85, 0x3f };
 
-            STUNv2XORAddressAttribute xorAddressAttribute = new STUNv2XORAddressAttribute(STUNv2AttributeTypesEnum.XORMappedAddress, stunAttribute);
+            STUNXORAddressAttribute xorAddressAttribute = new STUNXORAddressAttribute(STUNAttributeTypesEnum.XORMappedAddress, stunAttribute);
 
             Assert.Equal(49608, xorAddressAttribute.Port);
             Assert.Equal("192.168.33.125", xorAddressAttribute.Address.ToString());
@@ -144,7 +144,7 @@ namespace SIPSorcery.Net.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            STUNv2XORAddressAttribute xorAddressAttribute = new STUNv2XORAddressAttribute(STUNv2AttributeTypesEnum.XORMappedAddress, 49608, IPAddress.Parse("192.168.33.125"));
+            STUNXORAddressAttribute xorAddressAttribute = new STUNXORAddressAttribute(STUNAttributeTypesEnum.XORMappedAddress, 49608, IPAddress.Parse("192.168.33.125"));
 
             byte[] buffer = new byte[12];
             xorAddressAttribute.ToByteBuffer(buffer, 0);
@@ -172,7 +172,7 @@ namespace SIPSorcery.Net.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            STUNv2Message stunResponse = new STUNv2Message(STUNv2MessageTypesEnum.BindingSuccessResponse);
+            STUNMessage stunResponse = new STUNMessage(STUNMessageTypesEnum.BindingSuccessResponse);
             stunResponse.Header.TransactionId = Guid.NewGuid().ToByteArray().Take(12).ToArray();
             //stunResponse.AddFingerPrintAttribute();
             stunResponse.AddXORMappedAddressAttribute(IPAddress.Parse("127.0.0.1"), 1234);
@@ -200,20 +200,20 @@ namespace SIPSorcery.Net.UnitTests
             0x29, 0x23, 0xe6, 0x7d, 0xec, 0x87, 0x6c, 0x07, 0x3a, 0xd6, 0x78, 0x15, 0x80, 0x28, 0x00, 0x04,
             0x1c, 0xae, 0x89, 0x2e};
 
-            STUNv2Message stunMessage = STUNv2Message.ParseSTUNMessage(stunReq, stunReq.Length);
-            STUNv2Header stunHeader = stunMessage.Header;
+            STUNMessage stunMessage = STUNMessage.ParseSTUNMessage(stunReq, stunReq.Length);
+            STUNHeader stunHeader = stunMessage.Header;
 
             logger.LogDebug("Request type = " + stunHeader.MessageType + ".");
             logger.LogDebug("Length = " + stunHeader.MessageLength + ".");
             logger.LogDebug("Transaction ID = " + BitConverter.ToString(stunHeader.TransactionId) + ".");
 
-            Assert.Equal(STUNv2MessageTypesEnum.BindingRequest, stunHeader.MessageType);
+            Assert.Equal(STUNMessageTypesEnum.BindingRequest, stunHeader.MessageType);
             Assert.Equal(96, stunHeader.MessageLength);
             Assert.Equal(6, stunMessage.Attributes.Count);
             Assert.Equal("69-64-38-2B-4C-45-44-57-4D-31-64-30", BitConverter.ToString(stunMessage.Header.TransactionId));
 
-            stunMessage.Attributes.Remove(stunMessage.Attributes.Where(x => x.AttributeType == STUNv2AttributeTypesEnum.MessageIntegrity).Single());
-            stunMessage.Attributes.Remove(stunMessage.Attributes.Where(x => x.AttributeType == STUNv2AttributeTypesEnum.FingerPrint).Single());
+            stunMessage.Attributes.Remove(stunMessage.Attributes.Where(x => x.AttributeType == STUNAttributeTypesEnum.MessageIntegrity).Single());
+            stunMessage.Attributes.Remove(stunMessage.Attributes.Where(x => x.AttributeType == STUNAttributeTypesEnum.FingerPrint).Single());
 
             byte[] buffer = stunMessage.ToByteBufferStringKey("r89XhWC9k2kW4Pns75vmwHIa", true);
 
@@ -236,27 +236,27 @@ namespace SIPSorcery.Net.UnitTests
                     0x72, 0x6e, 0x2d, 0x34, 0x2e, 0x35, 0x2e, 0x30, 0x2e, 0x33, 0x20, 0x27, 0x64, 0x61, 0x6e, 0x20,
                     0x45, 0x69, 0x64, 0x65, 0x72, 0x27, 0x77, 0x75};
 
-            STUNv2Message stunMessage = STUNv2Message.ParseSTUNMessage(stunResp, stunResp.Length);
+            STUNMessage stunMessage = STUNMessage.ParseSTUNMessage(stunResp, stunResp.Length);
 
-            STUNv2Header stunHeader = stunMessage.Header;
+            STUNHeader stunHeader = stunMessage.Header;
 
             logger.LogDebug("Request type = " + stunHeader.MessageType + ".");
             logger.LogDebug("Length = " + stunHeader.MessageLength + ".");
             logger.LogDebug("Transaction ID = " + BitConverter.ToString(stunHeader.TransactionId) + ".");
 
-            foreach (STUNv2Attribute attribute in stunMessage.Attributes)
+            foreach (STUNAttribute attribute in stunMessage.Attributes)
             {
-                if (attribute.AttributeType == STUNv2AttributeTypesEnum.MappedAddress)
+                if (attribute.AttributeType == STUNAttributeTypesEnum.MappedAddress)
                 {
-                    STUNv2AddressAttribute addressAttribute = new STUNv2AddressAttribute(attribute.Value);
+                    STUNAddressAttribute addressAttribute = new STUNAddressAttribute(attribute.Value);
                     logger.LogDebug(" " + attribute.AttributeType + " " + addressAttribute.Address + ":" + addressAttribute.Port + ".");
 
                     Assert.Equal("59.167.172.177", addressAttribute.Address.ToString());
                     Assert.Equal(49026, addressAttribute.Port);
                 }
-                else if (attribute.AttributeType == STUNv2AttributeTypesEnum.XORMappedAddress)
+                else if (attribute.AttributeType == STUNAttributeTypesEnum.XORMappedAddress)
                 {
-                    STUNv2XORAddressAttribute xorAddressAttribute = new STUNv2XORAddressAttribute(STUNv2AttributeTypesEnum.XORMappedAddress, attribute.Value);
+                    STUNXORAddressAttribute xorAddressAttribute = new STUNXORAddressAttribute(STUNAttributeTypesEnum.XORMappedAddress, attribute.Value);
                     logger.LogDebug(" " + attribute.AttributeType + " " + xorAddressAttribute.Address + ":" + xorAddressAttribute.Port + ".");
 
                     Assert.Equal("59.167.172.177", xorAddressAttribute.Address.ToString());
@@ -269,7 +269,7 @@ namespace SIPSorcery.Net.UnitTests
                 }
             }
 
-            Assert.Equal(STUNv2MessageTypesEnum.BindingSuccessResponse, stunHeader.MessageType);
+            Assert.Equal(STUNMessageTypesEnum.BindingSuccessResponse, stunHeader.MessageType);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace SIPSorcery.Net.UnitTests
 
             string icePassword = "SKYKPPYLTZOAVCLTGHDUODANRKSPOVQVKXJULOGG";
 
-            STUNv2Message msg = new STUNv2Message(STUNv2MessageTypesEnum.BindingSuccessResponse);
+            STUNMessage msg = new STUNMessage(STUNMessageTypesEnum.BindingSuccessResponse);
             msg.Header.TransactionId = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             msg.AddXORMappedAddressAttribute(IPAddress.Loopback, 55477);
             var buffer = msg.ToByteBufferStringKey(icePassword, true);

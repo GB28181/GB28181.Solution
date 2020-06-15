@@ -36,13 +36,14 @@ namespace SIPSorcery.Net.UnitTests
         /// console.log(offer);
         /// </code>
         [Fact]
-        public async void GenerateLocalOfferUnitTest()
+        public void GenerateLocalOfferUnitTest()
         {
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             RTCPeerConnection pc = new RTCPeerConnection(null);
-            var offer = await pc.createOffer(new RTCOfferOptions());
+            pc.IceSession.StartGathering();
+            var offer = pc.createOffer(new RTCOfferOptions());
 
             Assert.NotNull(offer);
 
@@ -62,15 +63,16 @@ namespace SIPSorcery.Net.UnitTests
         /// console.log(offer);
         /// </code>
         [Fact]
-        public async void GenerateLocalOfferWithAudioTrackUnitTest()
+        public void GenerateLocalOfferWithAudioTrackUnitTest()
         {
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             RTCPeerConnection pc = new RTCPeerConnection(null);
+            pc.IceSession.StartGathering();
             var audioTrack = new MediaStreamTrack(null, SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
             pc.addTrack(audioTrack);
-            var offer = await pc.createOffer(new RTCOfferOptions());
+            var offer = pc.createOffer(new RTCOfferOptions());
 
             SDP offerSDP = SDP.ParseSDPDescription(offer.sdp);
 

@@ -77,6 +77,7 @@ namespace SIPSorcery.Net
         public string urls;
         public string username;
         public RTCIceCredentialType credentialType;
+        public string credential;
     }
 
     /// <summary>
@@ -177,10 +178,21 @@ namespace SIPSorcery.Net
         /// <summary>
         /// Optional. If specified this address will be used as the bind address for any RTP
         /// and control sockets created. Generally this address does not need to be set. The default behaviour
-        /// is to bind to [::] or 0.0.0.0,d depending on system support, which minimises network routing
+        /// is to bind to [::] or 0.0.0.0, depending on system support, which minimises network routing
         /// causing connection issues.
         /// </summary>
         public IPAddress X_BindAddress;
+
+        /// <summary>
+        /// Optional. If the remote signalling address is known at the time of creating the peer
+        /// connection it can be used to select the interface that host ICE candidates will be
+        /// gathered on. Restricting the host candidate IP addresses to a single interface is 
+        /// as per the recommendation at:
+        /// https://tools.ietf.org/html/draft-ietf-rtcweb-ip-handling-12#section-5.2.
+        /// If this is not set then the default is to use the Internet facing interface as
+        /// returned by the OS routing table.
+        /// </summary>
+        public IPAddress X_RemoteSignallingAddress;
     }
 
     /// <summary>
@@ -223,17 +235,17 @@ namespace SIPSorcery.Net
     interface IRTCPeerConnection
     {
         //IRTCPeerConnection(RTCConfiguration configuration = null);
-        Task<RTCSessionDescriptionInit> createOffer(RTCOfferOptions options = null);
-        Task<RTCSessionDescriptionInit> createAnswer(RTCAnswerOptions options = null);
-        Task setLocalDescription(RTCSessionDescriptionInit description = null);
+        RTCSessionDescriptionInit createOffer(RTCOfferOptions options = null);
+        RTCSessionDescriptionInit createAnswer(RTCAnswerOptions options = null);
+        Task setLocalDescription(RTCSessionDescriptionInit description);
         RTCSessionDescription localDescription { get; }
         RTCSessionDescription currentLocalDescription { get; }
         RTCSessionDescription pendingLocalDescription { get; }
-        Task setRemoteDescription(RTCSessionDescriptionInit description = null);
+        SetDescriptionResultEnum setRemoteDescription(RTCSessionDescriptionInit description);
         RTCSessionDescription remoteDescription { get; }
         RTCSessionDescription currentRemoteDescription { get; }
         RTCSessionDescription pendingRemoteDescription { get; }
-        Task addIceCandidate(RTCIceCandidateInit candidate = null);
+        void addIceCandidate(RTCIceCandidateInit candidate = null);
         RTCSignalingState signalingState { get; }
         RTCIceGatheringState iceGatheringState { get; }
         RTCIceConnectionState iceConnectionState { get; }

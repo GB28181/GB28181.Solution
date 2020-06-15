@@ -50,36 +50,46 @@ namespace SIPSorcery.SIP.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
-            CancellationTokenSource cancelServer = new CancellationTokenSource();
-            TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            var serverChannel = new SIPUDPChannel(IPAddress.IPv6Loopback, 0);
-            var clientChannel = new SIPUDPChannel(IPAddress.IPv6Loopback, 0);
-
-            var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(IPAddress.IPv6Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
-
-            serverReadyEvent.Wait(); 
-            if (!Task.WhenAny(new Task[] { serverTask, clientTask}).Wait(TRANSPORT_TEST_TIMEOUT))
+            if (!Socket.OSSupportsIPv6)
             {
-                logger.LogWarning($"Tasks timed out");
+                logger.LogDebug("Test skipped as OS does not support IPv6.");
             }
-
-            if (testComplete.Task.IsCompleted == false)
+            else
             {
-                // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
-                testComplete.SetResult(false);
+                ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
+                CancellationTokenSource cancelServer = new CancellationTokenSource();
+                TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+                var serverChannel = new SIPUDPChannel(IPAddress.IPv6Loopback, 0);
+                var clientChannel = new SIPUDPChannel(IPAddress.IPv6Loopback, 0);
+
+                var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
+                var clientTask = Task.Run(async () =>
+                {
+                    await RunClient(
+    clientChannel,
+    serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(IPAddress.IPv6Loopback, 0))),
+    testComplete,
+    cancelServer,
+    serverReadyEvent);
+                });
+
+                serverReadyEvent.Wait();
+                if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
+                {
+                    logger.LogWarning($"Tasks timed out");
+                }
+
+                if (testComplete.Task.IsCompleted == false)
+                {
+                    // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
+                    testComplete.SetResult(false);
+                }
+
+                Assert.True(testComplete.Task.Result);
+
+                cancelServer.Cancel();
             }
-
-            Assert.True(testComplete.Task.Result);
-
-            cancelServer.Cancel();
         }
 
         /// <summary>
@@ -99,14 +109,17 @@ namespace SIPSorcery.SIP.UnitTests
             var clientChannel = new SIPUDPChannel(IPAddress.Loopback, 0);
 
             var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(IPAddress.Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
+            var clientTask = Task.Run(async () =>
+            {
+                await RunClient(
+clientChannel,
+serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(IPAddress.Loopback, 0))),
+testComplete,
+cancelServer,
+serverReadyEvent);
+            });
 
-            serverReadyEvent.Wait(); 
+            serverReadyEvent.Wait();
             if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
             {
                 logger.LogWarning($"Tasks timed out");
@@ -134,38 +147,48 @@ namespace SIPSorcery.SIP.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
-            CancellationTokenSource cancelServer = new CancellationTokenSource();
-            TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            var serverChannel = new SIPTCPChannel(IPAddress.IPv6Loopback, 0);
-            serverChannel.DisableLocalTCPSocketsCheck = true;
-            var clientChannel = new SIPTCPChannel(IPAddress.IPv6Loopback, 0);
-            clientChannel.DisableLocalTCPSocketsCheck = true;
-
-            var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.tcp, new IPEndPoint(IPAddress.IPv6Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
-
-            serverReadyEvent.Wait(); 
-            if (!Task.WhenAny(new Task[] { serverTask, clientTask}).Wait(TRANSPORT_TEST_TIMEOUT))
+            if (!Socket.OSSupportsIPv6)
             {
-                logger.LogWarning($"Tasks timed out");
+                logger.LogDebug("Test skipped as OS does not support IPv6.");
             }
-
-            if (testComplete.Task.IsCompleted == false)
+            else
             {
-                // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
-                testComplete.SetResult(false);
+                ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
+                CancellationTokenSource cancelServer = new CancellationTokenSource();
+                TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+                var serverChannel = new SIPTCPChannel(IPAddress.IPv6Loopback, 0);
+                serverChannel.DisableLocalTCPSocketsCheck = true;
+                var clientChannel = new SIPTCPChannel(IPAddress.IPv6Loopback, 0);
+                clientChannel.DisableLocalTCPSocketsCheck = true;
+
+                var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
+                var clientTask = Task.Run(async () =>
+                {
+                    await RunClient(
+    clientChannel,
+    serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.tcp, new IPEndPoint(IPAddress.IPv6Loopback, 0))),
+    testComplete,
+    cancelServer,
+    serverReadyEvent);
+                });
+
+                serverReadyEvent.Wait();
+                if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
+                {
+                    logger.LogWarning($"Tasks timed out");
+                }
+
+                if (testComplete.Task.IsCompleted == false)
+                {
+                    // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
+                    testComplete.SetResult(false);
+                }
+
+                Assert.True(testComplete.Task.Result);
+
+                cancelServer.Cancel();
             }
-
-            Assert.True(testComplete.Task.Result);
-
-            cancelServer.Cancel();
         }
 
         /// <summary>
@@ -187,14 +210,17 @@ namespace SIPSorcery.SIP.UnitTests
             clientChannel.DisableLocalTCPSocketsCheck = true;
 
             Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.tcp, new IPEndPoint(IPAddress.Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
+            var clientTask = Task.Run(async () =>
+            {
+                await RunClient(
+clientChannel,
+serverChannel.GetContactURI(SIPSchemesEnum.sip, new SIPEndPoint(SIPProtocolsEnum.tcp, new IPEndPoint(IPAddress.Loopback, 0))),
+testComplete,
+cancelServer,
+serverReadyEvent);
+            });
 
-            serverReadyEvent.Wait(); 
+            serverReadyEvent.Wait();
             if (!Task.WhenAny(new Task[] { clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
             {
                 logger.LogWarning($"Tasks timed out");
@@ -248,7 +274,7 @@ namespace SIPSorcery.SIP.UnitTests
 
                     var clientTask = Task.Run(async () => { await RunClient(clientChannel, serverUri, testComplete, cancelServer, serverReadyEvent); });
 
-                    serverReadyEvent.Wait(); 
+                    serverReadyEvent.Wait();
                     if (!Task.WhenAny(new Task[] { clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
                     {
                         logger.LogWarning($"Tasks timed out");
@@ -281,43 +307,53 @@ namespace SIPSorcery.SIP.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
-            CancellationTokenSource cancelServer = new CancellationTokenSource();
-            TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            Assert.True(File.Exists(@"certs/localhost.pfx"), "The TLS transport channel test was missing the localhost.pfx certificate file.");
-
-            var serverCertificate = new X509Certificate2(@"certs/localhost.pfx", "");
-            var verifyCert = serverCertificate.Verify();
-            logger.LogDebug("Server Certificate loaded from file, Subject=" + serverCertificate.Subject + ", valid=" + verifyCert + ".");
-
-            var serverChannel = new SIPTLSChannel(serverCertificate, IPAddress.IPv6Loopback, 0);
-            serverChannel.DisableLocalTCPSocketsCheck = true;
-            var clientChannel = new SIPTLSChannel(serverCertificate, IPAddress.IPv6Loopback, 0);
-            clientChannel.DisableLocalTCPSocketsCheck = true;
-
-            var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sips, new SIPEndPoint(SIPProtocolsEnum.tls, new IPEndPoint(IPAddress.IPv6Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
-
-            if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
+            if (!Socket.OSSupportsIPv6)
             {
-                logger.LogWarning($"Tasks timed out");
+                logger.LogDebug("Test skipped as OS does not support IPv6.");
             }
-
-            if (testComplete.Task.IsCompleted == false)
+            else
             {
-                // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
-                testComplete.SetResult(false);
+                ManualResetEventSlim serverReadyEvent = new ManualResetEventSlim(false);
+                CancellationTokenSource cancelServer = new CancellationTokenSource();
+                TaskCompletionSource<bool> testComplete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+                Assert.True(File.Exists(@"certs/localhost.pfx"), "The TLS transport channel test was missing the localhost.pfx certificate file.");
+
+                var serverCertificate = new X509Certificate2(@"certs/localhost.pfx", "");
+                var verifyCert = serverCertificate.Verify();
+                logger.LogDebug("Server Certificate loaded from file, Subject=" + serverCertificate.Subject + ", valid=" + verifyCert + ".");
+
+                var serverChannel = new SIPTLSChannel(serverCertificate, IPAddress.IPv6Loopback, 0);
+                serverChannel.DisableLocalTCPSocketsCheck = true;
+                var clientChannel = new SIPTLSChannel(new IPEndPoint(IPAddress.IPv6Loopback, 0));
+                clientChannel.DisableLocalTCPSocketsCheck = true;
+
+                var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
+                var clientTask = Task.Run(async () =>
+                {
+                    await RunClient(
+    clientChannel,
+    serverChannel.GetContactURI(SIPSchemesEnum.sips, new SIPEndPoint(SIPProtocolsEnum.tls, new IPEndPoint(IPAddress.IPv6Loopback, 0))),
+    testComplete,
+    cancelServer,
+    serverReadyEvent);
+                });
+
+                if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
+                {
+                    logger.LogWarning($"Tasks timed out");
+                }
+
+                if (testComplete.Task.IsCompleted == false)
+                {
+                    // The client did not set the completed signal. This means the delay task must have completed and hence the test failed.
+                    testComplete.SetResult(false);
+                }
+
+                Assert.True(testComplete.Task.Result);
+
+                cancelServer.Cancel();
             }
-
-            Assert.True(testComplete.Task.Result);
-
-            cancelServer.Cancel();
         }
 
         /// <summary>
@@ -341,18 +377,21 @@ namespace SIPSorcery.SIP.UnitTests
 
             var serverChannel = new SIPTLSChannel(serverCertificate, IPAddress.Loopback, 0);
             serverChannel.DisableLocalTCPSocketsCheck = true;
-            var clientChannel = new SIPTLSChannel(serverCertificate, IPAddress.Loopback, 0);
+            var clientChannel = new SIPTLSChannel(new IPEndPoint(IPAddress.Loopback, 0));
             clientChannel.DisableLocalTCPSocketsCheck = true;
 
             var serverTask = Task.Run(() => { RunServer(serverChannel, cancelServer, serverReadyEvent); });
-            var clientTask = Task.Run(async () => { await RunClient(
-                clientChannel, 
-                serverChannel.GetContactURI(SIPSchemesEnum.sips, new SIPEndPoint(SIPProtocolsEnum.tls, new IPEndPoint(IPAddress.Loopback, 0))), 
-                testComplete, 
-                cancelServer, 
-                serverReadyEvent); });
+            var clientTask = Task.Run(async () =>
+            {
+                await RunClient(
+clientChannel,
+serverChannel.GetContactURI(SIPSchemesEnum.sips, new SIPEndPoint(SIPProtocolsEnum.tls, new IPEndPoint(IPAddress.Loopback, 0))),
+testComplete,
+cancelServer,
+serverReadyEvent);
+            });
 
-            if(!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
+            if (!Task.WhenAny(new Task[] { serverTask, clientTask }).Wait(TRANSPORT_TEST_TIMEOUT))
             {
                 logger.LogWarning($"Tasks timed out");
             }
@@ -455,14 +494,14 @@ namespace SIPSorcery.SIP.UnitTests
                 return Task.FromResult(0);
             };
 
-            if(!tcpChannel.ConnectClientAsync(actualEP, null, null).Wait(TimeSpan.FromMilliseconds(TRANSPORT_TEST_TIMEOUT)))
+            if (!tcpChannel.ConnectClientAsync(actualEP, null, null).Wait(TimeSpan.FromMilliseconds(TRANSPORT_TEST_TIMEOUT)))
             {
                 logger.LogWarning($"ConnectClientAsync timed out");
             }
 
             logger.LogDebug("Test client connected.");
 
-            if(!Task.WhenAny(new Task[] { testComplete.Task }).Wait(TRANSPORT_TEST_TIMEOUT))
+            if (!Task.WhenAny(new Task[] { testComplete.Task }).Wait(TRANSPORT_TEST_TIMEOUT))
             {
                 logger.LogWarning($"Tasks timed out");
             }
@@ -591,8 +630,8 @@ namespace SIPSorcery.SIP.UnitTests
         /// <param name="serverReadyEvent">Used to notify the client task that the server task is 
         /// ready for the unit test to commence.</param>
         private void RunServer(
-            SIPChannel testServerChannel, 
-            CancellationTokenSource cts, 
+            SIPChannel testServerChannel,
+            CancellationTokenSource cts,
             ManualResetEventSlim serverReadyEvent)
         {
             logger.LogDebug($"RunServer test channel created on {testServerChannel.ListeningSIPEndPoint}.");
@@ -655,9 +694,9 @@ namespace SIPSorcery.SIP.UnitTests
         /// <param name="serverReadyEvent">Event to notify when the server thread is ready for the test to commence.</param>
         private async Task RunClient(
             SIPChannel testClientChannel,
-            SIPURI serverUri, 
-            TaskCompletionSource<bool> tcs, 
-            CancellationTokenSource cts, 
+            SIPURI serverUri,
+            TaskCompletionSource<bool> tcs,
+            CancellationTokenSource cts,
             ManualResetEventSlim serverReadyEvent)
         {
             logger.LogDebug($"RunClient Starting client task for {testClientChannel.ListeningSIPEndPoint}.");

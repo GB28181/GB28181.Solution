@@ -22,12 +22,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Xunit;
-using SIPSorcery.UnitTests;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
+
+/* Unmerged change from project 'SIPSorcery.UnitTests (net46)'
+Before:
 using System.Net.Sockets;
-using System.Linq;
+After:
+using SIPSorcery.UnitTests;
+*/
+using SIPSorcery.UnitTests;
+using Xunit;
 
 namespace SIPSorcery.SIP.App.UnitTests
 {
