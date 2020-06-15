@@ -28,7 +28,7 @@ namespace SIPSorcery.UnitTests.app.SIPUserAgents
             transport.AddSIPChannel(channel);
             SIPClientUserAgent userAgent = new SIPClientUserAgent(
                 transport,
-                new SIPEndPoint(new IPEndPoint(new IPAddress(new byte[] {192, 168, 11, 50}),5060 )),
+                new SIPEndPoint(new IPEndPoint(new IPAddress(new byte[] { 192, 168, 11, 50 }), 5060)),
                 "owner",
                 "admin",
                 null);

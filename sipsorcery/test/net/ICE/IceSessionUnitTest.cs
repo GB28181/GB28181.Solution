@@ -40,12 +40,12 @@ namespace SIPSorcery.Net.UnitTests
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             RTPSession rtpSession = new RTPSession(true, true, true);
-            
+
             // Add a track to the session in order to initialise the RTPChannel.
             MediaStreamTrack dummyTrack = new MediaStreamTrack(null, SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
             rtpSession.addTrack(dummyTrack);
 
-            var iceSession = new IceSession(rtpSession.GetRtpChannel(SDPMediaTypesEnum.audio), RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpSession.GetRtpChannel(SDPMediaTypesEnum.audio), RTCIceComponent.rtp, null);
 
             Assert.NotNull(iceSession);
         }
@@ -66,15 +66,16 @@ namespace SIPSorcery.Net.UnitTests
             rtpSession.addTrack(dummyTrack);
 
             RTPChannel rtpChannel = rtpSession.GetRtpChannel(SDPMediaTypesEnum.audio);
-            
+
             logger.LogDebug($"RTP channel RTP socket local end point {rtpChannel.RTPLocalEndPoint}.");
 
-            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
 
-            foreach(var hostCandidate in iceSession.Candidates)
+            foreach (var hostCandidate in iceSession.Candidates)
             {
                 logger.LogDebug(hostCandidate.ToString());
             }
@@ -101,7 +102,8 @@ namespace SIPSorcery.Net.UnitTests
 
             logger.LogDebug($"RTP channel RTP socket local end point {rtpChannel.RTPLocalEndPoint}.");
 
-            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
@@ -127,7 +129,8 @@ namespace SIPSorcery.Net.UnitTests
             MediaStreamTrack dummyTrack = new MediaStreamTrack(null, SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
             rtpSession.addTrack(dummyTrack);
 
-            var iceSession = new IceSession(rtpSession.GetRtpChannel(SDPMediaTypesEnum.audio), RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpSession.GetRtpChannel(SDPMediaTypesEnum.audio), RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
@@ -153,14 +156,15 @@ namespace SIPSorcery.Net.UnitTests
         /// Tests that checklist entries get added correctly and duplicates are excluded.
         /// </summary>
         [Fact]
-        public void ChecklistConstructionUnitTest()
+        public async void ChecklistConstructionUnitTest()
         {
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             RTPChannel rtpChannel = new RTPChannel(false, null);
 
-            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
@@ -175,6 +179,8 @@ namespace SIPSorcery.Net.UnitTests
 
             var remoteCandidate2 = RTCIceCandidate.Parse("candidate:408132417 1 udp 2113937150 192.168.11.50 51268 typ host generation 0 ufrag CI7o network-cost 999");
             iceSession.AddRemoteCandidate(remoteCandidate2);
+
+            await Task.Delay(1000);
 
             foreach (var entry in iceSession._checklist)
             {
@@ -195,7 +201,8 @@ namespace SIPSorcery.Net.UnitTests
 
             RTPChannel rtpChannel = new RTPChannel(false, null);
 
-            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
@@ -211,9 +218,13 @@ namespace SIPSorcery.Net.UnitTests
             iceSession.SetRemoteCredentials("CI7o", "xxxxxxxxxxxx");
             iceSession.StartGathering();
 
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
-            Assert.Equal(IceSession.ChecklistEntryState.InProgress, iceSession._checklist.Single().State);
+            var checklistEntry = iceSession._checklist.Single();
+
+            logger.LogDebug($"Checklist entry state {checklistEntry.State}, last check sent at {checklistEntry.LastCheckSentAt}.");
+
+            Assert.Equal(IceSession.ChecklistEntryState.InProgress, checklistEntry.State);
         }
 
         /// <summary>
@@ -227,7 +238,8 @@ namespace SIPSorcery.Net.UnitTests
 
             RTPChannel rtpChannel = new RTPChannel(false, null);
 
-            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp);
+            var iceSession = new IceSession(rtpChannel, RTCIceComponent.rtp, null);
+            iceSession.StartGathering();
 
             Assert.NotNull(iceSession);
             Assert.NotEmpty(iceSession.Candidates);
