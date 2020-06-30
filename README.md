@@ -56,8 +56,6 @@ running on aspnetcore 3.1+
 
 + [sipsorcery](https://github.com/sipsorcery/sipsorcery)
 
-+ [GB28181-2016(C/C++)](https://github.com/unitycs/GB28181Platform)
-
 ## License
 
 MIT & BSD v3 and later
