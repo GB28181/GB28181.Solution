@@ -62,7 +62,7 @@ running on aspnetcore 3.1+
 
 MIT & BSD v3 and later
 
-***注意：项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)类库中的部分代码，明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php)，详情请检索代码文件。
+***注意：项目中用到的 [SIPSorcery](https://github.com/sipsorcery/sipsorcery)类库中的部分代码，明确使用了[GPL License](http://www.opensource.org/licenses/gpl-license.php)，详情请检索代码文件。***
 
 关于GPL的更多了解：[开源中国GPL](https://www.oschina.net/question/12_2826)、[百科 GPL](https://baike.baidu.com/item/GPL/2357903)
 
