@@ -108,3 +108,5 @@ Additional instructions for configuring a project to use a custom NuGet reposito
 This project is experimental. It has known issues, it is not complete and it is not supported. We are interested in this technology but there is no commitment to completing it.
 
 We want to gauge developer interest in gRPC HTTP API. If gRPC HTTP API is interesting to you then please [give feedback](https://github.com/grpc/grpc-dotnet/issues/167).
+
+- merge from  [aspnet/AspLabs](https://github.com/aspnet/AspLabs/tree/master/src/GrpcHttpApi/src)
