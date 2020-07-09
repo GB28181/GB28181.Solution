@@ -9,7 +9,6 @@ gRPC HTTP API is an extension for ASP.NET Core that creates RESTful HTTP APIs fo
 
 Of course gRPC can continue to be used as well. RESTful APIs for your gRPC services. No duplication!
 
-![gRPC loves REST](grpc-rest-logo.png "gRPC loves REST")
 
 ### Usage
 
