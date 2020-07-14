@@ -186,7 +186,7 @@ namespace SIPSorcery.UnitTests
             return offerSdp;
         }
 
-        public SetDescriptionResultEnum SetRemoteDescription(SDP sessionDescription)
+        public SetDescriptionResultEnum SetRemoteDescription(SdpType type, SDP sessionDescription)
         {
             RemoteDescription = sessionDescription;
             return SetDescriptionResultEnum.OK;
@@ -199,7 +199,7 @@ namespace SIPSorcery.UnitTests
 
         public void SetMediaStreamStatus(SDPMediaTypesEnum kind, MediaStreamStatusEnum status)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public Task SendDtmf(byte tone, CancellationToken ct)
