@@ -8,6 +8,7 @@
 // 14 Feb 2006	Aaron Clauson	Created.
 // 26 Apr 2008  Aaron Clauson   Added TCP support.
 // 30 May 2020	Edward Chen     Updated.
+// 06 Sep 2020  Edward Chen     Refactoring DNS
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 
@@ -25,7 +26,7 @@ using SIPSorcery.Sys;
 namespace GB28181
 {
    
-    public class SIPTransport : ISIPTransport
+    public class SIPTransport : SIPSorcery.SIP.SIPTransport, ISIPTransport
     {
         private const string RECEIVE_THREAD_NAME = "siptransport-receive";
         private const string RELIABLES_THREAD_NAME = "siptransport-reliables";
@@ -59,7 +60,7 @@ namespace GB28181
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
-        private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = App.SIPDNSManager.ResolveSIPService;
+      //  private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = App.SIPDNSManager.ResolveSIPService;
 
         public event SIPTransportRequestDelegate SIPRequestInTraceEvent;
         public event SIPTransportRequestDelegate SIPRequestOutTraceEvent;
@@ -80,13 +81,13 @@ namespace GB28181
 
         public int ReliableTrasmissionsCount => m_reliableTransmissions.Count;
 
-        public SIPTransport(ISIPTransactionEngine transactionEngine)
+        public SIPTransport(ISIPTransactionEngine transactionEngine) : base()
         {
             //  ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
         }
 
-        public SIPTransport(ISIPTransactionEngine transactionEngine, bool queueIncoming = false)
+        public SIPTransport(ISIPTransactionEngine transactionEngine, bool queueIncoming = false) : base()
         {
             //ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
@@ -94,20 +95,14 @@ namespace GB28181
         }
 
 
-        public SIPTransport(ResolveSIPEndPointDelegate sipResolver, SIPTransactionEngine transactionEngine, bool queueIncoming)
+        public SIPTransport(SIPTransactionEngine transactionEngine, bool queueIncoming) : base()
         {
-            if (sipResolver == null)
-            {
-                throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
-            }
-
-            ResolveSIPEndPoint_External = sipResolver;
             _transactionEngine = transactionEngine;
             m_queueIncoming = queueIncoming;
         }
 
 
-        public SIPTransport(ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming)
+        public SIPTransport(ISIPTransactionEngine transactionEngine, SIPChannel sipChannel, bool queueIncoming) : base()
         {
             //  ResolveSIPEndPoint_External = sipResolver ?? throw new ArgumentNullException("The SIP end point resolver must be set when creating a SIPTransport object.");
             _transactionEngine = transactionEngine;
