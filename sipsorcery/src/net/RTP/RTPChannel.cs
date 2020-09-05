@@ -25,22 +25,34 @@ using SIPSorcery.Sys;
 
 namespace SIPSorcery.Net
 {
-    internal delegate void PacketReceivedDelegate(UdpReceiver receiver, int localPort, IPEndPoint remoteEndPoint, byte[] packet);
+    public delegate void PacketReceivedDelegate(UdpReceiver receiver, int localPort, IPEndPoint remoteEndPoint, byte[] packet);
 
     /// <summary>
     /// A basic UDP socket manager. The RTP channel may need both an RTP and Control socket. This class encapsulates
     /// the common logic for UDP socket management.
     /// </summary>
-    internal class UdpReceiver
+    /// <remarks>
+    /// .NET Framework Socket source:
+    /// https://referencesource.microsoft.com/#system/net/system/net/Sockets/Socket.cs
+    /// .NET Core Socket source:
+    /// https://github.com/dotnet/runtime/blob/master/src/libraries/System.Net.Sockets/src/System/Net/Sockets/Socket.cs
+    /// Mono Socket source:
+    /// https://github.com/mono/mono/blob/master/mcs/class/System/System.Net.Sockets/Socket.cs
+    /// </remarks>
+    public sealed class UdpReceiver
     {
-        private const int RECEIVE_BUFFER_SIZE = 2048;   // MTU is 1452 bytes so this should be heaps.
+        /// <summary>
+        /// MTU is 1452 bytes so this should be heaps.
+        /// TODO: What about fragmented UDP packets that are put back together by the OS?
+        /// </summary>
+        private const int RECEIVE_BUFFER_SIZE = 2048;
 
         private static ILogger logger = Log.Logger;
 
         private readonly Socket m_udpSocket;
         private byte[] m_recvBuffer;
         private bool m_isClosed;
-        private int m_localPort;
+        private IPEndPoint m_localEndPoint;
         private AddressFamily m_addressFamily;
 
         /// <summary>
@@ -56,7 +68,7 @@ namespace SIPSorcery.Net
         public UdpReceiver(Socket udpSocket)
         {
             m_udpSocket = udpSocket;
-            m_localPort = (m_udpSocket.LocalEndPoint as IPEndPoint).Port;
+            m_localEndPoint = m_udpSocket.LocalEndPoint as IPEndPoint;
             m_recvBuffer = new byte[RECEIVE_BUFFER_SIZE];
             m_addressFamily = m_udpSocket.LocalEndPoint.AddressFamily;
         }
@@ -69,7 +81,7 @@ namespace SIPSorcery.Net
         {
             try
             {
-                EndPoint recvEndPoint = (m_udpSocket.LocalEndPoint.AddressFamily == AddressFamily.InterNetwork) ? new IPEndPoint(IPAddress.Any, 0) : new IPEndPoint(IPAddress.IPv6Any, 0);
+                EndPoint recvEndPoint = m_addressFamily == AddressFamily.InterNetwork ? new IPEndPoint(IPAddress.Any, 0) : new IPEndPoint(IPAddress.IPv6Any, 0);
                 m_udpSocket.BeginReceiveFrom(m_recvBuffer, 0, m_recvBuffer.Length, SocketFlags.None, ref recvEndPoint, EndReceiveFrom, null);
             }
             catch (ObjectDisposedException) { } // Thrown when socket is closed. Can be safely ignored.
@@ -103,7 +115,6 @@ namespace SIPSorcery.Net
                 if (!m_isClosed)
                 {
                     EndPoint remoteEP = m_addressFamily == AddressFamily.InterNetwork ? new IPEndPoint(IPAddress.Any, 0) : new IPEndPoint(IPAddress.IPv6Any, 0);
-
                     int bytesRead = m_udpSocket.EndReceiveFrom(ar, ref remoteEP);
 
                     if (bytesRead > 0)
@@ -118,7 +129,7 @@ namespace SIPSorcery.Net
 
                         byte[] packetBuffer = new byte[bytesRead];
                         Buffer.BlockCopy(m_recvBuffer, 0, packetBuffer, 0, bytesRead);
-                        OnPacketReceived?.Invoke(this, m_localPort, remoteEP as IPEndPoint, packetBuffer);
+                        OnPacketReceived?.Invoke(this, m_localEndPoint.Port, remoteEP as IPEndPoint, packetBuffer);
                     }
                 }
             }
@@ -180,19 +191,19 @@ namespace SIPSorcery.Net
     public class RTPChannel : IDisposable
     {
         private static ILogger logger = Log.Logger;
-
-        public Socket RtpSocket { get; private set; }
-        private UdpReceiver m_rtpReceiver;
+        protected UdpReceiver m_rtpReceiver;
         private Socket m_controlSocket;
-        private UdpReceiver m_controlReceiver;
+        protected UdpReceiver m_controlReceiver;
         private bool m_started = false;
         private bool m_isClosed;
+
+        public Socket RtpSocket { get; private set; }
 
         /// <summary>
         /// The last remote end point an RTP packet was sent to or received from. Used for 
         /// reporting purposes only.
         /// </summary>
-        internal IPEndPoint LastRtpDestination { get; private set; }
+        protected IPEndPoint LastRtpDestination { get; set; }
 
         /// <summary>
         /// The last remote end point an RTCP packet was sent to or received from. Used for
@@ -257,9 +268,10 @@ namespace SIPSorcery.Net
         /// <param name="bindAddress">Optional. An IP address belonging to a local interface that will be used to bind
         /// the RTP and control sockets to. If left empty then the IPv6 any address will be used if IPv6 is supported
         /// and fallback to the IPv4 any address.</param>
-        public RTPChannel(bool createControlSocket, IPAddress bindAddress)
+        /// <param name="bindPort">Optional. The specific port to attempt to bind the RTP port on.</param>
+        public RTPChannel(bool createControlSocket, IPAddress bindAddress, int bindPort = 0)
         {
-            NetServices.CreateRtpSocket(createControlSocket, bindAddress, out var rtpSocket, out m_controlSocket);
+            NetServices.CreateRtpSocket(createControlSocket, bindAddress, bindPort, out var rtpSocket, out m_controlSocket);
 
             if (rtpSocket == null)
             {
@@ -336,7 +348,15 @@ namespace SIPSorcery.Net
             }
         }
 
-        public SocketError SendAsync(RTPChannelSocketsEnum sendOn, IPEndPoint dstEndPoint, byte[] buffer)
+        /// <summary>
+        /// The send method for the RTP channel.
+        /// </summary>
+        /// <param name="sendOn">The socket to send on. Can be the RTP or Control socket.</param>
+        /// <param name="dstEndPoint">The destination end point to send to.</param>
+        /// <param name="buffer">The data to send.</param>
+        /// <returns>The result of initiating the send. This result does not reflect anything about
+        /// whether the remote party received the packet or not.</returns>
+        internal virtual SocketError Send(RTPChannelSocketsEnum sendOn, IPEndPoint dstEndPoint, byte[] buffer)
         {
             if (m_isClosed)
             {
@@ -344,15 +364,15 @@ namespace SIPSorcery.Net
             }
             else if (dstEndPoint == null)
             {
-                throw new ArgumentException("dstEndPoint", "An empty destination was specified to SendAsync in RTPChannel.");
+                throw new ArgumentException("dstEndPoint", "An empty destination was specified to Send in RTPChannel.");
             }
             else if (buffer == null || buffer.Length == 0)
             {
-                throw new ArgumentException("buffer", "The buffer must be set and non empty for SendAsync in RTPChannel.");
+                throw new ArgumentException("buffer", "The buffer must be set and non empty for Send in RTPChannel.");
             }
             else if (IPAddress.Any.Equals(dstEndPoint.Address) || IPAddress.IPv6Any.Equals(dstEndPoint.Address))
             {
-                logger.LogWarning($"The destination address for SendAsync in RTPChannel cannot be {dstEndPoint.Address}.");
+                logger.LogWarning($"The destination address for Send in RTPChannel cannot be {dstEndPoint.Address}.");
                 return SocketError.DestinationAddressRequired;
             }
             else
@@ -390,7 +410,7 @@ namespace SIPSorcery.Net
                 }
                 catch (Exception excp)
                 {
-                    logger.LogError($"Exception RTPChannel.SendAsync. {excp}");
+                    logger.LogError($"Exception RTPChannel.Send. {excp}");
                     return SocketError.Fault;
                 }
             }
@@ -431,7 +451,7 @@ namespace SIPSorcery.Net
         /// <param name="localPort">The local port it was received on.</param>
         /// <param name="remoteEndPoint">The remote end point of the sender.</param>
         /// <param name="packet">The raw packet received (note this may not be RTP if other protocols are being multiplexed).</param>
-        private void OnRTPPacketReceived(UdpReceiver receiver, int localPort, IPEndPoint remoteEndPoint, byte[] packet)
+        protected virtual void OnRTPPacketReceived(UdpReceiver receiver, int localPort, IPEndPoint remoteEndPoint, byte[] packet)
         {
             if (packet?.Length > 0)
             {
