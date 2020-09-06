@@ -43,7 +43,7 @@ namespace GB28181
         internal UACInviteTransaction(SIPTransport sipTransport, SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy, bool sendOkAckManually = false)
             : base(sipTransport, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy)
         {
-            TransactionType = SIPTransactionTypesEnum.Invite;
+            TransactionType = SIPTransactionTypesEnum.InviteServer;
             m_localTag = sipRequest.Header.From.FromTag;
             SIPEndPoint localEP = SIPEndPoint.TryParse(sipRequest.Header.ProxySendFrom) ?? localSIPEndPoint;
             CDR = new SIPCDR(SIPCallDirection.Out, sipRequest.URI, sipRequest.Header.From, sipRequest.Header.CallId, localEP, dstEndPoint);

@@ -28,7 +28,7 @@ namespace GB28181
     public delegate void SIPTransportResponseDelegate(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPResponse sipResponse);
     public delegate void SIPTransportSIPBadMessageDelegate(SIPEndPoint localSIPEndPoint, SIPEndPoint remotePoint, string message, SIPValidationFieldsEnum errorField, string rawMessage);
     public delegate void STUNRequestReceivedDelegate(IPEndPoint localEndPoint, IPEndPoint remoteEndPoint, byte[] buffer, int bufferLength);
-    public delegate SIPDNSLookupResult ResolveSIPEndPointDelegate(SIPURI uri, bool async);
+   // public delegate SIPDNSLookupResult ResolveSIPEndPointDelegate(SIPURI uri, bool async);
 
     // SIP Transaction delegates.
     public delegate void SIPTransactionStateChangeDelegate(SIPTransaction sipTransaction);
