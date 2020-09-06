@@ -49,7 +49,7 @@ namespace SIPSorcery.SIP
             }
         }
 
-        private SIPRequest()
+        protected SIPRequest()
         { }
 
         public SIPRequest(SIPMethodsEnum method, string uri)

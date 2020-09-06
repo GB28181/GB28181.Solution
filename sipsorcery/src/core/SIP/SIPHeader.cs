@@ -949,7 +949,7 @@ namespace SIPSorcery.SIP
             }
         }
 
-        private SIPRoute()
+        protected SIPRoute()
         { }
 
         public SIPRoute(string host)
