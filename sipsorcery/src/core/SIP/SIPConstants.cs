@@ -4,10 +4,10 @@
 // Description: SIP constants.
 //
 // Author(s):
-// Aaron Clauson
+// Aaron Clauson (aaron@sipsorcery.com)
 //
 // History:
-// 17 Sep 2005	Aaron Clauson	Created (aaron@sipsorcery.com), SIP Sorcery PTY LTD, Hobart, Australia (www.sipsorcery.com).
+// 17 Sep 2005	Aaron Clauson	Created, Hobart, Australia.
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using SIPSorcery.Sys;
 
 namespace SIPSorcery.SIP
@@ -29,10 +30,18 @@ namespace SIPSorcery.SIP
         public const string SIP_FULLVERSION_STRING = "SIP/2.0";
 
         public const int NONCE_TIMEOUT_MINUTES = 5;                         // Length of time an issued nonce is valid for.
-        public const int SIP_MAXIMUM_RECEIVE_LENGTH = 65535;                // Any SIP messages over this size will generate an error.
-        public const int SIP_MAXIMUM_UDP_SEND_LENGTH = 1300;                // Any SIP messages over this size should be prevented from using a UDP transport.
-        public const string SIP_USERAGENT_STRING = "www.sipsorcery.com";
-        public const string SIP_SERVER_STRING = "www.sipsorcery.com";
+
+        /// <summary>
+        /// The maximum size supported for an incoming SIP message.
+        /// </summary>
+        /// <remarks>
+        /// From https://tools.ietf.org/html/rfc3261#section-18.1.1:
+        /// However, implementations MUST be able to handle messages up to the maximum
+        /// datagram packet size.For UDP, this size is 65,535 bytes, including
+        /// IP and UDP headers.
+        /// </remarks>
+        public const int SIP_MAXIMUM_RECEIVE_LENGTH = 65535;
+
         public const string SIP_REQUEST_REGEX = @"^\w+ .* SIP/.*";          // bnf:	Request-Line = Method SP Request-URI SP SIP-Version CRLF
         public const string SIP_RESPONSE_REGEX = @"^SIP/.* \d{3}";          // bnf: Status-Line = SIP-Version SP Status-Code SP Reason-Phrase CRLF
         public const string SIP_BRANCH_MAGICCOOKIE = "z9hG4bK";
@@ -49,11 +58,24 @@ namespace SIPSorcery.SIP
         public const int DEFAULT_SIP_TLS_PORT = 5061;
         public const int DEFAULT_SIP_WEBSOCKET_PORT = 80;
         public const int DEFAULT_SIPS_WEBSOCKET_PORT = 443;
-        public const int MAX_SIP_PORT = 65535;
 
         public const string NAT_SENDKEEPALIVES_VALUE = "y";
 
         public const string ALLOWED_SIP_METHODS = "ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, PRACK, REFER, REGISTER, SUBSCRIBE";
+
+        private static string _userAgentVersion;
+        public static string SIP_USERAGENT_STRING
+        {
+            get
+            {
+                if (_userAgentVersion == null)
+                {
+                    _userAgentVersion = $"sipsorcery_v{Assembly.GetExecutingAssembly().GetName().Version.ToString()}";
+                }
+
+                return _userAgentVersion;
+            }
+        }
 
         /// <summary>
         /// Gets the default SIP port for the protocol. 
@@ -89,16 +111,36 @@ namespace SIPSorcery.SIP
 
     public class SIPTimings
     {
-        public const int T1 = 500;                      // Value of the SIP defined timer T1 in milliseconds and is the time for the first retransmit.
-        public const int T2 = 4000;                     // Value of the SIP defined timer T2 in milliseconds and is the maximum time between retransmits.
-        public const int T6 = 64 * T1;                  // Value of the SIP defined timer T6 in milliseconds and is the period after which a transaction has timed out.
-        public const int MAX_RING_TIME = 180000;        // The number of milliseconds a transaction can stay in the proceeding state (i.e. an INVITE will ring for) before the call is given up and timed out.     
+        /// <summary>
+        /// Value of the SIP defined timer T1 in milliseconds and is the time for the first retransmit.
+        /// Should not need to be adjusted in normal circumstances.
+        /// </summary>
+        public static int T1 = 500;
+
+        /// <summary>
+        /// Value of the SIP defined timer T2 in milliseconds and is the maximum time between retransmits.
+        /// Should not need to be adjusted in normal circumstances.
+        /// </summary>
+        public static int T2 = 4000;
+
+        /// <summary>
+        /// Value of the SIP defined timer T6 in milliseconds and is the period after which a transaction 
+        /// has timed out. Should not need to be adjusted in normal circumstances.
+        /// </summary>
+        public static int T6 = 64 * T1;
+
+        /// <summary>
+        /// The number of milliseconds a transaction can stay in the proceeding state 
+        /// (i.e. an INVITE will ring for) before the call is given up and timed out.     
+        /// </summary>
+        public static int MAX_RING_TIME = 180000;
     }
 
     public enum SIPSchemesEnum
     {
         sip = 1,
         sips = 2,
+        tel = 3,
     }
 
     public class SIPSchemesType

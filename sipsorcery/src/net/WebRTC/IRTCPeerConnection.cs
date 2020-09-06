@@ -6,6 +6,12 @@
 // date with:
 // https://www.w3.org/TR/webrtc/#interface-definition
 //
+// See also:
+// https://tools.ietf.org/html/draft-ietf-rtcweb-jsep-25#section-3.5.4
+//
+// Author(s):
+// Aaron Clauson
+//
 // History:
 // 16 Mar 2020	Aaron Clauson	Created.
 //
@@ -16,7 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using SIPSorcery.Sys;
 
 namespace SIPSorcery.Net
 {
@@ -31,11 +39,11 @@ namespace SIPSorcery.Net
     public class RTCOfferOptions
     {
         /// <summary>
-        /// Optional. The remote address that was used for signalling during the connection
-        /// set up. For non-ICE RTP sessions this can be used to determine the best local
-        /// IP address to use in an SDP offer/answer.
+        /// If set it indicates that any available ICE candidates should NOT be added
+        /// to the offer SDP. By default "host" candidates should always be available
+        /// and will be added to the offer SDP.
         /// </summary>
-        //public IPAddress RemoteSignallingAddress;
+        public bool X_ExcludeIceCandidates;
     }
 
     /// <summary>
@@ -46,7 +54,11 @@ namespace SIPSorcery.Net
     /// </remarks>
     public class RTCAnswerOptions
     {
-        // Note: At the time of writing there are no answer options in the WebRTC specification.
+        /// If set it indicates that any available ICE candidates should NOT be added
+        /// to the offer SDP. By default "host" candidates should always be available
+        /// and will be added to the offer SDP.
+        /// </summary>
+        public bool X_ExcludeIceCandidates;
     }
 
     public class RTCSessionDescription
@@ -88,8 +100,8 @@ namespace SIPSorcery.Net
     /// </remarks>
     public enum RTCIceTransportPolicy
     {
-        relay,
-        all
+        all,
+        relay
     }
 
     /// <summary>
@@ -133,26 +145,92 @@ namespace SIPSorcery.Net
         /// the syntax of 'fingerprint' in [RFC4572] Section 5.
         /// </summary>
         public string value;
+
+        public override string ToString()
+        {
+            // FireFox wasn't happy unless the fingerprint hash was in upper case.
+            return $"{algorithm} {value.ToUpper()}";
+        }
+
+        /// <summary>
+        /// Attempts to parse the fingerprint fields from a string.
+        /// </summary>
+        /// <param name="str">The string to parse from.</param>
+        /// <param name="fingerprint">If successful a fingerprint object.</param>
+        /// <returns>True if a fingerprint was successfully parsed. False if not.</returns>
+        public static bool TryParse(string str, out RTCDtlsFingerprint fingerprint)
+        {
+            fingerprint = null;
+
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+            else
+            {
+                int spaceIndex = str.IndexOf(' ');
+                if (spaceIndex == -1)
+                {
+                    return false;
+                }
+                else
+                {
+                    string algStr = str.Substring(0, spaceIndex);
+                    string val = str.Substring(spaceIndex + 1);
+
+                    if (!DtlsUtils.IsHashSupported(algStr))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        fingerprint = new RTCDtlsFingerprint
+                        {
+                            algorithm = algStr,
+                            value = val
+                        };
+                        return true;
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
     /// Represents a certificate used to authenticate WebRTC communications.
     /// </summary>
+    /// <remarks>
+    /// TODO:
+    /// From https://www.w3.org/TR/webrtc/#methods-4:
+    /// "Implementations SHOULD store the sensitive keying material in a secure module safe from 
+    /// same-process memory attacks."
+    /// </remarks>
     public class RTCCertificate
     {
         /// <summary>
         /// The expires attribute indicates the date and time in milliseconds relative to 1970-01-01T00:00:00Z 
         /// after which the certificate will be considered invalid by the browser.
         /// </summary>
-        public DateTimeOffset expires;
+        public long expires
+        {
+            get
+            {
+                if (Certificate == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return Certificate.NotAfter.GetEpoch();
+                }
+            }
+        }
 
-        public string X_CertificatePath;
-        public string X_KeyPath;
-        public string X_Fingerprint;
+        public X509Certificate2 Certificate;
 
         public List<RTCDtlsFingerprint> getFingerprints()
         {
-            throw new NotImplementedException("RTCCertificate.getFingerprints");
+            return new List<RTCDtlsFingerprint> { DtlsUtils.Fingerprint(Certificate) };
         }
     }
 
@@ -193,6 +271,12 @@ namespace SIPSorcery.Net
         /// returned by the OS routing table.
         /// </summary>
         public IPAddress X_RemoteSignallingAddress;
+
+        /// <summary>
+        /// Optional. If set to true the feedback profile set in the SDP offers and answers will be
+        /// UDP/TLS/RTP/SAVPF instead of UDP/TLS/RTP/SAVP.
+        /// </summary>
+        public bool X_UseRtpFeedbackProfile;
     }
 
     /// <summary>
@@ -257,7 +341,7 @@ namespace SIPSorcery.Net
         void close();
         event Action onnegotiationneeded;
         event Action<RTCIceCandidate> onicecandidate;
-        event Action onicecandidateerror;
+        event Action<RTCIceCandidate, string> onicecandidateerror;
         event Action onsignalingstatechange;
         event Action<RTCIceConnectionState> oniceconnectionstatechange;
         event Action<RTCIceGatheringState> onicegatheringstatechange;
@@ -265,8 +349,8 @@ namespace SIPSorcery.Net
 
         // TODO: Extensions for the RTCMediaAPI
         // https://www.w3.org/TR/webrtc/#rtcpeerconnection-interface-extensions.
-        List<IRTCRtpSender> getSenders();
-        List<IRTCRtpReceiver> getReceivers();
+        //List<IRTCRtpSender> getSenders();
+        //List<IRTCRtpReceiver> getReceivers();
         //List<RTCRtpTransceiver> getTransceivers();
         //RTCRtpSender addTrack(MediaStreamTrack track, param MediaStream[] streams);
         //void removeTrack(RTCRtpSender sender);

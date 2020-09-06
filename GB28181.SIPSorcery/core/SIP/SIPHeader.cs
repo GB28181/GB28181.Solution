@@ -1125,7 +1125,7 @@ namespace GB28181
     /// The Route and Record-Route headers only have parameters, no headers. Parameters of from ...;name=value;name2=value2
     /// There are no specific parameters.
     /// </remarks>
-    public class SIPRoute
+    public class SIPRoute:SIPSorcery.SIP.SIPRoute
     {
         private static string m_looseRouterParameter = SIPConstants.SIP_LOOSEROUTER_PARAMETER;
 
@@ -1163,7 +1163,7 @@ namespace GB28181
         private SIPRoute()
         { }
 
-        public SIPRoute(string host)
+        public SIPRoute(string host):base(host)
         {
             if (host.IsNullOrBlank())
             {
@@ -1173,7 +1173,7 @@ namespace GB28181
             m_userField = SIPUserField.ParseSIPUserField(host);
         }
 
-        public SIPRoute(string host, bool looseRouter)
+        public SIPRoute(string host, bool looseRouter) : base(host,looseRouter)
         {
             if (host.IsNullOrBlank())
             {
@@ -1184,7 +1184,7 @@ namespace GB28181
             IsStrictRouter = !looseRouter;
         }
 
-        public SIPRoute(SIPURI uri)
+        public SIPRoute(SIPURI uri) : base(uri)
         {
             m_userField = new SIPUserField
             {
@@ -1192,7 +1192,7 @@ namespace GB28181
             };
         }
 
-        public SIPRoute(SIPURI uri, bool looseRouter)
+        public SIPRoute(SIPURI uri, bool looseRouter) : base(uri,looseRouter)
         {
             m_userField = new SIPUserField
             {
@@ -1519,47 +1519,6 @@ namespace GB28181
             return routeStr;
         }
 
-        #region Unit testing.
-
-#if UNITTEST
-	
-		[TestFixture]
-		public class RouteSetUnitTest
-		{
-            [Test]
-            public void SampleTest()
-            {
-                Console.WriteLine("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
-            }
-
-            [Test]
-            public void ParseSIPRouteSetTest()
-            {
-                Console.WriteLine("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
-                string routeSetString = "<sip:127.0.0.1:5434;lr>,<sip:10.0.0.1>,<sip:192.168.0.1;ftag=12345;lr=on>";
-                SIPRouteSet routeSet = ParseSIPRouteSet(routeSetString);
-
-               Console.WriteLine(routeSet.ToString());
-
-                Assert.IsTrue(routeSet.Length == 3, "The parsed route set had an incorrect length.");
-                Assert.IsTrue(routeSet.ToString() == routeSetString, "The parsed route set did not produce the same string as the original parsed value.");
-                SIPRoute topRoute = routeSet.PopRoute();
-                Assert.IsTrue(topRoute.Host == "127.0.0.1:5434", "The first route host was not parsed correctly.");
-                Assert.IsFalse(topRoute.IsStrictRouter, "The first route host was not correctly recognised as a loose router.");
-                topRoute = routeSet.PopRoute();
-                Assert.IsTrue(topRoute.Host == "10.0.0.1", "The second route host was not parsed correctly.");
-                Assert.IsTrue(topRoute.IsStrictRouter, "The second route host was not correctly recognised as a strict router.");
-                topRoute = routeSet.PopRoute();
-                Assert.IsTrue(topRoute.Host == "192.168.0.1", "The third route host was not parsed correctly.");
-                Assert.IsFalse(topRoute.IsStrictRouter, "The third route host was not correctly recognised as a loose router.");
-                Assert.IsTrue(topRoute.URI.Parameters.Get("ftag") == "12345", "The ftag parameter on the third route was not correctly parsed.");
-            }
-        }
-
-#endif
-
-        #endregion
     }
 
     public class SIPViaSet
@@ -1663,76 +1622,14 @@ namespace GB28181
             return viaStr;
         }
 
-        #region Unit testing.
-
-#if UNITTEST
-	
-		[TestFixture]
-		public class SIPViaSetUnitTest
-		{
-			[Test]
-			public void AdjustReceivedViaHeaderTest()
-			{
-				Console.WriteLine("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
-				string xtenViaHeader = "SIP/2.0/UDP 192.168.1.2:5065;rport;branch=z9hG4bKFBB7EAC06934405182D13950BD51F001";
-
-                SIPViaHeader[] sipViaHeaders = SIPViaHeader.ParseSIPViaHeader(xtenViaHeader);
-
-                SIPViaSet viaSet = new SIPViaSet();
-                viaSet.PushViaHeader(sipViaHeaders[0]);
-
-                viaSet.UpateTopViaHeader(IPSocket.ParseSocketString("88.88.88.88:1234"));
-
-                Assert.IsTrue(viaSet.Length == 1, "Incorrect number of Via headers in set.");
-                Assert.IsTrue(viaSet.TopViaHeader.Host == "192.168.1.2", "Top Via Host was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.Port == 5065, "Top Via Port was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ContactAddress == "192.168.1.2:5065", "Top Via ContactAddress was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ReceivedFromIPAddress == "88.88.88.88", "Top Via received was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ReceivedFromPort == 1234, "Top Via rport was incorrect.");
-
-				Console.WriteLine("---------------------------------------------------");
-			}
-
-            /// <summary>
-            /// Tests that when the sent from socket is the same as the socket received from that the received and rport
-            /// parameters are still updated.
-            /// </summary>
-            [Test]
-            public void AdjustReceivedCorrectAlreadyViaHeaderTest()
-            {
-                Console.WriteLine("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
-                string xtenViaHeader = "SIP/2.0/UDP 192.168.1.2:5065;rport;branch=z9hG4bKFBB7EAC06934405182D13950BD51F001";
-
-                SIPViaHeader[] sipViaHeaders = SIPViaHeader.ParseSIPViaHeader(xtenViaHeader);
-
-                SIPViaSet viaSet = new SIPViaSet();
-                viaSet.PushViaHeader(sipViaHeaders[0]);
-
-                viaSet.UpateTopViaHeader(IPSocket.ParseSocketString("192.168.1.2:5065"));
-
-                Assert.IsTrue(viaSet.Length == 1, "Incorrect number of Via headers in set.");
-                Assert.IsTrue(viaSet.TopViaHeader.Host == "192.168.1.2", "Top Via Host was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.Port == 5065, "Top Via Port was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ContactAddress == "192.168.1.2:5065", "Top Via ContactAddress was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ReceivedFromIPAddress == "192.168.1.2", "Top Via received was incorrect.");
-                Assert.IsTrue(viaSet.TopViaHeader.ReceivedFromPort == 5065, "Top Via rport was incorrect.");
-
-                Console.WriteLine("---------------------------------------------------");
-            }
-        }
-
-#endif
-
-        #endregion
+    
     }
 
     /// <bnf>
     /// header  =  "header-name" HCOLON header-value *(COMMA header-value)
     /// field-name: field-value CRLF
     /// </bnf>
-    public class SIPHeader
+    public class SIPHeader:SIPSorcery.SIP.SIPHeader
     {
         public struct ContentTypes
         {
@@ -1742,67 +1639,17 @@ namespace GB28181
         }
 
 
-        public const int DEFAULT_CSEQ = 100;
         private static ILog logger = AssemblyState.logger;
         private static string m_CRLF = SIPConstants.CRLF;
 
         // RFC SIP headers.
-        public string Accept;
-        public string AcceptEncoding;
-        public string AcceptLanguage;
-        public string AlertInfo;
-        public string Allow;
-        public string AllowEvents;                          // RFC3265 SIP Events.
-        public string AuthenticationInfo;
         public SIPAuthenticationHeader AuthenticationHeader;
-        public string CallId;
-        public string CallInfo;
         public List<SIPContactHeader> Contact = new List<SIPContactHeader>();
-        public string ContentDisposition;
-        public string ContentEncoding;
-        public string ContentLanguage;
-        public string ContentType;
-        public int ContentLength = 0;
-        public int CSeq = -1;
-        public SIPMethodsEnum CSeqMethod;
-        public string Date;
-        public string ErrorInfo;
-        public string ETag;                                 // added by Tilmann: look RFC3903
-        public string Event;                                // RFC3265 SIP Events.
-        public int Expires = -1;
         public SIPFromHeader From;
-        public string InReplyTo;
-        public int MinExpires = -1;
-        public int MaxForwards = SIPConstants.DEFAULT_MAX_FORWARDS;
-        public string MIMEVersion;
-        public string Organization;
-        public string Priority;
-        public string ProxyRequire;
-        public string Reason;
-        public SIPRouteSet RecordRoutes = new SIPRouteSet();
-        public string ReferredBy;                           // RFC 3515 "The Session Initiation Protocol (SIP) Refer Method"
-        public string ReferSub;                             // RFC 4488 If set to false indicates the implict REFER subscription should not be created.
-        public string ReferTo;                              // RFC 3515 "The Session Initiation Protocol (SIP) Refer Method"
-        public string ReplyTo;
-        public string Require;
-        public string RetryAfter;
+        public SIPRouteSet RecordRoutes = new SIPRouteSet();    
         public SIPRouteSet Routes = new SIPRouteSet();
-        public string Server;
-        public string Subject;
-        public string SubscriptionState;                    // RFC3265 SIP Events.
-        public string Supported;
-        public string Timestamp;
         public SIPToHeader To;
-        public string Unsupported;
-        public string UserAgent;
         public SIPViaSet Vias = new SIPViaSet();
-        public string Warning;
-
-        // Non-core custom SIP headers used to allow a SIP Proxy to communicate network info to internal server agents.
-        public string ProxyReceivedOn;          // The Proxy socket that the SIP message was received on.
-        public string ProxyReceivedFrom;        // The remote socket that the Proxy received the SIP message on.
-        public string ProxySendFrom;            // The Proxy socket that the SIP message should be transmitted from.
-        //public string ProxyOutboundProxy;       // The remote socket that the Proxy should send the SIP request to.
 
         // Non-core custom SIP headers for use with the SIP Sorcery switchboard.
         public string SwitchboardOriginalCallID;    // The original Call-ID header on the call that was forwarded to the switchboard.
@@ -1815,12 +1662,6 @@ namespace GB28181
         //public int SwitchboardTokenRequest;         // A user agent can request a token from a sipsorcery server and this value indicates the period the token is being requested for.
         //public string SwitchboardToken;             // If a token is issued this header will be used to hold it in the response.
 
-        // Non-core custom headers for CMR integration.
-        public string CRMPersonName;                // The matching name from the CRM system for the caller.
-        public string CRMCompanyName;               // The matching company name from the CRM system for the caller.
-        public string CRMPictureURL;                 // If available a URL for a picture for the person or company from the CRM system for the caller.
-
-        public List<string> UnknownHeaders = new List<string>();	// Holds any unrecognised headers.
 
         public SIPHeader()
         { }
@@ -1873,7 +1714,7 @@ namespace GB28181
             Contact = contact;
             CallId = callId;
 
-            if (cseq > 0 && cseq < Int32.MaxValue)
+            if (cseq > 0 && cseq < int.MaxValue)
             {
                 CSeq = cseq;
             }
@@ -1883,16 +1724,7 @@ namespace GB28181
             }
         }
 
-        public static string[] SplitHeaders(string message)
-        {
-            // SIP headers can be extended across lines if the first character of the next line is at least on whitespace character.
-            message = Regex.Replace(message, m_CRLF + @"\s+", " ", RegexOptions.Singleline);
-
-            // Some user agents couldn't get the \r\n bit right.
-            message = Regex.Replace(message, "\r ", m_CRLF, RegexOptions.Singleline);
-
-            return Regex.Split(message, m_CRLF);
-        }
+    
 
         public static SIPHeader ParseSIPHeaders(string[] headersCollection)
         {
@@ -2621,46 +2453,6 @@ namespace GB28181
             Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff");
         }
 
-        public SIPHeader Copy()
-        {
-            string headerString = this.ToString();
-            string[] sipHeaders = SIPHeader.SplitHeaders(headerString);
-            return ParseSIPHeaders(sipHeaders);
-        }
-
-        public string GetUnknownHeaderValue(string unknownHeaderName)
-        {
-            if (unknownHeaderName.IsNullOrBlank())
-            {
-                return null;
-            }
-            else if (UnknownHeaders == null || UnknownHeaders.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                foreach (string unknonwHeader in UnknownHeaders)
-                {
-                    string trimmedHeader = unknonwHeader.Trim();
-                    int delimiterIndex = trimmedHeader.IndexOf(SIPConstants.HEADER_DELIMITER_CHAR);
-
-                    if (delimiterIndex == -1)
-                    {
-                        logger.Warn("Invalid SIP header, ignoring, " + unknonwHeader + ".");
-                        continue;
-                    }
-
-                    string headerName = trimmedHeader.Substring(0, delimiterIndex).Trim();
-
-                    if (headerName.ToLower() == unknownHeaderName.ToLower())
-                    {
-                        return trimmedHeader.Substring(delimiterIndex + 1).Trim();
-                    }
-                }
-
-                return null;
-            }
-        }
+ 
     }
 }

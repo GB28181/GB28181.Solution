@@ -1,48 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <Compile Remove="core\Properties\**" />
-    <EmbeddedResource Remove="core\Properties\**" />
-    <None Remove="core\Properties\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="net\RTSP\RTSPClient.cs" />
     <Compile Remove="net\RTSP\RTSPConnection.cs" />
     <Compile Remove="net\RTSP\RTSPServer.cs" />
-    <Compile Remove="net\WebRTC\WebRtcSession.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="core\SIPEvents\Dialog\EventDialogSchema.xsd" />
     <None Remove="core\SIPEvents\Presence\PIDFSchema.xsd" />
-    <None Remove="net\RTSP\Mjpeg.old" />
+    <None Remove="media\Macroform_-_Simplicity.raw" />
+    <None Remove="media\testpattern.jpeg" />
+    <None Remove="media\testpattern_inverted.jpeg" />
+    <EmbeddedResource Include="media\Macroform_-_Simplicity.raw" />
+    <EmbeddedResource Include="media\testpattern.jpeg" />
+    <EmbeddedResource Include="media\testpattern_inverted.jpeg" />
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DnsClient" Version="1.3.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
-      <Version>1.0.0</Version>
-    </PackageReference>
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.6.7" />
+    <PackageReference Include="DnsClient" Version="1.4.0-beta-20200801.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.0" />
     <PackageReference Include="SIPSorcery.WebSocketSharp" Version="0.0.1" />
+    <PackageReference Include="SIPSorceryMedia.Abstractions" Version="0.0.9-pre" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.7" />
   </ItemGroup>
 
   <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup>
   <TargetFramework>netstandard2.1</TargetFramework>
-	<Version>4.0.52-pre</Version>
 	<Authors>Aaron Clauson &amp; Contributors</Authors>
 	<Copyright>Copyright © 2010-2020 Aaron Clauson</Copyright>
 	<PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
 	<Title>SIPSorcery</Title>
 	<Summary>A cross platform C# .NET library for SIP, VoIP and WebRTC.</Summary>
-	<Description>This repository contains the source for a C# .NET library with full support for the Session Initiation Protocol (SIP) and related protocols plus experimental support for WebRTC.
-This library is largely a .Net implementation and not a wrapper for a 3rd party library. The exceptions being DTLS, SRTP and media device integrations which are in the separate SIPSorceryMedia
-library.
-  </Description>
+    <Description>
+      Real-time communications library with full support for the Session Initiation Protocol (SIP) and WebRTC. No wrappers and no native libraries required.
+    </Description>
 	<Company>SIP Sorcery PTY LTD</Company>
 	<Product>SIPSorcery</Product>
 	<PackageId>SIPSorcery</PackageId>
@@ -55,10 +59,17 @@ library.
 	<RepositoryUrl>https://github.com/sipsorcery/sipsorcery</RepositoryUrl>
   <RepositoryType>git</RepositoryType>
   <RepositoryBranch>master</RepositoryBranch>
-	<PackageTags>SIP WebRTC VoIP RTP SDP STUN SIPSorcery</PackageTags>
-	<PackageReleaseNotes>- v4.0.52-pre: Modify RTCPeerConnection so it can be used by SIPUserAgent.
+    <PackageTags>SIP WebRTC VoIP RTP SDP STUN ICE SIPSorcery</PackageTags>
+    <PackageReleaseNotes>- v4.0.67-pre: Embedded test pattern images and default PCM music on hold files.
+- v4.0.61-pre: Added hooks for new media abstractions interface. Minimum .Net Framework target updated from net46 to net472.
+- v4.0.60-pre: Fix for RTP Session sequence number bug.
+- v4.0.59-pre: WebRTC data channel support.
+- v4.0.58-pre: Support for DTLS/SRTP without native library thanks to @rafcsoares.
+- v4.0.55-pre: RtpIceChannel support for TURN relaying.
+- v4.0.53-pre: Add STUN server support for WebRTC connection checks.
+- v4.0.52-pre: Modify RTCPeerConnection so it can be used by SIPUserAgent.
 - v4.0.51-pre: Add play stream feature to RtpAudioSession.
-- v4.0.50-pre:Refactor of RtpAudioSession to add codecs and support external device sources.
+- v4.0.50-pre: Refactor of RtpAudioSession to add codecs and support external device sources.
 - v4.0.49-pre: Enhanced handling for blind and attended transfers.
 - v4.0.47-pre: Fixed bug negotiating RTP event format. Added experimental support for REFER processing to SIPUserAgent.
 - v4.0.46-pre: Added optional bindAddress parameter to RTPSession constructor for RTP sockets.
@@ -86,8 +97,9 @@ library.
 - Version &gt; 4.0.0 - Major refactor of SIP transport layer to support IPAddress.Any and IPAddress.IPv6Any.
 </PackageReleaseNotes>
 	<NeutralLanguage>zh-Hans</NeutralLanguage>
-	<AssemblyVersion>4.0.51.0</AssemblyVersion>
-	<FileVersion>4.0.51.0</FileVersion>
+    <Version>4.0.67-pre</Version>
+    <AssemblyVersion>4.0.67.0</AssemblyVersion>
+    <FileVersion>4.0.67.0</FileVersion>
   </PropertyGroup>    
 
 </Project>

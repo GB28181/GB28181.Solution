@@ -136,7 +136,7 @@ namespace GB28181.Net
         public string[] OriginatorPhoneNumbers;		// Phone numbers for the person responsible for the session.
         public string IceUfrag;                     // If ICE is being used the username for the STUN requests.
         public string IcePwd;                       // If ICE is being used the password for the STUN requests.
-        public List<IceCandidate> IceCandidates;
+        public List<string> IceCandidates;
 
         public SDPConnectionInformation Connection;
 
@@ -153,170 +153,10 @@ namespace GB28181.Net
             Address = address;
         }
 
-        public static SDP ParseSDPDescription(string sdpDescription)
-        {
-            try
-            {
-                if (sdpDescription != null && sdpDescription.Trim().Length > 0)
-                {
-                    SDP sdp = new SDP();
-                    SDPMediaAnnouncement activeAnnouncement = null;
+        //public static SDP ParseSDPDescription(string sdpDescription)
+        //{
 
-                    string[] sdpLines = Regex.Split(sdpDescription, CRLF);
-
-                    foreach (string sdpLine in sdpLines)
-                    {
-                        if (sdpLine.Trim().StartsWith("v="))
-                        {
-                            if (!Decimal.TryParse(sdpLine.Substring(2), out sdp.Version))
-                            {
-                                logger.Warn("The Version value in an SDP description could not be parsed as a decimal: " + sdpLine + ".");
-                            }
-                        }
-                        else if (sdpLine.Trim().StartsWith("o="))
-                        {
-                            string[] ownerFields = sdpLine.Substring(2).Split(' ');
-                            sdp.Username = ownerFields[0];
-                            sdp.SessionId = ownerFields[1];
-                            Int32.TryParse(ownerFields[2], out sdp.AnnouncementVersion);
-                            sdp.NetworkType = ownerFields[3];
-                            sdp.AddressType = ownerFields[4];
-                            sdp.Address = ownerFields[5];
-                        }
-                        else if (sdpLine.Trim().StartsWith("s="))
-                        {
-                            sdp.SessionName = sdpLine.Substring(2);
-                        }
-                        else if (sdpLine.Trim().StartsWith("c="))
-                        {
-                            if (activeAnnouncement != null)
-                                activeAnnouncement.Connection = SDPConnectionInformation.ParseConnectionInformation(sdpLine);
-                            else
-                                sdp.Connection = SDPConnectionInformation.ParseConnectionInformation(sdpLine);
-                        }
-                        else if (sdpLine.Trim().StartsWith("b="))
-                        {
-                            if (activeAnnouncement != null)
-                                activeAnnouncement.BandwidthAttributes.Add(sdpLine.Substring(2));
-                            else
-                                sdp.BandwidthAttributes.Add(sdpLine.Substring(2));
-                        }
-                        else if (sdpLine.Trim().StartsWith("t="))
-                        {
-                            sdp.Timing = sdpLine.Substring(2);
-                        }
-                        else if (sdpLine.Trim().StartsWith("m="))
-                        {
-                            Match mediaMatch = Regex.Match(sdpLine.Substring(2).Trim(), @"(?<type>\w+)\s+(?<port>\d+)\s+(?<transport>\S+)\s+(?<formats>.*)$");
-                            if (mediaMatch.Success)
-                            {
-                                SDPMediaAnnouncement announcement = new SDPMediaAnnouncement();
-                                announcement.Media = SDPMediaTypes.GetSDPMediaType(mediaMatch.Result("${type}"));
-                                Int32.TryParse(mediaMatch.Result("${port}"), out announcement.Port);
-                                announcement.Transport = mediaMatch.Result("${transport}");
-                                announcement.ParseMediaFormats(mediaMatch.Result("${formats}"));
-                                sdp.Media.Add(announcement);
-
-                                activeAnnouncement = announcement;
-                            }
-                            else
-                            {
-                                logger.Warn("A media line in SDP was invalid: " + sdpLine.Substring(2) + ".");
-                            }
-                        }
-                        else if (sdpLine.Trim().StartsWith("a=" + ICE_UFRAG_ATTRIBUTE_PREFIX))
-                        {
-                            sdp.IceUfrag = sdpLine.Substring(sdpLine.IndexOf(':') + 1);
-                        }
-                        else if (sdpLine.Trim().StartsWith("a=" + ICE_PWD_ATTRIBUTE_PREFIX))
-                        {
-                            sdp.IcePwd = sdpLine.Substring(sdpLine.IndexOf(':') + 1);
-                        }
-                        else if (sdpLine.Trim().StartsWith(SDPMediaAnnouncement.MEDIA_FORMAT_ATTRIBUE_PREFIX))
-                        {
-                            if (activeAnnouncement != null)
-                            {
-                                Match formatAttributeMatch = Regex.Match(sdpLine.Trim(), SDPMediaAnnouncement.MEDIA_FORMAT_ATTRIBUE_PREFIX + @"(?<id>\d+)\s+(?<attribute>.*)$");
-                                if (formatAttributeMatch.Success)
-                                {
-                                    int formatID;
-                                    if (Int32.TryParse(formatAttributeMatch.Result("${id}"), out formatID))
-                                    {
-                                        activeAnnouncement.AddFormatAttribute(formatID, formatAttributeMatch.Result("${attribute}"));
-                                    }
-                                    else
-                                    {
-                                        logger.Warn("Invalid media format attribute in SDP: " + sdpLine);
-                                    }
-                                }
-                                else
-                                {
-                                    activeAnnouncement.AddExtra(sdpLine);
-                                }
-                            }
-                            else
-                            {
-                                logger.Warn("There was no active media announcement for a media format attribute, ignoring.");
-                            }
-                        }
-                        else if (sdpLine.Trim().StartsWith(SDPMediaAnnouncement.MEDIA_FORMAT_PARAMETERS_ATTRIBUE_PREFIX))
-                        {
-                            if (activeAnnouncement != null)
-                            {
-                                Match formatAttributeMatch = Regex.Match(sdpLine.Trim(), SDPMediaAnnouncement.MEDIA_FORMAT_PARAMETERS_ATTRIBUE_PREFIX + @"(?<id>\d+)\s+(?<attribute>.*)$");
-                                if (formatAttributeMatch.Success)
-                                {
-                                    int formatID;
-                                    if (Int32.TryParse(formatAttributeMatch.Result("${id}"), out formatID))
-                                    {
-                                        activeAnnouncement.AddFormatParameterAttribute(formatID, formatAttributeMatch.Result("${attribute}"));
-                                    }
-                                    else
-                                    {
-                                        logger.Warn("Invalid media format parameter attribute in SDP: " + sdpLine);
-                                    }
-                                }
-                                else
-                                {
-                                    activeAnnouncement.AddExtra(sdpLine);
-                                }
-                            }
-                            else
-                            {
-                                logger.Warn("There was no active media announcement for a media format parameter attribute, ignoring.");
-                            }
-                        }
-                        else if (sdpLine.Trim().StartsWith("a=" + ICE_CANDIDATE_ATTRIBUTE_PREFIX))
-                        {
-                            if (sdp.IceCandidates == null)
-                            {
-                                sdp.IceCandidates = new List<IceCandidate>();
-                            }
-
-                            sdp.IceCandidates.Add(IceCandidate.Parse(sdpLine.Substring(sdpLine.IndexOf(':') + 1)));
-                        }
-                        else
-                        {
-                            if (activeAnnouncement != null)
-                                activeAnnouncement.AddExtra(sdpLine);
-                            else
-                                sdp.AddExtra(sdpLine);
-                        }
-                    }
-
-                    return sdp;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception ParseSDPDescription. " + excp.Message);
-                throw excp;
-            }
-        }
+        //}
 
         public void AddExtra(string attribute)
         {
@@ -326,7 +166,7 @@ namespace GB28181.Net
 
         public override string ToString()
         {
-            //SDP˳������
+            //SDP˳sample
             /*
              * v=0
              * o=34020000002000000001 0 0 IN IP4 192.168.10.60
@@ -345,7 +185,6 @@ namespace GB28181.Net
                 "v=" + SDP_PROTOCOL_VERSION + CRLF +
                 "o=" + Owner + CRLF +
                 "s=" + SessionName + CRLF;
-            //����¼��㲥sdp˳��
             sdp += string.IsNullOrWhiteSpace(URI) ? null : "u=" + URI + CRLF;
             sdp += ((Connection != null) ? Connection.ToString() : null);
             foreach (string bandwidth in BandwidthAttributes)

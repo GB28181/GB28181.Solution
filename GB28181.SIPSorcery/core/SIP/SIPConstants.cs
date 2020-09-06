@@ -57,12 +57,6 @@ namespace GB28181
 
     }
 
-	public enum SIPMessageTypesEnum
-	{
-		Unknown = 0,
-		Request = 1,
-		Response = 2,
-	}
 
 	public class SIPTimings
 	{
@@ -200,46 +194,7 @@ namespace GB28181
         public const string AUTH_OPAQUE_KEY = "opaque";
 	}
 
-	public enum SIPMethodsEnum
-	{
-		NONE = 0,
-		UNKNOWN = 1,
-		
-        // Core.
-        REGISTER = 2,
-		INVITE = 3,
-		BYE = 4,
-		ACK = 5,
-		CANCEL = 6,
-		OPTIONS = 7,
-
-		INFO = 8,           // RFC2976.
-		NOTIFY = 9,         // RFC3265.
-        SUBSCRIBE = 10,     // RFC3265.
-		PUBLISH = 11,       // RFC3903.
-		PING = 13,
-		REFER = 14,         // RFC3515 "The Session Initiation Protocol (SIP) Refer Method"
-        MESSAGE = 15,       // RFC3428.
-        PRACK = 16,         // RFC3262.
-        UPDATE = 17,        // RFC3311.
-	}
-
-	public class SIPMethods
-	{
-		public static SIPMethodsEnum GetMethod(string method)
-		{
-			SIPMethodsEnum sipMethod = SIPMethodsEnum.UNKNOWN;
-
-			try
-			{
-				sipMethod = (SIPMethodsEnum)Enum.Parse(typeof(SIPMethodsEnum), method, true);
-			}
-			catch{}
-
-			return sipMethod;
-		}
-	}
-		
+	
 	public enum SIPResponseStatusCodesEnum
 	{
 		None = 0,

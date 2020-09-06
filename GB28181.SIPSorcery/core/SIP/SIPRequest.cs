@@ -4,29 +4,20 @@
 // Description: SIP Request.
 //
 // History:
-// 20 Oct 2005	Aaron Clauson	Created.
+// 04 May 2006	Aaron Clauson	Created, Dublin, Ireland.
+// 06 Sep 2020  Edward Chen     Updated
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
-//
-// Copyright (c) 2010 Aaron Clauson (aaron@sipsorcery.com), SIP Sorcery Ltd, (www.sipsorcery.com)
-// All rights reserved.
-//
+//-----------------------------------------------------------------------------
+
 
 
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
 
-#if UNITTEST
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using NUnit.Framework;
-#endif
+
 
 namespace GB28181
 {
@@ -41,59 +32,45 @@ namespace GB28181
 	///	 
 	///	 SIP-Version    =  "SIP" "/" 1*DIGIT "." 1*DIGIT
 	/// </bnf>
-	public class SIPRequest
+	public class SIPRequest:SIPSorcery.SIP.SIPRequest
 	{
         private static ILog logger = AssemblyState.logger;
 
         private delegate bool IsLocalSIPSocketDelegate(string socket, SIPProtocolsEnum protocol);
 
-		private static string m_CRLF = SIPConstants.CRLF;
-		private static string m_sipFullVersion = SIPConstants.SIP_FULLVERSION_STRING;
+//		private static string m_CRLF = SIPConstants.CRLF;
+//		private static string m_sipFullVersion = SIPConstants.SIP_FULLVERSION_STRING;
 		private static string m_sipVersion = SIPConstants.SIP_VERSION_STRING;
 		private static int m_sipMajorVersion = SIPConstants.SIP_MAJOR_VERSION;
 		private static int m_sipMinorVersion = SIPConstants.SIP_MINOR_VERSION;
 
-		public string SIPVersion = m_sipVersion;
+//		public string SIPVersion = m_sipVersion;
 		public int SIPMajorVersion = m_sipMajorVersion;
 		public int SIPMinorVersion = m_sipMinorVersion;
-		public SIPMethodsEnum Method;
-		public string UnknownMethod = null;
+//		public SIPMethodsEnum Method;
+//		public string UnknownMethod = null;
 
-		public SIPURI URI;
+//		public SIPURI URI;
 		public SIPHeader Header;
-		public string Body;
+//		public string Body;
         public SIPRoute ReceivedRoute;
 
-		public DateTime Created = DateTime.Now;
+//		public DateTime Created = DateTime.Now;
 		public SIPEndPoint RemoteSIPEndPoint;               // The remote IP socket the request was received from or sent to.
         public SIPEndPoint LocalSIPEndPoint;                // The local SIP socket the request was received on or sent from.
 
-		private SIPRequest()
-		{
-            //Created++;
-        }
-			
-		public SIPRequest(SIPMethodsEnum method, string uri)
-		{
-            try
-            {
-                Method = method;
-                URI = SIPURI.ParseSIPURI(uri);
-                SIPVersion = m_sipFullVersion;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPRequest ctor. " + excp.Message);
-                throw;
-            }
+
+        private SIPRequest()
+        { }
+
+        public SIPRequest(SIPMethodsEnum method, string uri): base(method,uri)
+        {
+ 
 		}
 
-        public SIPRequest(SIPMethodsEnum method, SIPURI uri)
+        public SIPRequest(SIPMethodsEnum method, SIPURI uri):base(method, uri)
         {
-             //Created++;
-             Method = method;
-             URI = uri;
-             SIPVersion = m_sipFullVersion;
+            
         }
 
 		public static SIPRequest ParseSIPRequest(SIPMessage sipMessage)
@@ -102,7 +79,7 @@ namespace GB28181
 
             try
             {
-                SIPRequest sipRequest = new SIPRequest();
+                var sipRequest = new SIPRequest();
                 sipRequest.LocalSIPEndPoint = sipMessage.LocalSIPEndPoint;
                 sipRequest.RemoteSIPEndPoint = sipMessage.RemoteSIPEndPoint;
 
@@ -154,7 +131,7 @@ namespace GB28181
             try
             {
                 SIPMessage sipMessage = SIPMessage.ParseSIPMessage(sipMessageStr, null, null);
-                return SIPRequest.ParseSIPRequest(sipMessage);
+                return ParseSIPRequest(sipMessage);
             }
             catch (SIPValidationException)
             {

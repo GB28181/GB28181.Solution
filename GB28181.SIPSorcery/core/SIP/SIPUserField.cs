@@ -8,6 +8,7 @@
 // 21 Apr 2006	Aaron Clauson	Created.
 // 04 Sep 2008  Aaron Clauson   Changed display name to always use quotes. Some SIP stacks were
 //                              found to have porblems with a comma in a non-quoted display name.
+// 06 Sep 2020	Edward Chen Refactoring
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
@@ -16,42 +17,31 @@
 
 using System;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-using GB28181.Sys;
 using GB28181.Logger4Net;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
-
-#if UNITTEST
-using NUnit.Framework;
-#endif
+using SIPSorcery.Sys;
 
 namespace GB28181
 {
-	/// <summary>
-	/// name-addr      =  [ display-name ] LAQUOT addr-spec RAQUOT
-	/// addr-spec      =  SIP-URI / SIPS-URI / absoluteURI
-	/// SIP-URI          =  "sip:" [ userinfo ] hostport
-	/// uri-parameters [ headers ]
-	/// SIPS-URI         =  "sips:" [ userinfo ] hostport
-	/// uri-parameters [ headers ]
-	/// userinfo         =  ( user / telephone-subscriber ) [ ":" password ] "@"
-	///
-	/// If no "<" and ">" are present, all parameters after the URI are header
-	/// parameters, not URI parameters.
-	/// </summary>
+    /// <summary>
+    /// name-addr      =  [ display-name ] LAQUOT addr-spec RAQUOT
+    /// addr-spec      =  SIP-URI / SIPS-URI / absoluteURI
+    /// SIP-URI          =  "sip:" [ userinfo ] hostport
+    /// uri-parameters [ headers ]
+    /// SIPS-URI         =  "sips:" [ userinfo ] hostport
+    /// uri-parameters [ headers ]
+    /// userinfo         =  ( user / telephone-subscriber ) [ ":" password ] "@"
+    ///
+    /// If no "<" and ">" are present, all parameters after the URI are header
+    /// parameters, not URI parameters.
+    /// </summary>
     [DataContract]
-    public class SIPUserField
+    public class SIPUserField: SIPSorcery.SIP.SIPUserField
     {
         private const char PARAM_TAG_DELIMITER = ';';
 
         private static ILog logger = AssemblyState.logger;
 
-        [DataMember]
-        public string Name;
-
-        [DataMember]
-        public SIPURI URI;
 
         [DataMember]
         public SIPParameters Parameters = new SIPParameters(null, PARAM_TAG_DELIMITER);
@@ -129,58 +119,7 @@ namespace GB28181
             return userField;
         }
 
-        public override string ToString()
-        {
-            try
-            {
-                string userFieldStr = null;
-
-                if (Name != null)
-                {
-                    /*if(Regex.Match(Name, @"\s").Success)
-                    {
-                        userFieldStr = "\"" + Name + "\" ";
-                    }
-                    else
-                    {
-                        userFieldStr = Name + " ";
-                    }*/
-
-                    userFieldStr = "\"" + Name + "\" ";
-                }
-
-                userFieldStr += "<" + URI.ToString() + ">" + Parameters.ToString();
-
-                return userFieldStr;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPUserField ToString. " + excp.Message);
-                throw;
-            }
-        }
-
-        public string ToParameterlessString()
-        {
-            try
-            {
-                string userFieldStr = null;
-
-                if (Name != null)
-                {
-                    userFieldStr = "\"" + Name + "\" ";
-                }
-
-                userFieldStr += "<" + URI.ToParameterlessString() + ">";
-
-                return userFieldStr;
-            }
-            catch (Exception excp)
-            {
-                logger.Error("Exception SIPUserField ToParameterlessString. " + excp.Message);
-                throw;
-            }
-        }
+       
 
         public SIPUserField CopyOf()
         {

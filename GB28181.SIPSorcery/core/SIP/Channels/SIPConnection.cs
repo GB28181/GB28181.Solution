@@ -179,7 +179,7 @@ namespace GB28181
 
             if (start < length)
             {
-                int endMessageIndex = ByteBufferInfo.GetStringPosition(receiveBuffer, start, length, m_sipMessageDelimiter, null);
+                int endMessageIndex = BufferUtils.GetStringPosition(receiveBuffer, start, length, m_sipMessageDelimiter, null);
                 if (endMessageIndex != -1)
                 {
                     int contentLength = GetContentLength(receiveBuffer, start, endMessageIndex);

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SIPSorceryMedia.Abstractions.V1;
 
 namespace SIPSorcery.Net
 {
@@ -41,8 +42,12 @@ namespace SIPSorcery.Net
         // The types following are standard media types that do not have a 
         // recognised ID but still do have recognised properties. The ID
         // assigned is arbitrary and should not necessarily be used in SDP.
+        VP9 = 98,
         VP8 = 100,  // Video.
-        Event = 101,
+        Telephone_Event = 101,
+        H264 = 102,
+        H265 = 103,
+        OPUS = 111,
 
         Unknown = 999,
     }
@@ -65,6 +70,8 @@ namespace SIPSorcery.Net
                 case SDPMediaFormatsEnum.G722:
                     return 16000;
                 case SDPMediaFormatsEnum.VP8:
+                case SDPMediaFormatsEnum.VP9:
+                case SDPMediaFormatsEnum.H264:
                     return 90000;
                 default:
                     return 0;
@@ -84,8 +91,72 @@ namespace SIPSorcery.Net
             {
                 case SDPMediaFormatsEnum.G722:
                     return 8000;
+                case SDPMediaFormatsEnum.OPUS:
+                    return 48000;
                 default:
                     return GetClockRate(payloadType);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to get the RTP clock rate of known payload types. Generally this will be the same
+        /// as the clock rate but in some cases for seemingly historical reasons they are different
+        /// </summary>
+        /// <param name="mediaType">The media type to get the clock rate for.</param>
+        /// <returns>An integer representing the payload type's RTP timestamp frequency or 0
+        /// if it's not known.</returns>
+        public static int GetRtpDefaultClockRate(AudioCodecsEnum codec)
+        {
+            switch (codec)
+            {
+                case AudioCodecsEnum.PCMA:
+                case AudioCodecsEnum.PCMU:
+                case AudioCodecsEnum.G722:
+                    return 8000;
+                case AudioCodecsEnum.OPUS:
+                    return 48000;
+                default:
+                    return 8000;
+            }
+        }
+
+        /// <summary>
+        /// Maps an audio SDP media type to an audio codec.
+        /// </summary>
+        /// <param name="sdpFormat">The SDP format to match to an audio codec.</param>
+        /// <returns>A matching audio codec.</returns>
+        public static AudioCodecsEnum GetAudioCodecForSdpFormat(SDPMediaFormatsEnum sdpFormat)
+        {
+            switch(sdpFormat)
+            {
+                case SDPMediaFormatsEnum.G722:
+                    return AudioCodecsEnum.G722;
+                case SDPMediaFormatsEnum.PCMA:
+                    return AudioCodecsEnum.PCMA;
+                case SDPMediaFormatsEnum.PCMU:
+                    return AudioCodecsEnum.PCMU;
+                case SDPMediaFormatsEnum.OPUS:
+                    return AudioCodecsEnum.OPUS;
+                default:
+                    return AudioCodecsEnum.Unknown;
+            }
+        }
+
+        /// <summary>
+        /// Maps a video SDP media type to a video codec.
+        /// </summary>
+        /// <param name="sdpFormat">The SDP format to match to a video codec.</param>
+        /// <returns>A matching video codec.</returns>
+        public static VideoCodecsEnum GetVideoCodecForSdpFormat(SDPMediaFormatsEnum sdpFormat)
+        {
+            switch (sdpFormat)
+            {
+                case SDPMediaFormatsEnum.H264:
+                    return VideoCodecsEnum.H264;
+                case SDPMediaFormatsEnum.VP8:
+                    return VideoCodecsEnum.VP8;
+                default:
+                    return VideoCodecsEnum.Unknown;
             }
         }
     }
@@ -216,7 +287,7 @@ namespace SIPSorcery.Net
         {
             FormatAttribute = attribute;
 
-            Match attributeMatch = Regex.Match(attribute, @"(?<name>\w+)/(?<clockrate>\d+)\s*");
+            Match attributeMatch = Regex.Match(attribute, @"(?<name>[a-zA-Z0-9\-]+)/(?<clockrate>\d+)\s*");
             if (attributeMatch.Success)
             {
                 Name = attributeMatch.Result("${name}");
@@ -261,7 +332,8 @@ namespace SIPSorcery.Net
         {
             foreach (SDPMediaFormatsEnum format in Enum.GetValues(typeof(SDPMediaFormatsEnum)))
             {
-                if (name.ToLower() == format.ToString().ToLower())
+                if (name.ToLower() == format.ToString().ToLower() ||
+                    name.Replace('-', '_').ToLower() == format.ToString().ToLower())
                 {
                     return format;
                 }
@@ -299,7 +371,8 @@ namespace SIPSorcery.Net
             {
                 // TODO: Need to compare all aspects of the format not just the codec.
                 if (format.FormatAttribute?.StartsWith(SDP.TELEPHONE_EVENT_ATTRIBUTE) != true
-                    && b.Any(x => x.FormatCodec == format.FormatCodec))
+                    && b.Any(x => (x.FormatCodec != SDPMediaFormatsEnum.Unknown && x.FormatCodec == format.FormatCodec)
+                    || (x.Name != null && format.Name != null && x.Name.ToLower() == format.Name.ToLower())))
                 {
                     compatible.Add(format);
                 }

@@ -12,8 +12,6 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -165,7 +163,7 @@ namespace GB28181.Net
 
             if (start < length)
             {
-                int endMessageIndex = ByteBufferInfo.GetStringPosition(receiveBuffer, start, length, m_rtspMessageDelimiter, null);
+                int endMessageIndex = BufferUtils.GetStringPosition(receiveBuffer, start, length, m_rtspMessageDelimiter, null);
                 if (endMessageIndex != -1)
                 {
                     int contentLength = GetContentLength(receiveBuffer, start, endMessageIndex);

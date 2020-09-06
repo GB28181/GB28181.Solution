@@ -61,7 +61,7 @@ namespace GB28181
             bool noCDR = false)
             : base(sipTransport, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy)
         {
-            TransactionType = SIPTransactionTypesEnum.Invite;
+            TransactionType = SIPTransactionTypesEnum.InviteServer;
             m_remoteTag = sipRequest.Header.From.FromTag;
             m_contactIPAddress = contactIPAddress;
 
