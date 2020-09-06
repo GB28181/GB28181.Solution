@@ -38,7 +38,7 @@ namespace GB28181.App
         event SIPCallResponseDelegate CallAnswered;
         event SIPCallFailedDelegate CallFailed;
 
-        void Call(SIPCallDescriptor sipCallDescriptor);
+      //  void Call(SIPCallDescriptor sipCallDescriptor);
         void Cancel();
         void Update(CRMHeaders crmHeaders);
     }

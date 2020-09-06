@@ -13,15 +13,11 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using GB28181;
-using GB28181.Sys;
 using GB28181.Logger4Net;
-using SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -197,14 +193,16 @@ namespace GB28181.App
                     SIPEndPoint registrarSIPEndPoint = m_outboundProxy ;
                     if(registrarSIPEndPoint == null) 
                     {
-                        SIPDNSLookupResult lookupResult = m_sipTransport.GetHostEndPoint(m_registrarHost, false);
-                        if (lookupResult.LookupError != null)
+                        //SIPDNSLookupResult lookupResult = m_sipTransport.GetHostEndPoint(m_registrarHost, false);
+                        SIPURI uri = SIPURI.ParseSIPURIRelaxed(m_registrarHost);
+                        var lookupResult = m_sipTransport.ResolveSIPUriAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
+                        if (lookupResult == null)
                         {
-                            Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.ContactRegisterFailed, "Could not resolve " + m_registrarHost + ", " + lookupResult.LookupError, m_owner));
+                            Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.ContactRegisterFailed, "Could not resolve " + m_registrarHost + ".", null));
                         }
                         else
                         {
-                            registrarSIPEndPoint = lookupResult.GetSIPEndPoint();
+                            registrarSIPEndPoint = lookupResult;
                         }
                     }
 
