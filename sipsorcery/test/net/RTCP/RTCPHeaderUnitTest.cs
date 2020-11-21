@@ -14,6 +14,7 @@
 //-----------------------------------------------------------------------------
 
 using Microsoft.Extensions.Logging;
+using SIPSorcery.Sys;
 using Xunit;
 
 namespace SIPSorcery.Net.UnitTests
@@ -61,7 +62,7 @@ namespace SIPSorcery.Net.UnitTests
             logger.LogDebug("PacketType: " + src.PacketType + ", " + dst.PacketType);
             logger.LogDebug("Length: " + src.Length + ", " + dst.Length);
 
-            //logger.LogDebug("Raw Header: " + System.Text.Encoding.ASCII.GetString(headerBuffer, 0, headerBuffer.Length));
+            logger.LogDebug($"Raw Header: {headerBuffer.HexStr(headerBuffer.Length)}.");
 
             Assert.True(src.Version == dst.Version, "Version was mismatched.");
             Assert.True(src.PaddingFlag == dst.PaddingFlag, "PaddingFlag was mismatched.");

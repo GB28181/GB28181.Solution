@@ -17,21 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Media;
 using SIPSorcery.Net;
-
-/* Unmerged change from project 'SIPSorcery.UnitTests (net46)'
-Before:
-using System.Net.Sockets;
-After:
 using SIPSorcery.UnitTests;
-*/
-using SIPSorcery.UnitTests;
+using SIPSorceryMedia.Abstractions.V1;
 using Xunit;
 
 namespace SIPSorcery.SIP.App.UnitTests
@@ -95,7 +88,7 @@ namespace SIPSorcery.SIP.App.UnitTests
             SIPRequest inviteReq = SIPRequest.ParseSIPRequest(sipMessageBuffer);
 
             UASInviteTransaction uasTx = new UASInviteTransaction(transport, inviteReq, null);
-            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, null, uasTx);
+            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, uasTx);
             await userAgent.Answer(mockUas, CreateMediaSession());
 
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -150,7 +143,7 @@ namespace SIPSorcery.SIP.App.UnitTests
             SIPRequest inviteReq = SIPRequest.ParseSIPRequest(sipMessageBuffer);
 
             UASInviteTransaction uasTx = new UASInviteTransaction(transport, inviteReq, null);
-            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, null, uasTx);
+            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, uasTx);
             await userAgent.Answer(mockUas, CreateMediaSession());
 
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -172,7 +165,7 @@ namespace SIPSorcery.SIP.App.UnitTests
             logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            SIPTransport transport = new SIPTransport(false, MockSIPDNSManager.Resolve);
+            SIPTransport transport = new SIPTransport();
             MockSIPChannel mockChannel = new MockSIPChannel(new System.Net.IPEndPoint(IPAddress.Any, 0));
             transport.AddSIPChannel(mockChannel);
 
@@ -210,7 +203,7 @@ namespace SIPSorcery.SIP.App.UnitTests
             SIPRequest inviteReq = SIPRequest.ParseSIPRequest(sipMessageBuffer);
 
             UASInviteTransaction uasTx = new UASInviteTransaction(transport, inviteReq, null);
-            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, null, uasTx);
+            SIPServerUserAgent mockUas = new SIPServerUserAgent(transport, null, null, null, SIPCallDirection.In, null, null, uasTx);
             await userAgent.Answer(mockUas, CreateMediaSession());
 
             // Incremented Cseq and modified Via header from original request. Means the request is the same dialog but different tx.
@@ -263,8 +256,7 @@ namespace SIPSorcery.SIP.App.UnitTests
             SIPRequest inviteReq = SIPRequest.ParseSIPRequest(sipMessageBuffer);
 
             var uas = userAgent.AcceptCall(inviteReq);
-            var mediaSession = CreateMediaSession();
-            await userAgent.Answer(uas, mediaSession);
+            await userAgent.Answer(uas, CreateMockVoIPMediaEndPoint());
 
             // The call attempt should timeout while waiting for the ACK request with the SDP answer.
             Assert.False(userAgent.IsCallActive);
@@ -400,10 +392,8 @@ a=sendrecv";
                 logger.LogDebug("Request received: " + req.StatusLine);
 
                 var uas = userAgentServer.AcceptCall(req);
-                RtpAudioSession serverAudioSession = new RtpAudioSession(
-                    new AudioSourceOptions { AudioSource = AudioSourcesEnum.None },
-                    new List<SDPMediaFormatsEnum> { SDPMediaFormatsEnum.PCMU });
-                var answerResult = await userAgentServer.Answer(uas, serverAudioSession);
+                var serverMediaEndPoint = CreateMockVoIPMediaEndPoint();
+                var answerResult = await userAgentServer.Answer(uas, serverMediaEndPoint);
 
                 logger.LogDebug($"Server agent answer result {answerResult}.");
 
@@ -414,10 +404,8 @@ a=sendrecv";
 
             logger.LogDebug($"Attempting call to {dstUri.ToString()}.");
 
-            RtpAudioSession clientAudioSession = new RtpAudioSession(
-                new AudioSourceOptions { AudioSource = AudioSourcesEnum.None },
-                new List<SDPMediaFormatsEnum> { SDPMediaFormatsEnum.PCMU });
-            var callResult = await userAgentClient.Call(dstUri.ToString(), null, null, clientAudioSession);
+            var clientMediaEndPoint = CreateMockVoIPMediaEndPoint();
+            var callResult = await userAgentClient.Call(dstUri.ToString(), null, null, clientMediaEndPoint);
 
             logger.LogDebug($"Client agent answer result {callResult }.");
 
@@ -448,10 +436,9 @@ a=sendrecv";
                 logger.LogDebug("Request received: " + req.StatusLine);
 
                 var uas = userAgentServer.AcceptCall(req);
-                RtpAudioSession serverAudioSession = new RtpAudioSession(
-                    new AudioSourceOptions { AudioSource = AudioSourcesEnum.None },
-                    new List<SDPMediaFormatsEnum> { SDPMediaFormatsEnum.PCMU });
-                var answerResult = await userAgentServer.Answer(uas, serverAudioSession);
+                var serverAudioSession = CreateMockVoIPMediaEndPoint(format => format.Codec == AudioCodecsEnum.PCMU);
+
+                var answerResult = await userAgentServer.Answer(uas, serverAudioSession).ConfigureAwait(false);
 
                 logger.LogDebug($"Server agent answer result {answerResult}.");
 
@@ -462,10 +449,8 @@ a=sendrecv";
 
             logger.LogDebug($"Attempting call to {dstUri.ToString()}.");
 
-            RtpAudioSession clientAudioSession = new RtpAudioSession(
-                new AudioSourceOptions { AudioSource = AudioSourcesEnum.None },
-                new List<SDPMediaFormatsEnum> { SDPMediaFormatsEnum.G722 });
-            var callResult = await userAgentClient.Call(dstUri.ToString(), null, null, clientAudioSession);
+            var clientMediaEndPoint = CreateMockVoIPMediaEndPoint(format => format.Codec == AudioCodecsEnum.G722);
+            var callResult = await userAgentClient.Call(dstUri.ToString(), null, null, clientMediaEndPoint);
 
             logger.LogDebug($"Client agent answer result {callResult }.");
 
@@ -519,7 +504,9 @@ a=sendrecv";
 
         /// <summary>
         /// Tests that the SIPUserAgent can correctly handle the condition where the port number
-        /// supplied in the remote SDP is invalid.
+        /// supplied in the remote SDP is invalid. Originally the behaviour was to reject the SDP
+        /// with the invalid port number. That has now been changed to use the SDP "ignore" port
+        /// number and wait for the port to be set by some other means.
         /// </summary>
         [Fact]
         public async Task HandleInvalidSdpPortOnAnswerUnitTest()
@@ -556,12 +543,12 @@ a=sendrecv";
             var uas = userAgent.AcceptCall(inviteReq);
 
             RTPSession rtpSession = new RTPSession(false, false, false);
-            MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
+            MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPAudioVideoMediaFormat> { new SDPAudioVideoMediaFormat(SDPWellKnownMediaFormatsEnum.PCMU) });
             rtpSession.addTrack(audioTrack);
 
             var result = await userAgent.Answer(uas, rtpSession);
 
-            Assert.False(result);
+            Assert.True(result);
 
             rtpSession.Close("normal");
         }
@@ -596,7 +583,7 @@ a=sendrecv";
                     else
                     {
                         UASInviteTransaction uasTransaction = new UASInviteTransaction(calleeTransport, req, null);
-                        var uas = new SIPServerUserAgent(calleeTransport, null, null, null, SIPCallDirection.In, null, null, null, uasTransaction);
+                        var uas = new SIPServerUserAgent(calleeTransport, null, null, null, SIPCallDirection.In, null, null, uasTransaction);
                         uas.Progress(SIPResponseStatusCodesEnum.Trying, null, null, null, null);
                         uas.Progress(SIPResponseStatusCodesEnum.Ringing, null, null, null, null);
 
@@ -615,7 +602,7 @@ a=sendrecv";
 
                 SIPUserAgent userAgent = new SIPUserAgent(callerTransport, null);
 
-                MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
+                MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPAudioVideoMediaFormat> { new SDPAudioVideoMediaFormat(SDPWellKnownMediaFormatsEnum.PCMU) });
                 rtpSession.addTrack(audioTrack);
 
                 SIPURI dstUri = new SIPURI(SIPSchemesEnum.sip, calleeTransport.GetSIPChannels().First().ListeningSIPEndPoint);
@@ -632,7 +619,9 @@ a=sendrecv";
 
         /// <summary>
         /// Tests that the SIPUserAgent can correctly handle the condition where the port number
-        /// supplied in the remote SDP is invalid when a call attempt is made.
+        /// supplied in the remote SDP is invalid when a call attempt is made. Originally the 
+        /// behaviour was to reject the SDP with the invalid port number. That has now been changed 
+        /// to use the SDP "ignore" port number and wait for the port to be set by some other means.
         /// </summary>
         [Fact]
         public async Task HandleInvalidSdpPortOnPlaceCallUnitTest()
@@ -661,7 +650,7 @@ a=sendrecv";
                     else
                     {
                         UASInviteTransaction uasTransaction = new UASInviteTransaction(calleeTransport, req, null);
-                        var uas = new SIPServerUserAgent(calleeTransport, null, null, null, SIPCallDirection.In, null, null, null, uasTransaction);
+                        var uas = new SIPServerUserAgent(calleeTransport, null, null, null, SIPCallDirection.In, null, null, uasTransaction);
                         uas.Progress(SIPResponseStatusCodesEnum.Trying, null, null, null, null);
                         uas.Progress(SIPResponseStatusCodesEnum.Ringing, null, null, null, null);
 
@@ -680,12 +669,12 @@ a=sendrecv";
 
                 SIPUserAgent userAgent = new SIPUserAgent(callerTransport, null);
 
-                MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPMediaFormat> { new SDPMediaFormat(SDPMediaFormatsEnum.PCMU) });
+                MediaStreamTrack audioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, new List<SDPAudioVideoMediaFormat> { new SDPAudioVideoMediaFormat(SDPWellKnownMediaFormatsEnum.PCMU) });
                 rtpSession.addTrack(audioTrack);
 
                 SIPURI dstUri = new SIPURI(SIPSchemesEnum.sip, calleeTransport.GetSIPChannels().First().ListeningSIPEndPoint);
                 var result = await userAgent.Call(dstUri.ToString(), null, null, rtpSession);
-                Assert.False(result);
+                Assert.True(result);
             }
             finally
             {
@@ -795,6 +784,18 @@ a=sendrecv";
         private IMediaSession CreateMediaSession()
         {
             return new MockMediaSession();
+        }
+
+        private VoIPMediaSession CreateMockVoIPMediaEndPoint(Func<AudioFormat, bool> audioFormatFilter = null)
+        {
+            var audioSource = new AudioExtrasSource();
+            audioSource.RestrictFormats(audioFormatFilter);
+
+            MediaEndPoints mockEndPoints = new MediaEndPoints
+            {
+                AudioSource = audioSource
+            };
+            return new VoIPMediaSession(mockEndPoints);
         }
     }
 }

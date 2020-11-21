@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using Microsoft.Extensions.Logging;
-using SIPSorcery.SIP;
-using SIPSorcery.SIP.App;
+using SIPSorcery.UnitTests;
 using Xunit;
 
-namespace SIPSorcery.UnitTests.app.SIPUserAgents
+namespace SIPSorcery.SIP.App.UnitTests
 {
     [Trait("Category", "unit")]
     public class SIPRegistrationUserAgentUnitTest
@@ -24,7 +23,7 @@ namespace SIPSorcery.UnitTests.app.SIPUserAgents
             logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             SIPTransport transport = new SIPTransport();
-            MockSIPChannel channel = new MockSIPChannel(new System.Net.IPEndPoint(IPAddress.Any, 0));
+            MockSIPChannel channel = new MockSIPChannel(new IPEndPoint(IPAddress.Any, 0));
             transport.AddSIPChannel(channel);
             SIPRegistrationUserAgent userAgent = new SIPRegistrationUserAgent(
                 transport,
@@ -36,7 +35,6 @@ namespace SIPSorcery.UnitTests.app.SIPUserAgents
                 "192.168.11.50",
                 new SIPURI(SIPSchemesEnum.sip, IPAddress.Any, 0),
                 120,
-                null,
                 new[] { "My-Header: value" });
 
             userAgent.Start();
@@ -66,7 +64,6 @@ namespace SIPSorcery.UnitTests.app.SIPUserAgents
                 "192.168.11.50",
                 new SIPURI(SIPSchemesEnum.sip, IPAddress.Any, 0),
                 120,
-                null,
                 new[] { "My-Header: value" });
             SIPContactHeader testHeader = new SIPContactHeader("Contact Name", new SIPURI("User", "Host", "Param=Value"));
             userAgent.AdjustRegister = register =>

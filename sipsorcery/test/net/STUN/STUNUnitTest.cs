@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using SIPSorcery.Sys;
 using Xunit;
 
 namespace SIPSorcery.Net.UnitTests
@@ -182,7 +183,7 @@ namespace SIPSorcery.Net.UnitTests
 
         /// <summary>
         /// Tests that the message integrity attribute is being correctly generated. The original STUN request packet
-        /// was capture on the wire from the Google Chrom WebRTC stack.
+        /// was capture on the wire from the Google Chrome WebRTC stack.
         /// </summary>
         [Fact]
         public void TestMessageIntegrityAttributeForBindingRequest()
@@ -273,7 +274,7 @@ namespace SIPSorcery.Net.UnitTests
         }
 
         /// <summary>
-        /// Tests that the fingerprint and hmac attributes get generated correctly..
+        /// Tests that the fingerprint and hmac attributes get generated correctly.
         /// </summary>
         [Fact]
         public void GenerateHmacAndFingerprintTestMethod()
@@ -296,6 +297,97 @@ namespace SIPSorcery.Net.UnitTests
             logger.LogDebug(hmac);
 
             logger.LogDebug($"Fingerprint: {buffer[buffer.Length - 4]:X2} {buffer[buffer.Length - 3]:X2} {buffer[buffer.Length - 2]:X2} {buffer[buffer.Length - 1]:X2}.");
+        }
+
+        /// <summary>
+        /// Tests that the STUN header class type is correctly determined from the message type.
+        /// </summary>
+        [Fact]
+        public void CheckCLassForSTUNMessageTypeUnitTest()
+        {
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.BindingRequest).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.Allocate).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.Refresh).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.Send).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.Data).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.CreatePermission).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Request, (new STUNHeader(STUNMessageTypesEnum.ChannelBind).MessageClass));
+
+            Assert.Equal(STUNClassTypesEnum.SuccessResponse, (new STUNHeader(STUNMessageTypesEnum.BindingSuccessResponse).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.SuccessResponse, (new STUNHeader(STUNMessageTypesEnum.AllocateSuccessResponse).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.SuccessResponse, (new STUNHeader(STUNMessageTypesEnum.CreatePermissionSuccessResponse).MessageClass));
+
+            Assert.Equal(STUNClassTypesEnum.ErrorResponse, (new STUNHeader(STUNMessageTypesEnum.BindingErrorResponse).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.ErrorResponse, (new STUNHeader(STUNMessageTypesEnum.AllocateErrorResponse).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.ErrorResponse, (new STUNHeader(STUNMessageTypesEnum.CreatePermissionErrorResponse).MessageClass));
+
+            Assert.Equal(STUNClassTypesEnum.Indication, (new STUNHeader(STUNMessageTypesEnum.DataIndication).MessageClass));
+            Assert.Equal(STUNClassTypesEnum.Indication, (new STUNHeader(STUNMessageTypesEnum.SendIndication).MessageClass));
+        }
+
+        /// <summary>
+        /// Tests that a locally signed STUN request can be verified.
+        /// </summary>
+        [Fact]
+        public void IntegrityCheckUnitTest()
+        {
+            logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+            string icePassword = "SKYKPPYLTZOAVCLTGHDUODANRKSPOVQVKXJULOGG";
+
+            STUNMessage stunRequest = new STUNMessage(STUNMessageTypesEnum.BindingRequest);
+            stunRequest.Header.TransactionId = Encoding.ASCII.GetBytes(Crypto.GetRandomString(STUNHeader.TRANSACTION_ID_LENGTH));
+            stunRequest.AddUsernameAttribute("xxxx:yyyy");
+            stunRequest.Attributes.Add(new STUNAttribute(STUNAttributeTypesEnum.Priority, BitConverter.GetBytes(1)));
+
+            var buffer = stunRequest.ToByteBufferStringKey(icePassword, true);
+
+            //logger.LogDebug($"HMAC: {buffer.Skip(buffer.Length - ).Take(20).ToArray().HexStr()}.");
+            //logger.LogDebug($"Fingerprint: {buffer.Skip(buffer.Length -4).ToArray().HexStr()}.");
+
+            STUNMessage rndTripReq = STUNMessage.ParseSTUNMessage(buffer, buffer.Length);
+
+            Assert.True(rndTripReq.isFingerprintValid);
+            Assert.True(rndTripReq.CheckIntegrity(System.Text.Encoding.UTF8.GetBytes(icePassword)));
+        }
+
+        /// <summary>
+        /// Tests that a known STUN request can be verified.
+        /// </summary>
+        [Fact]
+        public void KnownSTUNBindingRequestIntegrityCheckUnitTest()
+        {
+            logger.LogDebug("--> " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            logger.BeginScope(System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+            string icePassword = "DVJSBHBUIBFSZFKVECMPRISQ";
+
+            byte[] buffer = TypeExtensions.ParseHexStr(
+                "0001003C2112A4424A5655444B44544753454455000600095A4C45423A4554454F00000000240" +
+                "008CC3A28000000000000080014B295EDA4BC88A0BC885D745644D36E51FE3CBD1880280004EDF60FF7");
+
+            STUNMessage stunRequest = STUNMessage.ParseSTUNMessage(buffer, buffer.Length);
+
+            Assert.True(stunRequest.isFingerprintValid);
+            Assert.True(stunRequest.CheckIntegrity(System.Text.Encoding.UTF8.GetBytes(icePassword)));
+        }
+
+        /// <summary>
+        /// Checks that the length of the PRIORITY attribute is correct after round tripping.
+        /// </summary>
+        [Fact]
+        public void CheckPriorityAttributeLengthUnitTest()
+        {
+            STUNMessage stunRequest = new STUNMessage(STUNMessageTypesEnum.BindingRequest);
+            stunRequest.AddUsernameAttribute("dummy:dummy");
+            stunRequest.Attributes.Add(new STUNAttribute(STUNAttributeTypesEnum.Priority, BitConverter.GetBytes(1234U)));
+            stunRequest.Attributes.Add(new STUNAttribute(STUNAttributeTypesEnum.UseCandidate, null));
+            byte[] stunReqBytes = stunRequest.ToByteBufferStringKey("dummy", true);
+
+            var stunReq = STUNMessage.ParseSTUNMessage(stunReqBytes, stunReqBytes.Length);
+
+            Assert.Equal(4, stunReq.Attributes.Single(x => x.AttributeType == STUNAttributeTypesEnum.Priority).Value.Length);
         }
     }
 }
