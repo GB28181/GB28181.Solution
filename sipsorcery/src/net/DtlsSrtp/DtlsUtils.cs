@@ -43,8 +43,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
@@ -56,6 +58,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Prng;
 using Org.BouncyCastle.Crypto.Tls;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Utilities.IO.Pem;
@@ -66,6 +69,13 @@ namespace SIPSorcery.Net
 {
     public class DtlsUtils
     {
+        /// <summary>
+        /// The key size when generating random keys for self signed certificates.
+        /// </summary>
+        public const int DEFAULT_KEY_SIZE = 2048;
+
+        private static ILogger logger = SIPSorcery.Sys.Log.Logger;
+
         public static RTCDtlsFingerprint Fingerprint(string hashAlgorithm, X509Certificate2 certificate)
         {
             return Fingerprint(hashAlgorithm, LoadCertificateResource(certificate));
@@ -98,6 +108,12 @@ namespace SIPSorcery.Net
         public static RTCDtlsFingerprint Fingerprint(X509Certificate2 certificate)
         {
             return Fingerprint(LoadCertificateResource(certificate));
+        }
+
+        public static RTCDtlsFingerprint Fingerprint(Org.BouncyCastle.X509.X509Certificate certificate)
+        {
+            var certStruct = X509CertificateStructure.GetInstance(certificate.GetEncoded());
+            return Fingerprint(certStruct);
         }
 
         public static RTCDtlsFingerprint Fingerprint(X509CertificateStructure c)
@@ -305,14 +321,16 @@ namespace SIPSorcery.Net
 
         #region Self Signed Utils
 
+        [Obsolete("Use CreateSelfSignedTlsCert instead.")]
         public static X509Certificate2 CreateSelfSignedCert(AsymmetricKeyParameter privateKey = null)
         {
             return CreateSelfSignedCert("CN=localhost", "CN=root", privateKey);
         }
 
+        [Obsolete("Use CreateSelfSignedTlsCert instead.")]
         public static X509Certificate2 CreateSelfSignedCert(string subjectName, string issuerName, AsymmetricKeyParameter privateKey)
         {
-            const int keyStrength = 2048;
+            const int keyStrength = DEFAULT_KEY_SIZE;
             if (privateKey == null)
             {
                 privateKey = CreatePrivateKeyResource(issuerName);
@@ -323,6 +341,7 @@ namespace SIPSorcery.Net
             var randomGenerator = new CryptoApiRandomGenerator();
             var random = new SecureRandom(randomGenerator);
             ISignatureFactory signatureFactory = new Asn1SignatureFactory("SHA256WITHRSA", issuerPrivKey, random);
+
             // The Certificate Generator
             var certificateGenerator = new X509V3CertificateGenerator();
             certificateGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName[] { new GeneralName(GeneralName.DnsName, "localhost"), new GeneralName(GeneralName.DnsName, "127.0.0.1") }));
@@ -356,50 +375,87 @@ namespace SIPSorcery.Net
             // self sign certificate
             var certificate = certificateGenerator.Generate(signatureFactory);
 
-            // corresponding private key
-            var info = Org.BouncyCastle.Pkcs.PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
-
-            // merge into X509Certificate2
-            var x509 = new X509Certificate2(certificate.GetEncoded());
-
-            var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.ParsePrivateKey().GetDerEncoded());
-            if (seq.Count != 9)
+            // Originally pre-processor defines were used to try and pick the supported way to get from a Bouncy Castle
+            // certificate and private key to a .NET certificate. The problem is that setting the private key on a .NET
+            // X509 certificate is possible in .NET Framework but NOT in .NET Core. To complicate matters even further
+            // the workaround in the CovertBouncyCert method of saving a cert + pvt key to a .pfx stream and then
+            // reloading does not work on macOS or Unity (and possibly elsewhere) due to .pfx serialisation not being
+            // compatible. This is the exception from Unity:
+            //
+            // Mono.Security.ASN1..ctor (System.Byte[] data) (at <6a66fe237d4242c9924192d3c28dd540>:0)
+            // Mono.Security.X509.X509Certificate.Parse(System.Byte[] data)(at < 6a66fe237d4242c9924192d3c28dd540 >:0)
+            //
+            // Summary:
+            // .NET Framework (including Mono on Linux, macOS and WSL)
+            //  - Set x509.PrivateKey works.
+            // .NET Standard:
+            //  - Set x509.PrivateKey for a .NET Framework application.
+            //  - Set x509.PrivateKey for a .NET Core application FAILS.
+            // .NET Core:
+            //  - Set x509.PrivateKey for a .NET Core application FAILS.
+            //  - PFX serialisation works on Windows.
+            //  - PFX serialisation works on WSL and Linux.
+            //  - PFX serialisation FAILS on macOS.
+            //
+            // For same issue see https://github.com/dotnet/runtime/issues/23635.
+            // For fix in net5 see https://github.com/dotnet/corefx/pull/42226.
+            try
             {
-                throw new Org.BouncyCastle.OpenSsl.PemException("malformed sequence in RSA private key");
+                // corresponding private key
+                var info = Org.BouncyCastle.Pkcs.PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);
+
+                // merge into X509Certificate2
+                var x509 = new X509Certificate2(certificate.GetEncoded());
+
+                var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.ParsePrivateKey().GetDerEncoded());
+                if (seq.Count != 9)
+                {
+                    throw new Org.BouncyCastle.OpenSsl.PemException("malformed sequence in RSA private key");
+                }
+
+                var rsa = RsaPrivateKeyStructure.GetInstance(seq); //new RsaPrivateKeyStructure(seq);
+                var rsaparams = new RsaPrivateCrtKeyParameters(
+                    rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
+
+                x509.PrivateKey = ToRSA(rsaparams);
+                return x509;
             }
-
-            var rsa = RsaPrivateKeyStructure.GetInstance(seq); //new RsaPrivateKeyStructure(seq);
-            var rsaparams = new RsaPrivateCrtKeyParameters(
-                rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
-
-#if NETCOREAPP
-            x509 = x509.CopyWithPrivateKey(ToRSA(rsaparams));
-#else
-            //x509.PrivateKey = DotNetUtilities.ToRSA(rsaparams);
-            x509.PrivateKey = ToRSA(rsaparams);
-#endif
-
-            return x509;
+            catch
+            {
+                return ConvertBouncyCert(certificate, subjectKeyPair);
+            }
         }
 
-        public static AsymmetricKeyParameter CreatePrivateKeyResource(string subjectName = "CN=root")
+        public static (Org.BouncyCastle.Crypto.Tls.Certificate crtificate, AsymmetricKeyParameter privateKey) CreateSelfSignedTlsCert()
         {
-            const int keyStrength = 2048;
+            return CreateSelfSignedTlsCert("CN=localhost", "CN=root", null);
+        }
+
+        public static (Org.BouncyCastle.Crypto.Tls.Certificate crtificate, AsymmetricKeyParameter privateKey) CreateSelfSignedTlsCert(string subjectName, string issuerName, AsymmetricKeyParameter issuerPrivateKey)
+        {
+            const int keyStrength = DEFAULT_KEY_SIZE;
+            if (issuerPrivateKey == null)
+            {
+                issuerPrivateKey = CreatePrivateKeyResource(issuerName);
+            }
 
             // Generating Random Numbers
             var randomGenerator = new CryptoApiRandomGenerator();
             var random = new SecureRandom(randomGenerator);
+            ISignatureFactory signatureFactory = new Asn1SignatureFactory("SHA256WITHRSA", issuerPrivateKey, random);
 
             // The Certificate Generator
             var certificateGenerator = new X509V3CertificateGenerator();
+            certificateGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName[] { new GeneralName(GeneralName.DnsName, "localhost"), new GeneralName(GeneralName.DnsName, "127.0.0.1") }));
+            certificateGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(new List<DerObjectIdentifier>() { new DerObjectIdentifier("1.3.6.1.5.5.7.3.1") }));
 
             // Serial Number
-            var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random);
+            var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), random);
             certificateGenerator.SetSerialNumber(serialNumber);
 
             // Issuer and Subject Name
             var subjectDn = new X509Name(subjectName);
-            var issuerDn = subjectDn;
+            var issuerDn = new X509Name(issuerName);
             certificateGenerator.SetIssuerDN(issuerDn);
             certificateGenerator.SetSubjectDN(subjectDn);
 
@@ -409,6 +465,116 @@ namespace SIPSorcery.Net
 
             certificateGenerator.SetNotBefore(notBefore);
             certificateGenerator.SetNotAfter(notAfter);
+
+            // Subject Public Key
+            var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);
+            var keyPairGenerator = new RsaKeyPairGenerator();
+            keyPairGenerator.Init(keyGenerationParameters);
+            var subjectKeyPair = keyPairGenerator.GenerateKeyPair();
+
+            certificateGenerator.SetPublicKey(subjectKeyPair.Public);
+
+            // self sign certificate
+            var certificate = certificateGenerator.Generate(signatureFactory);
+
+            var chain = new Org.BouncyCastle.Asn1.X509.X509CertificateStructure[] { X509CertificateStructure.GetInstance(certificate.GetEncoded()) };
+            var tlsCertificate = new Org.BouncyCastle.Crypto.Tls.Certificate(chain);
+
+            return (tlsCertificate, subjectKeyPair.Private);
+        }
+
+        /// <remarks>Plagarised from https://github.com/CryptLink/CertBuilder/blob/master/CertBuilder.cs.
+        /// NOTE: netstandard2.1+ and netcoreapp3.1+ have x509.CopyWithPrivateKey which will avoid the need to
+        /// use the serialize/deserialize from pfx to get from bouncy castle to .NET Core X509 certificates.</remarks>
+        public static X509Certificate2 ConvertBouncyCert(Org.BouncyCastle.X509.X509Certificate bouncyCert, AsymmetricCipherKeyPair keyPair)
+        {
+            var pkcs12Store = new Pkcs12Store();
+            var certEntry = new X509CertificateEntry(bouncyCert);
+
+            pkcs12Store.SetCertificateEntry(bouncyCert.SerialNumber.ToString(), certEntry);
+            pkcs12Store.SetKeyEntry(bouncyCert.SerialNumber.ToString(),
+                new AsymmetricKeyEntry(keyPair.Private), new[] { certEntry });
+
+            X509Certificate2 keyedCert;
+
+            using (MemoryStream pfxStream = new MemoryStream())
+            {
+                pkcs12Store.Save(pfxStream, new char[] { }, new SecureRandom());
+                pfxStream.Seek(0, SeekOrigin.Begin);
+                keyedCert = new X509Certificate2(pfxStream.ToArray(), string.Empty, X509KeyStorageFlags.Exportable);
+            }
+
+            return keyedCert;
+
+            //var info = Org.BouncyCastle.Pkcs.PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
+
+            //// merge into X509Certificate2
+            //var x509 = new X509Certificate2(bouncyCert.GetEncoded());
+
+            //var seq = (Asn1Sequence)Asn1Object.FromByteArray(info.ParsePrivateKey().GetDerEncoded());
+            //if (seq.Count != 9)
+            //{
+            //    throw new Org.BouncyCastle.OpenSsl.PemException("malformed sequence in RSA private key");
+            //}
+
+            //var rsa = RsaPrivateKeyStructure.GetInstance(seq); //new RsaPrivateKeyStructure(seq);
+            //var rsaparams = new RsaPrivateCrtKeyParameters(
+            //    rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
+
+            //return x509.CopyWithPrivateKey(ToRSA(rsaparams));
+
+            //X509Certificate2 x509 = null;
+
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    using (StreamWriter tw = new StreamWriter(ms))
+            //    {
+            //        PemWriter pw = new PemWriter(tw);
+            //        //PemObject po = new PemObject("CERTIFICATE", bouncyCert.GetEncoded());
+            //        PemObject po = new PemObject("CERTIFICATE", bouncyCert.GetEncoded());
+            //        pw.WriteObject(po);
+
+            //        logger.LogDebug(Encoding.UTF8.GetString(ms.GetBuffer()));
+
+            //        StreamWriter sw2 = new StreamWriter("test.cer");
+            //        sw2.Write(ms.GetBuffer());
+            //        sw2.Close();
+
+            //         x509 = new X509Certificate2(bouncyCert.GetEncoded());
+            //    }
+            //}
+
+            //return x509;
+        }
+
+
+        public static AsymmetricKeyParameter CreatePrivateKeyResource(string subjectName = "CN=root")
+        {
+            const int keyStrength = DEFAULT_KEY_SIZE;
+
+            // Generating Random Numbers
+            var randomGenerator = new CryptoApiRandomGenerator();
+            var random = new SecureRandom(randomGenerator);
+
+            // The Certificate Generator
+            //var certificateGenerator = new X509V3CertificateGenerator();
+
+            //// Serial Number
+            //var serialNumber = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), random);
+            //certificateGenerator.SetSerialNumber(serialNumber);
+
+            //// Issuer and Subject Name
+            //var subjectDn = new X509Name(subjectName);
+            //var issuerDn = subjectDn;
+            //certificateGenerator.SetIssuerDN(issuerDn);
+            //certificateGenerator.SetSubjectDN(subjectDn);
+
+            //// Valid For
+            //var notBefore = DateTime.UtcNow.Date;
+            //var notAfter = notBefore.AddYears(70);
+
+            //certificateGenerator.SetNotBefore(notBefore);
+            //certificateGenerator.SetNotAfter(notAfter);
 
             // Subject Public Key
             var keyGenerationParameters = new KeyGenerationParameters(random, keyStrength);

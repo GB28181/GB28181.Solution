@@ -197,7 +197,7 @@ namespace SIPSorcery.SIP
             catch (Exception excp)
             {
                 logger.LogError("Exception AddSIPChannel. " + excp.Message);
-                throw excp;
+                throw;
             }
         }
 
@@ -281,7 +281,7 @@ namespace SIPSorcery.SIP
             catch (Exception excp)
             {
                 logger.LogError("Exception SIPTransport ReceiveMessage. " + excp.Message);
-                throw excp;
+                throw;
             }
         }
 
@@ -528,7 +528,7 @@ namespace SIPSorcery.SIP
 
             if (sipChannel.IsSecure)
             {
-                return sipChannel.SendSecureAsync(dstEndPoint, Encoding.UTF8.GetBytes(sipRequest.ToString()), sipRequest.URI.Host, sipRequest.SendFromHintConnectionID);
+                return sipChannel.SendSecureAsync(dstEndPoint, Encoding.UTF8.GetBytes(sipRequest.ToString()), sipRequest.URI.HostAddress, sipRequest.SendFromHintConnectionID);
             }
             else
             {

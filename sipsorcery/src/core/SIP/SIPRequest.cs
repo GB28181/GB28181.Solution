@@ -49,7 +49,7 @@ namespace SIPSorcery.SIP
             }
         }
 
-        protected SIPRequest()
+        private SIPRequest()
         { }
 
         public SIPRequest(SIPMethodsEnum method, string uri)
@@ -156,7 +156,7 @@ namespace SIPSorcery.SIP
             catch (Exception excp)
             {
                 logger.LogError("Exception SIPRequest ToString. " + excp.Message);
-                throw excp;
+                throw;
             }
         }
 

@@ -36,7 +36,8 @@ namespace SIPSorcery.SIP
         public event SIPTransactionTimedOutDelegate UACInviteTransactionTimedOut;
 
         private bool _sendOkAckManually = false;
-        private bool _disablePrackSupport = false;
+        internal bool _disablePrackSupport = false;
+        internal bool m_sentPrack;                  // Records whether the PRACK request was sent.
 
         /// <summary>
         /// Default constructor for user agent client INVITE transaction.
@@ -44,7 +45,7 @@ namespace SIPSorcery.SIP
         /// <param name="sendOkAckManually">If set an ACK request for the 2xx response will NOT be sent and it will be up to 
         /// the application to explicitly call the SendACK request.</param>
         /// <param name="disablePrackSupport">If set to true then PRACK support will not be set in the initial INVITE request.</param>
-        internal UACInviteTransaction(SIPTransport sipTransport,
+        public UACInviteTransaction(SIPTransport sipTransport,
             SIPRequest sipRequest,
             SIPEndPoint outboundProxy,
             bool sendOkAckManually = false,
@@ -228,7 +229,7 @@ namespace SIPSorcery.SIP
             catch (Exception excp)
             {
                 logger.LogError($"Exception Get2xxAckRequest. {excp.Message}");
-                throw excp;
+                throw;
             }
         }
 
@@ -350,12 +351,15 @@ namespace SIPSorcery.SIP
         /// <param name="progressResponse">The provisional response being acknowledged.</param>
         public SIPRequest GetPRackRequest(SIPResponse progressResponse)
         {
-            // PRACK requests create a new transaction and get routed based on SIP request fields.
-            var prackRequest = GetNewTransactionAcknowledgeRequest(SIPMethodsEnum.PRACK, progressResponse, m_transactionRequest.URI);
+            m_sentPrack = true;
+
+           // PRACK requests create a new transaction and get routed based on SIP request fields.
+           var prackRequest = GetNewTransactionAcknowledgeRequest(SIPMethodsEnum.PRACK, progressResponse, m_transactionRequest.URI);
 
             prackRequest.Header.RAckRSeq = progressResponse.Header.RSeq;
             prackRequest.Header.RAckCSeq = progressResponse.Header.CSeq;
             prackRequest.Header.RAckCSeqMethod = progressResponse.Header.CSeqMethod;
+            prackRequest.Header.CSeq++;
 
             return prackRequest;
         }
