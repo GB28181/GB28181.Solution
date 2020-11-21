@@ -86,6 +86,39 @@ namespace SIPSorcery.Net
         public string sdpMid { get; set; }
         public ushort sdpMLineIndex { get; set; }
         public string usernameFragment { get; set; }
+
+        public string toJSON()
+        {
+            //return "{" +
+            //     $"  \"sdpMid\": \"{sdpMid ?? sdpMLineIndex.ToString()}\"," +
+            //     $"  \"sdpMLineIndex\": {sdpMLineIndex}," +
+            //     $"  \"usernameFragment\": \"{usernameFragment}\"," +
+            //     $"  \"candidate\": \"{candidate}\"" +
+            //     "}";
+
+            return TinyJson.JSONWriter.ToJson(this);
+        }
+
+        public static bool TryParse(string json, out RTCIceCandidateInit init)
+        {
+            //init = JsonSerializer.Deserialize< RTCIceCandidateInit>(json);
+
+            init = null;
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+            else
+            {
+                init = TinyJson.JSONParser.FromJson<RTCIceCandidateInit>(json);
+
+                // To qualify as parsed all required fields must be set.
+                return init != null &&
+                init.candidate != null &&
+                init.sdpMid != null;
+            }
+        }
     }
 
     /// <summary>
@@ -169,6 +202,15 @@ namespace SIPSorcery.Net
         relay
     }
 
+    /// <remarks>
+    /// As defined in: https://www.w3.org/TR/webrtc/#rtcicecandidate-interface
+    /// 
+    /// Rhe 'priority` field was adjusted from ulong to uint due to an issue that 
+    /// occurred with the STUN PRIORITY attribute being rejected for not being 4 bytes.
+    /// The ICE and WebRTC specifications are contradictory so went with the same as
+    /// libwebrtc which is 4 bytes.
+    /// See https://github.com/sipsorcery/sipsorcery/issues/350.
+    /// </remarks>
     public interface IRTCIceCandidate
     {
         //constructor(optional RTCIceCandidateInit candidateInitDict = { });
@@ -177,7 +219,7 @@ namespace SIPSorcery.Net
         ushort sdpMLineIndex { get; }
         string foundation { get; }
         RTCIceComponent component { get; }
-        ulong priority { get; }
+        uint priority { get; }
         string address { get; }
         RTCIceProtocol protocol { get; }
         ushort port { get; }
@@ -186,6 +228,7 @@ namespace SIPSorcery.Net
         string relatedAddress { get; }
         ushort relatedPort { get; }
         string usernameFragment { get; }
-        RTCIceCandidateInit toJSON();
+        //RTCIceCandidateInit toJSON();
+        string toJSON();
     }
 }

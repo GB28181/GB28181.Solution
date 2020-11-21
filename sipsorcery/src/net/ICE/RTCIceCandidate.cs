@@ -30,6 +30,7 @@ namespace SIPSorcery.Net
         public const string m_CRLF = "\r\n";
         public const string REMOTE_ADDRESS_KEY = "raddr";
         public const string REMOTE_PORT_KEY = "rport";
+        public const string CANDIDATE_PREFIX = "candidate";
 
         /// <summary>
         /// The ICE server (STUN or TURN) the candidate was generated from.
@@ -70,7 +71,7 @@ namespace SIPSorcery.Net
         /// <remarks>
         /// See specification at https://tools.ietf.org/html/rfc8445#section-5.1.2.
         /// </remarks>
-        public ulong priority { get; set; }
+        public uint priority { get; set; }
 
         /// <summary>
         /// The address or hostname for the candidate.
@@ -178,7 +179,7 @@ namespace SIPSorcery.Net
                     candidate.protocol = candidateProtocol;
                 }
 
-                if (ulong.TryParse(candidateFields[3], out var candidatePriority))
+                if (uint.TryParse(candidateFields[3], out var candidatePriority))
                 {
                     candidate.priority = candidatePriority;
                 }
@@ -269,16 +270,24 @@ namespace SIPSorcery.Net
             return (type.GetHashCode() + addressVal + svrVal + protocol.GetHashCode()).ToString();
         }
 
-        private ulong GetPriority()
+        private uint GetPriority()
         {
-            return (ulong)((2 ^ 24) * (126 - type.GetHashCode()) +
+            return (uint)((2 ^ 24) * (126 - type.GetHashCode()) +
                       (2 ^ 8) * (65535) + // TODO: Add some kind of priority to different local IP addresses if needed.
                       (2 ^ 0) * (256 - component.GetHashCode()));
         }
 
-        public RTCIceCandidateInit toJSON()
+        public string toJSON()
         {
-            throw new NotImplementedException();
+            var rtcCandInit = new RTCIceCandidateInit
+            {
+                sdpMid = sdpMid ?? sdpMLineIndex.ToString(),
+                sdpMLineIndex = sdpMLineIndex,
+                usernameFragment = usernameFragment,
+                candidate = CANDIDATE_PREFIX + ":" + this.ToString()
+            };
+
+            return rtcCandInit.toJSON();
         }
 
         /// <summary>

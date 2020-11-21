@@ -59,7 +59,8 @@ namespace SIPSorcery.Net
 
         static STUNDns()
         {
-            LookupClientOptions clientOptions = new LookupClientOptions()
+            var nameServers = NameServer.ResolveNameServers(skipIPv6SiteLocal: true, fallbackToGooglePublicDns: true);
+            LookupClientOptions clientOptions = new LookupClientOptions(nameServers.ToArray())
             {
                 Retries = DNS_RETRIES_PER_SERVER,
                 Timeout = TimeSpan.FromSeconds(DNS_TIMEOUT_SECONDS),
@@ -168,7 +169,7 @@ namespace SIPSorcery.Net
                             var result = await _lookupClient.ResolveServiceAsync(uri.Host, uri.Scheme.ToString(), uri.Protocol.ToString().ToLower()).ConfigureAwait(false);
                             if (result == null || result.Count() == 0)
                             {
-                                logger.LogDebug($"STUNDns SRV lookup returned no results for {uri}.");
+                                //logger.LogDebug($"STUNDns SRV lookup returned no results for {uri}.");
                             }
                             else
                             {

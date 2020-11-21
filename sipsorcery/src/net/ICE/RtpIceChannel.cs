@@ -1146,7 +1146,10 @@ namespace SIPSorcery.Net
                         // No checklist entries were made available before the failed timeout.
 
                         _checklistState = ChecklistState.Failed;
-                        IceConnectionState = RTCIceConnectionState.disconnected;
+                        //IceConnectionState = RTCIceConnectionState.disconnected;
+                        // No point going to and ICE disconnected state as there was never a connection and therefore
+                        // nothing ot monitor for a re-connection.
+                        IceConnectionState = RTCIceConnectionState.failed;
                         OnIceConnectionStateChange?.Invoke(IceConnectionState);
                     }
                 }
@@ -1258,7 +1261,7 @@ namespace SIPSorcery.Net
             STUNMessage stunRequest = new STUNMessage(STUNMessageTypesEnum.BindingRequest);
             stunRequest.Header.TransactionId = Encoding.ASCII.GetBytes(candidatePair.RequestTransactionID);
             stunRequest.AddUsernameAttribute(RemoteIceUser + ":" + LocalIceUser);
-            stunRequest.Attributes.Add(new STUNAttribute(STUNAttributeTypesEnum.Priority, BitConverter.GetBytes(candidatePair.Priority)));
+            stunRequest.Attributes.Add(new STUNAttribute(STUNAttributeTypesEnum.Priority, BitConverter.GetBytes(candidatePair.LocalPriority)));
 
             if (setUseCandidate)
             {
@@ -1600,7 +1603,17 @@ namespace SIPSorcery.Net
             // Send a STUN binding request.
             STUNMessage stunRequest = new STUNMessage(STUNMessageTypesEnum.BindingRequest);
             stunRequest.Header.TransactionId = Encoding.ASCII.GetBytes(iceServer.TransactionID);
-            byte[] stunReqBytes = stunRequest.ToByteBuffer(null, false);
+
+            byte[] stunReqBytes = null;
+
+            if (iceServer.Nonce != null && iceServer.Realm != null && iceServer._username != null && iceServer._password != null)
+            {
+                stunReqBytes = GetAuthenticatedStunRequest(stunRequest, iceServer._username, iceServer.Realm, iceServer._password, iceServer.Nonce);
+            }
+            else
+            {
+                stunReqBytes = stunRequest.ToByteBuffer(null, false);
+            }
 
             var sendResult = base.Send(RTPChannelSocketsEnum.RTP, iceServer.ServerEndPoint, stunReqBytes);
 
