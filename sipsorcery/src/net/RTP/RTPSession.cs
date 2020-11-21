@@ -25,7 +25,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SIPSorcery.net.RTP;
 using SIPSorcery.SIP.App;
 using SIPSorcery.Sys;
 using SIPSorceryMedia.Abstractions.V1;
@@ -68,16 +67,6 @@ namespace SIPSorcery.Net
         NoMatchingMediaType,
 
         /// <summary>
-        /// The audio end point port supplied by the remote party was invalid.
-        /// </summary>
-        InvalidAudioPort,
-
-        /// <summary>
-        /// The audio end point port supplied by the remote party was invalid.
-        /// </summary>
-        InvalidVideoPort,
-
-        /// <summary>
         /// An unknown error.
         /// </summary>
         Error,
@@ -104,6 +93,11 @@ namespace SIPSorcery.Net
         /// SCTP over DTLS is supported, no TCP option).
         /// </summary>
         DataChannelTransportNotSupported,
+
+        /// <summary>
+        /// An SDP offer was received when the local agent had already entered have local offer state.
+        /// </summary>
+        WrongSdpTypeOfferAfterOffer,
     }
 
     /// <summary>
@@ -378,12 +372,12 @@ namespace SIPSorcery.Net
         /// <summary>
         /// Gets fired when the remote SDP is received and the set of common audio formats is set.
         /// </summary>
-        public event Action<List<SDPMediaFormat>> OnAudioFormatsNegotiated;
+        public event Action<List<AudioFormat>> OnAudioFormatsNegotiated;
 
         /// <summary>
         /// Gets fired when the remote SDP is received and the set of common video formats is set.
         /// </summary>
-        public event Action<List<SDPMediaFormat>> OnVideoFormatsNegotiated;
+        public event Action<List<VideoFormat>> OnVideoFormatsNegotiated;
 
         /// <summary>
         /// Gets fired when a full video frame is reconstructed from one or more RTP packets
@@ -468,7 +462,7 @@ namespace SIPSorcery.Net
         /// the kernel routing table will be used to determine the local IP address used
         /// for Internet access.</param>
         /// <returns>A task that when complete contains the SDP offer.</returns>
-        public SDP CreateOffer(IPAddress connectionAddress)
+        public virtual SDP CreateOffer(IPAddress connectionAddress)
         {
             if (AudioLocalTrack == null && VideoLocalTrack == null)
             {
@@ -584,7 +578,6 @@ namespace SIPSorcery.Net
 
                 // Pre-flight checks have passed. Move onto matching up the local and remote media streams.
                 IPAddress connectionAddress = null;
-
                 if (sessionDescription.Connection != null && !String.IsNullOrEmpty(sessionDescription.Connection.ConnectionAddress))
                 {
                     connectionAddress = IPAddress.Parse(sessionDescription.Connection.ConnectionAddress);
@@ -595,201 +588,100 @@ namespace SIPSorcery.Net
                 IPEndPoint remoteVideoRtpEP = null;
                 IPEndPoint remoteVideoRtcpEP = null;
 
-                foreach (var announcement in sessionDescription.Media)
+                foreach (var announcement in sessionDescription.Media.Where(x => x.Media == SDPMediaTypesEnum.audio || x.Media == SDPMediaTypesEnum.video))
                 {
+                    MediaStreamStatusEnum mediaStreamStatus = announcement.MediaStreamStatus.HasValue ? announcement.MediaStreamStatus.Value : MediaStreamStatusEnum.SendRecv;
+                    var remoteTrack = new MediaStreamTrack(announcement.Media, true, announcement.MediaFormats.Values.ToList(), mediaStreamStatus, announcement.SsrcAttributes);
+                    addTrack(remoteTrack);
+
                     if (announcement.Media == SDPMediaTypesEnum.audio)
                     {
-                        logger.LogDebug("Adding remote audio track to session.");
-
-                        var audioAnnounce = announcement;
-                        var remoteAudioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, true, audioAnnounce.MediaFormats, audioAnnounce.MediaStreamStatus);
-                        addTrack(remoteAudioTrack);
-
-                        // Add the source attributes from the remote SDP to help match RTP SSRC and RTCP CNAME values against
-                        // RTP and RTCP packets received from the remote party.
-                        if (audioAnnounce.SsrcAttributes?.Count > 0)
-                        {
-                            foreach (var ssrcAttr in audioAnnounce.SsrcAttributes)
-                            {
-                                if (remoteAudioTrack.SdpSsrc.ContainsKey(ssrcAttr.SSRC))
-                                {
-                                    remoteAudioTrack.SdpSsrc.Remove(ssrcAttr.SSRC);
-                                }
-                                remoteAudioTrack.SdpSsrc.Add(ssrcAttr.SSRC, ssrcAttr);
-                            }
-                        }
-
                         if (AudioLocalTrack == null)
                         {
                             // We don't have an audio track BUT we must have another track (which has to be video). The choices are
                             // to reject the offer or to set audio stream as inactive and accept the video. We accept the video.
-                            var inactiveLocalAudioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, remoteAudioTrack.Capabilities, MediaStreamStatusEnum.Inactive);
+                            var inactiveLocalAudioTrack = new MediaStreamTrack(SDPMediaTypesEnum.audio, false, remoteTrack.Capabilities, MediaStreamStatusEnum.Inactive);
                             addTrack(inactiveLocalAudioTrack);
                         }
                         else
                         {
+                            AudioLocalTrack.Capabilities = SDPAudioVideoMediaFormat.GetCompatibleFormats(announcement.MediaFormats.Values.ToList(), AudioLocalTrack?.Capabilities);
+                            remoteAudioRtpEP = GetAnnouncementRTPDestination(announcement, connectionAddress);
+
                             // Check whether RTP events can be supported and adjust our parameters to match the remote party if we can.
-                            SDPMediaFormat commonEventFormat = null;
-                            RemoteRtpEventPayloadID = audioAnnounce.GetTelephoneEventFormatID();
-                            if (RemoteRtpEventPayloadID != -1)
+                            SDPAudioVideoMediaFormat commonEventFormat = SDPAudioVideoMediaFormat.GetCommonRtpEventFormat(announcement.MediaFormats.Values.ToList(), AudioLocalTrack.Capabilities);
+                            if (!commonEventFormat.IsEmpty())
                             {
-                                commonEventFormat = GetCommonRtpEventFormat(audioAnnounce);
+                                RemoteRtpEventPayloadID = commonEventFormat.ID;
                             }
 
-                            // Check that there is at least one compatible non-"RTP Event" audio codec.
-                            var audioCompatibleFormats = sdpType == SdpType.answer ? SDPMediaFormat.GetCompatibleFormats(AudioLocalTrack.Capabilities, audioAnnounce.MediaFormats) :
-                                SDPMediaFormat.GetCompatibleFormats(audioAnnounce.MediaFormats, AudioLocalTrack.Capabilities);
-
-                            if (audioCompatibleFormats?.Count == 0)
+                            SetLocalTrackStreamStatus(AudioLocalTrack, remoteTrack.StreamStatus, remoteAudioRtpEP);
+                            if (remoteTrack.StreamStatus != MediaStreamStatusEnum.Inactive && AudioLocalTrack.StreamStatus != MediaStreamStatusEnum.Inactive)
                             {
-                                return SetDescriptionResultEnum.AudioIncompatible;
-                            }
-                            else
-                            {
-                                // Set the local audio capabilities to the common set.
-                                AudioLocalTrack.Capabilities = audioCompatibleFormats;
-
-                                if (commonEventFormat != null)
-                                {
-                                    AudioLocalTrack.Capabilities.Add(commonEventFormat);
-                                }
-
-                                OnAudioFormatsNegotiated?.Invoke(AudioLocalTrack.Capabilities);
-                            }
-
-                            var audioAddr = (audioAnnounce.Connection != null) ? IPAddress.Parse(audioAnnounce.Connection.ConnectionAddress) : connectionAddress;
-
-                            if (audioAddr != null)
-                            {
-                                if (audioAnnounce.Port < IPEndPoint.MinPort || audioAnnounce.Port > IPEndPoint.MaxPort - 1)
-                                {
-                                    return SetDescriptionResultEnum.InvalidAudioPort;
-                                }
-
-                                if (IPAddress.Any.Equals(audioAddr) || IPAddress.IPv6Any.Equals(audioAddr))
-                                {
-                                    // If a special port number is used (defined as "9") it indicates that the media announcement is not responsible
-                                    // for setting the remote end point for the audio stream. Instead it's most likely being set using ICE.
-                                    if (audioAnnounce.Port != SDP.IGNORE_RTP_PORT_NUMBER)
-                                    {
-                                        // A connection address of 0.0.0.0 or [::], which is unreachable, means the media is inactive.
-                                        remoteAudioTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
-
-                                        logger.LogDebug($"Audio stream status set to inactive based on connection address of {audioAddr} in remote offer.");
-                                    }
-                                }
-                                else if (audioAnnounce.Port == 0)
-                                {
-                                    remoteAudioTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
-                                }
-                                else
-                                {
-                                    remoteAudioRtpEP = new IPEndPoint(audioAddr, audioAnnounce.Port);
-                                    remoteAudioRtcpEP = new IPEndPoint(audioAddr, audioAnnounce.Port + 1);
-
-                                    logger.LogDebug($"Remote audio end RTP and RTCP points set from remote description to {remoteAudioRtpEP} and {remoteAudioRtcpEP}.");
-                                }
+                                remoteAudioRtcpEP = (m_isRtcpMultiplexed) ? remoteAudioRtpEP : new IPEndPoint(remoteAudioRtpEP.Address, remoteAudioRtpEP.Port + 1);
                             }
                         }
                     }
                     else if (announcement.Media == SDPMediaTypesEnum.video)
                     {
-                        logger.LogDebug("Adding remote video track to session.");
-
-                        var videoAnnounce = announcement;
-                        var remoteVideoTrack = new MediaStreamTrack(SDPMediaTypesEnum.video, true, videoAnnounce.MediaFormats, videoAnnounce.MediaStreamStatus);
-                        addTrack(remoteVideoTrack);
-
-                        // Add the source attributes from the remote SDP to help match RTP SSRC and RTCP CNAME values against
-                        // RTP and RTCP packets received from the remote party.
-                        if (videoAnnounce.SsrcAttributes?.Count > 0)
-                        {
-                            foreach (var ssrcAttr in videoAnnounce.SsrcAttributes)
-                            {
-                                if (remoteVideoTrack.SdpSsrc.ContainsKey(ssrcAttr.SSRC))
-                                {
-                                    remoteVideoTrack.SdpSsrc.Remove(ssrcAttr.SSRC);
-                                }
-                                remoteVideoTrack.SdpSsrc.Add(ssrcAttr.SSRC, ssrcAttr);
-                            }
-                        }
-
                         if (VideoLocalTrack == null)
                         {
                             // We don't have a video track BUT we must have another track (which has to be audio). The choices are
                             // to reject the offer or to set video stream as inactive and accept the audio. We accept the audio.
-                            var inactiveVideoTrack = new MediaStreamTrack(SDPMediaTypesEnum.video, false, remoteVideoTrack.Capabilities, MediaStreamStatusEnum.Inactive);
-                            addTrack(inactiveVideoTrack);
+                            var inactiveLocalVideoTrack = new MediaStreamTrack(SDPMediaTypesEnum.video, false, remoteTrack.Capabilities, MediaStreamStatusEnum.Inactive);
+                            addTrack(inactiveLocalVideoTrack);
                         }
                         else
                         {
-                            // Check that there is at least one compatible video codec.
-                            var videoCompatibleFormats = sdpType == SdpType.answer ? SDPMediaFormat.GetCompatibleFormats(VideoLocalTrack.Capabilities, videoAnnounce.MediaFormats) :
-                                 SDPMediaFormat.GetCompatibleFormats(videoAnnounce.MediaFormats, VideoLocalTrack.Capabilities);
+                            VideoLocalTrack.Capabilities = SDPAudioVideoMediaFormat.GetCompatibleFormats(announcement.MediaFormats.Values.ToList(), VideoLocalTrack?.Capabilities);
+                            remoteVideoRtpEP = GetAnnouncementRTPDestination(announcement, connectionAddress);
 
-                            if (videoCompatibleFormats?.Count == 0)
+                            SetLocalTrackStreamStatus(VideoLocalTrack, remoteTrack.StreamStatus, remoteVideoRtpEP);
+                            if (remoteTrack.StreamStatus != MediaStreamStatusEnum.Inactive && VideoLocalTrack.StreamStatus != MediaStreamStatusEnum.Inactive)
                             {
-                                return SetDescriptionResultEnum.VideoIncompatible;
-                            }
-                            else
-                            {
-                                // Set the local video capabilities to the common set.
-                                VideoLocalTrack.Capabilities = videoCompatibleFormats;
-
-                                OnVideoFormatsNegotiated?.Invoke(VideoLocalTrack.Capabilities);
-                            }
-
-                            var videoAddr = (videoAnnounce.Connection != null) ? IPAddress.Parse(videoAnnounce.Connection.ConnectionAddress) : connectionAddress;
-
-                            if (videoAddr != null)
-                            {
-                                if (videoAnnounce.Port < IPEndPoint.MinPort || videoAnnounce.Port > IPEndPoint.MaxPort - 1)
-                                {
-                                    return SetDescriptionResultEnum.InvalidAudioPort;
-                                }
-
-                                if (IPAddress.Any.Equals(videoAddr) || IPAddress.IPv6Any.Equals(videoAddr))
-                                {
-                                    // If a special port number is used (defined as "9") it indicates that the media announcement is not responsible
-                                    // for setting the remote end point for the audio stream. Instead it's most likely being set using ICE.
-                                    if (videoAnnounce.Port != SDP.IGNORE_RTP_PORT_NUMBER)
-                                    {
-                                        // A connection address of 0.0.0.0 or [::], which is unreachable, means the media is inactive.
-                                        remoteVideoTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
-
-                                        logger.LogDebug($"Video stream status set to inactive based on connection address of {videoAddr} in remote offer.");
-                                    }
-                                }
-                                else if (videoAnnounce.Port == 0)
-                                {
-                                    remoteVideoTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
-                                }
-                                else
-                                {
-                                    remoteVideoRtpEP = new IPEndPoint(videoAddr, videoAnnounce.Port);
-                                    remoteVideoRtcpEP = new IPEndPoint(videoAddr, videoAnnounce.Port + 1);
-
-                                    logger.LogDebug($"Remote video end RTP and RTCP points set from remote description to {remoteVideoRtpEP} and {remoteVideoRtcpEP}.");
-                                }
+                                remoteVideoRtcpEP = (m_isRtcpMultiplexed) ? remoteVideoRtpEP : new IPEndPoint(remoteVideoRtpEP.Address, remoteVideoRtpEP.Port + 1);
                             }
                         }
                     }
                 }
 
-                if (AudioLocalTrack != null || VideoLocalTrack != null)
+                if (VideoLocalTrack == null
+                    && AudioLocalTrack.Capabilities?.Where(x => x.Name().ToLower() != SDP.TELEPHONE_EVENT_ATTRIBUTE).Count() == 0)
                 {
-                    AdjustLocalStreamStatus();
+                    return SetDescriptionResultEnum.AudioIncompatible;
                 }
+                else if (AudioLocalTrack == null && VideoLocalTrack.Capabilities?.Count == 0)
+                {
+                    return SetDescriptionResultEnum.VideoIncompatible;
+                }
+                else
+                {
+                    if (AudioLocalTrack != null &&
+                        AudioLocalTrack.Capabilities.Where(x => x.Name().ToLower() != SDP.TELEPHONE_EVENT_ATTRIBUTE).Count() > 0)
+                    {
+                        OnAudioFormatsNegotiated?.Invoke(
+                            AudioLocalTrack.Capabilities
+                            .Where(x => x.Name().ToLower() != SDP.TELEPHONE_EVENT_ATTRIBUTE)
+                            .Select(x => x.ToAudioFormat()).ToList());
+                    }
 
-                // If we get to here then the remote description was compatible with the local media tracks.
-                // Set the remote description and end points.
-                RemoteDescription = sessionDescription;
-                AudioDestinationEndPoint = remoteAudioRtpEP ?? AudioDestinationEndPoint;
-                AudioControlDestinationEndPoint = remoteAudioRtcpEP ?? AudioControlDestinationEndPoint;
-                VideoDestinationEndPoint = remoteVideoRtpEP ?? VideoDestinationEndPoint;
-                VideoControlDestinationEndPoint = remoteVideoRtcpEP ?? VideoControlDestinationEndPoint;
+                    if (VideoLocalTrack != null && VideoLocalTrack.Capabilities?.Count() > 0)
+                    {
+                        OnVideoFormatsNegotiated?.Invoke(
+                            VideoLocalTrack.Capabilities
+                            .Select(x => x.ToVideoFormat()).ToList());
+                    }
 
-                return SetDescriptionResultEnum.OK;
+                    // If we get to here then the remote description was compatible with the local media tracks.
+                    // Set the remote description and end points.
+                    RemoteDescription = sessionDescription;
+                    AudioDestinationEndPoint = remoteAudioRtpEP ?? AudioDestinationEndPoint;
+                    AudioControlDestinationEndPoint = remoteAudioRtcpEP ?? AudioControlDestinationEndPoint;
+                    VideoDestinationEndPoint = remoteVideoRtpEP ?? VideoDestinationEndPoint;
+                    VideoControlDestinationEndPoint = remoteVideoRtcpEP ?? VideoControlDestinationEndPoint;
+
+                    return SetDescriptionResultEnum.OK;
+                }
             }
             catch (Exception excp)
             {
@@ -815,6 +707,34 @@ namespace SIPSorcery.Net
                 VideoLocalTrack.StreamStatus = status;
                 m_sdpAnnouncementVersion++;
             }
+        }
+
+        private IPEndPoint GetAnnouncementRTPDestination(
+            SDPMediaAnnouncement announcement,
+            IPAddress connectionAddress)
+        {
+            SDPMediaTypesEnum kind = announcement.Media;
+            IPEndPoint rtpEndPoint = null;
+
+            var remoteAddr = (announcement.Connection != null) ? IPAddress.Parse(announcement.Connection.ConnectionAddress) : connectionAddress;
+
+            if (remoteAddr != null)
+            {
+                if (announcement.Port < IPEndPoint.MinPort || announcement.Port > IPEndPoint.MaxPort)
+                {
+                    logger.LogWarning($"Remote {kind} announcement contained an invalid port number {announcement.Port}.");
+
+                    // Set the remote port number to "9" which means ignore and wait for it be set some other way
+                    // such as when a remote RTP packet or arrives or ICE negotiation completes.
+                    rtpEndPoint = new IPEndPoint(remoteAddr, SDP.IGNORE_RTP_PORT_NUMBER);
+                }
+                else
+                {
+                    rtpEndPoint = new IPEndPoint(remoteAddr, announcement.Port);
+                }
+            }
+
+            return rtpEndPoint;
         }
 
         /// <summary>
@@ -876,11 +796,15 @@ namespace SIPSorcery.Net
                     AudioLocalTrack = track;
 
                     if (AudioLocalTrack.Capabilities != null && !AudioLocalTrack.NoDtmfSupport &&
-                        !AudioLocalTrack.Capabilities.Any(x => x.FormatID == DTMF_EVENT_PAYLOAD_ID.ToString()))
+                        !AudioLocalTrack.Capabilities.Any(x => x.ID == DTMF_EVENT_PAYLOAD_ID))
                     {
-                        SDPMediaFormat rtpEventFormat = new SDPMediaFormat(DTMF_EVENT_PAYLOAD_ID);
-                        rtpEventFormat.SetFormatAttribute($"{SDP.TELEPHONE_EVENT_ATTRIBUTE}/{DEFAULT_AUDIO_CLOCK_RATE}");
-                        rtpEventFormat.SetFormatParameterAttribute("0-16");
+                        SDPAudioVideoMediaFormat rtpEventFormat = new SDPAudioVideoMediaFormat(
+                            SDPMediaTypesEnum.audio,
+                            DTMF_EVENT_PAYLOAD_ID,
+                            SDP.TELEPHONE_EVENT_ATTRIBUTE,
+                            DEFAULT_AUDIO_CLOCK_RATE,
+                            SDPAudioVideoMediaFormat.DEFAULT_AUDIO_CHANNEL_COUNT,
+                            "0-16");
                         AudioLocalTrack.Capabilities.Add(rtpEventFormat);
                     }
                 }
@@ -952,58 +876,35 @@ namespace SIPSorcery.Net
         }
 
         /// <summary>
-        /// Checks the local audio capabilities against the remote party's audio announcement to see
-        /// whether RTP events can be supported on this media session. If compatible an RTP event format
-        /// will be returned that matches the local format with the remote format.
-        /// </summary>
-        /// <param name="remoteAudioAnnouncement">The audio announcement supplied from the remote party's
-        /// session description offer or answer.</param>
-        /// <returns>An RTP event format compatible with the local and remote parties.</returns>
-        private SDPMediaFormat GetCommonRtpEventFormat(SDPMediaAnnouncement remoteAudioAnnouncement)
-        {
-            if (remoteAudioAnnouncement != null)
-            {
-                // Check if RTP events are supported and if required adjust the local format ID.
-                var remoteEventFormat = remoteAudioAnnouncement.MediaFormats.FirstOrDefault(x => x.FormatAttribute?.Contains(SDP.TELEPHONE_EVENT_ATTRIBUTE) == true);
-                var compatibleEventFormat = AudioLocalTrack.Capabilities.FirstOrDefault(y => y.FormatAttribute?.Contains(SDP.TELEPHONE_EVENT_ATTRIBUTE) == true);
-
-                if (remoteEventFormat != null && compatibleEventFormat != null)
-                {
-                    // We both support RTP events. If using different format ID's set ours to match the remote party's.
-                    if (remoteEventFormat.FormatID != compatibleEventFormat.FormatID)
-                    {
-                        logger.LogDebug($"Adjusting the RTP event format ID on the local audio capabilities to match the remote part: {compatibleEventFormat.FormatID} to {remoteEventFormat.FormatID}.");
-                        compatibleEventFormat.FormatID = remoteEventFormat.FormatID;
-                    }
-
-                    return compatibleEventFormat;
-                }
-                else if (compatibleEventFormat != null)
-                {
-                    // Remote party does not support RTP events.
-                    logger.LogWarning("Remote party does not support RTP events.");
-                    return null;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Adjust the stream status of the local media tracks based on the remote tracks.
         /// </summary>
-        private void AdjustLocalStreamStatus()
+        private void SetLocalTrackStreamStatus(MediaStreamTrack localTrack, MediaStreamStatusEnum remoteTrackStatus, IPEndPoint remoteRTPEndPoint)
         {
-            if (AudioLocalTrack != null && (AudioRemoteTrack == null || AudioRemoteTrack?.StreamStatus == MediaStreamStatusEnum.Inactive))
+            if (localTrack != null)
             {
-                // The remote party does not support audio, change our stream status to inactive.
-                AudioLocalTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
-            }
-
-            if (VideoLocalTrack != null && (VideoRemoteTrack == null || VideoRemoteTrack?.StreamStatus == MediaStreamStatusEnum.Inactive))
-            {
-                // The remote party does not support video, change our stream status to inactive.
-                VideoLocalTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
+                if (remoteTrackStatus == MediaStreamStatusEnum.Inactive)
+                {
+                    // The remote party does not support this media type. Set the local stream status to inactive.
+                    localTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
+                }
+                else if (remoteRTPEndPoint != null)
+                {
+                    if (IPAddress.Any.Equals(remoteRTPEndPoint.Address) || IPAddress.IPv6Any.Equals(remoteRTPEndPoint.Address))
+                    {
+                        // A connection address of 0.0.0.0 or [::], which is unreachable, means the media is inactive, except
+                        // if a special port number is used (defined as "9") which indicates that the media announcement is not 
+                        // responsible for setting the remote end point for the audio stream. Instead it's most likely being set 
+                        // using ICE.
+                        if (remoteRTPEndPoint.Port != SDP.IGNORE_RTP_PORT_NUMBER)
+                        {
+                            localTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
+                        }
+                    }
+                    else if (remoteRTPEndPoint.Port == 0)
+                    {
+                        localTrack.StreamStatus = MediaStreamStatusEnum.Inactive;
+                    }
+                }
             }
         }
 
@@ -1252,20 +1153,20 @@ namespace SIPSorcery.Net
         }
 
         /// <summary>
-        /// Attempts to get the highest priority sending format for the remote call party/
+        /// Attempts to get the highest priority sending format for the remote call party.
         /// </summary>
         /// <param name="mediaType">The media type to get the sending format for.</param>
         /// <returns>The first compatible media format found for the specified media type.</returns>
-        public SDPMediaFormat GetSendingFormat(SDPMediaTypesEnum mediaType)
+        public SDPAudioVideoMediaFormat GetSendingFormat(SDPMediaTypesEnum mediaType)
         {
             if (mediaType == SDPMediaTypesEnum.audio)
             {
                 if (AudioLocalTrack != null && AudioRemoteTrack != null)
                 {
-                    var format = SDPMediaFormat.GetCompatibleFormats(AudioLocalTrack.Capabilities, AudioRemoteTrack.Capabilities)
-                        .Where(x => x.FormatID != RemoteRtpEventPayloadID.ToString()).FirstOrDefault();
+                    var format = SDPAudioVideoMediaFormat.GetCompatibleFormats(AudioLocalTrack.Capabilities, AudioRemoteTrack.Capabilities)
+                        .Where(x => x.ID != RemoteRtpEventPayloadID).FirstOrDefault();
 
-                    if (format == null)
+                    if (format.IsEmpty())
                     {
                         // It's not expected that this occurs as a compatibility check is done when the remote session description
                         // is set. By this point a compatible codec should be available.
@@ -1285,7 +1186,7 @@ namespace SIPSorcery.Net
             {
                 if (VideoLocalTrack != null && VideoRemoteTrack != null)
                 {
-                    return SDPMediaFormat.GetCompatibleFormats(VideoLocalTrack.Capabilities, VideoRemoteTrack.Capabilities).First();
+                    return SDPAudioVideoMediaFormat.GetCompatibleFormats(VideoLocalTrack.Capabilities, VideoRemoteTrack.Capabilities).First();
                 }
                 else
                 {
@@ -1303,9 +1204,7 @@ namespace SIPSorcery.Net
             if (AudioDestinationEndPoint != null && (!IsSecure || IsSecureContextReady))
             {
                 var audioFormat = GetSendingFormat(SDPMediaTypesEnum.audio);
-
-                int audioPayloadID = Convert.ToInt32(audioFormat.FormatID);
-                SendAudioFrame(durationRtpUnits, audioPayloadID, sample);
+                SendAudioFrame(durationRtpUnits, audioFormat.ID, sample);
             }
         }
 
@@ -1315,59 +1214,21 @@ namespace SIPSorcery.Net
             {
                 var videoSendingFormat = GetSendingFormat(SDPMediaTypesEnum.video);
 
-                switch (videoSendingFormat.FormatCodec)
+                switch (videoSendingFormat.Name())
                 {
-                    case SDPMediaFormatsEnum.VP8:
-                        int vp8PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.FormatCodec == SDPMediaFormatsEnum.VP8).FormatID);
+                    case "VP8":
+                        int vp8PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.Name() == "VP8").ID);
                         SendVp8Frame(durationRtpUnits, vp8PayloadID, sample);
                         break;
-                    case SDPMediaFormatsEnum.H264:
-                        int h264PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.FormatCodec == SDPMediaFormatsEnum.H264).FormatID);
+                    case "H264":
+                        int h264PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.Name() == "H264").ID);
                         SendH264Frame(durationRtpUnits, h264PayloadID, sample);
                         break;
                     default:
-                        throw new ApplicationException($"Unsupported video format selected {videoSendingFormat.FormatCodec}.");
+                        throw new ApplicationException($"Unsupported video format selected {videoSendingFormat.Name()}.");
                 }
             }
         }
-
-        /// <summary>
-        /// Send a media sample to the remote party.
-        /// </summary>
-        /// <param name="mediaType">Whether the sample is audio or video.</param>
-        /// <param name="durationRtpUnits">The duration of the sample in RTP timestamp units.</param>
-        /// <param name="sample">The sample payload.</param> 
-        //public void SendMedia(SDPMediaTypesEnum mediaType, uint durationRtpUnits, byte[] sample)
-        //{
-        //    if (AudioDestinationEndPoint != null && (!IsSecure || IsSecureContextReady))
-        //    {
-        //        if (mediaType == SDPMediaTypesEnum.video)
-        //        {
-        //            var videoSendingFormat = GetSendingFormat(SDPMediaTypesEnum.video);
-
-        //            switch (videoSendingFormat.FormatCodec)
-        //            {
-        //                case SDPMediaFormatsEnum.VP8:
-        //                    int vp8PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.FormatCodec == SDPMediaFormatsEnum.VP8).FormatID);
-        //                    SendVp8Frame(durationRtpUnits, vp8PayloadID, sample);
-        //                    break;
-        //                case SDPMediaFormatsEnum.H264:
-        //                    int h264PayloadID = Convert.ToInt32(VideoLocalTrack.Capabilities.Single(x => x.FormatCodec == SDPMediaFormatsEnum.H264).FormatID);
-        //                    SendH264Frame(durationRtpUnits, h264PayloadID, sample);
-        //                    break;
-        //                default:
-        //                    throw new ApplicationException($"Unsupported video format selected {videoSendingFormat.FormatCodec}.");
-        //            }
-        //        }
-        //        else if (mediaType == SDPMediaTypesEnum.audio)
-        //        {
-        //            var audioFormat = GetSendingFormat(SDPMediaTypesEnum.audio);
-
-        //            int audioPayloadID = Convert.ToInt32(audioFormat.FormatID);
-        //            SendAudioFrame(durationRtpUnits, audioPayloadID, sample);
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Sends an audio packet to the remote party.
@@ -1561,7 +1422,7 @@ namespace SIPSorcery.Net
         {
             var dstEndPoint = m_isMediaMultiplexed ? AudioDestinationEndPoint : VideoDestinationEndPoint;
 
-            if (IsClosed || m_rtpEventInProgress || dstEndPoint == null)
+            if (IsClosed || m_rtpEventInProgress || dstEndPoint == null || accessUnit == null || accessUnit.Length == 0)
             {
                 return;
             }
@@ -1583,6 +1444,7 @@ namespace SIPSorcery.Net
                 // Parse NALs from H264 access unit, encoded as an Annex B bitstream.
                 // NALs are delimited by 0x000001 or 0x00000001.
                 int currPosn = 0;
+                List<byte[]> nals = new List<byte[]>();
                 for (int i = 0; i < accessUnit.Length; i++)
                 {
                     if (accessUnit[i] == 0x00)
@@ -1598,7 +1460,7 @@ namespace SIPSorcery.Net
                             int endPosn = nalStart - ((zeroes == 2) ? 3 : 4);
                             int nalSize = endPosn - currPosn;
 
-                            SendH264Nal(duration, payloadTypeID, accessUnit.Skip(currPosn).Take(nalSize).ToArray(), dstEndPoint, videoTrack);
+                            nals.Add(accessUnit.Skip(currPosn).Take(nalSize).ToArray());
                         }
 
                         currPosn = nalStart;
@@ -1611,7 +1473,13 @@ namespace SIPSorcery.Net
 
                 if (currPosn < accessUnit.Length)
                 {
-                    SendH264Nal(duration, payloadTypeID, accessUnit.Skip(currPosn).ToArray(), dstEndPoint, videoTrack);
+                    nals.Add(accessUnit.Skip(currPosn).ToArray());
+                }
+
+                for (int i = 0; i < nals.Count; i++)
+                {
+                    bool isLastNal = i == nals.Count - 1;
+                    SendH264Nal(duration, payloadTypeID, nals[i], isLastNal, dstEndPoint, videoTrack);
                 }
             }
         }
@@ -1622,6 +1490,7 @@ namespace SIPSorcery.Net
         /// <param name="duration">The duration in timestamp units of the payload (e.g. 3000 for 30fps).</param>
         /// <param name="payloadTypeID">The payload type ID  being used for H264 and that will be set on the RTP header.</param>
         /// <param name="nal">The buffer containing the NAL to send.</param>
+        /// <param name="isLastNal"> Control if markbit can be 1 and if we can increment timestamp after send</param>
         /// <param name="dstEndPoint">The destination end point to send to.</param>
         /// <param name="videoTrack">The video track to send on.</param>
         /// <remarks>
@@ -1689,7 +1558,7 @@ namespace SIPSorcery.Net
         /// R: Reserved bit must be 0.
         /// Type: The NAL unit payload type, comes from NAL packet (NOTE: this IS the type of the NAL message).
         /// </remarks>
-        private void SendH264Nal(uint duration, int payloadTypeID, byte[] nal, IPEndPoint dstEndPoint, MediaStreamTrack videoTrack)
+        private void SendH264Nal(uint duration, int payloadTypeID, byte[] nal, bool isLastNal, IPEndPoint dstEndPoint, MediaStreamTrack videoTrack)
         {
             //logger.LogDebug($"Send NAL {nal.Length}.");
 
@@ -1708,7 +1577,7 @@ namespace SIPSorcery.Net
 
                 //byte stapAByte = (byte)(firstHdrByte + 24);
                 //byte[] h264RtpHdr = new byte[] { stapAByte, (byte)(nal.Length >> 8 & 0xff), (byte)(nal.Length & 0xff) };
-                int markerBit = 1;   // There is only ever one packet in a STAP-A.
+                int markerBit = isLastNal ? 1 : 0;   // There is only ever one packet in a STAP-A.
 
                 //Buffer.BlockCopy(h264RtpHdr, 0, payload, 0, 3);
                 Buffer.BlockCopy(nal, 0, payload, 0, nal.Length);
@@ -1735,7 +1604,7 @@ namespace SIPSorcery.Net
 
                     bool isFirstPacket = index == 0;
                     bool isFinalPacket = (index + 1) * RTP_MAX_PAYLOAD >= nal.Length;
-                    int markerBit = (isFinalPacket) ? 1 : 0;
+                    int markerBit = (isLastNal && isFinalPacket) ? 1 : 0;
 
                     byte fuIndicator = (byte)(firstHdrByte + 28);
                     byte fuHeader = nalType;
@@ -1761,7 +1630,10 @@ namespace SIPSorcery.Net
                 }
             }
 
-            videoTrack.Timestamp += duration;
+            if (isLastNal)
+            {
+                videoTrack.Timestamp += duration;
+            }
         }
 
         /// <summary>
@@ -2110,21 +1982,21 @@ namespace SIPSorcery.Net
                         else
                         {
                             // Attempt to determine the media type for the RTP packet.
-                            if (m_isMediaMultiplexed)
+                            rtpMediaType = GetMediaTypeForRtpPacket(rtpPacket.Header);
+                            if (rtpMediaType == null)
                             {
-                                rtpMediaType = GetMediaTypeForRtpPacket(rtpPacket.Header);
-                            }
-                            else if (HasAudio && !HasVideo)
-                            {
-                                rtpMediaType = SDPMediaTypesEnum.audio;
-                            }
-                            else if (!HasAudio && HasVideo)
-                            {
-                                rtpMediaType = SDPMediaTypesEnum.video;
-                            }
-                            else
-                            {
-                                rtpMediaType = GetMediaTypeForLocalPort(localPort);
+                                if (AudioLocalTrack != null && VideoLocalTrack == null)
+                                {
+                                    rtpMediaType = SDPMediaTypesEnum.audio;
+                                }
+                                else if (AudioLocalTrack == null && VideoLocalTrack != null)
+                                {
+                                    rtpMediaType = SDPMediaTypesEnum.video;
+                                }
+                                else
+                                {
+                                    rtpMediaType = GetMediaTypeForLocalPort(localPort);
+                                }
                             }
 
                             // Set the remote track SSRC so that RTCP reports can match the media type.
@@ -2155,13 +2027,13 @@ namespace SIPSorcery.Net
                                 // things like the common codec, DTMF support etc. are not known.
 
                                 SDPMediaTypesEnum mediaType = (rtpMediaType.HasValue) ? rtpMediaType.Value : DEFAULT_MEDIA_TYPE;
-                               
+
                                 // For video RTP packets an attempt will be made to collate into frames. It's up to the application
                                 // whether it wants to subscribe to frames of RTP packets.
                                 if (mediaType == SDPMediaTypesEnum.video)
                                 {
                                     var videoFormat = GetSendingFormat(SDPMediaTypesEnum.video);
-                                    if (videoFormat.FormatCodec == SDPMediaFormatsEnum.VP8)
+                                    if (videoFormat.Name() == VideoCodecsEnum.VP8.ToString())
                                     {
                                         if (_rtpVideoFramer == null)
                                         {
@@ -2312,7 +2184,11 @@ namespace SIPSorcery.Net
                 return SDPMediaTypesEnum.video;
             }
 
-            logger.LogWarning($"An RTP packet with payload ID {header.PayloadType} was received that could not be matched to an audio or video stream.");
+            if (RemoteDescription != null)
+            {
+                logger.LogWarning($"An RTP packet with payload ID {header.PayloadType} was received that could not be matched to an audio or video stream.");
+            }
+
             return null;
         }
 
