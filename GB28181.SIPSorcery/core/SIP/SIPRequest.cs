@@ -60,8 +60,6 @@ namespace GB28181
         public SIPEndPoint LocalSIPEndPoint;                // The local SIP socket the request was received on or sent from.
 
 
-        private SIPRequest()
-        { }
 
         public SIPRequest(SIPMethodsEnum method, string uri): base(method,uri)
         {
@@ -79,9 +77,7 @@ namespace GB28181
 
             try
             {
-                var sipRequest = new SIPRequest();
-                sipRequest.LocalSIPEndPoint = sipMessage.LocalSIPEndPoint;
-                sipRequest.RemoteSIPEndPoint = sipMessage.RemoteSIPEndPoint;
+                var sipRequest = ParseSIPRequest(sipMessage);
 
                 string statusLine = sipMessage.FirstLine;
 

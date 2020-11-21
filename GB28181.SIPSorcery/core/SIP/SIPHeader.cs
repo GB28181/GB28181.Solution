@@ -1160,9 +1160,7 @@ namespace GB28181
             }
         }
 
-        private SIPRoute()
-        { }
-
+   
         public SIPRoute(string host):base(host)
         {
             if (host.IsNullOrBlank())
@@ -1201,7 +1199,7 @@ namespace GB28181
             this.IsStrictRouter = !looseRouter;
         }
 
-        public static SIPRoute ParseSIPRoute(string route)
+        public static new SIPRoute ParseSIPRoute(string route)
         {
             if (route.IsNullOrBlank())
             {
@@ -1210,12 +1208,7 @@ namespace GB28181
 
             try
             {
-                SIPRoute sipRoute = new SIPRoute
-                {
-                    m_userField = SIPUserField.ParseSIPUserField(route)
-                };
-
-                return sipRoute;
+                return ParseSIPRoute(route);
             }
             catch (Exception excp)
             {
