@@ -10,26 +10,18 @@
     <None Remove="core\SIPEvents\Dialog\EventDialogSchema.xsd" />
     <None Remove="core\SIPEvents\Presence\PIDFSchema.xsd" />
     <None Remove="media\Macroform_-_Simplicity.raw" />
-    <None Remove="media\testpattern.jpeg" />
-    <None Remove="media\testpattern_inverted.jpeg" />
+    <None Remove="media\testpattern.i420" />
     <EmbeddedResource Include="media\Macroform_-_Simplicity.raw" />
-    <EmbeddedResource Include="media\testpattern.jpeg" />
-    <EmbeddedResource Include="media\testpattern_inverted.jpeg" />
+    <EmbeddedResource Include="media\testpattern.i420" />
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.6.7" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
     <PackageReference Include="DnsClient" Version="1.4.0-beta-20200801.7" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.0" />
     <PackageReference Include="SIPSorcery.WebSocketSharp" Version="0.0.1" />
-    <PackageReference Include="SIPSorceryMedia.Abstractions" Version="0.0.9-pre" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="SIPSorceryMedia.Abstractions" Version="0.0.22-pre" />
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.7" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -60,7 +52,28 @@
   <RepositoryType>git</RepositoryType>
   <RepositoryBranch>master</RepositoryBranch>
     <PackageTags>SIP WebRTC VoIP RTP SDP STUN ICE SIPSorcery</PackageTags>
-    <PackageReleaseNotes>- v4.0.67-pre: Embedded test pattern images and default PCM music on hold files.
+    <PackageReleaseNotes>v4.0.91-pre: Fixed bug parsing FireFox SDP where fmtp was prior to rtpmap.
+- v4.0.90-pre: Allow SIP User Agent to use RTP ICE channel.
+- v4.0.89-pre: Updated to latest media abstractions package.
+- v4.0.88-pre: Added video encoder parameter to test pattern source.
+- v4.0.87-pre: Fixed bug not correctly processing missing SDP stream attribute.
+- v4.0.86-pre: Fixed bug negotiating SDP format IDs.
+- v4.0.85-pre: Refactored setting remote SDP offer in RTP session to fix a softphone bug.
+- v4.0.84-pre: Refactored SDP media format handling to improve audio and video format management.
+- v4.0.83-pre: Fix in SIP DNS and SIP UDP receive to work on Android.
+- v4.0.82-pre: Improvement to H264 packetisation. Added ability to set audio extras source sample period.
+- v4.0.81-pre: Fix for SIP DNS lookups failing on CNAME records.
+- v4.0.80-pre: Added webrtc helper class to work with node dss server.
+- v4.0.79-pre: Removed SCTP Time class due to conflict with Unity built in type.
+- v4.0.78-pre: Bug fix for cseq not being incremented for PRACK send or receive.
+- v4.0.77-pre: Updated to latest media abstractions package.
+- v4.0.76-pre: Updated to latest media abstractions package.
+- v4.0.75-pre: Added fix for creating self signed X509 certificates on non-Windows platforms. Required for WebRTC DTLS negotiation.
+- v4.0.74-pre: (Re)Added net461 target and removed netcoreapp3.1 target (the latter is compatible with netstandard2.0). Removed redundant monitoring classes.
+- v4.0.71-pre: Added helper class for webrtc signaling over web sockets.
+- v4.0.70-pre: Fixed reentrant bug to SRTP protect and unprotect methods.
+- v4.0.69-pre: Modified logging to use singleton factory from abstractions package.
+- v4.0.67-pre: Embedded test pattern images and default PCM music on hold files.
 - v4.0.61-pre: Added hooks for new media abstractions interface. Minimum .Net Framework target updated from net46 to net472.
 - v4.0.60-pre: Fix for RTP Session sequence number bug.
 - v4.0.59-pre: WebRTC data channel support.
@@ -97,9 +110,9 @@
 - Version &gt; 4.0.0 - Major refactor of SIP transport layer to support IPAddress.Any and IPAddress.IPv6Any.
 </PackageReleaseNotes>
 	<NeutralLanguage>zh-Hans</NeutralLanguage>
-    <Version>4.0.67-pre</Version>
-    <AssemblyVersion>4.0.67.0</AssemblyVersion>
-    <FileVersion>4.0.67.0</FileVersion>
+    <Version>4.0.91-pre</Version>
+    <AssemblyVersion>4.0.91.0</AssemblyVersion>
+    <FileVersion>4.0.91.0</FileVersion>
   </PropertyGroup>    
 
 </Project>
