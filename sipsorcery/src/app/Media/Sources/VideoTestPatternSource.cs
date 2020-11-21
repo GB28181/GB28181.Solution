@@ -9,6 +9,7 @@
 //
 // History:
 // 04 Sep 2020	Aaron Clauson	Created, Dublin, Ireland.
+// 05 Nov 2020  Aaron Clauson   Added video encoder parameter.
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
@@ -16,113 +17,140 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using SIPSorceryMedia.Abstractions;
 using SIPSorceryMedia.Abstractions.V1;
 
 namespace SIPSorcery.Media
 {
     public class VideoTestPatternSource : IVideoSource, IDisposable
     {
-        public const string TEST_PATTERN_RESOURCE_PATH = "media.testpattern.jpeg";
-        public const string TEST_PATTERN_INVERTED_RESOURCE_PATH = "media.testpattern_inverted.jpeg";
+        public const string TEST_PATTERN_RESOURCE_PATH = "SIPSorcery.media.testpattern.i420";
+        public const int TEST_PATTERN_WIDTH = 640;
+        public const int TEST_PATTERN_HEIGHT = 480;
 
-        private const int MAXIMUM_FRAMES_PER_SECOND = 30;
+        private const int VIDEO_SAMPLING_RATE = 90000;
+        private const int MAXIMUM_FRAMES_PER_SECOND = 60;           // Note the Threading.Timer's maximum callback rate is approx 60/s so allowing higher has no effect.
         private const int DEFAULT_FRAMES_PER_SECOND = 30;
         private const int MINIMUM_FRAMES_PER_SECOND = 1;
-        private const float TEXT_SIZE_PERCENTAGE = 0.035f;          // Height of text as a percentage of the total image height
-        private const float TEXT_OUTLINE_REL_THICKNESS = 0.02f;     // Black text outline thickness is set as a percentage of text height in pixels
-        private const int TEXT_MARGIN_PIXELS = 5;
-        private const int POINTS_PER_INCH = 72;
+        private const int STAMP_BOX_SIZE = 20;
+        private const int STAMP_BOX_PADDING = 10;
         private const int TIMER_DISPOSE_WAIT_MILLISECONDS = 1000;
+        private const int VP8_SUGGESTED_FORMAT_ID = 96;
 
         public static ILogger logger = Sys.Log.Logger;
 
-        public static readonly List<VideoCodecsEnum> SupportedCodecs = new List<VideoCodecsEnum>
+        public static readonly List<VideoFormat> SupportedFormats = new List<VideoFormat>
         {
-            VideoCodecsEnum.VP8
+            new VideoFormat(VideoCodecsEnum.VP8, VP8_SUGGESTED_FORMAT_ID, VIDEO_SAMPLING_RATE)
         };
 
-        private List<VideoCodecsEnum> _supportedCodecs = new List<VideoCodecsEnum>(SupportedCodecs);
         private int _frameSpacing;
-        private Bitmap _testPattern;
+        private byte[] _testI420Buffer;
         private Timer _sendTestPatternTimer;
         private bool _isStarted;
+        private bool _isPaused;
         private bool _isClosed;
+        private bool _isMaxFrameRate;
+        private int _frameCount;
+        private IVideoEncoder _videoEncoder;
+        private MediaFormatManager<VideoFormat> _formatManager;
 
+        /// <summary>
+        /// Unencoded test pattern samples.
+        /// </summary>
         public event RawVideoSampleDelegate OnVideoSourceRawSample;
 
         /// <summary>
-        /// This video source DOES NOT generate encoded samples. Subscribe to the raw samples
-        /// event and pass to an encoder.
+        /// If a video encoder has been set then this event contains the encoded video
+        /// samples.
         /// </summary>
-        [Obsolete("This video source is not currently capable of generating encoded samples.")]
-        public event EncodedSampleDelegate OnVideoSourceEncodedSample { add { } remove { } }
+        public event EncodedSampleDelegate OnVideoSourceEncodedSample;
 
-        public VideoTestPatternSource()
+        public event SourceErrorDelegate OnVideoSourceError;
+
+        public VideoTestPatternSource(IVideoEncoder encoder = null)
         {
-            EmbeddedFileProvider efp = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
-            var testPatternFileInfo = efp.GetFileInfo(TEST_PATTERN_RESOURCE_PATH);
-
-            if (testPatternFileInfo == null)
+            if (encoder != null)
             {
-                throw new ApplicationException($"Test pattern embedded resource could not be found, {TEST_PATTERN_RESOURCE_PATH}.");
+                _videoEncoder = encoder;
+                _formatManager = new MediaFormatManager<VideoFormat>(SupportedFormats);
+            }
+
+            var assem = typeof(VideoTestPatternSource).GetTypeInfo().Assembly;
+            var testPatternStm = assem.GetManifestResourceStream(TEST_PATTERN_RESOURCE_PATH);
+
+            if (testPatternStm == null)
+            {
+                OnVideoSourceError?.Invoke($"Test pattern embedded resource could not be found, {TEST_PATTERN_RESOURCE_PATH}.");
             }
             else
             {
-                _testPattern = new Bitmap(testPatternFileInfo.CreateReadStream());
+                _testI420Buffer = new byte[TEST_PATTERN_WIDTH * TEST_PATTERN_HEIGHT * 3 / 2];
+                testPatternStm.Read(_testI420Buffer, 0, _testI420Buffer.Length);
+                testPatternStm.Close();
                 _sendTestPatternTimer = new Timer(GenerateTestPattern, null, Timeout.Infinite, Timeout.Infinite);
                 _frameSpacing = 1000 / DEFAULT_FRAMES_PER_SECOND;
             }
         }
 
-        public void SetEmbeddedTestPatternPath(string path)
-        {
-            EmbeddedFileProvider efp = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
-            var testPattenFileInfo = efp.GetFileInfo(path);
+        public void RestrictFormats(Func<VideoFormat, bool> filter) => _formatManager.RestrictFormats(filter);
+        public List<VideoFormat> GetVideoSourceFormats() => _formatManager.GetSourceFormats();
+        public void SetVideoSourceFormat(VideoFormat videoFormat) => _formatManager.SetSelectedFormat(videoFormat);
+        public List<VideoFormat> GetVideoSinkFormats() => _formatManager.GetSourceFormats();
+        public void SetVideoSinkFormat(VideoFormat videoFormat) => _formatManager.SetSelectedFormat(videoFormat);
 
-            if (testPattenFileInfo == null)
-            {
-                logger.LogWarning($"Video test pattern source could not locate embedded path {path}.");
-            }
-            else
-            {
-                logger.LogDebug($"Test pattern loaded from embedded resource {path}.");
+        public void ForceKeyFrame() => _videoEncoder?.ForceKeyFrame();
+        public bool HasEncodedVideoSubscribers() => OnVideoSourceEncodedSample != null;
+        public void ExternalVideoSourceRawSample(uint durationMilliseconds, int width, int height, byte[] sample, VideoPixelFormatsEnum pixlFormat) =>
+            throw new NotImplementedException("The test pattern video source does not offer any encoding services for external sources.");
+        public Task<bool> InitialiseVideoSourceDevice() =>
+            throw new NotImplementedException("The test pattern video source does not use a device.");
+        public bool IsVideoSourcePaused() => _isPaused;
 
-                lock (_sendTestPatternTimer)
-                {
-                    _testPattern?.Dispose();
-                    _testPattern = new Bitmap(testPattenFileInfo.CreateReadStream());
-                }
-            }
-        }
+        //public void SetEmbeddedTestPatternPath(string path)
+        //{
+        //    var assem = typeof(VideoTestPatternSource).GetTypeInfo().Assembly;
+        //    var testPatternStm = assem.GetManifestResourceStream(path);
 
-        public void SetTestPatternPath(string path)
-        {
-            if (!File.Exists(path))
-            {
-                logger.LogWarning($"The test pattern file could not be found at {path}.");
-            }
-            else
-            {
-                logger.LogDebug($"Test pattern loaded from {path}.");
+        //    if (testPatternStm == null)
+        //    {
+        //        OnVideoSourceError?.Invoke($"Video test pattern source could not locate embedded path {path}.");
+        //    }
+        //    else
+        //    {
+        //        logger.LogDebug($"Test pattern loaded from embedded resource {path}.");
 
-                lock (_sendTestPatternTimer)
-                {
-                    _testPattern?.Dispose();
-                    _testPattern = new Bitmap(path);
-                }
-            }
-        }
+        //        lock (_sendTestPatternTimer)
+        //        {
+        //            var bmp = new Bitmap(testPatternStm);
+        //            LoadI420Buffer(bmp);
+        //            bmp.Dispose();
+        //        }
+        //    }
+        //}
+
+        //public void SetTestPatternPath(string path)
+        //{
+        //    if (!File.Exists(path))
+        //    {
+        //        logger.LogWarning($"The test pattern file could not be found at {path}.");
+        //    }
+        //    else
+        //    {
+        //        logger.LogDebug($"Test pattern loaded from {path}.");
+
+        //        lock (_sendTestPatternTimer)
+        //        {
+        //            var bmp = new Bitmap(path);
+        //            LoadI420Buffer(bmp);
+        //            bmp.Dispose();
+        //        }
+        //    }
+        //}
 
         public void SetFrameRate(int framesPerSecond)
         {
@@ -142,29 +170,25 @@ namespace SIPSorcery.Media
         }
 
         /// <summary>
-        /// Requests that the video sink and source only advertise support for the supplied list of codecs.
-        /// Only codecs that are already supported and in the <see cref="SupportedCodecs" /> list can be 
-        /// used.
+        /// If this gets set the frames will be generated in a loop with no pause. Ideally this would
+        /// only ever be done in load test scenarios.
         /// </summary>
-        /// <param name="codecs">The list of codecs to restrict advertised support to.</param>
-        public void RestrictCodecs(List<VideoCodecsEnum> codecs)
+        public void SetMaxFrameRate(bool isMaxFrameRate)
         {
-            if (codecs == null || codecs.Count == 0)
+            if (_isMaxFrameRate != isMaxFrameRate)
             {
-                _supportedCodecs = new List<VideoCodecsEnum>(SupportedCodecs);
-            }
-            else
-            {
-                _supportedCodecs = new List<VideoCodecsEnum>();
-                foreach (var codec in codecs)
+                _isMaxFrameRate = isMaxFrameRate;
+
+                if (_isStarted)
                 {
-                    if (SupportedCodecs.Any(x => x == codec))
+                    if (_isMaxFrameRate)
                     {
-                        _supportedCodecs.Add(codec);
+                        _sendTestPatternTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                        GenerateMaxFrames();
                     }
                     else
                     {
-                        logger.LogWarning($"Not including unsupported codec {codec} in filtered list.");
+                        _sendTestPatternTimer.Change(0, _frameSpacing);
                     }
                 }
             }
@@ -172,12 +196,14 @@ namespace SIPSorcery.Media
 
         public Task PauseVideo()
         {
+            _isPaused = true;
             _sendTestPatternTimer.Change(Timeout.Infinite, Timeout.Infinite);
             return Task.CompletedTask;
         }
 
         public Task ResumeVideo()
         {
+            _isPaused = false;
             _sendTestPatternTimer.Change(0, _frameSpacing);
             return Task.CompletedTask;
         }
@@ -187,7 +213,14 @@ namespace SIPSorcery.Media
             if (!_isStarted)
             {
                 _isStarted = true;
-                _sendTestPatternTimer.Change(0, _frameSpacing);
+                if (_isMaxFrameRate)
+                {
+                    GenerateMaxFrames();
+                }
+                else
+                {
+                    _sendTestPatternTimer.Change(0, _frameSpacing);
+                }
             }
             return Task.CompletedTask;
         }
@@ -205,102 +238,181 @@ namespace SIPSorcery.Media
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// This source can only supply raw RGB bitmap samples.
-        /// </summary>
-        public List<VideoCodecsEnum> GetVideoSourceFormats()
-        {
-            throw new NotImplementedException();
-        }
+        //private void LoadI420Buffer(Bitmap bitmap)
+        //{
+        //    _testBufferWidth = bitmap.Width;
+        //    _testBufferHeight = bitmap.Height;
+        //    _testI420Buffer = BitmapToI420(bitmap);
+        //}
 
-        /// <summary>
-        /// This source can only supply raw RGB bitmap samples.
-        /// </summary>
-        public void SetVideoSourceFormat(VideoCodecsEnum videoFormat)
+        private void GenerateMaxFrames()
         {
-            throw new NotImplementedException();
-        }
+            DateTime lastGenerateTime = DateTime.Now;
 
-        /// <summary>
-        /// This source does not have any video encoding capabilities.
-        /// </summary>
-        public void ForceKeyFrame()
-        {
-            throw new NotImplementedException();
+            while (!_isClosed && _isMaxFrameRate)
+            {
+                _frameSpacing = Convert.ToInt32(DateTime.Now.Subtract(lastGenerateTime).TotalMilliseconds);
+                GenerateTestPattern(null);
+                lastGenerateTime = DateTime.Now;
+            }
         }
 
         private void GenerateTestPattern(object state)
         {
             lock (_sendTestPatternTimer)
             {
-                if (!_isClosed && OnVideoSourceRawSample != null)
+                if (!_isClosed && (OnVideoSourceRawSample != null || OnVideoSourceEncodedSample != null))
                 {
-                    var stampedTestPattern = _testPattern.Clone() as System.Drawing.Image;
-                    AddTimeStampAndLocation(stampedTestPattern, DateTime.UtcNow.ToString("dd MMM yyyy HH:mm:ss:fff"), "Test Pattern");
+                    _frameCount++;
 
-                    // This event handler could get removed while the timestamp text is being added.
-                    OnVideoSourceRawSample?.Invoke((uint)_frameSpacing, _testPattern.Width, _testPattern.Height, BitmapToRGB24(stampedTestPattern as Bitmap));
+                    //var stampedTestPattern = _testPattern.Clone() as System.Drawing.Image;
+                    //AddTimeStampAndLocation(stampedTestPattern, DateTime.UtcNow.ToString("dd MMM yyyy HH:mm:ss:fff"), "Test Pattern");
+                    //// This event handler could get removed while the timestamp text is being added.
+                    //OnVideoSourceRawSample?.Invoke((uint)_frameSpacing, _testPattern.Width, _testPattern.Height, BitmapToBGR24(stampedTestPattern as Bitmap), VideoPixelFormatsEnum.Bgr);
+                    //stampedTestPattern?.Dispose();
+                    //OnVideoSourceRawSample?.Invoke((uint)_frameSpacing, _testPatternWidth, _testPatternHeight, _testPatternI420, VideoPixelFormatsEnum.I420);
+                    StampI420Buffer(_testI420Buffer, TEST_PATTERN_WIDTH, TEST_PATTERN_HEIGHT, _frameCount);
 
-                    stampedTestPattern?.Dispose();
-                }
-            }
-        }
+                    OnVideoSourceRawSample?.Invoke((uint)_frameSpacing, TEST_PATTERN_WIDTH, TEST_PATTERN_HEIGHT, _testI420Buffer, VideoPixelFormatsEnum.I420);
 
-        private void AddTimeStampAndLocation(System.Drawing.Image image, string timeStamp, string locationText)
-        {
-            int pixelHeight = (int)(image.Height * TEXT_SIZE_PERCENTAGE);
-
-            Graphics g = Graphics.FromImage(image);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            using (StringFormat format = new StringFormat())
-            {
-                format.LineAlignment = StringAlignment.Center;
-                format.Alignment = StringAlignment.Center;
-
-                using (Font f = new Font("Tahoma", pixelHeight, GraphicsUnit.Pixel))
-                {
-                    using (var gPath = new GraphicsPath())
+                    if (_videoEncoder != null && OnVideoSourceEncodedSample != null)
                     {
-                        float emSize = g.DpiY * f.Size / POINTS_PER_INCH;
-                        if (locationText != null)
-                        {
-                            gPath.AddString(locationText, f.FontFamily, (int)FontStyle.Bold, emSize, new Rectangle(0, TEXT_MARGIN_PIXELS, image.Width, pixelHeight), format);
-                        }
+                        var encodedBuffer = _videoEncoder.EncodeVideo(TEST_PATTERN_WIDTH, TEST_PATTERN_HEIGHT, _testI420Buffer, VideoPixelFormatsEnum.I420, VideoCodecsEnum.VP8);
 
-                        gPath.AddString(timeStamp /* + " -- " + fps.ToString("0.00") + " fps" */, f.FontFamily, (int)FontStyle.Bold, emSize, new Rectangle(0, image.Height - (pixelHeight + TEXT_MARGIN_PIXELS), image.Width, pixelHeight), format);
-                        g.FillPath(Brushes.White, gPath);
-                        g.DrawPath(new Pen(Brushes.Black, pixelHeight * TEXT_OUTLINE_REL_THICKNESS), gPath);
+                        if (encodedBuffer != null)
+                        {
+                            uint fps = (_frameSpacing > 0) ? 1000 / (uint)_frameSpacing : DEFAULT_FRAMES_PER_SECOND;
+                            uint durationRtpTS = VIDEO_SAMPLING_RATE / fps;
+                            OnVideoSourceEncodedSample.Invoke(durationRtpTS, encodedBuffer);
+                        }
+                    }
+
+                    if (_frameCount == int.MaxValue)
+                    {
+                        _frameCount = 0;
                     }
                 }
             }
         }
 
-        private byte[] BitmapToRGB24(Bitmap bitmap)
+        //private void AddTimeStampAndLocation(System.Drawing.Image image, string timeStamp, string locationText)
+        //{
+        //    int pixelHeight = (int)(image.Height * TEXT_SIZE_PERCENTAGE);
+
+        //    Graphics g = Graphics.FromImage(image);
+        //    g.SmoothingMode = SmoothingMode.AntiAlias;
+        //    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        //    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+        //    using (StringFormat format = new StringFormat())
+        //    {
+        //        format.LineAlignment = StringAlignment.Center;
+        //        format.Alignment = StringAlignment.Center;
+
+        //        using (Font f = new Font("Tahoma", pixelHeight, GraphicsUnit.Pixel))
+        //        {
+        //            using (var gPath = new GraphicsPath())
+        //            {
+        //                float emSize = g.DpiY * f.Size / POINTS_PER_INCH;
+        //                if (locationText != null)
+        //                {
+        //                    gPath.AddString(locationText, f.FontFamily, (int)FontStyle.Bold, emSize, new Rectangle(0, TEXT_MARGIN_PIXELS, image.Width, pixelHeight), format);
+        //                }
+
+        //                gPath.AddString(timeStamp /* + " -- " + fps.ToString("0.00") + " fps" */, f.FontFamily, (int)FontStyle.Bold, emSize, new Rectangle(0, image.Height - (pixelHeight + TEXT_MARGIN_PIXELS), image.Width, pixelHeight), format);
+        //                g.FillPath(Brushes.White, gPath);
+        //                g.DrawPath(new Pen(Brushes.Black, pixelHeight * TEXT_OUTLINE_REL_THICKNESS), gPath);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public static byte[] BitmapToBGR24(Bitmap bitmap)
+        //{
+        //    if (bitmap.PixelFormat != PixelFormat.Format24bppRgb)
+        //    {
+        //        throw new ApplicationException("BitmapToRGB24 cannot convert from a non 24bppRgb pixel format.");
+        //    }
+
+        //    // NOTE: Pixel formats that have "Rgb" in their name, such as PixelFormat.Format24bppRgb,
+        //    // use a buffer format of BGR. Many issues on StackOverflow regarding this,
+        //    // e.g. https://stackoverflow.com/questions/5106505/converting-gdi-pixelformat-to-wpf-pixelformat.
+        //    // Needs to be taken into account by the receiver of the BGR buffer.
+
+        //    BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+        //    var length = Math.Abs(bitmapData.Stride) * bitmapData.Height;
+
+        //    byte[] bgrValues = new byte[length];
+
+        //    Marshal.Copy(bitmapData.Scan0, bgrValues, 0, length);
+        //    bitmap.UnlockBits(bitmapData);
+
+        //    return bgrValues;
+        //}
+
+        //public static byte[] BitmapToI420(Bitmap bitmap)
+        //{
+        //    return BGRtoI420(BitmapToBGR24(bitmap), bitmap.Width, bitmap.Height);
+        //}
+
+        public static byte[] BGRtoI420(byte[] bgr, int width, int height)
         {
-            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            var length = bitmapData.Stride * bitmapData.Height;
+            int size = width * height;
+            int uOffset = size;
+            int vOffset = size + size / 4;
+            int r, g, b, y, u, v;
+            int posn = 0;
 
-            byte[] bytes = new byte[length];
+            byte[] buffer = new byte[width * height * 3 / 2];
 
-            // Copy bitmap to byte[]
-            Marshal.Copy(bitmapData.Scan0, bytes, 0, length);
-            bitmap.UnlockBits(bitmapData);
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    b = bgr[posn++] & 0xff;
+                    g = bgr[posn++] & 0xff;
+                    r = bgr[posn++] & 0xff;
 
-            return bytes;
+                    y = (int)(0.299 * r + 0.587 * g + 0.114 * b);
+                    u = (int)(-0.147 * r - 0.289 * g + 0.436 * b) + 128;
+                    v = (int)(0.615 * r - 0.515 * g - 0.100 * b) + 128;
+
+                    buffer[col + row * width] = (byte)(y > 255 ? 255 : y < 0 ? 0 : y);
+
+                    int uvposn = col / 2 + row / 2 * width / 2;
+
+                    buffer[uOffset + uvposn] = (byte)(u > 255 ? 255 : u < 0 ? 0 : u);
+                    buffer[vOffset + uvposn] = (byte)(v > 255 ? 255 : v < 0 ? 0 : v);
+                }
+            }
+
+            return buffer;
         }
 
-        public void ExternalVideoSourceRawSample(uint durationMilliseconds, int width, int height, byte[] rgb24Sample)
+        /// <summary>
+        /// TODO: Add something better for a dynamic stamp on an I420 buffer. This is useful to provide
+        /// a visual indication to the receiver that the video stream has not stalled.
+        /// </summary>
+        public static void StampI420Buffer(byte[] i420Buffer, int width, int height, int frameNumber)
         {
-            throw new NotImplementedException("The test pattern video source does not offer any encoding services for external sources.");
+            // Draws a varying gray scale square in the bottom right corner on the base I420 buffer.
+            int startX = width - STAMP_BOX_SIZE - STAMP_BOX_PADDING;
+            int startY = height - STAMP_BOX_SIZE - STAMP_BOX_PADDING;
+
+            for (int y = startY; y < startY + STAMP_BOX_SIZE; y++)
+            {
+                for (int x = startX; x < startX + STAMP_BOX_SIZE; x++)
+                {
+                    i420Buffer[y * width + x] = (byte)(frameNumber % 255);
+                }
+            }
         }
 
         public void Dispose()
         {
+            _isClosed = true;
             _sendTestPatternTimer?.Dispose();
-            _testPattern?.Dispose();
+            _videoEncoder?.Dispose();
         }
     }
 }
