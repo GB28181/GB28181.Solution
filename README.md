@@ -8,8 +8,14 @@
 
 1、`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
 
-2、`git clone https://hub.fastgit.org/GB28181/GB28181.Solution.git` 然后修复 fetch的url 为：`https://github.com/GB28181/GB28181.Solution.git`
+2、 使用加速镜像clone 参考如下命令
 
+```bash
+git clone https://hub.fastgit.org/GB28181/GB28181.Solution.git
+cd GB28181.Solution
+git remote remove orign
+git remote add origin https://github.com/GB28181/GB28181.Solution.git
+```
 ## 运行环境(environment)
 
 ~~~ bash
