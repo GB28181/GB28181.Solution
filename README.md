@@ -7,6 +7,7 @@
 + 仓库体积较大，为加快clone速度，建议以下两种方式之一：
 
 1、`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
+
 2、`git clone https://hub.fastgit.org/GB28181/GB28181.Solution.git` 然后修复 fetch的url 为：https://github.com/GB28181/GB28181.Solution.git
 
 ## 运行环境(environment)
