@@ -4,7 +4,10 @@
 + 最新国标是：【[GB28181-2016](docs/GBT%2028181-2016%20公共安全视频监控联网系统信息传输、交换、控制技术要求-目录版.pdf)】
 + 项目非常年轻，诚邀请大家能一起完善，希望每一个对本项目感兴趣的朋友，都能成为本项目的共同作者或者贡献者
 + 注意：**代码一直在更新，GB28181系列项目，并不是生产就绪的，往往须要根据自己的项目和产品架构，做适当的调整和适配！！**
-+ 仓库体积较大，为加快clone速度，建议使用：`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
++ 仓库体积较大，为加快clone速度，建议以下两种方式之一：
+
+1、`git clone https://github.com/GB28181/GB28181.Solution.git --depth=1`
+2、`git clone https://hub.fastgit.org/GB28181/GB28181.Solution.git` 然后修复 fetch的url 为：https://github.com/GB28181/GB28181.Solution.git
 
 ## 运行环境(environment)
 
