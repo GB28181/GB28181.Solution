@@ -13,7 +13,7 @@
 ```bash
 git clone https://hub.fastgit.org/GB28181/GB28181.Solution.git
 cd GB28181.Solution
-git remote remove orign
+git remote remove origin
 git remote add origin https://github.com/GB28181/GB28181.Solution.git
 ```
 ## 运行环境(environment)
