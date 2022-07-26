@@ -1,4 +1,5 @@
-# GB28181 Standard
+# GB28181 Standard(不做伸手党，一起贡献，一起加油，力量才能更强）
+
 
 + GB28181开源的目标是：通过代码复用，适当降低工作难度和减少业务代码的重复性，并非替代你的开发工作或者让你几乎不用开发工作。
 + 最新国标是：【[GB28181-2016](docs/GBT%2028181-2016%20公共安全视频监控联网系统信息传输、交换、控制技术要求-目录版.pdf)】
@@ -21,7 +22,7 @@ git remote add origin https://github.com/GB28181/GB28181.Solution.git
 ~~~ bash
 running in docker
 running on Linux
-running on aspnetcore 3.1+
+running on aspnetcore 3.1+ （PS：哪位大佬有空，升级一下net6）
 ~~~
 
 + [GB28181.Solution的模块说明](./SolutionModules.md)
@@ -55,7 +56,7 @@ running on aspnetcore 3.1+
 
 ## 讨论、成为共同作者、近距离贡献
 
-微信扫描二维码，添加好友，进入微信讨论群(注明：GB28181-公司-姓名)：
+微信扫描二维码，添加好友，进入微信讨论群(注明：GB28181-公司-姓名，添加量较多，不是这个格式不通过)：
 
 ![qrcode](./docs/crazybber.jpg)
 
