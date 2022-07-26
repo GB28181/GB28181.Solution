@@ -32,7 +32,7 @@ namespace GB28181
 	///	 
 	///	 SIP-Version    =  "SIP" "/" 1*DIGIT "." 1*DIGIT
 	/// </bnf>
-	public class SIPRequest:SIPSorcery.SIP.SIPRequest
+	public class SIPRequest
 	{
         private static ILog logger = AssemblyState.logger;
 
