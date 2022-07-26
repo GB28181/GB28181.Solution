@@ -8,6 +8,7 @@ using System.Reflection;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
+using Grpc.Shared.HttpApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Type = System.Type;
 
@@ -54,7 +55,12 @@ namespace Microsoft.AspNetCore.Grpc.Swagger.Internal
                 if (_enumTypeMapping.TryGetValue(type, out var enumDescriptor))
                 {
                     var values = enumDescriptor.Values.Select(v => v.Name).ToList();
-                    return DataContract.ForPrimitive(type, DataType.String, dataFormat: null, enumValues: values);
+                    return DataContract.ForPrimitive(type, DataType.String, dataFormat: null, value =>
+                    {
+                        var match = enumDescriptor.Values.SingleOrDefault(v => v.Number == (int)value);
+                        var name = match?.Name ?? value.ToString();
+                        return @"""" + name + @"""";
+                    });
                 }
             }
 
@@ -126,7 +132,10 @@ namespace Microsoft.AspNetCore.Grpc.Swagger.Internal
                     fieldType = MessageDescriptorHelpers.ResolveFieldType(field);
                 }
 
-                properties.Add(new DataProperty(field.JsonName, fieldType));
+                var propertyName = ServiceDescriptorHelpers.FormatUnderscoreName(field.Name, pascalCase: true, preservePeriod: false);
+                var propertyInfo = messageDescriptor.ClrType.GetProperty(propertyName);
+
+                properties.Add(new DataProperty(field.JsonName, fieldType, memberInfo: propertyInfo));
             }
 
             var schema = DataContract.ForObject(messageDescriptor.ClrType, properties: properties);
