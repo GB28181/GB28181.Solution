@@ -17,9 +17,9 @@ namespace GB28181.App
         private SIPAssetGetListDelegate<SIPDialogueAsset> GetDialogues_External;
         private SIPAssetGetByIdDelegate<SIPDialogueAsset> GetDialogue_External;
 
-        public override SIPEventPackage SubscriptionEventPackage
+        public override SIPEventPackagesEnum SubscriptionEventPackage
         {
-            get { return SIPEventPackage.Dialog; }
+            get { return SIPEventPackagesEnum.Dialog; }
         }
 
         public override string MonitorFilter

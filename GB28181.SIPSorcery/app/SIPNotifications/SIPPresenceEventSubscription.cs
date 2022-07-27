@@ -23,9 +23,9 @@ namespace GB28181.App
 
         private bool m_switchboardSIPAccountsOnly;      // If true means this subscription should only generate notifications for SIP accounts that are switchboard enabled.
 
-        public override SIPEventPackage SubscriptionEventPackage
+        public override SIPEventPackagesEnum SubscriptionEventPackage
         {
-            get { return SIPEventPackage.Presence; }
+            get { return SIPEventPackagesEnum.Presence; }
         }
 
         public override string MonitorFilter
