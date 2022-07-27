@@ -19,10 +19,10 @@ jobs:
     strategy:
       matrix:
         os: [ windows-latest ]
-        dotnet-version: [ 3.1 ]
+        dotnet-version: [ 6.0 ]
         include:
-          - dotnet-version: 3.1
-            dotnet-sdk-version: 3.1.100
+          - dotnet-version: 6.0
+            dotnet-sdk-version: 6.0.302
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
