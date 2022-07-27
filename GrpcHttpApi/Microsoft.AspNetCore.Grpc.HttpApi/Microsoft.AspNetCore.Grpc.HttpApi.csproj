@@ -31,10 +31,10 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-    <PackageReference Include="Google.Api.CommonProtos" Version="2.4.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.18.0" />
-    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.33.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.33.1">
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.6.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.4" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.47.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageProjectUrl>https://github.com/GB28181/GB28181.Solution</PackageProjectUrl>
   </PropertyGroup>
 
@@ -21,7 +21,6 @@
   
   <ItemGroup>
     <Folder Include="Config\">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Folder>
   </ItemGroup>
   <ItemGroup>
