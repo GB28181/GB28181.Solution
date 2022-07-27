@@ -3,7 +3,6 @@ name: .NET Core CI/CD
 on:
   push:
     branches:
-      - master
       - develop
     tags:
       - v*

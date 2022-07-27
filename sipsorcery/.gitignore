@@ -170,3 +170,8 @@ bower_components
 *.vs
 
 docfx/*
+**/.vscode*
+*.sdp
+**/.ionide
+.fake
+.ionide
