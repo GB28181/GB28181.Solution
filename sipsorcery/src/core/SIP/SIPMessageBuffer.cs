@@ -58,6 +58,11 @@ namespace SIPSorcery.SIP
                     return null;
                 }
             }
+
+            set
+            {
+                RawBuffer = BitConverter.GetBytes(ushort.Parse(value));
+            }
         }
 
         public SIPMessageTypesEnum SIPMessageType = SIPMessageTypesEnum.Unknown;

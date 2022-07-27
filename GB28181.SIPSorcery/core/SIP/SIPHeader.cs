@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Text.RegularExpressions;
 using SIPSorcery.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
@@ -1125,7 +1124,7 @@ namespace GB28181
     /// The Route and Record-Route headers only have parameters, no headers. Parameters of from ...;name=value;name2=value2
     /// There are no specific parameters.
     /// </remarks>
-    public class SIPRoute:SIPSorcery.SIP.SIPRoute
+    public class SIPRoute : SIPSorcery.SIP.SIPRoute
     {
         private static string m_looseRouterParameter = SIPConstants.SIP_LOOSEROUTER_PARAMETER;
 
@@ -1160,8 +1159,8 @@ namespace GB28181
             }
         }
 
-   
-        public SIPRoute(string host):base(host)
+
+        public SIPRoute(string host) : base(host)
         {
             if (host.IsNullOrBlank())
             {
@@ -1171,7 +1170,7 @@ namespace GB28181
             m_userField = SIPUserField.ParseSIPUserField(host);
         }
 
-        public SIPRoute(string host, bool looseRouter) : base(host,looseRouter)
+        public SIPRoute(string host, bool looseRouter) : base(host, looseRouter)
         {
             if (host.IsNullOrBlank())
             {
@@ -1190,7 +1189,7 @@ namespace GB28181
             };
         }
 
-        public SIPRoute(SIPURI uri, bool looseRouter) : base(uri,looseRouter)
+        public SIPRoute(SIPURI uri, bool looseRouter) : base(uri, looseRouter)
         {
             m_userField = new SIPUserField
             {
@@ -1615,14 +1614,14 @@ namespace GB28181
             return viaStr;
         }
 
-    
+
     }
 
     /// <bnf>
     /// header  =  "header-name" HCOLON header-value *(COMMA header-value)
     /// field-name: field-value CRLF
     /// </bnf>
-    public class SIPHeader:SIPSorcery.SIP.SIPHeader
+    public class SIPHeader : SIPSorcery.SIP.SIPHeader
     {
         public struct ContentTypes
         {
@@ -1639,22 +1638,24 @@ namespace GB28181
         public SIPAuthenticationHeader AuthenticationHeader;
         public List<SIPContactHeader> Contact = new List<SIPContactHeader>();
         public SIPFromHeader From;
-        public SIPRouteSet RecordRoutes = new SIPRouteSet();    
+        public SIPRouteSet RecordRoutes = new SIPRouteSet();
         public SIPRouteSet Routes = new SIPRouteSet();
         public SIPToHeader To;
         public SIPViaSet Vias = new SIPViaSet();
 
         // Non-core custom SIP headers for use with the SIP Sorcery switchboard.
-        public string SwitchboardOriginalCallID;    // The original Call-ID header on the call that was forwarded to the switchboard.
+        public string SwitchboardOriginalCallID { get; set; }    // The original Call-ID header on the call that was forwarded to the switchboard.
         //public string SwitchboardOriginalFrom;      // The original From header on the call that was forwarded to the switchboard.
         //public string SwitchboardOriginalTo;        // The original To header on the call that was forwarded to the switchboard.
-        public string SwitchboardLineName;          // An optional name for the line the call was received on.
-        public string SwitchboardOwner;             // If a switchboard operator "grabs" a call then they will take exclusive ownership of it. This field records the owner.
-        public string SwitchboardTerminate;         // Can be set on a BYE request to indicate whether the switchboard is requesting both, current or opposite dialogues to be hungup.
+        public string SwitchboardLineName { get; set; }          // An optional name for the line the call was received on.
+        public string SwitchboardOwner { get; set; }            // If a switchboard operator "grabs" a call then they will take exclusive ownership of it. This field records the owner.
+        public string SwitchboardTerminate { get; set; }        // Can be set on a BYE request to indicate whether the switchboard is requesting both, current or opposite dialogues to be hungup.
         //public string SwitchboardFromContactURL;
         //public int SwitchboardTokenRequest;         // A user agent can request a token from a sipsorcery server and this value indicates the period the token is being requested for.
         //public string SwitchboardToken;             // If a token is issued this header will be used to hold it in the response.
-
+        public string CRMPersonName { get; set; }
+        public string CRMCompanyName { get; set; }
+        public string CRMPictureURL { get; set; }
 
         public SIPHeader()
         { }
@@ -1717,7 +1718,7 @@ namespace GB28181
             }
         }
 
-    
+
 
         public static SIPHeader ParseSIPHeaders(string[] headersCollection)
         {
@@ -2446,6 +2447,6 @@ namespace GB28181
             Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff");
         }
 
- 
+
     }
 }

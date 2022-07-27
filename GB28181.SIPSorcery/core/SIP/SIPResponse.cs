@@ -85,7 +85,7 @@ namespace GB28181
 				sipResponse.RemoteSIPEndPoint = sipMessage.RemoteSIPEndPoint;
 				string statusLine = sipMessage.FirstLine;
 
-				int firstSpacePosn = statusLine.IndexOf(" ");
+				int firstSpacePosn = statusLine.IndexOf(" ",StringComparison.CurrentCulture);
 
 				sipResponse.SIPVersion = statusLine.Substring(0, firstSpacePosn).Trim();
 				statusLine = statusLine.Substring(firstSpacePosn).Trim();
@@ -94,8 +94,7 @@ namespace GB28181
 				sipResponse.ReasonPhrase = statusLine.Substring(3).Trim();
 
 				sipResponse.Header = SIPHeader.ParseSIPHeaders(sipMessage.SIPHeaders);
-				sipResponse.Body = sipMessage.Body;
-
+				sipResponse.Body = System.Text.Encoding.UTF8.GetString(sipMessage.Body);
 				return sipResponse;
 			}
 			catch (SIPValidationException)

@@ -268,10 +268,10 @@ namespace GB28181.Servers
             }
         }
 
-        private int GetRequestedExpiry(SIPRequest registerRequest)
+        private static int GetRequestedExpiry(SIPRequest registerRequest)
         {
             int contactHeaderExpiry = (registerRequest.Header.Contact != null && registerRequest.Header.Contact.Count > 0) ? registerRequest.Header.Contact[0].Expires : -1;
-            return (contactHeaderExpiry == -1) ? registerRequest.Header.Expires : contactHeaderExpiry;
+            return (contactHeaderExpiry == -1) ? (int)registerRequest.Header.Expires : contactHeaderExpiry;
         }
 
         private void CacheDeviceItem(SIPRequest sipRequest)

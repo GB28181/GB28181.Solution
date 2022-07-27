@@ -42,12 +42,13 @@ namespace GB28181
 		{
 			try
 			{
-				SIPMessage sipMessage = new SIPMessage();
-                sipMessage.LocalSIPEndPoint = localSIPEndPoint;
-                sipMessage.RemoteSIPEndPoint = remoteSIPEndPoint;
-
-				sipMessage.RawMessage = message;
-				int endFistLinePosn = message.IndexOf(m_CRLF);
+                SIPMessage sipMessage = new SIPMessage()
+                {
+                    LocalSIPEndPoint = localSIPEndPoint,
+                    RemoteSIPEndPoint = remoteSIPEndPoint,
+                    RawMessage = message
+                };
+                int endFistLinePosn = message.IndexOf(m_CRLF,StringComparison.CurrentCulture);
 
                 if (endFistLinePosn != -1)
                 {
@@ -62,7 +63,7 @@ namespace GB28181
                         sipMessage.SIPMessageType = SIPMessageTypesEnum.Request;
                     }
 
-                    int endHeaderPosn = message.IndexOf(m_CRLF + m_CRLF);
+                    int endHeaderPosn = message.IndexOf(m_CRLF + m_CRLF,StringComparison.CurrentCulture);
                     if (endHeaderPosn == -1)
                     {
                         // Assume flakey implementation if message does not contain the required CRLFCRLF sequence and treat the message as having no body.
@@ -76,7 +77,8 @@ namespace GB28181
 
                         if (message.Length > endHeaderPosn + 4)
                         {
-                            sipMessage.Body = message.Substring(endHeaderPosn + 4);
+                            var tmp = ushort.Parse(message.Substring(endHeaderPosn + 4));
+                            sipMessage.Body = BitConverter.GetBytes(tmp);
                         }
                     }
 

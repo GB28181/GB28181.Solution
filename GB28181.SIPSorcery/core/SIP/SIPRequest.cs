@@ -38,21 +38,21 @@ namespace GB28181
 
         private delegate bool IsLocalSIPSocketDelegate(string socket, SIPProtocolsEnum protocol);
 
-//		private static string m_CRLF = SIPConstants.CRLF;
-//		private static string m_sipFullVersion = SIPConstants.SIP_FULLVERSION_STRING;
+		private static string m_CRLF = SIPConstants.CRLF;
+		private static string m_sipFullVersion = SIPConstants.SIP_FULLVERSION_STRING;
 		private static string m_sipVersion = SIPConstants.SIP_VERSION_STRING;
 		private static int m_sipMajorVersion = SIPConstants.SIP_MAJOR_VERSION;
 		private static int m_sipMinorVersion = SIPConstants.SIP_MINOR_VERSION;
 
-//		public string SIPVersion = m_sipVersion;
+		public string SIPVersion = m_sipVersion;
 		public int SIPMajorVersion = m_sipMajorVersion;
 		public int SIPMinorVersion = m_sipMinorVersion;
-//		public SIPMethodsEnum Method;
-//		public string UnknownMethod = null;
+		public SIPMethodsEnum Method;
+		public string UnknownMethod = null;
 
-//		public SIPURI URI;
+		public SIPURI URI;
 		public SIPHeader Header;
-//		public string Body;
+		public string Body;
         public SIPRoute ReceivedRoute;
 
 //		public DateTime Created = DateTime.Now;
@@ -78,10 +78,8 @@ namespace GB28181
             try
             {
                 var sipRequest = ParseSIPRequest(sipMessage);
-
                 string statusLine = sipMessage.FirstLine;
-
-                int firstSpacePosn = statusLine.IndexOf(" ");
+                int firstSpacePosn = statusLine.IndexOf(" ",StringComparison.CurrentCultureIgnoreCase);
 
                 string method = statusLine.Substring(0, firstSpacePosn).Trim();
                 sipRequest.Method = SIPMethods.GetMethod(method);
@@ -92,16 +90,16 @@ namespace GB28181
                 }
 
                 statusLine = statusLine.Substring(firstSpacePosn).Trim();
-                int secondSpacePosn = statusLine.IndexOf(" ");
+                int secondSpacePosn = statusLine.IndexOf(" ", StringComparison.CurrentCultureIgnoreCase);
 
-                if (secondSpacePosn != -1)
+				if (secondSpacePosn != -1)
                 {
                     uriStr = statusLine.Substring(0, secondSpacePosn);
 
                     sipRequest.URI = SIPURI.ParseSIPURI(uriStr);
                     sipRequest.SIPVersion = statusLine.Substring(secondSpacePosn, statusLine.Length - secondSpacePosn).Trim();
                     sipRequest.Header = SIPHeader.ParseSIPHeaders(sipMessage.SIPHeaders);
-                    sipRequest.Body = sipMessage.Body;
+                    sipRequest.Body = System.Text.Encoding.UTF8.GetString(sipMessage.Body);
 
                     return sipRequest;
                 }

@@ -432,7 +432,7 @@ namespace GB28181.App
 
         private int GetUpdatedExpiryForIntervalTooBrief(SIPResponse sipResponse)
         {
-            int newExpiry = sipResponse.Header.MinExpires;
+            int newExpiry = (int)sipResponse.Header.MinExpires;
             
             if (newExpiry != 0 && newExpiry > m_expiry)
             {
@@ -457,7 +457,7 @@ namespace GB28181.App
         {
             // Find the contact in the list that matches the one being maintained by this agent in order to determine the expiry value.
             int serverExpiry = m_expiry;
-            int headerExpires = sipResponse.Header.Expires;
+            int headerExpires = (int)sipResponse.Header.Expires;
             int contactExpires = -1;
             if (sipResponse.Header.Contact != null && sipResponse.Header.Contact.Count > 0)
             {

@@ -41,11 +41,11 @@ namespace GB28181.App
 
     public class CRMHeaders
     {
-        public string PersonName;
-        public string CompanyName;
-        public string AvatarURL;
+        public string PersonName { get; set; }
+        public string CompanyName { get; set; }
+        public string AvatarURL { get; set; }
         public bool Pending = true;
-        public string LookupError;
+        public string LookupError { get; set; }
 
         public CRMHeaders()
         { }

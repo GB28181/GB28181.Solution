@@ -36,9 +36,9 @@ namespace GB28181
 
         public SIPUserField TransactionRequestFrom => m_transactionRequest?.Header.From.FromUserField;
 
-        public SIPEndPoint RemoteEndPoint;                  // The remote socket that caused the transaction to be created or the socket a newly created transaction request was sent to.             
-        public SIPEndPoint LocalSIPEndPoint;                // The local SIP endpoint the remote request was received on the if created by this stack the local SIP end point used to send the transaction.
-        public SIPCDR CDR;
+        public SIPEndPoint RemoteEndPoint { get; set; }                 // The remote socket that caused the transaction to be created or the socket a newly created transaction request was sent to.             
+        public SIPEndPoint LocalSIPEndPoint { get; set; }               // The local SIP endpoint the remote request was received on the if created by this stack the local SIP end point used to send the transaction.
+        public SIPCDR CDR { get; set; }
 
         private SIPTransactionStatesEnum m_transactionState = SIPTransactionStatesEnum.Calling;
         public SIPTransactionStatesEnum TransactionState => m_transactionState;
