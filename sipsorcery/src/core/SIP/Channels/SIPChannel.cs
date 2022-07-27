@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -162,11 +163,22 @@ namespace SIPSorcery.SIP
             InternetDefaultAddress = NetServices.InternetDefaultAddress;
         }
 
-        public SIPChannel()
+        protected SIPChannel() : this(SIPConstants.DEFAULT_ENCODING, SIPConstants.DEFAULT_ENCODING)
         {
             int id = Interlocked.Increment(ref _lastUsedChannelID);
             ID = id.ToString();
         }
+
+        protected SIPChannel(Encoding sipEncoding, Encoding sipBodyEncoding)
+        {
+            int id = Interlocked.Increment(ref _lastUsedChannelID);
+            ID = id.ToString();
+            SIPEncoding = sipEncoding;
+            SIPBodyEncoding = sipBodyEncoding;
+        }
+
+        public Encoding SIPEncoding { get; private set; }
+        public Encoding SIPBodyEncoding { get; private set; }
 
         /// <summary>
         /// Checks whether the host string corresponds to a socket address that this SIP channel is listening on.
@@ -195,10 +207,13 @@ namespace SIPSorcery.SIP
         /// </summary>
         /// <param name="dstEndPoint">The remote end point to send the message to.</param>
         /// <param name="buffer">The data to send.</param>
-        /// <param name="connectionID">Optional ID of the specific client connection that the message should be sent on. It's only
+        /// <param name="canInitiateConnection">Indicates whether this send should initiate a connection if needed.
+        /// The typical case is SIP requests can initiate new connections but responses should not. Responses should
+        /// only be sent on the same TCP or TLS connection that the original request was received on.</param>
+        /// <param name="connectionIDHint">Optional ID of the specific client connection that the message should be sent on. It's only
         /// a hint so if the connection has been closed a new one will be attempted.</param>
         /// <returns>If no errors SocketError.Success otherwise an error value.</returns>
-        public abstract Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, string connectionIDHint = null);
+        public abstract Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, bool canInitiateConnection, string connectionIDHint = null);
 
         /// <summary>
         /// Asynchronous SIP message send over a secure TLS connection to a remote end point.
@@ -206,8 +221,13 @@ namespace SIPSorcery.SIP
         /// <param name="dstEndPoint">The remote end point to send the message to.</param>
         /// <param name="buffer">The data to send.</param>
         /// <param name="serverCertificateName">If the send is over SSL the required common name of the server's X509 certificate.</param>
+        /// <param name="canInitiateConnection">Indicates whether this send should initiate a connection if needed.
+        /// The typical case is SIP requests can initiate new connections but responses should not. Responses should
+        /// only be sent on the same TCP or TLS connection that the original request was received on.</param>
+        /// <param name="connectionIDHint">Optional ID of the specific client connection that the message should be sent on. It's only
+        /// a hint so if the connection has been closed a new one will be attempted.</param>
         /// <returns>If no errors SocketError.Success otherwise an error value.</returns>
-        public abstract Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint, byte[] buffer, string serverCertificateName, string connectionIDHint = null);
+        public abstract Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint, byte[] buffer, string serverCertificateName, bool canInitiateConnection, string connectionIDHint = null);
 
         /// <summary>
         /// Checks whether the SIP channel has a connection matching a unique connection ID.

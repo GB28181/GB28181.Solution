@@ -13,7 +13,7 @@
 //
 // Notes:
 // This class is using the "Asynchronous Programming Model" (APM*) BeginReceiveMessageFrom/EndReceiveMessageFrom approach. 
-// The motivation for the decision is that it's the only one of the UDP socket receives methods that provides access to 
+// The motivation for the decision is that it's the only one of the UDP socket receive methods that provides access to 
 // the received on IP address when listening on IPAddress.Any.
 //
 // * https://docs.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/
@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -43,6 +44,7 @@ namespace SIPSorcery.SIP
         private readonly Socket m_udpSocket;
         private byte[] m_recvBuffer;
         private CancellationTokenSource m_cts;
+        private bool m_isDualMode;
 
         /// <summary>
         /// Keep a list of transient send failures to remote end points. With UDP a failure is detected if an ICMP packet is received 
@@ -50,16 +52,28 @@ namespace SIPSorcery.SIP
         /// </summary>
         private static ConcurrentDictionary<IPEndPoint, DateTime> m_sendFailures = new ConcurrentDictionary<IPEndPoint, DateTime>();
 
+        public SIPUDPChannel(
+            IPEndPoint endPoint,
+            bool useDualMode = false) : this(endPoint, SIPConstants.DEFAULT_ENCODING, SIPConstants.DEFAULT_ENCODING, useDualMode)
+        {
+
+        }
         /// <summary>
         /// Creates a SIP channel to listen for and send SIP messages over UDP.
         /// </summary>
         /// <param name="endPoint">The IP end point to listen on and send from.</param>
+        /// <param name="sipBodyEncoding"></param>
         /// <param name="useDualMode">If true then IPv6 sockets will be created as dual mode IPv4/IPv6 on supporting systems.</param>
-        public SIPUDPChannel(IPEndPoint endPoint, bool useDualMode = false) : base()
+        /// <param name="sipEncoding"></param>
+        public SIPUDPChannel(
+            IPEndPoint endPoint,
+            Encoding sipEncoding,
+            Encoding sipBodyEncoding,
+            bool useDualMode=false) : base(sipEncoding, sipBodyEncoding)
         {
             if (endPoint == null)
             {
-                throw new ArgumentNullException("endPoint", "The end point must be specified when creating a SIPUDPChannel.");
+                throw new ArgumentNullException(nameof(endPoint), "The end point must be specified when creating a SIPUDPChannel.");
             }
 
             ListeningIPAddress = endPoint.Address;
@@ -74,9 +88,14 @@ namespace SIPSorcery.SIP
                 Port = (m_udpSocket.LocalEndPoint as IPEndPoint).Port;
             }
 
+            if (ListeningIPAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                m_isDualMode = m_udpSocket.DualMode;
+            }
+
             m_recvBuffer = new byte[SIPConstants.SIP_MAXIMUM_RECEIVE_LENGTH];
 
-            logger.LogInformation($"SIP UDP Channel created for {ListeningEndPoint}.");
+            logger.LogInformation($"SIP UDP Channel created for {ListeningSIPEndPoint}.");
 
             Receive();
 
@@ -124,7 +143,7 @@ namespace SIPSorcery.SIP
 
                     if (bytesRead > 0)
                     {
-                        // In addition to the not in the RTPChannel class about IPPacketInformation some versions of the mono runtime
+                        // In addition to the note in the RTPChannel class about IPPacketInformation some versions of the mono runtime
                         // on Android are unable to use Begin/EndReceiveMessageFrom. 
                         // See https://github.com/sipsorcery/sipsorcery/issues/302.
                         // Those specific Begin/End calls were being used to get the packet information and identify which local
@@ -145,19 +164,27 @@ namespace SIPSorcery.SIP
             }
             catch (SocketException sockExcp)
             {
-                // This exception can occur as the result of a Send operation. It's caused by an ICMP packet from a remote host
-                // rejecting an incoming UDP packet. If that happens we want to stop further sends to the socket for a short period.
-                logger.LogWarning($"SocketException SIPUDPChannel EndReceiveFrom from {remoteEP} ({sockExcp.ErrorCode}). {sockExcp.Message}");
                 if (remoteEP != null)
                 {
-                    m_sendFailures.TryAdd(remoteEP as IPEndPoint, DateTime.Now);
+                    // Note the SIPEndPoint is being used to take care of any IPv4 mapped to IPv6 addresses.
+                    SIPEndPoint remSIPEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, remoteEP as IPEndPoint);
+
+                    // This exception can occur as the result of a Send operation. It's caused by an ICMP packet from a remote host
+                    // rejecting an incoming UDP packet. If that happens we want to stop further sends to the socket for a short period.
+                    logger.LogWarning(sockExcp, $"SocketException SIPUDPChannel EndReceiveFrom from {remSIPEndPoint} ({sockExcp.ErrorCode}). {sockExcp.Message}");
+
+                    m_sendFailures.TryAdd(remSIPEndPoint.GetIPEndPoint(), DateTime.Now);
+                }
+                else
+                {
+                    logger.LogError($"SocketException SIPUDPChannel EndReceiveFrom. {sockExcp}");
                 }
             }
             catch (ObjectDisposedException) // Thrown when socket is closed. Can be safely ignored.
             { }
             catch (Exception excp)
             {
-                logger.LogError($"Exception SIPUDPChannel EndReceiveFrom. {excp.Message}");
+                logger.LogError($"Exception SIPUDPChannel EndReceiveFrom. {excp}");
             }
             finally
             {
@@ -168,20 +195,20 @@ namespace SIPSorcery.SIP
             }
         }
 
-        public override Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, string connectionIDHint)
+        public override Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, bool canInitiateConnection, string connectionIDHint)
         {
             if (dstEndPoint == null)
             {
-                throw new ArgumentException("dstEndPoint", "An empty destination was specified to Send in SIPUDPChannel.");
+                throw new ArgumentException(nameof(dstEndPoint), "An empty destination was specified to Send in SIPUDPChannel.");
             }
             else if (buffer == null || buffer.Length == 0)
             {
-                throw new ArgumentException("buffer", "The buffer must be set and non empty for Send in SIPUDPChannel.");
+                throw new ArgumentException(nameof(buffer), "The buffer must be set and non empty for Send in SIPUDPChannel.");
             }
 
             try
             {
-                IPEndPoint dstIPEndPoint = dstEndPoint.GetIPEndPoint();
+                IPEndPoint dstIPEndPoint = dstEndPoint.GetIPEndPoint(m_isDualMode);
 
                 if (m_sendFailures.ContainsKey(dstEndPoint.GetIPEndPoint()))
                 {
@@ -219,20 +246,24 @@ namespace SIPSorcery.SIP
                 // ToDo. Pretty sure these exceptions get thrown when an ICMP message comes back indicating there is no listening
                 // socket on the other end. It would be nice to be able to relate that back to the socket that the data was sent to
                 // so that we know to stop sending.
-                logger.LogWarning($"SocketException SIPUDPChannel EndSendTo ({sockExcp.ErrorCode}). {sockExcp.Message}");
+                logger.LogWarning(sockExcp, $"SocketException SIPUDPChannel EndSendTo ({sockExcp.ErrorCode}). {sockExcp.Message}");
             }
             catch (ObjectDisposedException) // Thrown when socket is closed. Can be safely ignored.
             { }
             catch (Exception excp)
             {
-                logger.LogError($"Exception SIPUDPChannel EndSendTo. {excp.Message}");
+                logger.LogError($"Exception SIPUDPChannel EndSendTo. {excp}");
             }
         }
 
         /// <summary>
         /// This method is not implemented for the SIP UDP channel.
         /// </summary>
-        public override Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint, byte[] buffer, string serverCertificateName, string connectionIDHint)
+        public override Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint,
+            byte[] buffer,
+            string serverCertificateName,
+            bool canInitiateConnection,
+            string connectionIDHint)
         {
             throw new NotImplementedException("This Send method is not available in the SIP UDP channel, please use an alternative overload.");
         }
@@ -268,7 +299,7 @@ namespace SIPSorcery.SIP
         /// <returns>True if supported, false if not.</returns>
         public override bool IsAddressFamilySupported(AddressFamily addresFamily)
         {
-            if (m_udpSocket.AddressFamily == AddressFamily.InterNetworkV6 && m_udpSocket.DualMode)
+            if (m_udpSocket.AddressFamily == AddressFamily.InterNetworkV6 && m_isDualMode)
             {
                 return true;
             }
@@ -295,7 +326,7 @@ namespace SIPSorcery.SIP
         {
             try
             {
-                logger.LogDebug($"Closing SIP UDP Channel {ListeningEndPoint}.");
+                logger.LogDebug($"Closing SIP UDP Channel {ListeningSIPEndPoint}.");
 
                 Closed = true;
                 m_cts.Cancel();
@@ -303,7 +334,7 @@ namespace SIPSorcery.SIP
             }
             catch (Exception excp)
             {
-                logger.LogWarning("Exception SIPUDPChannel Close. " + excp.Message);
+                logger.LogWarning(excp, $"Exception SIPUDPChannel Close. {excp.Message}");
             }
         }
 
@@ -337,7 +368,7 @@ namespace SIPSorcery.SIP
             catch (AggregateException) { } // This gets thrown if task is cancelled.
             catch (Exception excp)
             {
-                logger.LogError($"Exception SIPUDPChannel.ExpireFailedSends. {excp.Message}");
+                logger.LogError($"Exception SIPUDPChannel.ExpireFailedSends. {excp}");
             }
         }
     }

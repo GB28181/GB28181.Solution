@@ -9,6 +9,7 @@
 // History:
 // ??	        Aaron Clauson	Created, Hobart, Australia
 // 30 Oct 2019  Aaron Clauson   Added support for reliable provisional responses as per RFC3262.
+// 06 Dec 2020  Aaron Clauson   Added DisableRetransmitSending property.
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
@@ -26,7 +27,7 @@ using SIPSorcery.Sys;
 
 namespace SIPSorcery.SIP
 {
-    internal class SIPTransactionEngine
+    internal class SIPTransactionEngine : IDisposable
     {
         private const string TXENGINE_THREAD_NAME = "sip-txengine";
         private const int MAX_TXCHECK_WAIT_MILLISECONDS = 200; // Time to wait between checking for new pending transactions.
@@ -34,7 +35,11 @@ namespace SIPSorcery.SIP
         private static readonly int m_t1 = SIPTimings.T1;
         private static readonly int m_t2 = SIPTimings.T2;
         private static readonly int m_t6 = SIPTimings.T6;
-        private const int MAX_RELIABLETRANSMISSIONS_COUNT = 5000;  // The maximum number of pending transactions that can be outstanding.
+
+        /// <summary>
+        /// The maximum number of pending transactions that can be outstanding.
+        /// </summary>
+        internal static int MaxReliableTranismissionsCount = 5000;
 
         protected static ILogger logger = Log.Logger;
 
@@ -50,10 +55,19 @@ namespace SIPSorcery.SIP
         /// </summary>
         private ConcurrentDictionary<string, SIPTransaction> m_pendingTransactions = new ConcurrentDictionary<string, SIPTransaction>();
 
+        private AutoResetEvent m_newPendingTransactionEvent = new AutoResetEvent(false);
+        private bool m_disposed;
+
         public int TransactionsCount
         {
             get { return m_pendingTransactions.Count; }
         }
+
+        /// <summary>
+        /// Disables sending of retransmitted requests and responses.
+        /// <seealso cref="SIPTransport.DisableRetransmitSending"/>
+        /// </summary>
+        public bool DisableRetransmitSending { get; set; }
 
         public event SIPTransactionRequestRetransmitDelegate SIPRequestRetransmitTraceEvent;
         public event SIPTransactionResponseRetransmitDelegate SIPResponseRetransmitTraceEvent;
@@ -67,7 +81,7 @@ namespace SIPSorcery.SIP
 
         public void AddTransaction(SIPTransaction sipTransaction)
         {
-            if (m_pendingTransactions.Count > MAX_RELIABLETRANSMISSIONS_COUNT)
+            if (m_pendingTransactions.Count > MaxReliableTranismissionsCount)
             {
                 throw new ApplicationException("Pending transactions list is full.");
             }
@@ -77,6 +91,8 @@ namespace SIPSorcery.SIP
                 {
                     throw new ApplicationException("Failed to add transaction to pending list.");
                 }
+
+                m_newPendingTransactionEvent.Set();
             }
         }
 
@@ -125,7 +141,6 @@ namespace SIPSorcery.SIP
 
             SIPMethodsEnum transactionMethod = (sipRequest.Method != SIPMethodsEnum.ACK) ? sipRequest.Method : SIPMethodsEnum.INVITE;
             string transactionId = SIPTransaction.GetRequestTransactionId(sipRequest.Header.Vias.TopViaHeader.Branch, transactionMethod);
-            //string contactAddress = (sipRequest.Header.Contact != null && sipRequest.Header.Contact.Count > 0) ? sipRequest.Header.Contact[0].ToString() : "no contact";
 
             lock (m_pendingTransactions)
             {
@@ -242,6 +257,7 @@ namespace SIPSorcery.SIP
         public void Shutdown()
         {
             m_isClosed = true;
+            m_newPendingTransactionEvent.Set();
         }
 
         /// <summary>
@@ -251,13 +267,6 @@ namespace SIPSorcery.SIP
         private void RemoveTransaction(string transactionId)
         {
             m_pendingTransactions.TryRemove(transactionId, out _);
-        }
-
-        private void RemoveTransaction(SIPTransaction transaction)
-        {
-            // Remove all event handlers.
-            transaction.RemoveEventHandlers();
-            RemoveTransaction(transaction.TransactionId);
         }
 
         /// <summary>
@@ -308,7 +317,7 @@ namespace SIPSorcery.SIP
                 {
                     if (m_pendingTransactions.IsEmpty)
                     {
-                        Thread.Sleep(MAX_TXCHECK_WAIT_MILLISECONDS);
+                        m_newPendingTransactionEvent.WaitOne(MAX_TXCHECK_WAIT_MILLISECONDS);
                     }
                     else
                     {
@@ -434,7 +443,13 @@ namespace SIPSorcery.SIP
                                                         {
                                                             // Sending a single final response on a non-INVITE tx. The same response
                                                             // will be automatically resent if the same request is received.
-                                                            sendResult = m_sipTransport.SendResponseAsync(transaction.TransactionFinalResponse).Result;
+
+                                                            // If retransmits are disabled we must wait for DNS when sending. By default the DNS lookup mechanism
+                                                            // will silently do nothing if the lookup result is not in the cache and relies on the result
+                                                            // being ready for a subsequent SIP retransmit. This mechanism won't work if SIP retransmits are disabled.
+                                                            bool waitForDns = DisableRetransmitSending;
+
+                                                            sendResult = m_sipTransport.SendResponseAsync(transaction.TransactionFinalResponse, waitForDns).Result;
                                                             transaction.DeliveryPending = false;
                                                         }
                                                         break;
@@ -457,12 +472,11 @@ namespace SIPSorcery.SIP
 
                                         if (sendResult != SocketError.Success && sendResult != SocketError.InProgress)
                                         {
+                                            logger.LogWarning($"SIP transaction send failed in state {transaction.TransactionState} with error {sendResult}.");
+
                                             // Example of failures here are requiring a specific TCP or TLS connection that no longer exists
                                             // or attempting to send to a UDP socket that has previously returned an ICMP error.
-                                            transaction.DeliveryPending = false;
-                                            transaction.DeliveryFailed = true;
-                                            transaction.TimedOutAt = DateTime.Now;
-                                            transaction.FireTransactionTimedOut();
+                                            transaction.Failed(sendResult);
                                         }
                                     }
                                 }
@@ -475,7 +489,7 @@ namespace SIPSorcery.SIP
 
                         RemoveExpiredTransactions();
 
-                        Thread.Sleep(TXCHECK_WAIT_MILLISECONDS);
+                        m_newPendingTransactionEvent.WaitOne(TXCHECK_WAIT_MILLISECONDS);
                     }
                 }
             }
@@ -502,13 +516,25 @@ namespace SIPSorcery.SIP
             }
 
             // Provisional response reliable for INVITE-UAS.
-            if (transaction.Retransmits > 1)
+            if (transaction.Retransmits > 1 && !DisableRetransmitSending)
             {
                 transaction.OnRetransmitProvisionalResponse();
                 SIPResponseRetransmitTraceEvent?.Invoke(transaction, transaction.ReliableProvisionalResponse, transaction.Retransmits);
             }
 
-            return m_sipTransport.SendResponseAsync(transaction.ReliableProvisionalResponse);
+            if (transaction.Retransmits > 1 && DisableRetransmitSending)
+            {
+                return Task.FromResult(SocketError.Success);
+            }
+            else
+            {
+                // If retransmits are disabled we must wait for DNS when sending. By default the DNS lookup mechanism
+                // will silently do nothing if the lookup result is not in the cache and relies on the result
+                // being ready for a subsequent SIP retransmit. This mechanism won't work if SIP retransmits are disabled.
+                bool waitForDns = DisableRetransmitSending;
+
+                return m_sipTransport.SendResponseAsync(transaction.ReliableProvisionalResponse, waitForDns);
+            }
         }
 
         /// <summary>
@@ -526,12 +552,25 @@ namespace SIPSorcery.SIP
                 transaction.InitialTransmit = transaction.LastTransmit;
             }
 
-            if (transaction.Retransmits > 1)
+            if (transaction.Retransmits > 1 && !DisableRetransmitSending)
             {
                 transaction.OnRetransmitFinalResponse();
                 SIPResponseRetransmitTraceEvent?.Invoke(transaction, transaction.TransactionFinalResponse, transaction.Retransmits);
             }
-            return m_sipTransport.SendResponseAsync(transaction.TransactionFinalResponse);
+
+            if (transaction.Retransmits > 1 && DisableRetransmitSending)
+            {
+                return Task.FromResult(SocketError.Success);
+            }
+            else
+            {
+                // If retransmits are disabled we must wait for DNS when sending. By default the DNS lookup mechanism
+                // will silently do nothing if the lookup result is not in the cache and relies on the result
+                // being ready for a subsequent SIP retransmit. This mechanism won't work if SIP retransmits are disabled.
+                bool waitForDns = DisableRetransmitSending;
+
+                return m_sipTransport.SendResponseAsync(transaction.TransactionFinalResponse, waitForDns);
+            }
         }
 
         /// <summary>
@@ -552,25 +591,38 @@ namespace SIPSorcery.SIP
             }
 
             // INVITE-UAC and no-INVITE transaction types, send request reliably.
-            if (transaction.Retransmits > 1)
+            if (transaction.Retransmits > 1 && !DisableRetransmitSending)
             {
                 SIPRequestRetransmitTraceEvent?.Invoke(transaction, transaction.TransactionRequest, transaction.Retransmits);
                 transaction.RequestRetransmit();
             }
 
-            // If there is no tx request then it must be a PRack request we're being asked to send reliably.
-            SIPRequest req = transaction.TransactionRequest ?? transaction.PRackRequest;
-
-            if (transaction.OutboundProxy != null)
+            if (transaction.Retransmits > 1 && DisableRetransmitSending)
             {
-                result = m_sipTransport.SendRequestAsync(transaction.OutboundProxy, req);
+                return Task.FromResult(SocketError.Success);
             }
             else
             {
-                result = m_sipTransport.SendRequestAsync(req);
-            }
+                // If there is no transaction request then it must be a PRack request we're being asked 
+                // to send reliably.
+                SIPRequest req = transaction.TransactionRequest ?? transaction.PRackRequest;
 
-            return result;
+                if (transaction.OutboundProxy != null)
+                {
+                    result = m_sipTransport.SendRequestAsync(transaction.OutboundProxy, req);
+                }
+                else
+                {
+                    // If retransmits are disabled we must wait for DNS when sending. By default the DNS lookup mechanism
+                    // will silently do nothing if the lookup result is not in the cache and relies on the result
+                    // being ready for a subsequent SIP retransmit. This mechanism won't work if SIP retransmits are disabled.
+                    bool waitForDns = DisableRetransmitSending;
+
+                    result = m_sipTransport.SendRequestAsync(req, waitForDns);
+                }
+
+                return result;
+            }
         }
 
         private void RemoveExpiredTransactions()
@@ -671,8 +723,7 @@ namespace SIPSorcery.SIP
                     if (m_pendingTransactions.ContainsKey(transactionId))
                     {
                         SIPTransaction expiredTransaction = m_pendingTransactions[transactionId];
-                        expiredTransaction.FireTransactionRemoved();
-                        RemoveTransaction(expiredTransaction);
+                        RemoveTransaction(expiredTransaction.TransactionId);
                     }
                 }
             }
@@ -680,6 +731,25 @@ namespace SIPSorcery.SIP
             {
                 logger.LogError("Exception RemoveExpiredTransaction. " + excp.Message);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                if (disposing)
+                {
+                    m_newPendingTransactionEvent.Dispose();
+                }
+
+                m_disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

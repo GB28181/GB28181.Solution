@@ -15,6 +15,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Sys;
 
@@ -47,6 +48,14 @@ namespace SIPSorcery.SIP
         public int StatusCode;
 
         /// <summary>
+        /// Returns true if a successful status code
+        /// </summary>
+        public bool IsSuccessStatusCode
+        {
+            get { return (StatusCode >= 200) && (StatusCode <= 204); }
+        }
+
+        /// <summary>
         /// The optional reason phrase for the SIP response.
         /// </summary>
         public string ReasonPhrase;
@@ -58,15 +67,14 @@ namespace SIPSorcery.SIP
         {
             get { return Header?.CSeqMethod + " " + StatusCode + " " + ReasonPhrase; }
         }
-
-        private SIPResponse()
+        private SIPResponse(
+            Encoding sipEncoding,
+            Encoding sipBodyEncoding) : this(SIPResponseStatusCodesEnum.None, string.Empty,sipEncoding,sipBodyEncoding)
         { }
 
-        /// <summary>
-        /// SIPResponse Constructor.
-        /// </summary>
-        /// <param name="responseStatus">The status code for the response.</param>
-        /// <param name="reasonPhrase">Optional description for the response. Should be kept short.</param>
+        private SIPResponse():this(SIPResponseStatusCodesEnum.None,string.Empty)
+        { }
+
         public SIPResponse(
             SIPResponseStatusCodesEnum responseStatus,
             string reasonPhrase)
@@ -79,15 +87,40 @@ namespace SIPSorcery.SIP
         }
 
         /// <summary>
+        /// SIPResponse Constructor.
+        /// </summary>
+        /// <param name="responseStatus">The status code for the response.</param>
+        /// <param name="reasonPhrase">Optional description for the response. Should be kept short.</param>
+        /// <param name="sipEncoding"></param>
+        /// <param name="sipBodyEncoding"></param>
+        public SIPResponse(
+            SIPResponseStatusCodesEnum responseStatus,
+            string reasonPhrase,
+            Encoding sipEncoding,
+            Encoding sipBodyEncoding):base(sipEncoding,sipBodyEncoding)
+        {
+            SIPVersion = m_sipFullVersion;
+            StatusCode = (int)responseStatus;
+            Status = responseStatus;
+            ReasonPhrase = reasonPhrase;
+            ReasonPhrase = responseStatus.ToString();
+        }
+
+        public static SIPResponse ParseSIPResponse(SIPMessageBuffer sipMessageBuffer) =>
+            ParseSIPResponse(sipMessageBuffer, sipMessageBuffer.SIPEncoding, sipMessageBuffer.SIPBodyEncoding);
+
+        /// <summary>
         /// Parses a SIP response from a SIP message object.
         /// </summary>
         /// <param name="sipMessageBuffer">The SIP message to parse a response from.</param>
+        /// <param name="sipEncoding"></param>
+        /// <param name="sipBodyEncoding"></param>
         /// <returns>A new SIP response object.</returns>
-        public static SIPResponse ParseSIPResponse(SIPMessageBuffer sipMessageBuffer)
+        public static SIPResponse ParseSIPResponse(SIPMessageBuffer sipMessageBuffer,Encoding sipEncoding,Encoding sipBodyEncoding)
         {
             try
             {
-                SIPResponse sipResponse = new SIPResponse();
+                SIPResponse sipResponse = new SIPResponse(sipEncoding,sipBodyEncoding);
                 sipResponse.LocalSIPEndPoint = sipMessageBuffer.LocalSIPEndPoint;
                 sipResponse.RemoteSIPEndPoint = sipMessageBuffer.RemoteSIPEndPoint;
                 string statusLine = sipMessageBuffer.FirstLine;
@@ -101,7 +134,7 @@ namespace SIPSorcery.SIP
                 sipResponse.ReasonPhrase = statusLine.Substring(3).Trim();
 
                 sipResponse.Header = SIPHeader.ParseSIPHeaders(sipMessageBuffer.SIPHeaders);
-                sipResponse.Body = sipMessageBuffer.Body;
+                sipResponse.BodyBuffer = sipMessageBuffer.Body;
 
                 return sipResponse;
             }
@@ -117,17 +150,22 @@ namespace SIPSorcery.SIP
             }
         }
 
+        public static SIPResponse ParseSIPResponse(string sipMessageStr) =>
+            ParseSIPResponse(sipMessageStr, SIPConstants.DEFAULT_ENCODING, SIPConstants.DEFAULT_ENCODING);
+
         /// <summary>
         /// Parses a SIP response from a string.
         /// </summary>
         /// <param name="sipMessageStr">The string to parse the SIP response from.</param>
+        /// <param name="sipEncoding"></param>
+        /// <param name="sipBodyEncoding"></param>
         /// <returns>A new SIP response object.</returns>
-        public static SIPResponse ParseSIPResponse(string sipMessageStr)
+        public static SIPResponse ParseSIPResponse(string sipMessageStr,Encoding sipEncoding, Encoding sipBodyEncoding)
         {
             try
             {
-                SIPMessageBuffer sipMessage = SIPMessageBuffer.ParseSIPMessage(sipMessageStr, null, null);
-                return SIPResponse.ParseSIPResponse(sipMessage);
+                SIPMessageBuffer sipMessage = SIPMessageBuffer.ParseSIPMessage(sipMessageStr, sipEncoding, sipBodyEncoding, null, null);
+                return SIPResponse.ParseSIPResponse(sipMessage, sipEncoding,sipBodyEncoding);
             }
             catch (SIPValidationException)
             {
@@ -177,7 +215,15 @@ namespace SIPSorcery.SIP
             copy.StatusCode = StatusCode;
             copy.ReasonPhrase = ReasonPhrase;
             copy.Header = Header?.Copy();
-            copy.Body = Body;
+            copy.SIPEncoding = SIPEncoding;
+            copy.SIPBodyEncoding = SIPBodyEncoding;
+
+            if (_body != null && _body.Length > 0)
+            {
+                copy._body = new byte[_body.Length];
+                Buffer.BlockCopy(_body, 0, copy._body, 0, copy._body.Length);
+            }
+
             copy.Created = Created;
             copy.LocalSIPEndPoint = LocalSIPEndPoint?.CopyOf();
             copy.RemoteSIPEndPoint = RemoteSIPEndPoint?.CopyOf();
@@ -286,6 +332,13 @@ namespace SIPSorcery.SIP
                 logger.LogError("Exception SIPResponse.GetResponse. " + excp.Message);
                 throw;
             }
+        }
+
+        public byte[] GetBytes()
+        {
+            string reasonPhrase = (!ReasonPhrase.IsNullOrBlank()) ? " " + ReasonPhrase : null;
+            string firstLine = SIPVersion + " " + StatusCode + reasonPhrase + m_CRLF;
+            return base.GetBytes(firstLine);
         }
     }
 }

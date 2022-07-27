@@ -1,7 +1,8 @@
 ﻿//-----------------------------------------------------------------------------
 // Filename: SIPTransportConfig.cs
 //
-// Description: Provides functions to configure the SIP Transport channels from an XML configuration node.
+// Description: Provides functions to configure the SIP Transport channels from 
+// an XML configuration node.
 //
 // Author(s):
 // Aaron Clauson (aaron@sipsorcery.com)
@@ -110,7 +111,7 @@ namespace SIPSorcery.SIP
                     }
                     catch (Exception excp)
                     {
-                        logger.LogWarning("Exception SIPTransportConfig Adding SIP Channel for " + sipEndPoint + ". " + excp.Message);
+                        logger.LogWarning(excp, "Exception SIPTransportConfig Adding SIP Channel for " + sipEndPoint + ". " + excp.Message);
                     }
                 }
             }

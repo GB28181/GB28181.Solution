@@ -53,9 +53,9 @@ namespace SIPSorcery.SIP
         /// Special SIP Via header that is recognised by the SIP transport classes Send methods. At send time this header will be replaced by 
         /// one with IP end point details that reflect the socket the request or response was sent from.
         /// </summary>
-        public static SIPViaHeader GetDefaultSIPViaHeader()
+        public static SIPViaHeader GetDefaultSIPViaHeader(SIPProtocolsEnum protocol = SIPProtocolsEnum.udp)
         {
-            return new SIPViaHeader(new IPEndPoint(IPAddress.Any, 0), CallProperties.CreateBranchId(), SIPProtocolsEnum.udp);
+            return new SIPViaHeader(new IPEndPoint(IPAddress.Any, 0), CallProperties.CreateBranchId(), protocol);
         }
 
         public string Version;
@@ -608,9 +608,9 @@ namespace SIPSorcery.SIP
         /// Special SIP contact header that is recognised by the SIP transport classes Send methods. At send time this header will be replaced by 
         /// one with IP end point details that reflect the socket the request or response was sent from.
         /// </summary>
-        public static SIPContactHeader GetDefaultSIPContactHeader()
+        public static SIPContactHeader GetDefaultSIPContactHeader(SIPSchemesEnum scheme)
         {
-            return new SIPContactHeader(null, new SIPURI(SIPSchemesEnum.sip, IPAddress.Any, 0));
+            return new SIPContactHeader(null, new SIPURI(scheme, IPAddress.Any, 0));
         }
 
         public string RawHeader;
@@ -634,16 +634,20 @@ namespace SIPSorcery.SIP
         }
 
         // A value of -1 indicates the header did not contain an expires parameter setting.
-        public int Expires
+        public long Expires
         {
             get
             {
-                int expires = -1;
+                long expires = -1;
 
                 if (ContactParameters.Has(EXPIRES_PARAMETER_KEY))
                 {
                     string expiresStr = ContactParameters.Get(EXPIRES_PARAMETER_KEY);
-                    Int32.TryParse(expiresStr, out expires);
+                    Int64.TryParse(expiresStr, out expires);
+                    if (expires > UInt32.MaxValue)
+                    {
+                        expires = UInt32.MaxValue;
+                    }
                 }
 
                 return expires;
@@ -818,12 +822,6 @@ namespace SIPSorcery.SIP
     public class SIPAuthenticationHeader
     {
         public SIPAuthorisationDigest SIPDigest;
-
-        //public string Realm;
-        //public string Nonce;
-        //public string Username;
-        //public string URI;
-        //public string Response;
 
         private SIPAuthenticationHeader()
         {
@@ -1294,6 +1292,108 @@ namespace SIPSorcery.SIP
     }
 
     /// <bnf>
+    /// From            =  "P-Asserted-Identity" HCOLON PAssertedID-value
+    /// from-spec       =  ( name-addr / addr-spec ) *( SEMI from-param )
+    /// name-addr		=  [ display-name ] LAQUOT addr-spec RAQUOT
+    /// addr-spec		=  SIP-URI / SIPS-URI / absoluteURI
+    /// </bnf>
+    /// <remarks>       
+    /// The P-Asserted-Identity header field is used among trusted SIP
+    /// entities(typically intermediaries) to carry the identity of the user
+    /// sending a SIP message as it was verified by authentication.
+    /// A P-Asserted-Identity header field value MUST consist of exactly one
+    /// name-addr or addr-spec.There may be one or two P-Asserted-Identity
+    /// values.If there is one value, it MUST be a sip, sips, or tel URI.
+    /// If there are two values, one value MUST be a sip or sips URI and the
+    /// other MUST be a tel URI.It is worth noting that proxies can (and
+    /// will) add and remove this header field.
+    /// </remarks>
+
+    public class SIPPAssertedIdentityHeader
+    {
+        /// <summary>
+        /// The P-Asserted-Identity header field is used among trusted SIP entities to carry the identity of the user
+        /// sending a SIP message as it was verified by authentication.
+        /// There may be one or two P-Asserted-Identity values.If there is one value, it MUST be a sip, sips, or tel URI. 
+        /// If there are two values, one value MUST be a sip or sips URI and the other MUST be a tel URI
+        /// </summary>
+        public static SIPPAssertedIdentityHeader GetDefaultSIPPAssertedIdentityHeader(SIPSchemesEnum scheme)
+        {
+            return new SIPPAssertedIdentityHeader(null, new SIPURI(scheme, IPAddress.Any, 0));
+        }
+
+        public string PaiName
+        {
+            get { return m_userField.Name; }
+            set { m_userField.Name = value; }
+        }
+
+        public SIPURI PaiURI
+        {
+            get { return m_userField.URI; }
+            set { m_userField.URI = value; }
+        }
+
+        public SIPParameters PaiParameters
+        {
+            get { return m_userField.Parameters; }
+            set { m_userField.Parameters = value; }
+        }
+
+        private SIPUserField m_userField = new SIPUserField();
+        public SIPUserField PaiUserField
+        {
+            get { return m_userField; }
+            set { m_userField = value; }
+        }
+
+        private SIPPAssertedIdentityHeader()
+        { }
+
+        public SIPPAssertedIdentityHeader(string paiName, SIPURI paiURI, string uriParams = null)
+        {
+            m_userField = new SIPUserField(paiName, paiURI, uriParams);
+        }
+
+        public static SIPPAssertedIdentityHeader ParsePaiHeader(string fromHeaderStr)
+        {
+            try
+            {
+                SIPPAssertedIdentityHeader paiHeader = new SIPPAssertedIdentityHeader();
+
+                paiHeader.m_userField = SIPUserField.ParseSIPUserField(fromHeaderStr);
+
+                return paiHeader;
+            }
+            catch (ArgumentException argExcp)
+            {
+                throw new SIPValidationException(SIPValidationFieldsEnum.Unknown, argExcp.Message);
+            }
+            catch
+            {
+                throw new SIPValidationException(SIPValidationFieldsEnum.Unknown, "The SIP P-Asserted-Identity header was invalid.");
+            }
+        }
+
+        public override string ToString()
+        {
+            return m_userField.ToString();
+        }
+
+        /// <summary>
+        /// Returns a friendly description of the caller that's suitable for humans. Leaves out
+        /// all the parameters etc.
+        /// </summary>
+        /// <returns>A string representing a friendly description of the P-Asserted-Identity header.</returns>
+        public string FriendlyDescription()
+        {
+            string caller = PaiURI.ToAOR();
+            caller = (!string.IsNullOrEmpty(PaiName)) ? PaiName + " " + caller : caller;
+            return caller;
+        }
+    }
+
+    /// <bnf>
     /// header  =  "header-name" HCOLON header-value *(COMMA header-value)
     /// field-name: field-value CRLF
     /// </bnf>
@@ -1312,7 +1412,7 @@ namespace SIPSorcery.SIP
         public string Allow;
         public string AllowEvents;                          // RFC3265 SIP Events.
         public string AuthenticationInfo;
-        public SIPAuthenticationHeader AuthenticationHeader;
+        public List<SIPAuthenticationHeader> AuthenticationHeaders = new List<SIPAuthenticationHeader>();
         public string CallId;
         public string CallInfo;
         public List<SIPContactHeader> Contact = new List<SIPContactHeader>();
@@ -1327,10 +1427,10 @@ namespace SIPSorcery.SIP
         public string ErrorInfo;
         public string ETag;                                 // added by Tilmann: look RFC3903
         public string Event;                                // RFC3265 SIP Events.
-        public int Expires = -1;
+        public long Expires = -1;
         public SIPFromHeader From;
         public string InReplyTo;
-        public int MinExpires = -1;
+        public long MinExpires = -1;
         public int MaxForwards = SIPConstants.DEFAULT_MAX_FORWARDS;
         public string MIMEVersion;
         public string Organization;
@@ -1360,22 +1460,20 @@ namespace SIPSorcery.SIP
         public string UserAgent;
         public SIPViaSet Vias = new SIPViaSet();
         public string Warning;
+        public List<SIPPAssertedIdentityHeader> PassertedIdentity = new List<SIPPAssertedIdentityHeader>();     // RFC3325.
 
         // Non-core custom SIP headers used to allow a SIP Proxy to communicate network info to internal server agents.
         public string ProxyReceivedOn;          // The Proxy socket that the SIP message was received on.
         public string ProxyReceivedFrom;        // The remote socket that the Proxy received the SIP message on.
         public string ProxySendFrom;            // The Proxy socket that the SIP message should be transmitted from.
 
-        // Non-core custom headers for CRM integration.
-        public string CRMPersonName;                // The matching name from the CRM system for the caller.
-        public string CRMCompanyName;               // The matching company name from the CRM system for the caller.
-        public string CRMPictureURL;                 // If available a URL for a picture for the person or company from the CRM system for the caller.
-
         public List<string> UnknownHeaders = new List<string>();    // Holds any unrecognised headers.
 
         public List<SIPExtensions> RequiredExtensions = new List<SIPExtensions>();
         public string UnknownRequireExtension = null;
         public List<SIPExtensions> SupportedExtensions = new List<SIPExtensions>();
+
+        public bool HasAuthenticationHeader => AuthenticationHeaders.Count > 0;
 
         public SIPHeader()
         { }
@@ -1438,7 +1536,7 @@ namespace SIPSorcery.SIP
             Contact = contact;
             CallId = callId;
 
-            if (cseq > 0 && cseq < Int32.MaxValue)
+            if (cseq >= 0 && cseq < Int32.MaxValue)
             {
                 CSeq = cseq;
             }
@@ -1562,7 +1660,7 @@ namespace SIPSorcery.SIP
                         {
                             //sipHeader.RawExpires += headerValue;
 
-                            if (!Int32.TryParse(headerValue, out sipHeader.Expires))
+                            if (!Int64.TryParse(headerValue, out sipHeader.Expires))
                             {
                                 logger.LogWarning("The Expires value was not a valid integer, " + headerLine + ".");
                             }
@@ -1571,7 +1669,7 @@ namespace SIPSorcery.SIP
                         #region Min-Expires
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_MINEXPIRES.ToLower())
                         {
-                            if (!Int32.TryParse(headerValue, out sipHeader.MinExpires))
+                            if (!Int64.TryParse(headerValue, out sipHeader.MinExpires))
                             {
                                 logger.LogWarning("The Min-Expires value was not a valid integer, " + headerLine + ".");
                             }
@@ -1608,27 +1706,27 @@ namespace SIPSorcery.SIP
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_WWWAUTHENTICATE.ToLower())
                         {
                             //sipHeader.RawAuthentication = headerValue;
-                            sipHeader.AuthenticationHeader = SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, headerValue);
+                            sipHeader.AuthenticationHeaders.Add(SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.WWWAuthenticate, headerValue));
                         }
                         #endregion
                         #region Authorization
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_AUTHORIZATION.ToLower())
                         {
                             //sipHeader.RawAuthentication = headerValue;
-                            sipHeader.AuthenticationHeader = SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.Authorize, headerValue);
+                            sipHeader.AuthenticationHeaders.Add(SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.Authorize, headerValue));
                         }
                         #endregion
                         #region ProxyAuthentication
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_PROXYAUTHENTICATION.ToLower())
                         {
                             //sipHeader.RawAuthentication = headerValue;
-                            sipHeader.AuthenticationHeader = SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.ProxyAuthenticate, headerValue);
+                            sipHeader.AuthenticationHeaders.Add(SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.ProxyAuthenticate, headerValue));
                         }
                         #endregion
                         #region ProxyAuthorization
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_PROXYAUTHORIZATION.ToLower())
                         {
-                            sipHeader.AuthenticationHeader = SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.ProxyAuthorization, headerValue);
+                            sipHeader.AuthenticationHeaders.Add(SIPAuthenticationHeader.ParseSIPAuthenticationHeader(SIPAuthorisationHeadersEnum.ProxyAuthorization, headerValue));
                         }
                         #endregion
                         #region UserAgent
@@ -1931,24 +2029,6 @@ namespace SIPSorcery.SIP
                             sipHeader.Warning = headerValue;
                         }
                         #endregion
-                        #region CRM-PersonName.
-                        else if (headerNameLower == SIPHeaders.SIP_HEADER_CRM_PERSON_NAME.ToLower())
-                        {
-                            sipHeader.CRMPersonName = headerValue;
-                        }
-                        #endregion
-                        #region CRM-CompanyName.
-                        else if (headerNameLower == SIPHeaders.SIP_HEADER_CRM_COMPANY_NAME.ToLower())
-                        {
-                            sipHeader.CRMCompanyName = headerValue;
-                        }
-                        #endregion
-                        #region CRM-AvatarURL.
-                        else if (headerNameLower == SIPHeaders.SIP_HEADER_CRM_PICTURE_URL.ToLower())
-                        {
-                            sipHeader.CRMPictureURL = headerValue;
-                        }
-                        #endregion
                         #region ETag
                         else if (headerNameLower == SIPHeaders.SIP_HEADER_ETAG.ToLower())
                         {
@@ -2002,6 +2082,18 @@ namespace SIPSorcery.SIP
                             }
                         }
                         #endregion
+                        #region Server
+                        else if (headerNameLower == SIPHeaders.SIP_HEADER_SERVER.ToLower())
+                        {
+                            sipHeader.Server = headerValue;
+                        }
+                        #endregion
+                        #region P-Asserted-Indentity
+                        else if (headerNameLower == SIPHeaders.SIP_HEADER_PASSERTED_IDENTITY.ToLower())
+                        {
+                            sipHeader.PassertedIdentity.Add(SIPPAssertedIdentityHeader.ParsePaiHeader(headerValue));
+                        }
+                        #endregion
                         else
                         {
                             sipHeader.UnknownHeaders.Add(headerLine);
@@ -2048,7 +2140,7 @@ namespace SIPSorcery.SIP
                 headersBuilder.Append(Vias.ToString());
 
                 string cseqField = null;
-                if (this.CSeq != 0)
+                if (this.CSeq >= 0)
                 {
                     cseqField = (this.CSeqMethod != SIPMethodsEnum.NONE) ? this.CSeq + " " + this.CSeqMethod.ToString() : this.CSeq.ToString();
                 }
@@ -2056,7 +2148,7 @@ namespace SIPSorcery.SIP
                 headersBuilder.Append((To != null) ? SIPHeaders.SIP_HEADER_TO + ": " + this.To.ToString() + m_CRLF : null);
                 headersBuilder.Append((From != null) ? SIPHeaders.SIP_HEADER_FROM + ": " + this.From.ToString() + m_CRLF : null);
                 headersBuilder.Append((CallId != null) ? SIPHeaders.SIP_HEADER_CALLID + ": " + this.CallId + m_CRLF : null);
-                headersBuilder.Append((CSeq > 0) ? SIPHeaders.SIP_HEADER_CSEQ + ": " + cseqField + m_CRLF : null);
+                headersBuilder.Append((CSeq >= 0) ? SIPHeaders.SIP_HEADER_CSEQ + ": " + cseqField + m_CRLF : null);
 
                 #region Appending Contact header.
 
@@ -2101,7 +2193,14 @@ namespace SIPSorcery.SIP
                 headersBuilder.Append((Allow != null) ? SIPHeaders.SIP_HEADER_ALLOW + ": " + this.Allow + m_CRLF : null);
                 headersBuilder.Append((AlertInfo != null) ? SIPHeaders.SIP_HEADER_ALERTINFO + ": " + this.AlertInfo + m_CRLF : null);
                 headersBuilder.Append((AuthenticationInfo != null) ? SIPHeaders.SIP_HEADER_AUTHENTICATIONINFO + ": " + this.AuthenticationInfo + m_CRLF : null);
-                headersBuilder.Append((AuthenticationHeader != null) ? AuthenticationHeader.ToString() + m_CRLF : null);
+
+                if (AuthenticationHeaders.Count > 0)
+                {
+                    foreach (var authHeader in AuthenticationHeaders)
+                    {
+                        headersBuilder.Append(authHeader.ToString() + m_CRLF);
+                    }
+                }
                 headersBuilder.Append((CallInfo != null) ? SIPHeaders.SIP_HEADER_CALLINFO + ": " + this.CallInfo + m_CRLF : null);
                 headersBuilder.Append((ContentDisposition != null) ? SIPHeaders.SIP_HEADER_CONTENT_DISPOSITION + ": " + this.ContentDisposition + m_CRLF : null);
                 headersBuilder.Append((ContentEncoding != null) ? SIPHeaders.SIP_HEADER_CONTENT_ENCODING + ": " + this.ContentEncoding + m_CRLF : null);
@@ -2145,11 +2244,6 @@ namespace SIPSorcery.SIP
                 headersBuilder.Append((ProxyReceivedOn != null) ? SIPHeaders.SIP_HEADER_PROXY_RECEIVEDON + ": " + ProxyReceivedOn + m_CRLF : null);
                 headersBuilder.Append((ProxySendFrom != null) ? SIPHeaders.SIP_HEADER_PROXY_SENDFROM + ": " + ProxySendFrom + m_CRLF : null);
 
-                // CRM Headers.
-                headersBuilder.Append((CRMPersonName != null) ? SIPHeaders.SIP_HEADER_CRM_PERSON_NAME + ": " + CRMPersonName + m_CRLF : null);
-                headersBuilder.Append((CRMCompanyName != null) ? SIPHeaders.SIP_HEADER_CRM_COMPANY_NAME + ": " + CRMCompanyName + m_CRLF : null);
-                headersBuilder.Append((CRMPictureURL != null) ? SIPHeaders.SIP_HEADER_CRM_PICTURE_URL + ": " + CRMPictureURL + m_CRLF : null);
-
                 // Unknown SIP headers
                 foreach (string unknownHeader in UnknownHeaders)
                 {
@@ -2176,6 +2270,12 @@ namespace SIPSorcery.SIP
         public void SetDateHeader()
         {
             Date = DateTime.UtcNow.ToString("ddd, dd MMM yyyy HH:mm:ss ") + "GMT";
+        }
+
+        public void SetDateHeader(bool useLocalTime, string timeFormat)
+        {
+            var time = useLocalTime ? DateTime.Now : DateTime.UtcNow;
+            Date = time.ToString(timeFormat) + (useLocalTime ? "" : "GMT");
         }
 
         public SIPHeader Copy()

@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -92,11 +93,16 @@ namespace SIPSorcery.SIP
         /// </summary>
         private bool m_isReceiveTaskRunning = false;
 
+        public SIPClientWebSocketChannel() : this(SIPConstants.DEFAULT_ENCODING, SIPConstants.DEFAULT_ENCODING)
+        {
+
+        }
+
         /// <summary>
         /// Creates a SIP channel to establish outbound connections and send SIP messages 
         /// over a web socket communications layer.
         /// </summary>
-        public SIPClientWebSocketChannel() : base()
+        public SIPClientWebSocketChannel(Encoding sipEncoding, Encoding sipBodyEncoding) : base(sipEncoding, sipBodyEncoding)
         {
             IsReliable = true;
             SIPProtocol = SIPProtocolsEnum.ws;
@@ -116,7 +122,7 @@ namespace SIPSorcery.SIP
         /// <param name="buffer">The data to send.</param>
         /// <param name="connectionIDHint">The ID of the specific web socket connection to try and send the message on.</param>
         /// <returns>If no errors SocketError.Success otherwise an error value.</returns>
-        public override Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, string connectionIDHint)
+        public override Task<SocketError> SendAsync(SIPEndPoint dstEndPoint, byte[] buffer, bool canInitiateConnection, string connectionIDHint)
         {
             if (dstEndPoint == null)
             {
@@ -133,7 +139,7 @@ namespace SIPSorcery.SIP
         /// <summary>
         /// Send to a secure web socket server.
         /// </summary>
-        public override Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint, byte[] buffer, string serverCertificateName, string connectionIDHint)
+        public override Task<SocketError> SendSecureAsync(SIPEndPoint dstEndPoint, byte[] buffer, string serverCertificateName, bool canInitiateConnection, string connectionIDHint)
         {
             if (dstEndPoint == null)
             {
@@ -314,7 +320,7 @@ namespace SIPSorcery.SIP
             }
             catch (Exception excp)
             {
-                logger.LogWarning("Exception SIPClientWebSocketChannel Close. " + excp.Message);
+                logger.LogWarning(excp, "Exception SIPClientWebSocketChannel Close. " + excp.Message);
             }
         }
 
@@ -419,7 +425,7 @@ namespace SIPSorcery.SIP
             clientConn.RecvEndPosn += bytesRead;
 
             int bytesSkipped = 0;
-            byte[] sipMsgBuffer = SIPMessageBuffer.ParseSIPMessageFromStream(clientConn.PendingReceiveBuffer, clientConn.RecvStartPosn, clientConn.RecvEndPosn, out bytesSkipped);
+            byte[] sipMsgBuffer = SIPMessageBuffer.ParseSIPMessageFromStream(clientConn.PendingReceiveBuffer, clientConn.RecvStartPosn, clientConn.RecvEndPosn, SIPEncoding, out bytesSkipped);
 
             while (sipMsgBuffer != null)
             {
@@ -441,7 +447,7 @@ namespace SIPSorcery.SIP
                 else
                 {
                     // Try and extract another SIP message from the receive buffer.
-                    sipMsgBuffer = SIPMessageBuffer.ParseSIPMessageFromStream(clientConn.PendingReceiveBuffer, clientConn.RecvStartPosn, clientConn.RecvEndPosn, out bytesSkipped);
+                    sipMsgBuffer = SIPMessageBuffer.ParseSIPMessageFromStream(clientConn.PendingReceiveBuffer, clientConn.RecvStartPosn, clientConn.RecvEndPosn, SIPEncoding, out bytesSkipped);
                 }
             }
         }
