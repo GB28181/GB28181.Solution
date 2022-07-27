@@ -14,6 +14,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,6 +63,12 @@ namespace SIPSorcery.SIP.App
         SDP RemoteDescription { get; }
 
         /// <summary>
+        /// Set if the session has been bound to a specific IP address.
+        /// Normally not required but some esoteric call or network set ups may need.
+        /// </summary>
+        IPAddress RtpBindAddress { get; }
+
+        /// <summary>
         /// Fired when the RTP channel is closed.
         /// </summary>
         event Action<string> OnRtpClosed;
@@ -71,6 +78,11 @@ namespace SIPSorcery.SIP.App
         /// detected.
         /// </summary>
         event Action<IPEndPoint, RTPEvent, RTPHeader> OnRtpEvent;
+
+        /// <summary>
+        /// Fired when no RTP or RTCP packets are received for a pre-defined period (typically 30s).
+        /// </summary>
+        event Action<SDPMediaTypesEnum> OnTimeout;
 
         /// <summary>
         /// Creates a new SDP offer based on the local media tracks in the session.
@@ -115,7 +127,7 @@ namespace SIPSorcery.SIP.App
         Task Start();
 
         /// <summary>
-        /// Sets the stream status on a local audio or video media track.
+        /// Sets the stream status on all local audio or all video media track.
         /// </summary>
         /// <param name="kind">The type of the media track. Must be audio or video.</param>
         /// <param name="status">The stream status for the media track.</param>

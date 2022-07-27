@@ -31,40 +31,28 @@ namespace SIPSorcery.SIP.App
     {
         private static ILogger logger = Log.Logger;
 
-        private SIPAuthenticateRequestDelegate SIPAuthenticateRequest_External;
-        private GetSIPAccountDelegate GetSIPAccount_External;
+        protected SIPTransport m_sipTransport;
+        protected UASInviteTransaction m_uasTransaction;
+        protected SIPEndPoint m_outboundProxy;                   // If the system needs to use an outbound proxy for every request this will be set and overrides any user supplied values.
+        protected bool m_isAuthenticated;
+        protected bool m_isCancelled;
+        protected bool m_isHungup;
+        protected SIPDialogueTransferModesEnum m_transferMode;
 
-        private SIPTransport m_sipTransport;
-        private UASInviteTransaction m_uasTransaction;
-        private SIPEndPoint m_outboundProxy;                   // If the system needs to use an outbound proxy for every request this will be set and overrides any user supplied values.
-        private bool m_isAuthenticated;
-        private bool m_isCancelled;
-        private bool m_isHungup;
-        private string m_owner;
-        private string m_adminMemberId;
-        private string m_sipUsername;
-        private string m_sipDomain;
-        private SIPDialogueTransferModesEnum m_transferMode;
-
-        public bool IsB2B { get { return false; } }
-        public bool IsInvite
-        {
-            get { return true; }
-        }
-        public string Owner { get { return m_owner; } }
-
-        /// <summary>
-        /// Call direction for this user agent.
-        /// </summary>
-        public SIPCallDirection CallDirection { get; private set; } = SIPCallDirection.In;
+        public bool IsB2B { get; protected set; } = false;
+        public bool IsInvite => true;
+        public SIPCallDirection CallDirection => SIPCallDirection.In;
 
         /// <summary>
         /// The SIP dialog that's created if we're able to successfully answer the call request.
         /// </summary>
         public SIPDialogue SIPDialogue { get; private set; }
 
-        private SIPAccount m_sipAccount;
-        public SIPAccount SIPAccount
+        protected ISIPAccount m_sipAccount;
+
+        private SIPNonInviteTransaction m_byeTransaction;       // If the server call is hungup this transaction contains the BYE in case it needs to be resent.
+
+        public ISIPAccount SIPAccount
         {
             get { return m_sipAccount; }
             set { m_sipAccount = value; }
@@ -76,35 +64,13 @@ namespace SIPSorcery.SIP.App
             set { m_isAuthenticated = value; }
         }
 
-        public bool IsCancelled
-        {
-            get { return m_isCancelled; }
-        }
-
-        public SIPRequest CallRequest
-        {
-            get { return m_uasTransaction.TransactionRequest; }
-        }
-
-        public string CallDestination
-        {
-            get { return m_uasTransaction.TransactionRequest.URI.User; }
-        }
-
-        public bool IsUASAnswered
-        {
-            get { return m_uasTransaction != null && m_uasTransaction.TransactionFinalResponse != null; }
-        }
-
-        public bool IsHungup
-        {
-            get { return m_isHungup; }
-        }
-
-        public UASInviteTransaction ClientTransaction
-        {
-            get { return m_uasTransaction; }
-        }
+        public bool IsHangingUp => m_byeTransaction?.DeliveryPending ?? false;
+        public bool IsCancelled => m_isCancelled;
+        public SIPRequest CallRequest => m_uasTransaction.TransactionRequest;
+        public string CallDestination => m_uasTransaction.TransactionRequest.URI.User;
+        public bool IsUASAnswered => m_uasTransaction != null && m_uasTransaction.TransactionFinalResponse != null;
+        public bool IsHungup => m_isHungup;
+        public UASInviteTransaction ClientTransaction => m_uasTransaction;
 
         /// <summary>
         /// The Session Description Protocol offer from the remote call party.
@@ -113,7 +79,7 @@ namespace SIPSorcery.SIP.App
         {
             get
             {
-                if (!String.IsNullOrEmpty(m_uasTransaction.TransactionRequest.Body))
+                if (!string.IsNullOrEmpty(m_uasTransaction.TransactionRequest.Body))
                 {
                     return SDP.ParseSDPDescription(m_uasTransaction.TransactionRequest.Body);
                 }
@@ -137,16 +103,6 @@ namespace SIPSorcery.SIP.App
         public event SIPUASDelegate NoRingTimeout;
 
         /// <summary>
-        /// The underlying invite transaction has reached the completed state.
-        /// </summary>
-        public event SIPUASDelegate TransactionComplete;
-
-        /// <summary>
-        /// The underlying invite transaction has changed state.
-        /// </summary>
-        public event SIPUASStateChangedDelegate UASStateChanged;
-
-        /// <summary>
         /// Gets fired when the call successfully negotiates an SDP offer/answer and creates a new dialog.
         /// Typically this can occur at the same time as the transaction final response is sent. But in cases
         /// where the initial INVITE does not contain an SDP offer the dialog will not be created until the 
@@ -157,85 +113,16 @@ namespace SIPSorcery.SIP.App
         public SIPServerUserAgent(
             SIPTransport sipTransport,
             SIPEndPoint outboundProxy,
-            string sipUsername,
-            string sipDomain,
-            SIPCallDirection callDirection,
-            GetSIPAccountDelegate getSIPAccount,
-            SIPAuthenticateRequestDelegate sipAuthenticateRequest,
-            UASInviteTransaction uasTransaction)
+            UASInviteTransaction uasTransaction,
+            ISIPAccount sipAccount)
         {
             m_sipTransport = sipTransport;
             m_outboundProxy = outboundProxy;
-            m_sipUsername = sipUsername;
-            m_sipDomain = sipDomain;
-            CallDirection = callDirection;
-            GetSIPAccount_External = getSIPAccount;
-            SIPAuthenticateRequest_External = sipAuthenticateRequest;
             m_uasTransaction = uasTransaction;
+            m_sipAccount = sipAccount;
 
-            m_uasTransaction.UASInviteTransactionTimedOut += ClientTimedOut;
+            m_uasTransaction.UASInviteTransactionFailed += ClientTransactionFailed;
             m_uasTransaction.UASInviteTransactionCancelled += UASTransactionCancelled;
-            m_uasTransaction.TransactionRemoved += new SIPTransactionRemovedDelegate(UASTransaction_TransactionRemoved);
-        }
-
-        private void UASTransaction_TransactionRemoved(SIPTransaction sipTransaction)
-        {
-            TransactionComplete?.Invoke(this);
-        }
-
-        public bool LoadSIPAccountForIncomingCall()
-        {
-            try
-            {
-                bool loaded = false;
-
-                if (GetSIPAccount_External == null)
-                {
-                    // No point trying to authenticate if we haven't been given a delegate to load the SIP account.
-                    Reject(SIPResponseStatusCodesEnum.InternalServerError, null, null);
-                }
-                else
-                {
-                    m_sipAccount = GetSIPAccount_External(m_sipUsername, m_sipDomain);
-
-                    if (m_sipAccount == null)
-                    {
-                        // A full lookup failed. Now try a partial lookup if the incoming username is in a dotted domain name format.
-                        if (m_sipUsername.Contains("."))
-                        {
-                            string sipUsernameSuffix = m_sipUsername.Substring(m_sipUsername.LastIndexOf(".") + 1);
-                            m_sipAccount = GetSIPAccount_External(sipUsernameSuffix, m_sipDomain);
-                        }
-
-                        if (m_sipAccount == null)
-                        {
-                            logger.LogWarning("Rejecting public call for " + m_sipUsername + "@" + m_sipDomain + ", SIP account not found.");
-                            Reject(SIPResponseStatusCodesEnum.NotFound, null, null);
-                        }
-                        else
-                        {
-                            loaded = true;
-                        }
-                    }
-                    else
-                    {
-                        loaded = true;
-                    }
-                }
-
-                if (loaded)
-                {
-                    SetOwner(m_sipAccount.Owner, m_sipAccount.AdminMemberId);
-                }
-
-                return loaded;
-            }
-            catch (Exception excp)
-            {
-                logger.LogError("Exception LoadSIPAccountForIncomingCall. " + excp.Message);
-                Reject(SIPResponseStatusCodesEnum.InternalServerError, null, null);
-                return false;
-            }
         }
 
         public bool AuthenticateCall()
@@ -244,54 +131,42 @@ namespace SIPSorcery.SIP.App
 
             try
             {
-                if (SIPAuthenticateRequest_External == null)
+                if (m_sipAccount == null)
                 {
-                    // No point trying to authenticate if we haven't been given an authentication delegate.
-                    Reject(SIPResponseStatusCodesEnum.InternalServerError, null, null);
-                }
-                else if (GetSIPAccount_External == null)
-                {
-                    // No point trying to authenticate if we haven't been given a  delegate to load the SIP account.
-                    Reject(SIPResponseStatusCodesEnum.InternalServerError, null, null);
+                    logger.LogWarning($"Rejecting authentication required call for {m_uasTransaction.TransactionRequestFrom}, SIP account not found.");
+                    Reject(SIPResponseStatusCodesEnum.Forbidden, null, null);
                 }
                 else
                 {
-                    m_sipAccount = GetSIPAccount_External(m_sipUsername, m_sipDomain);
+                    SIPRequest sipRequest = m_uasTransaction.TransactionRequest;
+                    SIPEndPoint localSIPEndPoint = (!sipRequest.Header.ProxyReceivedOn.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedOn) : sipRequest.LocalSIPEndPoint;
+                    SIPEndPoint remoteEndPoint = (!sipRequest.Header.ProxyReceivedFrom.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedFrom) : sipRequest.RemoteSIPEndPoint;
 
-                    if (m_sipAccount == null)
+                    var authenticationResult = SIPRequestAuthenticator.AuthenticateSIPRequest(localSIPEndPoint, remoteEndPoint, sipRequest, m_sipAccount);
+                    if (authenticationResult.Authenticated)
                     {
-                        logger.LogWarning("Rejecting authentication required call for " + m_sipUsername + "@" + m_sipDomain + ", SIP account not found.");
-                        Reject(SIPResponseStatusCodesEnum.Forbidden, null, null);
-                    }
-                    else
-                    {
-                        SIPRequest sipRequest = m_uasTransaction.TransactionRequest;
-                        SIPEndPoint localSIPEndPoint = (!sipRequest.Header.ProxyReceivedOn.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedOn) : sipRequest.LocalSIPEndPoint;
-                        SIPEndPoint remoteEndPoint = (!sipRequest.Header.ProxyReceivedFrom.IsNullOrBlank()) ? SIPEndPoint.ParseSIPEndPoint(sipRequest.Header.ProxyReceivedFrom) : sipRequest.RemoteSIPEndPoint;
-
-                        SIPRequestAuthenticationResult authenticationResult = SIPAuthenticateRequest_External(localSIPEndPoint, remoteEndPoint, sipRequest, m_sipAccount);
-                        if (authenticationResult.Authenticated)
+                        if (authenticationResult.WasAuthenticatedByIP)
                         {
-                            if (authenticationResult.WasAuthenticatedByIP)
-                            {
-                                logger.LogDebug("New call from " + remoteEndPoint.ToString() + " successfully authenticated by IP address.");
-                            }
-                            else
-                            {
-                                logger.LogDebug("New call from " + remoteEndPoint.ToString() + " successfully authenticated by digest.");
-                            }
-
-                            SetOwner(m_sipAccount.Owner, m_sipAccount.AdminMemberId);
-                            m_isAuthenticated = true;
+                            logger.LogDebug($"New call from {remoteEndPoint} successfully authenticated by IP address.");
                         }
                         else
                         {
-                            // Send authorisation failure or required response
-                            SIPResponse authReqdResponse = SIPResponse.GetResponse(sipRequest, authenticationResult.ErrorResponse, null);
-                            authReqdResponse.Header.AuthenticationHeader = authenticationResult.AuthenticationRequiredHeader;
-                            logger.LogWarning("Call not authenticated for " + m_sipUsername + "@" + m_sipDomain + ", responding with " + authenticationResult.ErrorResponse + ".");
-                            m_uasTransaction.SendFinalResponse(authReqdResponse);
+                            logger.LogDebug($"New call from {remoteEndPoint} successfully authenticated by digest.");
                         }
+
+                        m_isAuthenticated = true;
+                    }
+                    else
+                    {
+                        if (sipRequest.Header.HasAuthenticationHeader)
+                        {
+                            logger.LogWarning($"Call not authenticated for {m_sipAccount.SIPUsername}@{m_sipAccount.SIPDomain}, responding with {authenticationResult.ErrorResponse}.");
+                        }
+
+                        // Send authorisation failure or required response
+                        SIPResponse authReqdResponse = SIPResponse.GetResponse(sipRequest, authenticationResult.ErrorResponse, null);
+                        authReqdResponse.Header.AuthenticationHeaders.Add(authenticationResult.AuthenticationRequiredHeader);
+                        m_uasTransaction.SendFinalResponse(authReqdResponse);
                     }
                 }
             }
@@ -316,7 +191,7 @@ namespace SIPSorcery.SIP.App
                     }
                     else
                     {
-                        UASStateChanged?.Invoke(this, progressStatus, reasonPhrase);
+                        //UASStateChanged?.Invoke(this, progressStatus, reasonPhrase);
 
                         // Allow all Trying responses through as some may contain additional useful information on the call state for the caller. 
                         // Also if the response is a 183 Session Progress with audio forward it.
@@ -393,7 +268,7 @@ namespace SIPSorcery.SIP.App
                 }
                 else
                 {
-                    UASStateChanged?.Invoke(this, SIPResponseStatusCodesEnum.Ok, null);
+                    //UASStateChanged?.Invoke(this, SIPResponseStatusCodesEnum.Ok, null);
 
                     if (!toTag.IsNullOrBlank())
                     {
@@ -480,7 +355,7 @@ namespace SIPSorcery.SIP.App
                     }
                     else
                     {
-                        UASStateChanged?.Invoke(this, failureStatus, reasonPhrase);
+                        //UASStateChanged?.Invoke(this, failureStatus, reasonPhrase);
 
                         string failureReason = (!reasonPhrase.IsNullOrBlank()) ? " and " + reasonPhrase : null;
 
@@ -513,6 +388,7 @@ namespace SIPSorcery.SIP.App
         {
             Redirect(redirectCode, redirectURI, null);
         }
+
         public void Redirect(SIPResponseStatusCodesEnum redirectCode, SIPURI redirectURI, string[] customHeaders)
         {
             try
@@ -573,11 +449,10 @@ namespace SIPSorcery.SIP.App
                         }
                         else
                         {
-                            //SIPRequest byeRequest = GetByeRequest();
                             var byeRequest = SIPDialogue.GetInDialogRequest(SIPMethodsEnum.BYE);
-                            SIPNonInviteTransaction byeTransaction = new SIPNonInviteTransaction(m_sipTransport, byeRequest, m_outboundProxy);
-                            byeTransaction.NonInviteTransactionFinalResponseReceived += ByeServerFinalResponseReceived;
-                            byeTransaction.SendRequest();
+                            m_byeTransaction = new SIPNonInviteTransaction(m_sipTransport, byeRequest, m_outboundProxy);
+                            m_byeTransaction.NonInviteTransactionFinalResponseReceived += ByeServerFinalResponseReceived;
+                            m_byeTransaction.SendRequest();
                         }
                     }
                     catch (Exception excp)
@@ -599,19 +474,9 @@ namespace SIPSorcery.SIP.App
 
                 if ((sipResponse.Status == SIPResponseStatusCodesEnum.ProxyAuthenticationRequired || sipResponse.Status == SIPResponseStatusCodesEnum.Unauthorised) && SIPAccount != null)
                 {
-                    // Resend BYE with credentials.
-                    SIPAuthorisationDigest authRequest = sipResponse.Header.AuthenticationHeader.SIPDigest;
-                    SIPURI contactUri = sipResponse.Header.Contact.Any() ? sipResponse.Header.Contact[0].ContactURI : sipResponse.Header.From.FromURI;
-
-                    authRequest.SetCredentials(SIPAccount.SIPUsername, SIPAccount.SIPPassword, contactUri.ToString(), SIPMethodsEnum.BYE.ToString());
-
-                    SIPRequest authByeRequest = byeTransaction.TransactionRequest;
-                    authByeRequest.Header.AuthenticationHeader = new SIPAuthenticationHeader(authRequest);
-                    authByeRequest.Header.AuthenticationHeader.SIPDigest.Response = authRequest.Digest;
-                    authByeRequest.Header.Vias.TopViaHeader.Branch = CallProperties.CreateBranchId();
-                    authByeRequest.Header.CSeq = authByeRequest.Header.CSeq + 1;
-
-                    SIPNonInviteTransaction authByeTransaction = new SIPNonInviteTransaction(m_sipTransport, authByeRequest, null);
+                    var authRequest = sipTransaction.TransactionRequest.DuplicateAndAuthenticate(sipResponse.Header.AuthenticationHeaders,
+                                SIPAccount.SIPUsername, SIPAccount.SIPPassword);
+                    SIPNonInviteTransaction authByeTransaction = new SIPNonInviteTransaction(m_sipTransport, authRequest, null);
                     authByeTransaction.SendRequest();
                 }
 
@@ -631,63 +496,14 @@ namespace SIPSorcery.SIP.App
             CallCancelled?.Invoke(this);
         }
 
-        private void ClientTimedOut(SIPTransaction sipTransaction)
+        private void ClientTransactionFailed(SIPTransaction sipTransaction, SocketError failureReason)
         {
-            try
+            logger.LogDebug($"SIPServerUserAgent client failed with {failureReason} in transaction state {m_uasTransaction.TransactionState}.");
+
+            if (sipTransaction.HasTimedOut)
             {
-                logger.LogDebug($"SIPServerUserAgent client timed out in transaction state {m_uasTransaction.TransactionState}.");
-
-                logger.LogWarning("UAS for " + m_uasTransaction.TransactionRequest.URI.ToString() + " timed out in transaction state " + m_uasTransaction.TransactionState + ".");
-
-                //if (m_uasTransaction.TransactionState == SIPTransactionStatesEnum.Calling && NoRingTimeout != null)
-                //{
                 NoRingTimeout?.Invoke(this);
-                //}
-            }
-            catch (Exception excp)
-            {
-                logger.LogError("Exception ClientTimedOut. " + excp.Message);
             }
         }
-
-        public void SetOwner(string owner, string adminMemberId)
-        {
-            m_owner = owner;
-            m_adminMemberId = adminMemberId;
-
-            if (m_uasTransaction.CDR != null)
-            {
-                m_uasTransaction.CDR.Owner = owner;
-                m_uasTransaction.CDR.AdminMemberId = adminMemberId;
-
-                m_uasTransaction.CDR.Updated();
-            }
-        }
-
-        public void SetDialPlanContextID(Guid dialPlanContextID)
-        {
-            if (m_uasTransaction.CDR != null)
-            {
-                m_uasTransaction.CDR.DialPlanContextID = dialPlanContextID;
-                m_uasTransaction.CDR.Updated();
-            }
-        }
-
-        //private SIPRequest GetByeRequest()
-        //{
-        //    SIPRequest byeRequest = new SIPRequest(SIPMethodsEnum.BYE, SIPDialogue.RemoteTarget);
-        //    SIPFromHeader byeFromHeader = SIPFromHeader.ParseFromHeader(SIPDialogue.LocalUserField.ToString());
-        //    SIPToHeader byeToHeader = SIPToHeader.ParseToHeader(SIPDialogue.RemoteUserField.ToString());
-        //    int cseq = SIPDialogue.CSeq + 1;
-
-        //    SIPHeader byeHeader = new SIPHeader(byeFromHeader, byeToHeader, cseq, SIPDialogue.CallId);
-        //    byeHeader.CSeqMethod = SIPMethodsEnum.BYE;
-        //    byeRequest.Header = byeHeader;
-        //    byeRequest.Header.Routes = SIPDialogue.RouteSet;
-        //    byeRequest.Header.ProxySendFrom = SIPDialogue.ProxySendFrom;
-        //    byeRequest.Header.Vias.PushViaHeader(SIPViaHeader.GetDefaultSIPViaHeader());
-
-        //    return byeRequest;
-        //}
     }
 }

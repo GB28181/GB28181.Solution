@@ -11,6 +11,7 @@
 //
 // History:
 // 04 Sep 2020	Aaron Clauson	Created, Dublin, Ireland.
+// 26 Jul 2021	Kurt Kießling	Added secure media negotiation.
 //
 // License: 
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
@@ -24,7 +25,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SIPSorcery.Net;
 using SIPSorcery.SIP.App;
-using SIPSorceryMedia.Abstractions.V1;
+using SIPSorceryMedia.Abstractions;
 
 namespace SIPSorcery.Media
 {
@@ -42,7 +43,7 @@ namespace SIPSorcery.Media
     /// always co-ordinate the encoding and decoding of samples sent to and received from
     /// the RTP transport.
     /// </summary>
-    public class VoIPMediaSession : RTPSession, IMediaSession
+    public class VoIPMediaSession : RTPSession
     {
         private const int TEST_PATTERN_FPS = 30;
         private const int TEST_PATTERN_ONHOLD_FPS = 3;
@@ -67,6 +68,30 @@ namespace SIPSorcery.Media
 
         public event VideoSinkSampleDecodedDelegate OnVideoSinkSample;
 
+        /// <summary>
+        /// Default constructor which creates the simplest possible send only audio session. It does not
+        /// wire up any devices or video processing.
+        /// </summary>
+        public VoIPMediaSession(string musicFilePath = null, Func<AudioFormat, bool> restrictFormats = null) : base(false, false, false)
+        {
+            _audioExtrasSource = new AudioExtrasSource();
+            _audioExtrasSource.OnAudioSourceEncodedSample += SendAudio;
+            _audioExtrasSource.SetSource(AudioSourcesEnum.Music);
+
+            if(restrictFormats != null)
+            {
+                _audioExtrasSource.RestrictFormats(restrictFormats);
+            }
+
+
+            Media = new MediaEndPoints { AudioSource = _audioExtrasSource };
+
+            var audioTrack = new MediaStreamTrack(_audioExtrasSource.GetAudioSourceFormats());
+            base.addTrack(audioTrack);
+            Media.AudioSource.OnAudioSourceEncodedSample += SendAudio;
+            base.OnAudioFormatsNegotiated += AudioFormatsNegotiated;
+        }
+
         public VoIPMediaSession(MediaEndPoints mediaEndPoint, VideoTestPatternSource testPatternSource)
             : this(mediaEndPoint, null, 0, testPatternSource)
         { }
@@ -75,15 +100,28 @@ namespace SIPSorcery.Media
             MediaEndPoints mediaEndPoint,
             IPAddress bindAddress = null,
             int bindPort = 0,
-             VideoTestPatternSource testPatternSource = null)
-            : base(false, false, false, bindAddress, bindPort)
+            VideoTestPatternSource testPatternSource = null)
+            : this(new VoIPMediaSessionConfig { MediaEndPoint = mediaEndPoint, BindAddress = bindAddress, BindPort = bindPort, TestPatternSource = testPatternSource })
         {
-            if (mediaEndPoint == null)
+        }
+
+        public VoIPMediaSession(VoIPMediaSessionConfig config)
+            : base(new RtpSessionConfig
             {
-                throw new ArgumentNullException("mediaEndPoint", "The media end point parameter cannot be null.");
+                IsMediaMultiplexed = false,
+                IsRtcpMultiplexed = false,
+                RtpSecureMediaOption = config.RtpSecureMediaOption,
+                BindAddress = config.BindAddress,
+                BindPort = config.BindPort,
+                RtpPortRange = config.RtpPortRange
+            })
+        {
+            if (config.MediaEndPoint == null)
+            {
+                throw new ArgumentNullException("MediaEndPoint", "The media end point parameter cannot be null.");
             }
 
-            Media = mediaEndPoint;
+            Media = config.MediaEndPoint;
 
             // The audio extras source is used for on-hold music.
             _audioExtrasSource = new AudioExtrasSource();
@@ -92,23 +130,23 @@ namespace SIPSorcery.Media
             // Wire up the audio and video sample event handlers.
             if (Media.AudioSource != null)
             {
-                var audioTrack = new MediaStreamTrack(mediaEndPoint.AudioSource.GetAudioSourceFormats());
+                var audioTrack = new MediaStreamTrack(config.MediaEndPoint.AudioSource.GetAudioSourceFormats());
                 base.addTrack(audioTrack);
-                Media.AudioSource.OnAudioSourceEncodedSample += base.SendAudio;
+                Media.AudioSource.OnAudioSourceEncodedSample += SendAudio;
             }
 
             if (Media.VideoSource != null)
             {
-                var videoTrack = new MediaStreamTrack(mediaEndPoint.VideoSource.GetVideoSourceFormats());
+                var videoTrack = new MediaStreamTrack(config.MediaEndPoint.VideoSource.GetVideoSourceFormats());
                 base.addTrack(videoTrack);
                 Media.VideoSource.OnVideoSourceEncodedSample += base.SendVideo;
                 Media.VideoSource.OnVideoSourceError += VideoSource_OnVideoSourceError;
 
-                if (testPatternSource != null)
+                if (config.TestPatternSource != null)
                 {
                     // The test pattern source is used as failover if the webcam initialisation fails.
                     // It's also used as the video stream if the call is put on hold.
-                    _videoTestPatternSource = testPatternSource;
+                    _videoTestPatternSource = config.TestPatternSource;
                     _videoTestPatternSource.OnVideoSourceEncodedSample += base.SendVideo;
                     //_videoTestPatternSource.OnVideoSourceRawSample += Media.VideoSource.ExternalVideoSourceRawSample;
                 }
@@ -127,6 +165,7 @@ namespace SIPSorcery.Media
 
             base.OnAudioFormatsNegotiated += AudioFormatsNegotiated;
             base.OnVideoFormatsNegotiated += VideoFormatsNegotiated;
+            
         }
 
         private async void VideoSource_OnVideoSourceError(string errorMessage)
@@ -145,7 +184,7 @@ namespace SIPSorcery.Media
         private void AudioFormatsNegotiated(List<AudioFormat> audoFormats)
         {
             var audioFormat = audoFormats.First();
-            logger.LogDebug($"Setting audio sink and source format to {audioFormat.FormatID}:{audioFormat.Codec} {audioFormat.ClockRate}.");
+            logger.LogDebug($"Setting audio sink and source format to {audioFormat.FormatID}:{audioFormat.Codec} {audioFormat.ClockRate} (RTP clock rate {audioFormat.RtpClockRate}).");
             Media.AudioSink?.SetAudioSinkFormat(audioFormat);
             Media.AudioSource?.SetAudioSourceFormat(audioFormat);
             _audioExtrasSource.SetAudioSourceFormat(audioFormat);
@@ -255,13 +294,13 @@ namespace SIPSorcery.Media
 
             if (HasVideo)
             {
-                await Media.VideoSource.PauseVideo();
+                await Media.VideoSource.PauseVideo().ConfigureAwait(false);
 
                 //_videoTestPatternSource.SetEmbeddedTestPatternPath(VideoTestPatternSource.TEST_PATTERN_INVERTED_RESOURCE_PATH);
                 _videoTestPatternSource.SetFrameRate(TEST_PATTERN_ONHOLD_FPS);
 
                 Media.VideoSource.ForceKeyFrame();
-                await _videoTestPatternSource.ResumeVideo();
+                await _videoTestPatternSource.ResumeVideo().ConfigureAwait(false);
             }
         }
 
@@ -275,7 +314,7 @@ namespace SIPSorcery.Media
 
             if (HasVideo)
             {
-                    await _videoTestPatternSource.PauseVideo();
+                await _videoTestPatternSource.PauseVideo().ConfigureAwait(false);
 
                 //_videoTestPatternSource.SetEmbeddedTestPatternPath(VideoTestPatternSource.TEST_PATTERN_RESOURCE_PATH);
                 _videoTestPatternSource.SetFrameRate(TEST_PATTERN_FPS);
@@ -284,11 +323,11 @@ namespace SIPSorcery.Media
 
                 if (!_videoCaptureDeviceFailed)
                 {
-                    await Media.VideoSource.ResumeVideo();
+                    await Media.VideoSource.ResumeVideo().ConfigureAwait(false);
                 }
                 else
                 {
-                    await _videoTestPatternSource.ResumeVideo();
+                    await _videoTestPatternSource.ResumeVideo().ConfigureAwait(false);
                 }
             }
         }
