@@ -38,7 +38,12 @@ namespace SIPSorcery.Net
         /// <summary>
         /// Optional property to allow the peer connection SDP offer options to be set.
         /// </summary>
-        public RTCOfferOptions OfferOptions {get; set;}
+        public RTCOfferOptions OfferOptions { get; set; }
+
+        /// <summary>
+        /// Optional property to allow the peer connection SDP answer options to be set.
+        /// </summary>
+        public RTCAnswerOptions AnswerOptions { get; set; }
 
         /// <summary>
         /// Optional filter that can be applied to remote ICE candidates. The filter is 
@@ -52,16 +57,16 @@ namespace SIPSorcery.Net
         public WebRTCWebSocketPeer()
         { }
 
-        protected override void OnMessage(MessageEventArgs e)
+        protected override async void OnMessage(MessageEventArgs e)
         {
-            logger.LogDebug($"OnMessage: {e.Data}");
+            //logger.LogDebug($"OnMessage: {e.Data}");
 
             if (RTCIceCandidateInit.TryParse(e.Data, out var iceCandidateInit))
             {
                 logger.LogDebug("Got remote ICE candidate.");
 
                 bool useCandidate = true;
-                if(FilterRemoteICECandidates != null && !string.IsNullOrWhiteSpace(iceCandidateInit.candidate))
+                if (FilterRemoteICECandidates != null && !string.IsNullOrWhiteSpace(iceCandidateInit.candidate))
                 {
                     useCandidate = FilterRemoteICECandidates(iceCandidateInit);
                 }
@@ -86,6 +91,19 @@ namespace SIPSorcery.Net
                     _pc.Close("failed to set remote description");
                     this.Close();
                 }
+                else
+                {
+                    if(_pc.signalingState == RTCSignalingState.have_remote_offer)
+                    {
+                        var answerSdp = _pc.createAnswer(AnswerOptions);
+                        await _pc.setLocalDescription(answerSdp).ConfigureAwait(false);
+
+                        logger.LogDebug($"Sending SDP answer to client {Context.UserEndPoint}.");
+                        //logger.LogDebug(answerSdp.sdp);
+
+                        Context.WebSocket.Send(answerSdp.toJSON());
+                    }
+                }
             }
             else
             {
@@ -99,22 +117,27 @@ namespace SIPSorcery.Net
 
             logger.LogDebug($"Web socket client connection from {Context.UserEndPoint}.");
 
-            _pc = await CreatePeerConnection();
+            _pc = await CreatePeerConnection().ConfigureAwait(false);
 
-            var offerSdp = _pc.createOffer(OfferOptions);
-            await _pc.setLocalDescription(offerSdp);
             _pc.onicecandidate += (iceCandidate) =>
             {
-                if (_pc.signalingState == RTCSignalingState.have_remote_offer)
+                if (_pc.signalingState == RTCSignalingState.have_remote_offer ||
+                    _pc.signalingState == RTCSignalingState.stable)
                 {
                     Context.WebSocket.Send(iceCandidate.toJSON());
                 }
             };
 
-            logger.LogDebug($"Sending SDP offer to client {Context.UserEndPoint}.");
-            logger.LogDebug(offerSdp.sdp);
+            if (base.Context.QueryString["role"] != "offer")
+            {
+                var offerSdp = _pc.createOffer(OfferOptions);
+                await _pc.setLocalDescription(offerSdp).ConfigureAwait(false);
 
-            Context.WebSocket.Send(offerSdp.toJSON());
+                logger.LogDebug($"Sending SDP offer to client {Context.UserEndPoint}.");
+                logger.LogDebug(offerSdp.sdp);
+
+                Context.WebSocket.Send(offerSdp.toJSON());
+            }
         }
     }
 }

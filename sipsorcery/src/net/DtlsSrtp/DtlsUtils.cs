@@ -287,7 +287,10 @@ namespace SIPSorcery.Net
 
         public static AsymmetricKeyParameter LoadPrivateKeyResource(X509Certificate2 certificate)
         {
+            // TODO: When .NET Standard and Framework support are deprecated this pragma can be removed.
+#pragma warning disable SYSLIB0028
             return DotNetUtilities.GetKeyPair(certificate.PrivateKey).Private;
+#pragma warning restore SYSLIB0028
         }
 
         public static AsymmetricKeyParameter LoadPrivateKeyResource(string resource)
@@ -321,13 +324,13 @@ namespace SIPSorcery.Net
 
         #region Self Signed Utils
 
-        [Obsolete("Use CreateSelfSignedTlsCert instead.")]
+        //[Obsolete("Use CreateSelfSignedTlsCert instead.")]
         public static X509Certificate2 CreateSelfSignedCert(AsymmetricKeyParameter privateKey = null)
         {
             return CreateSelfSignedCert("CN=localhost", "CN=root", privateKey);
         }
 
-        [Obsolete("Use CreateSelfSignedTlsCert instead.")]
+        //[Obsolete("Use CreateSelfSignedTlsCert instead.")]
         public static X509Certificate2 CreateSelfSignedCert(string subjectName, string issuerName, AsymmetricKeyParameter privateKey)
         {
             const int keyStrength = DEFAULT_KEY_SIZE;
@@ -417,7 +420,10 @@ namespace SIPSorcery.Net
                 var rsaparams = new RsaPrivateCrtKeyParameters(
                     rsa.Modulus, rsa.PublicExponent, rsa.PrivateExponent, rsa.Prime1, rsa.Prime2, rsa.Exponent1, rsa.Exponent2, rsa.Coefficient);
 
+                // TODO: When .NET Standard and Framework support are deprecated this pragma can be removed.
+#pragma warning disable SYSLIB0028
                 x509.PrivateKey = ToRSA(rsaparams);
+#pragma warning restore SYSLIB0028
                 return x509;
             }
             catch
@@ -483,7 +489,7 @@ namespace SIPSorcery.Net
             return (tlsCertificate, subjectKeyPair.Private);
         }
 
-        /// <remarks>Plagarised from https://github.com/CryptLink/CertBuilder/blob/master/CertBuilder.cs.
+        /// <remarks>Plagiarised from https://github.com/CryptLink/CertBuilder/blob/master/CertBuilder.cs.
         /// NOTE: netstandard2.1+ and netcoreapp3.1+ have x509.CopyWithPrivateKey which will avoid the need to
         /// use the serialize/deserialize from pfx to get from bouncy castle to .NET Core X509 certificates.</remarks>
         public static X509Certificate2 ConvertBouncyCert(Org.BouncyCastle.X509.X509Certificate bouncyCert, AsymmetricCipherKeyPair keyPair)

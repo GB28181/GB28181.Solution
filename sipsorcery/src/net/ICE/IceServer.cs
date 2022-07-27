@@ -89,10 +89,19 @@ namespace SIPSorcery.Net
         /// </summary>
         internal const int STUN_UNAUTHORISED_ERROR_CODE = 401;
 
+        /// <summary>
+        /// The STUN error code response indicating a stale nonce
+        /// </summary>
+        internal const int STUN_STALE_NONCE_ERROR_CODE = 438;
+
         internal STUNUri _uri;
         internal string _username;
         internal string _password;
-        internal int _id;           // An incrementing number that needs to be unique for each server in the session.
+
+        /// <summary>
+        /// An incrementing number that needs to be unique for each server in the session.
+        /// </summary>
+        internal int _id;
 
         /// <summary>
         /// The end point for this STUN or TURN server. Will be set asynchronously once
@@ -126,6 +135,11 @@ namespace SIPSorcery.Net
         /// The timestamp of the most recent response received from the ICE server.
         /// </summary>
         internal DateTime LastResponseReceivedAt { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// This field records the time when allocation expires
+        /// </summary>
+        public DateTime TurnTimeToExpiry { get; set; } = DateTime.MinValue;
 
         /// <summary>
         /// Records the failure message if there was an error configuring or contacting
@@ -282,6 +296,19 @@ namespace SIPSorcery.Net
                             RelayEndPoint = (mappedRelayAddrAttr as STUNXORAddressAttribute).GetIPEndPoint();
                         }
 
+                        var lifetime = stunResponse.Attributes.FirstOrDefault(x => x.AttributeType == STUNAttributeTypesEnum.Lifetime);
+
+                        if (lifetime != null)
+                        {
+                            TurnTimeToExpiry = DateTime.Now +
+                                               TimeSpan.FromSeconds(BitConverter.ToUInt32(lifetime.Value.Reverse().ToArray(), 0));
+                        }
+                        else
+                        {
+                            TurnTimeToExpiry = DateTime.Now +
+                                               TimeSpan.FromSeconds(3600);
+                        }
+
                         candidatesAvailable = true;
                     }
                 }
@@ -293,7 +320,7 @@ namespace SIPSorcery.Net
                     {
                         var errCodeAttribute = stunResponse.Attributes.First(x => x.AttributeType == STUNAttributeTypesEnum.ErrorCode) as STUNErrorCodeAttribute;
 
-                        if (errCodeAttribute.ErrorCode == STUN_UNAUTHORISED_ERROR_CODE)
+                        if (errCodeAttribute.ErrorCode == STUN_UNAUTHORISED_ERROR_CODE || errCodeAttribute.ErrorCode == STUN_STALE_NONCE_ERROR_CODE)
                         {
                             // Set the authentication properties authenticate.
                             SetAuthenticationFields(stunResponse);
@@ -333,7 +360,7 @@ namespace SIPSorcery.Net
                     {
                         var errCodeAttribute = stunResponse.Attributes.First(x => x.AttributeType == STUNAttributeTypesEnum.ErrorCode) as STUNErrorCodeAttribute;
 
-                        if (errCodeAttribute.ErrorCode == STUN_UNAUTHORISED_ERROR_CODE)
+                        if (errCodeAttribute.ErrorCode == STUN_UNAUTHORISED_ERROR_CODE || errCodeAttribute.ErrorCode == STUN_STALE_NONCE_ERROR_CODE)
                         {
                             SetAuthenticationFields(stunResponse);
 
@@ -343,6 +370,48 @@ namespace SIPSorcery.Net
                         else
                         {
                             logger.LogWarning($"ICE session received an error response for a Binding request to {_uri}, error {errCodeAttribute.ErrorCode} {errCodeAttribute.ReasonPhrase}.");
+                        }
+                    }
+                    else
+                    {
+                        logger.LogWarning($"STUN binding error response received for ICE server check to {_uri}.");
+                        // The STUN response is for a check sent to an ICE server.
+                        Error = SocketError.ConnectionRefused;
+                    }
+                }
+                else if (stunResponse.Header.MessageType == STUNMessageTypesEnum.RefreshSuccessResponse)
+                {
+                    ErrorResponseCount = 0;
+                    
+                    logger.LogDebug($"STUN binding success response received for ICE server check to {_uri}.");
+
+                    var lifetime = stunResponse.Attributes.FirstOrDefault(x => x.AttributeType == STUNAttributeTypesEnum.Lifetime);
+
+                    if (lifetime != null)
+                    {
+                        TurnTimeToExpiry = DateTime.Now +
+                                           TimeSpan.FromSeconds(BitConverter.ToUInt32(lifetime.Value.Reverse().ToArray(), 0));
+                    }
+                    
+                }
+                else if (stunResponse.Header.MessageType == STUNMessageTypesEnum.RefreshErrorResponse)
+                {
+                    ErrorResponseCount++;
+
+                    if (stunResponse.Attributes.Any(x => x.AttributeType == STUNAttributeTypesEnum.ErrorCode))
+                    {
+                        var errCodeAttribute = stunResponse.Attributes.First(x => x.AttributeType == STUNAttributeTypesEnum.ErrorCode) as STUNErrorCodeAttribute;
+
+                        if (errCodeAttribute.ErrorCode == STUN_UNAUTHORISED_ERROR_CODE || errCodeAttribute.ErrorCode == STUN_STALE_NONCE_ERROR_CODE)
+                        {
+                            SetAuthenticationFields(stunResponse);
+
+                            // Set a new transaction ID.
+                            GenerateNewTransactionID();
+                        }
+                        else
+                        {
+                            logger.LogWarning($"ICE session received an error response for a Refresh request to {_uri}, error {errCodeAttribute.ErrorCode} {errCodeAttribute.ReasonPhrase}.");
                         }
                     }
                     else

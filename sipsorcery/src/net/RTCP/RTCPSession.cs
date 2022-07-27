@@ -151,6 +151,11 @@ namespace SIPSorcery.Net
         public bool IsClosed { get; private set; } = false;
 
         /// <summary>
+        /// Indicates the sample rate for RTP media data.
+        /// </summary>
+        public int PayloadSampleRateHz { get; set; } = 0;
+
+        /// <summary>
         /// Time to schedule the delivery of RTCP reports.
         /// </summary>
         private Timer m_rtcpReportTimer;
@@ -161,13 +166,13 @@ namespace SIPSorcery.Net
         /// <summary>
         /// Event handler for sending RTCP reports.
         /// </summary>
-        internal event Action<SDPMediaTypesEnum, RTCPCompoundPacket> OnReportReadyToSend;
+        public event Action<SDPMediaTypesEnum, RTCPCompoundPacket> OnReportReadyToSend;
 
         /// <summary>
         /// Fires when the connection is classified as timed out due to not
         /// receiving any RTP or RTCP packets within the given period.
         /// </summary>
-        internal event Action<SDPMediaTypesEnum> OnTimeout;
+        public event Action<SDPMediaTypesEnum> OnTimeout;
 
         /// <summary>
         /// Default constructor.
@@ -208,7 +213,7 @@ namespace SIPSorcery.Net
         /// Event handler for an RTP packet being received by the RTP session.
         /// Used for measuring transmission statistics.
         /// </summary>
-        internal void RecordRtpPacketReceived(RTPPacket rtpPacket)
+        public void RecordRtpPacketReceived(RTPPacket rtpPacket)
         {
             LastActivityAt = DateTime.Now;
             IsTimedOut = false;
@@ -220,7 +225,8 @@ namespace SIPSorcery.Net
                 m_receptionReport = new ReceptionReport(rtpPacket.Header.SyncSource);
             }
 
-            m_receptionReport.RtpPacketReceived(rtpPacket.Header.SequenceNumber, rtpPacket.Header.Timestamp, DateTimeToNtpTimestamp32(DateTime.Now));
+            var arrivalTimestamp = PayloadSampleRateHz == 0 ? DateTimeToNtpTimestamp32(DateTime.Now) : (uint)((DateTime.Now - CreatedAt).TotalSeconds * PayloadSampleRateHz);
+            m_receptionReport.RtpPacketReceived(rtpPacket.Header.SequenceNumber, rtpPacket.Header.Timestamp, arrivalTimestamp);
         }
 
         /// <summary>
@@ -229,7 +235,7 @@ namespace SIPSorcery.Net
         /// </summary>
         /// <param name="ssrc">The SSRC of the reception report being closed. Typically this
         /// should be the SSRC received in the RTCP BYE.</param>
-        internal void RemoveReceptionReport(uint ssrc)
+        public void RemoveReceptionReport(uint ssrc)
         {
             if (m_receptionReport != null && m_receptionReport.SSRC == ssrc)
             {
@@ -242,7 +248,7 @@ namespace SIPSorcery.Net
         /// Event handler for an RTP packet being sent by the RTP session.
         /// Used for measuring transmission statistics.
         /// </summary>
-        internal void RecordRtpPacketSend(RTPPacket rtpPacket)
+        public void RecordRtpPacketSend(RTPPacket rtpPacket)
         {
             PacketsSentCount++;
             OctetsSentCount += (uint)rtpPacket.Payload.Length;
@@ -256,7 +262,7 @@ namespace SIPSorcery.Net
         /// </summary>
         /// <param name="remoteEndPoint">The end point the packet was received from.</param>
         /// <param name="buffer">The data received.</param>
-        internal void ReportReceived(IPEndPoint remoteEndPoint, RTCPCompoundPacket rtcpCompoundPacket)
+        public void ReportReceived(IPEndPoint remoteEndPoint, RTCPCompoundPacket rtcpCompoundPacket)
         {
             try
             {
@@ -267,7 +273,7 @@ namespace SIPSorcery.Net
                 {
                     if (rtcpCompoundPacket.SenderReport != null && m_receptionReport != null)
                     {
-                        m_receptionReport.RtcpSenderReportReceived(DateTimeToNtpTimestamp(DateTime.Now));
+                        m_receptionReport.RtcpSenderReportReceived(rtcpCompoundPacket.SenderReport.NtpTimestamp);
                     }
 
                     // TODO: Apply information from report.
@@ -357,13 +363,15 @@ namespace SIPSorcery.Net
         /// <returns>An RTCP compound packet.</returns>
         private RTCPCompoundPacket GetRtcpReport()
         {
-            ReceptionReportSample rr = (m_receptionReport != null) ? m_receptionReport.GetSample(DateTimeToNtpTimestamp32(DateTime.Now)) : null;
+            var ntcTime = DateTimeToNtpTimestamp(DateTime.Now);
+            ReceptionReportSample rr = (m_receptionReport != null) ? m_receptionReport.GetSample(To32Bit(ntcTime)) : null;
             var sdesReport = new RTCPSDesReport(Ssrc, Cname);
 
             if (PacketsSentCount > m_previousPacketsSentCount)
             {
                 // If we have sent a packet since the last report then we send an RTCP Sender Report.
-                var senderReport = new RTCPSenderReport(Ssrc, LastNtpTimestampSent, LastRtpTimestampSent, PacketsSentCount, OctetsSentCount, (rr != null) ? new List<ReceptionReportSample> { rr } : null);
+                // TODO: RTP timestamp should corresponds to the same time as the NTP timestamp
+                var senderReport = new RTCPSenderReport(Ssrc, ntcTime, LastRtpTimestampSent, PacketsSentCount, OctetsSentCount, (rr != null) ? new List<ReceptionReportSample> { rr } : null);
                 return new RTCPCompoundPacket(senderReport, sdesReport);
             }
             else
@@ -393,6 +401,8 @@ namespace SIPSorcery.Net
                 (int)(RTCP_INTERVAL_HIGH_RANDOMISATION_FACTOR * baseInterval));
         }
 
+        public static uint To32Bit(ulong ntpTime) => (uint)((ntpTime >> 16) & 0xFFFFFFFF);
+
         public static uint DateTimeToNtpTimestamp32(DateTime value) { return (uint)((DateTimeToNtpTimestamp(value) >> 16) & 0xFFFFFFFF); }
 
         /// <summary>
@@ -417,9 +427,8 @@ namespace SIPSorcery.Net
 
             TimeSpan elapsedTime = value > baseDate ? value.ToUniversalTime() - baseDate.ToUniversalTime() : baseDate.ToUniversalTime() - value.ToUniversalTime();
 
-            long ticks = elapsedTime.Ticks;
-
-            return (ulong)(elapsedTime.Ticks / TimeSpan.TicksPerSecond << 32) | (ulong)(elapsedTime.Ticks % TimeSpan.TicksPerSecond);
+            var seconds = elapsedTime.TotalSeconds;
+            return ((ulong)seconds << 32) | (ulong)((seconds - (ulong)seconds) * ((ulong)1 << 32));
         }
     }
 }

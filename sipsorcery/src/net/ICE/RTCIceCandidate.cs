@@ -38,7 +38,7 @@ namespace SIPSorcery.Net
         /// </summary>
         public IceServer IceServer { get; internal set; }
 
-        public string candidate { get; set; }
+        public string candidate => ToString();
 
         public string sdpMid { get; set; }
 
@@ -89,7 +89,7 @@ namespace SIPSorcery.Net
         public ushort port { get; set; }
 
         /// <summary>
-        /// The typ of ICE candidate, host, srflx etc.
+        /// The type of ICE candidate, host, srflx etc.
         /// </summary>
         public RTCIceCandidateType type { get; set; }
 
@@ -132,6 +132,19 @@ namespace SIPSorcery.Net
                 relatedAddress = iceCandidate.relatedAddress;
                 relatedPort = iceCandidate.relatedPort;
             }
+        }
+
+        /// <summary>
+        /// Convenience constructor for cases when the application wants
+        /// to create an ICE candidate,
+        /// </summary>
+        public RTCIceCandidate(
+            RTCIceProtocol cProtocol,
+            IPAddress cAddress,
+            ushort cPort,
+            RTCIceCandidateType cType)
+        {
+            SetAddressProperties(cProtocol, cAddress, cPort, cType, null, 0);
         }
 
         public void SetAddressProperties(
@@ -272,9 +285,45 @@ namespace SIPSorcery.Net
 
         private uint GetPriority()
         {
-            return (uint)((2 ^ 24) * (126 - type.GetHashCode()) +
-                      (2 ^ 8) * (65535) + // TODO: Add some kind of priority to different local IP addresses if needed.
-                      (2 ^ 0) * (256 - component.GetHashCode()));
+            uint localPreference = 0;
+            IPAddress addr;
+
+            //Calculate our LocalPreference Priority
+            if (IPAddress.TryParse(address, out addr))
+            {
+                uint addrPref = IPAddressHelper.IPAddressPrecedence(addr);
+
+                // relay_preference in original code was sorted with params:
+                // UDP == 2
+                // TCP == 1
+                // TLS == 0
+                uint relayPreference = protocol == RTCIceProtocol.udp ? 2u : 1u;
+
+                // TODO: Original implementation consider network adapter preference as strength of wifi
+                // We will ignore it as its seems to not be a trivial implementation for use in net-standard 2.0
+                uint networkAdapterPreference = 0;
+
+                localPreference = ((networkAdapterPreference << 8) | addrPref) + relayPreference;
+            }
+
+            // RTC 5245 Define priority for RTCIceCandidateType
+            // https://datatracker.ietf.org/doc/html/rfc5245
+            uint typePreference = 0;
+            switch (type)
+            {
+                case RTCIceCandidateType.host:
+                    typePreference = 126;
+                    break;
+                case RTCIceCandidateType.prflx:
+                    typePreference = 110;
+                    break;
+                case RTCIceCandidateType.srflx:
+                    typePreference = 100;
+                    break;
+            }
+
+            //Use formula found in RFC 5245 to define candidate priority
+            return (uint)((typePreference << 24) | (localPreference << 8) | (256u - component.GetHashCode()));
         }
 
         public string toJSON()

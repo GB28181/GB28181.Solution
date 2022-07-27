@@ -17,42 +17,42 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
-    <PackageReference Include="DnsClient" Version="1.4.0-beta-20200801.7" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
+    <PackageReference Include="DnsClient" Version="1.6.1" />
     <PackageReference Include="SIPSorcery.WebSocketSharp" Version="0.0.1" />
-    <PackageReference Include="SIPSorceryMedia.Abstractions" Version="0.0.22-pre" />
+    <PackageReference Include="SIPSorceryMedia.Abstractions" Version="1.2.0" />
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
   </ItemGroup>
 
   <PropertyGroup>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-
-  <PropertyGroup>
-  <TargetFramework>netstandard2.1</TargetFramework>
-	<Authors>Aaron Clauson &amp; Contributors</Authors>
-	<Copyright>Copyright © 2010-2020 Aaron Clauson</Copyright>
-	<PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-	<Title>SIPSorcery</Title>
-	<Summary>A cross platform C# .NET library for SIP, VoIP and WebRTC.</Summary>
-    <Description>
-      Real-time communications library with full support for the Session Initiation Protocol (SIP) and WebRTC. No wrappers and no native libraries required.
+    <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
+    <Authors>Aaron Clauson, Christophe Irles, Rafael Soares &amp; Contributors</Authors>
+    <Copyright>Copyright © 2010-2022 Aaron Clauson</Copyright>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <Title>SIPSorcery</Title>
+    <Summary>A cross platform C# .NET library for SIP, VoIP and WebRTC.</Summary>
+    <Description>Real-time communications library with full support for the Session Initiation Protocol (SIP) and WebRTC. No wrappers and no native libraries required.
     </Description>
-	<Company>SIP Sorcery PTY LTD</Company>
-	<Product>SIPSorcery</Product>
-	<PackageId>SIPSorcery</PackageId>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<PackageProjectUrl>https://sipsorcery.github.io/sipsorcery/</PackageProjectUrl>
-  <!-- Note PackageIcon generates a build warning. Can be removed once Visual Studio supports the nuget "Icon" setting.
-       Watch https://github.com/NuGet/Home/issues/8189.-->
-  <PackageIconUrl>http://www.sipsorcery.com/mainsite/favicon.ico</PackageIconUrl>
-	<PackageIcon>icon.png</PackageIcon>
-	<RepositoryUrl>https://github.com/sipsorcery/sipsorcery</RepositoryUrl>
-  <RepositoryType>git</RepositoryType>
-  <RepositoryBranch>master</RepositoryBranch>
+    <Company>SIP Sorcery PTY LTD</Company>
+    <Product>SIPSorcery</Product>
+    <PackageId>SIPSorcery</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://sipsorcery-org.github.io/sipsorcery/</PackageProjectUrl>
+    <PackageIconUrl>http://www.sipsorcery.com/mainsite/favicon.ico</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/sipsorcery-org/sipsorcery</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>master</RepositoryBranch>
     <PackageTags>SIP WebRTC VoIP RTP SDP STUN ICE SIPSorcery</PackageTags>
-    <PackageReleaseNotes>v4.0.91-pre: Fixed bug parsing FireFox SDP where fmtp was prior to rtpmap.
+    <PackageReleaseNotes>v6.0.9: Supporting custom SIP TLS certificate validation callback. SCTP improvements.
+-v6.0.8: Multiple audio and video stream support and other fixes.
+-v6.0.7: Synchronise with audio/video abstractions library.
+-v6.0.6: Minor bug fixes. G729 codec thanks to @edscodeblenders.
+-v6.0.4: SIPUserAgent hangup fixes. SIP Expire header fix. Other minor bug fixes.
+-v6.0.3: No changes. Aligning release tag.
+-v6.0.2: Set .net6 targetted version as stable.
+-v6.0.1-pre: Added .net6 target.
+- v4.0.91-pre: Fixed bug parsing FireFox SDP where fmtp was prior to rtpmap.
 - v4.0.90-pre: Allow SIP User Agent to use RTP ICE channel.
 - v4.0.89-pre: Updated to latest media abstractions package.
 - v4.0.88-pre: Added video encoder parameter to test pattern source.
@@ -107,12 +107,20 @@
 - Version 4.0.4 - Added attended transfer capability to SIPUserAgent.
 - Version 4.0.3 - Refactor of RTPChannel and RTPSession. SIPUserAgent class incorporates RTPSession (much easier to use).
 - Version 4.0.2 - New SIPUserAgent class, combination of client and server user agents. Support for HOMER logging.
-- Version &gt; 4.0.0 - Major refactor of SIP transport layer to support IPAddress.Any and IPAddress.IPv6Any.
-</PackageReleaseNotes>
-	<NeutralLanguage>zh-Hans</NeutralLanguage>
-    <Version>4.0.91-pre</Version>
-    <AssemblyVersion>4.0.91.0</AssemblyVersion>
-    <FileVersion>4.0.91.0</FileVersion>
-  </PropertyGroup>    
+- Version 4.0.0 - Major refactor of SIP transport layer to support IPAddress.Any and IPAddress.IPv6Any.
+    </PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>6.0.9</Version>
+    <AssemblyVersion>6.0.9</AssemblyVersion>
+    <FileVersion>6.0.9</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="SourceLink">
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 
 </Project>

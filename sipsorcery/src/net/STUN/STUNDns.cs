@@ -36,6 +36,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -57,18 +58,27 @@ namespace SIPSorcery.Net
 
         private static LookupClient _lookupClient;
 
+        private static bool _dnsUseTcpFallback;
+
+        /// <summary>
+        /// Set to true to attempt a DNS lookup over TCP if the UDP lookup fails.
+        /// </summary>
+        public static bool DnsUseTcpFallback
+        {
+            get => _dnsUseTcpFallback;
+            set
+            {
+                if (_dnsUseTcpFallback != value)
+                {
+                    _dnsUseTcpFallback = value;
+                    _lookupClient = CreateLookupClient();
+                }
+            }
+        }
+
         static STUNDns()
         {
-            var nameServers = NameServer.ResolveNameServers(skipIPv6SiteLocal: true, fallbackToGooglePublicDns: true);
-            LookupClientOptions clientOptions = new LookupClientOptions(nameServers.ToArray())
-            {
-                Retries = DNS_RETRIES_PER_SERVER,
-                Timeout = TimeSpan.FromSeconds(DNS_TIMEOUT_SECONDS),
-                UseCache = true,
-                UseTcpFallback = false
-            };
-
-            _lookupClient = new LookupClient(clientOptions);
+            _lookupClient = CreateLookupClient();
         }
 
         /// <summary>
@@ -208,15 +218,15 @@ namespace SIPSorcery.Net
         {
             try
             {
-                var addrRecord = _lookupClient.Query(host, queryType).Answers.FirstOrDefault();
-                if (addrRecord != null)
+                var answers = _lookupClient.Query(host, queryType).Answers;
+                if (answers.Count > 0)
                 {
-                    return GetFromLookupResult(addrRecord, port);
+                    return GetFromLookupResult(answers, port);
                 }
             }
             catch (Exception excp)
             {
-                logger.LogWarning($"STUNDns lookup failure for {host} and query {queryType}. {excp.Message}");
+                logger.LogWarning(excp, $"STUNDns lookup failure for {host} and query {queryType}. {excp.Message}");
             }
 
             if (queryType == QueryType.AAAA)
@@ -232,23 +242,33 @@ namespace SIPSorcery.Net
         /// The query may have returned an AAAA or A record. This method checks which 
         /// and extracts the IP address accordingly.
         /// </summary>
-        /// <param name="addrRecord">The DNS lookup result.</param>
+        /// <param name="answers">The DNS lookup result.</param>
         /// <param name="port">The port for the IP end point.</param>
         /// <returns>An IP end point or null.</returns>
-        private static IPEndPoint GetFromLookupResult(DnsResourceRecord addrRecord, int port)
+        private static IPEndPoint GetFromLookupResult(IEnumerable<DnsResourceRecord> answers, int port)
         {
-            if (addrRecord is AaaaRecord)
+            var addrRecord = answers.OfType<AddressRecord>().FirstOrDefault();
+            return addrRecord != null
+                ? new IPEndPoint(addrRecord.Address, port)
+                : null;
+        }
+
+        /// <summary>
+        /// Creates a LookupClient
+        /// </summary>
+        /// <returns>A LookupClient</returns>
+        private static LookupClient CreateLookupClient()
+        {
+            var nameServers = NameServer.ResolveNameServers(skipIPv6SiteLocal: true, fallbackToGooglePublicDns: true);
+            LookupClientOptions clientOptions = new LookupClientOptions(nameServers.ToArray())
             {
-                return new IPEndPoint((addrRecord as AaaaRecord).Address, port);
-            }
-            else if (addrRecord is ARecord)
-            {
-                return new IPEndPoint((addrRecord as ARecord).Address, port);
-            }
-            else
-            {
-                return null;
-            }
+                Retries = DNS_RETRIES_PER_SERVER,
+                Timeout = TimeSpan.FromSeconds(DNS_TIMEOUT_SECONDS),
+                UseCache = true,
+                UseTcpFallback = DnsUseTcpFallback
+            };
+
+            return new LookupClient(clientOptions);
         }
     }
 }

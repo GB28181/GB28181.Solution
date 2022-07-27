@@ -39,7 +39,7 @@ namespace SIPSorcery.Net
         /// <param name="port">The port to use for the request. Defaults to 3478.</param>
         /// <returns>The public IP address of the client.</returns>
         public static IPAddress GetPublicIPAddress(string stunServer, int port = DEFAULT_STUN_PORT) =>
-            GetPublicIPEndPoint(stunServer, port).Address;
+            GetPublicIPEndPoint(stunServer, port)?.Address;
 
         /// <summary>
         /// Used to get the public IP address and port as seen by the STUN server.
@@ -82,8 +82,19 @@ namespace SIPSorcery.Net
                                         {
                                             STUNAddressAttribute stunAddress = (STUNAddressAttribute)stunAttribute;
                                             publicEndPoint = new IPEndPoint(stunAddress.Address, stunAddress.Port);
-                                            logger.LogDebug($"STUNClient Public IP={publicEndPoint.Address} Port={publicEndPoint.Port}.");
+                                            break;
                                         }
+                                        else if (stunAttribute.AttributeType == STUNAttributeTypesEnum.XORMappedAddress)
+                                        {
+                                            STUNXORAddressAttribute stunAddress = (STUNXORAddressAttribute)stunAttribute;
+                                            publicEndPoint = new IPEndPoint(stunAddress.Address, stunAddress.Port);
+                                            break;
+                                        }
+                                    }
+
+                                    if(publicEndPoint != null)
+                                    {
+                                        logger.LogDebug($"STUNClient Public IP={publicEndPoint.Address} Port={publicEndPoint.Port}.");
                                     }
                                 }
                             }
@@ -92,7 +103,7 @@ namespace SIPSorcery.Net
                         }
                         catch (Exception recvExcp)
                         {
-                            logger.LogWarning("Exception STUNClient Receive. " + recvExcp.Message);
+                            logger.LogWarning(recvExcp, "Exception STUNClient Receive. " + recvExcp.Message);
                         }
                     }, state: null);
 
