@@ -10,22 +10,17 @@
 //
 // History:
 // 28 Feb 2010	Aaron Clauson	Created.
+// 27 July 2022 Crazybber Updated.
 //
 
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
 using System.Text;
-using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.SIP;
 
 #if UNITTEST
@@ -61,7 +56,7 @@ namespace GB28181
     ///  </dialog-info>
     /// 
     /// </remarks>
-    public class SIPEventDialogInfo : SIPEvent
+    public class SIPEventDialogInfo
     {
         private static ILog logger = AppState.logger;
 
@@ -84,7 +79,7 @@ namespace GB28181
             Entity = entity.CopyOf();
         }
 
-        public override void Load(string dialogInfoXMLStr)
+        public void Load(string dialogInfoXMLStr)
         {
             try
             {
@@ -115,7 +110,7 @@ namespace GB28181
            return eventDialogInfo;
         }
 
-        public override string ToXMLText()
+        public  string ToXMLText()
         {
             XNamespace ns = m_dialogXMLNS;
             //XNamespace ss = m_sipsorceryXMLNS;

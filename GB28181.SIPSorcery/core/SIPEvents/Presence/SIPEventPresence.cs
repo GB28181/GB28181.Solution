@@ -34,7 +34,7 @@ namespace GB28181
     /// <remarks>
     /// 
     /// </remarks>
-    public class SIPEventPresence : SIPEvent
+    public class SIPEventPresence 
     {
         private static ILog logger = AppState.logger;
 
@@ -51,7 +51,7 @@ namespace GB28181
             Entity = entity.CopyOf();
         }
 
-        public override void Load(string presenceXMLStr)
+        public  void Load(string presenceXMLStr)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace GB28181
            return presenceEvent;
         }
 
-        public override string ToXMLText()
+        public  string ToXMLText()
         {
             XNamespace ns = m_pidfXMLNS;
             

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
@@ -22,7 +19,7 @@ namespace GB28181.App
         public DateTime LastSubscribe = DateTime.Now;
         public int Expiry;
 
-        public virtual SIPEventPackage SubscriptionEventPackage
+        public virtual SIPEventPackagesEnum SubscriptionEventPackage
         {
             get { throw new NotImplementedException(); }
         }
