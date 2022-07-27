@@ -1,4 +1,4 @@
-name: .NET Core CI/CD
+name: .NET 6 CI/CD
 
 on:
   push:
