@@ -905,7 +905,7 @@ namespace GB28181
                                 return;
                             }
 
-                            SIPMessage sipMessage = SIPMessage.ParseSIPMessage(rawSIPMessage, sipChannel.SIPChannelEndPoint, remoteEndPoint);
+                            SIPMessage sipMessage = (SIPMessage)SIPMessage.ParseSIPMessage(rawSIPMessage, sipChannel.SIPChannelEndPoint, remoteEndPoint);
 
                             if (sipMessage != null)
                             {

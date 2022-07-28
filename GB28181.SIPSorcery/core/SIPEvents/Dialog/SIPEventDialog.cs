@@ -15,11 +15,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using GB28181.Sys;
 using SIPSorcery.SIP;
 using SIPSorcery.Sys;
 
@@ -28,7 +24,7 @@ namespace GB28181
     public class SIPEventDialog
     {
         private static readonly string m_dialogXMLNS = SIPEventConsts.DIALOG_XML_NAMESPACE_URN;
-        private static readonly string m_sipsorceryXMLNS = SIPEventConsts.SIPSORCERY_DIALOG_XML_NAMESPACE_URN;
+        private static readonly string m_sipsorceryXMLNS = "urn:ietf:params:xml:ns:sipsorcery";//SIPEventConsts.SIPSORCERY_DIALOG_XML_NAMESPACE_URN;
 
         public string ID;                               // The ID is a only mandatory attribute for a dialog element.
         public string CallID;
