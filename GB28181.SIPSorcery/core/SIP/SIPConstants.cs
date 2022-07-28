@@ -19,7 +19,7 @@ using SIPSorcery.Sys;
 
 namespace GB28181
 {
-	public class SIPConstants
+	public static class SIPConstants
 	{
 		public const string CRLF = "\r\n";
 		
