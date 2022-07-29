@@ -762,7 +762,8 @@ namespace GB28181
                                         transaction.DeliveryFailed = true;
                                         transaction.TimedOutAt = DateTime.Now;
                                         transaction.HasTimedOut = true;
-                                        transaction.FireTransactionTimedOut();
+                                        // transaction.FireTransactionTimedOut();
+                                        transaction.Expire(DateTime.Now);
                                         completedTransactions.Add(transaction.TransactionId);
                                     }
                                     else

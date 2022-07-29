@@ -63,7 +63,14 @@ namespace GB28181
 		public SIPEndPoint RemoteSIPEndPoint;               // The remote IP socket the response was received from or sent to.
 		public SIPEndPoint LocalSIPEndPoint;                // The local SIP socket the response was received on or sent from.
 
-		private SIPResponse()
+        /// <summary>
+        /// A short one line summary of the SIP response. Useful for logging or diagnostics.
+        /// </summary>
+        public string ShortDescription
+        {
+            get { return Header?.CSeqMethod + " " + StatusCode + " " + ReasonPhrase; }
+        }
+        private SIPResponse()
 		{ }
 
 		public SIPResponse(SIPResponseStatusCodesEnum responseType, string reasonPhrase, SIPEndPoint localSIPEndPoint)

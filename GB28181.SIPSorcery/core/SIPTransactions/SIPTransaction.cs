@@ -11,6 +11,7 @@
 //
 
 using System;
+using System.Net.Sockets;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
 
@@ -70,6 +71,7 @@ namespace GB28181
         // Events that don't affect the transaction processing, i.e. used for logging/tracing.
         public event SIPTransactionStateChangeDelegate TransactionStateChanged;
         public event SIPTransactionTraceMessageDelegate TransactionTraceMessage;
+        protected event SIPTransactionFailedDelegate TransactionFailed;
 
         public event SIPTransactionRemovedDelegate TransactionRemoved;       // This is called just before the SIPTransaction is expired and is to let consumer classes know to remove their event handlers to prevent memory leaks.
 
@@ -114,6 +116,16 @@ namespace GB28181
         //{
         //    return Crypto.GetSHAHashAsString(branchId + method.ToString());
         //}
+        public void Expire(DateTime now)
+        {
+            DeliveryPending = false;
+            DeliveryFailed = true;
+            TimedOutAt = now;
+            HasTimedOut = true;
+            TransactionTraceMessage?.Invoke(this, $"Transaction failed due to a timeout {TransactionFinalResponse?.ShortDescription}");
+            TransactionFailed?.Invoke(this, SocketError.TimedOut);
+            UpdateTransactionState(SIPTransactionStatesEnum.Terminated);
+        }
 
         public void GotRequest(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPRequest sipRequest)
         {
