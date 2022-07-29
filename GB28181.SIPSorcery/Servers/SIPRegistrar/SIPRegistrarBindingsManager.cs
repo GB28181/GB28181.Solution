@@ -20,11 +20,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Transactions;
-using GB28181.Persistence;
-using GB28181;
 using GB28181.App;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Persistence;
+using GB28181.Sys;
 using SIPSorcery.SIP;
 
 namespace GB28181.Servers
@@ -168,30 +167,28 @@ namespace GB28181.Servers
 
         private SIPRegistrarBinding GetNextExpiredBinding(DateTimeOffset expiryTime)
         {
-            using (var trans = new TransactionScope())
+            using var trans = new TransactionScope();
+            SIPRegistrarBinding binding = m_bindingsPersistor.Get(b => b.ExpiryTime < expiryTime);
+
+            if (binding != null)
             {
-                SIPRegistrarBinding binding = m_bindingsPersistor.Get(b => b.ExpiryTime < expiryTime);
-
-                if (binding != null)
+                if (binding.ExpiryTime < DateTimeOffset.UtcNow.AddSeconds(BINDING_EXPIRY_GRACE_PERIOD * -1))
                 {
-                    if (binding.ExpiryTime < DateTimeOffset.UtcNow.AddSeconds(BINDING_EXPIRY_GRACE_PERIOD * -1))
-                    {
-                        m_bindingsPersistor.Delete(binding);
-                    }
-                    else
-                    {
-                        logger.Warn("A binding returned from the database as expired wasn't. " + binding.SIPAccountName + " and " + binding.MangledContactURI + ", last register " +
-                                binding.LastUpdate.ToString("HH:mm:ss") + ", expiry " + binding.Expiry + ", expiry time " + binding.ExpiryTime.ToString("HH:mm:ss") + 
-                                ", checkedtime " + expiryTime.ToString("HH:mm:ss") + ", now " + DateTimeOffset.UtcNow.ToString("HH:mm:ss") + ".");
-
-                        binding = null;
-                    }
+                    m_bindingsPersistor.Delete(binding);
                 }
+                else
+                {
+                    logger.Warn("A binding returned from the database as expired wasn't. " + binding.SIPAccountName + " and " + binding.MangledContactURI + ", last register " +
+                            binding.LastUpdate.ToString("HH:mm:ss") + ", expiry " + binding.Expiry + ", expiry time " + binding.ExpiryTime.ToString("HH:mm:ss") +
+                            ", checkedtime " + expiryTime.ToString("HH:mm:ss") + ", now " + DateTimeOffset.UtcNow.ToString("HH:mm:ss") + ".");
 
-                trans.Complete();
-
-                return binding;
+                    binding = null;
+                }
             }
+
+            trans.Complete();
+
+            return binding;
         }
 
         /// <summary>

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace GB28181.Sys.XML
@@ -12,7 +9,7 @@ namespace GB28181.Sys.XML
     /// 组织结构
     /// </summary>
     [XmlRoot("GroupInfo")]
-    public class GroupInfo : XmlHelper<GroupInfo>,IDisposable
+    public class GroupInfo : XmlHelper<GroupInfo>, IDisposable
     {
         private static GroupInfo instance;
         /// <summary>
@@ -292,8 +289,7 @@ namespace GB28181.Sys.XML
                 }
                 set
                 {
-                    ushort result;
-                    Port = ushort.TryParse(value, out result) ? result : (ushort?)null;
+                    Port = ushort.TryParse(value, out ushort result) ? result : (ushort?)null;
                 }
             }
 
@@ -315,8 +311,7 @@ namespace GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    RegisterWay = int.TryParse(value, out result) ? result : (int?)null;
+                    RegisterWay = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 
@@ -337,8 +332,7 @@ namespace GB28181.Sys.XML
                 }
                 set
                 {
-                    int result;
-                    Secrecy = int.TryParse(value, out result) ? result : (int?)null;
+                    Secrecy = int.TryParse(value, out int result) ? result : (int?)null;
                 }
             }
 

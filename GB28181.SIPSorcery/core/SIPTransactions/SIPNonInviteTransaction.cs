@@ -21,10 +21,10 @@ using SIPSorcery.SIP;
 namespace GB28181
 {
     public class SIPNonInviteTransaction : SIPTransaction
-	{
-      //  private SIPSorcery.SIP.SIPTransport sIPTransport;
-     //   private SIPRequest sipRequest;
-     //   private SIPEndPoint dstEndPoint;
+    {
+        //  private SIPSorcery.SIP.SIPTransport sIPTransport;
+        //   private SIPRequest sipRequest;
+        //   private SIPEndPoint dstEndPoint;
 
         public event SIPTransactionResponseReceivedDelegate NonInviteTransactionInfoResponseReceived;
         public event SIPTransactionResponseReceivedDelegate NonInviteTransactionFinalResponseReceived;

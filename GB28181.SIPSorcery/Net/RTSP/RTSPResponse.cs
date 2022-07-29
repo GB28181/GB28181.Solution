@@ -12,9 +12,6 @@
 
 using System;
 using System.Net;
-using System.Collections.Generic;
-using System.Text;
-using GB28181.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
 
@@ -24,7 +21,7 @@ namespace GB28181.Net
     {
         None = 0,
     }
-    
+
     /// <summary>
     /// RFC2326 7.1:
     /// Status-Line =   RTSP-Version SP Status-Code SP Reason-Phrase CRLF
@@ -33,38 +30,38 @@ namespace GB28181.Net
     public class RTSPResponse
     {
         private static ILog logger = AssemblyStreamState.logger;
-		
-		private static string m_CRLF = RTSPConstants.CRLF;
-		//private static string m_rtspFullVersion = RTSPConstants.RTSP_FULLVERSION_STRING;
-		private static string m_rtspVersion = RTSPConstants.RTSP_VERSION_STRING;
-		private static int m_rtspMajorVersion = RTSPConstants.RTSP_MAJOR_VERSION;
-		private static int m_rtspMinorVersion = RTSPConstants.RTSP_MINOR_VERSION;
 
-		public bool Valid = true;
-		public RTSPHeaderError ValidationError = RTSPHeaderError.None;
+        private static string m_CRLF = RTSPConstants.CRLF;
+        //private static string m_rtspFullVersion = RTSPConstants.RTSP_FULLVERSION_STRING;
+        private static string m_rtspVersion = RTSPConstants.RTSP_VERSION_STRING;
+        private static int m_rtspMajorVersion = RTSPConstants.RTSP_MAJOR_VERSION;
+        private static int m_rtspMinorVersion = RTSPConstants.RTSP_MINOR_VERSION;
 
-		public string RTSPVersion = m_rtspVersion;
-		public int RTSPMajorVersion = m_rtspMajorVersion;
-		public int RTSPMinorVersion = m_rtspMinorVersion;
+        public bool Valid = true;
+        public RTSPHeaderError ValidationError = RTSPHeaderError.None;
+
+        public string RTSPVersion = m_rtspVersion;
+        public int RTSPMajorVersion = m_rtspMajorVersion;
+        public int RTSPMinorVersion = m_rtspMinorVersion;
         public RTSPResponseStatusCodesEnum Status;
         public int StatusCode;
         public string ReasonPhrase;
         public string Body;
-		public RTSPHeader Header;
+        public RTSPHeader Header;
 
-		public DateTime ReceivedAt = DateTime.MinValue;
-		public IPEndPoint ReceivedFrom;
+        public DateTime ReceivedAt = DateTime.MinValue;
+        public IPEndPoint ReceivedFrom;
 
         private RTSPResponse()
         { }
 
         public RTSPResponse(RTSPResponseStatusCodesEnum responseType, string reasonPhrase)
-		{
+        {
             StatusCode = (int)responseType;
             Status = responseType;
             ReasonPhrase = reasonPhrase;
             ReasonPhrase = responseType.ToString();
-		}
+        }
 
         public static RTSPResponse ParseRTSPResponse(RTSPMessage rtspMessage)
         {
@@ -72,12 +69,12 @@ namespace GB28181.Net
             return ParseRTSPResponse(rtspMessage, out dontCare);
         }
 
-		public static RTSPResponse ParseRTSPResponse(RTSPMessage rtspMessage, out RTSPResponseParserError responseParserError)
-		{
+        public static RTSPResponse ParseRTSPResponse(RTSPMessage rtspMessage, out RTSPResponseParserError responseParserError)
+        {
             responseParserError = RTSPResponseParserError.None;
-			
-			try
-			{
+
+            try
+            {
                 RTSPResponse rtspResponse = new RTSPResponse();
 
                 string statusLine = rtspMessage.FirstLine;
@@ -96,18 +93,18 @@ namespace GB28181.Net
                 //rtspResponse.Valid = rtspResponse.Validate(out sipResponse.ValidationError);
 
                 return rtspResponse;
-    		}
-			catch(Exception excp)
-			{
-				logger.Error("Exception parsing RTSP reqsponse. "  + excp.Message);
-				throw new ApplicationException("There was an exception parsing an RTSP response. " + excp.Message);
-			}
-		}
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Exception parsing RTSP reqsponse. " + excp.Message);
+                throw new ApplicationException("There was an exception parsing an RTSP response. " + excp.Message);
+            }
+        }
 
-		public new string ToString()
-		{
-			try
-			{
+        public new string ToString()
+        {
+            try
+            {
                 string reasonPhrase = (!ReasonPhrase.IsNullOrBlank()) ? " " + ReasonPhrase : null;
 
                 string message =
@@ -124,12 +121,12 @@ namespace GB28181.Net
                 }
 
                 return message;
-			}
-			catch(Exception excp)
-			{
-				logger.Error("Exception RTSPResponse ToString. " + excp.Message);
-				throw excp;
-			}
-		}
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Exception RTSPResponse ToString. " + excp.Message);
+                throw excp;
+            }
+        }
     }
 }

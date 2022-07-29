@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -164,14 +163,18 @@ namespace GB28181.Net
                 _rtspConnection = new TcpClient(hostname, port);
                 _rtspStream = _rtspConnection.GetStream();
 
-                _rtspSession = new RTSPSession();
-                _rtspSession.RTPPayloadHeaderLength = _rtpPayloadHeaderLength;
+                _rtspSession = new RTSPSession
+                {
+                    RTPPayloadHeaderLength = _rtpPayloadHeaderLength
+                };
                 _rtspSession.ReservePorts();
                 _rtspSession.OnRTPQueueFull += RTPQueueFull;
 
                 RTSPRequest rtspRequest = new RTSPRequest(RTSPMethodsEnum.SETUP, url);
-                RTSPHeader rtspHeader = new RTSPHeader(_cseq++, null);
-                rtspHeader.Transport = new RTSPTransportHeader() { ClientRTPPortRange = _rtspSession.RTPPort + "-" + _rtspSession.ControlPort };
+                RTSPHeader rtspHeader = new RTSPHeader(_cseq++, null)
+                {
+                    Transport = new RTSPTransportHeader() { ClientRTPPortRange = _rtspSession.RTPPort + "-" + _rtspSession.ControlPort }
+                };
                 rtspRequest.Header = rtspHeader;
                 string rtspReqStr = rtspRequest.ToString();
 
@@ -452,8 +455,8 @@ namespace GB28181.Net
                                             //}
                                             //else
                                             //{
-                                                //System.Diagnostics.Debug.WriteLine("RTP frame ready for timestamp " + frame.Timestamp + ".");
-                                                OnFrameReady(this, frame);
+                                            //System.Diagnostics.Debug.WriteLine("RTP frame ready for timestamp " + frame.Timestamp + ".");
+                                            OnFrameReady(this, frame);
                                             //}
                                         }
                                         catch (Exception frameReadyExcp)

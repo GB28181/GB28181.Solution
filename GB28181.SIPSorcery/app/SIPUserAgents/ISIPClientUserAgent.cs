@@ -18,7 +18,8 @@
 namespace GB28181.App
 {
 
-    public interface ISIPClientUserAgent {
+    public interface ISIPClientUserAgent
+    {
 
         string Owner { get; }
         string AdminMemberId { get; }
@@ -38,7 +39,7 @@ namespace GB28181.App
         event SIPCallResponseDelegate CallAnswered;
         event SIPCallFailedDelegate CallFailed;
 
-      //  void Call(SIPCallDescriptor sipCallDescriptor);
+        //  void Call(SIPCallDescriptor sipCallDescriptor);
         void Cancel();
         void Update(CRMHeaders crmHeaders);
     }

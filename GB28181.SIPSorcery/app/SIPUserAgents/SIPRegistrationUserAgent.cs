@@ -190,8 +190,8 @@ namespace GB28181.App
                 {
                     m_attempts++;
 
-                    SIPEndPoint registrarSIPEndPoint = m_outboundProxy ;
-                    if(registrarSIPEndPoint == null) 
+                    SIPEndPoint registrarSIPEndPoint = m_outboundProxy;
+                    if (registrarSIPEndPoint == null)
                     {
                         //SIPDNSLookupResult lookupResult = m_sipTransport.GetHostEndPoint(m_registrarHost, false);
                         SIPURI uri = SIPURI.ParseSIPURIRelaxed(m_registrarHost);
@@ -433,10 +433,10 @@ namespace GB28181.App
         private int GetUpdatedExpiryForIntervalTooBrief(SIPResponse sipResponse)
         {
             int newExpiry = (int)sipResponse.Header.MinExpires;
-            
+
             if (newExpiry != 0 && newExpiry > m_expiry)
             {
-                if(newExpiry > MAX_EXPIRY)
+                if (newExpiry > MAX_EXPIRY)
                 {
                     return MAX_EXPIRY;
                 }
@@ -445,7 +445,7 @@ namespace GB28181.App
                     return newExpiry;
                 }
             }
-            else if(m_expiry < MAX_EXPIRY)
+            else if (m_expiry < MAX_EXPIRY)
             {
                 return m_expiry * 2;
             }
@@ -513,7 +513,7 @@ namespace GB28181.App
                 registerURI.User = null;
 
                 SIPRequest registerRequest = m_sipTransport.GetRequest(
-                    SIPMethodsEnum.REGISTER, 
+                    SIPMethodsEnum.REGISTER,
                     registerURI,
                     new SIPToHeader(null, m_sipAccountAOR, null),
                     localSIPEndPoint);

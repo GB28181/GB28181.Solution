@@ -6,8 +6,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Transactions;
 using GB28181.App;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.Persistence
@@ -75,60 +75,58 @@ namespace GB28181.Persistence
                 if (!queryString.IsNullOrBlank())
                 {
 
-                    using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Suppress))
+                    using TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Suppress);
+                    using (IDbConnection connection = m_dbFactory.CreateConnection())
                     {
-                        using (IDbConnection connection = m_dbFactory.CreateConnection())
+                        connection.ConnectionString = m_dbConnStr;
+                        connection.Open();
+
+                        if (elementType == typeof(Int32))
                         {
-                            connection.ConnectionString = m_dbConnStr;
-                            connection.Open();
+                            // This is a count.
+                            IDbCommand command = connection.CreateCommand();
+                            command.CommandText = queryString;
+                            return Convert.ToInt32(command.ExecuteScalar());
+                        }
+                        else
+                        {
+                            //logger.Debug("SimpleDB select: " + queryString + ".");
+                            IDbCommand command = connection.CreateCommand();
+                            command.CommandText = queryString;
+                            IDbDataAdapter adapter = m_dbFactory.CreateDataAdapter();
+                            adapter.SelectCommand = command;
+                            using var resultSet = new DataSet();
+                            adapter.Fill(resultSet);
 
-                            if (elementType == typeof(Int32))
+                            if (resultSet != null && resultSet.Tables[0] != null)
                             {
-                                // This is a count.
-                                IDbCommand command = connection.CreateCommand();
-                                command.CommandText = queryString;
-                                return Convert.ToInt32(command.ExecuteScalar());
-                            }
-                            else
-                            {
-                                //logger.Debug("SimpleDB select: " + queryString + ".");
-                                IDbCommand command = connection.CreateCommand();
-                                command.CommandText = queryString;
-                                IDbDataAdapter adapter = m_dbFactory.CreateDataAdapter();
-                                adapter.SelectCommand = command;
-                                using var resultSet = new DataSet();
-                                adapter.Fill(resultSet);
 
-                                if (resultSet != null && resultSet.Tables[0] != null)
+                                object result = Activator.CreateInstance(
+                                typeof(SQLObjectReader<>).MakeGenericType(elementType),
+                                BindingFlags.Instance | BindingFlags.Public, null,
+                                new object[] { resultSet, m_setter },
+                                null);
+
+                                if (isIQueryable)
                                 {
-
-                                    object result = Activator.CreateInstance(
-                                    typeof(SQLObjectReader<>).MakeGenericType(elementType),
-                                    BindingFlags.Instance | BindingFlags.Public, null,
-                                    new object[] { resultSet, m_setter },
-                                    null);
-
-                                    if (isIQueryable)
+                                    return result;
+                                }
+                                else
+                                {
+                                    IEnumerator enumerator = ((IEnumerable)result).GetEnumerator();
+                                    if (enumerator.MoveNext())
                                     {
-                                        return result;
+                                        return enumerator.Current;
                                     }
                                     else
                                     {
-                                        IEnumerator enumerator = ((IEnumerable)result).GetEnumerator();
-                                        if (enumerator.MoveNext())
-                                        {
-                                            return enumerator.Current;
-                                        }
-                                        else
-                                        {
-                                            return null;
-                                        }
+                                        return null;
                                     }
                                 }
                             }
                         }
-                        throw new ApplicationException("No results for SQL query.");
                     }
+                    throw new ApplicationException("No results for SQL query.");
                 }
                 else
                 {

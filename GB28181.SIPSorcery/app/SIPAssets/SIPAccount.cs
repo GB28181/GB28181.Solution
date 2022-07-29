@@ -16,10 +16,6 @@
 //
 
 
-using GB28181.Logger4Net;
-using GB28181.Net.RTP;
-using GB28181.Sys;
-using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +25,10 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
+using GB28181.Logger4Net;
+using GB28181.Net.RTP;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -517,7 +517,7 @@ namespace GB28181.App
             {
                 Id = Guid.NewGuid();
 
-               GbVersion = row["GbVersion"].ToString();
+                GbVersion = row["GbVersion"].ToString();
                 LocalID = row["LocalID"].ToString();
                 IPAddress.TryParse(row["LocalIP"].ToString(), out m_localIP);
                 ushort.TryParse(row["LocalPort"].ToString(), out m_localPort);

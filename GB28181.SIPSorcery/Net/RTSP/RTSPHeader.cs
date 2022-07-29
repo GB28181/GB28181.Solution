@@ -12,11 +12,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.Net
@@ -82,12 +81,12 @@ namespace GB28181.Net
                 transportHeader.TransportSpecifier = fields[0];
                 transportHeader.BroadcastType = fields[1];
 
-                foreach(string field in fields.Where(x => x.Contains('=')))
+                foreach (string field in fields.Where(x => x.Contains('=')))
                 {
                     string fieldName = field.Split('=')[0];
                     string fieldValue = field.Split('=')[1];
 
-                    switch(fieldName.ToLower())
+                    switch (fieldName.ToLower())
                     {
                         case CLIENT_RTP_PORT_FIELD_NAME:
                             transportHeader.ClientRTPPortRange = fieldValue.Trim();
@@ -120,13 +119,12 @@ namespace GB28181.Net
         /// <returns>The client port that RTP packets should be sent to. If the port cannot be determined then 0.</returns>
         public int GetClientRTPPort()
         {
-            if(ClientRTPPortRange.NotNullOrBlank())
+            if (ClientRTPPortRange.NotNullOrBlank())
             {
-                int clientRTPPort = 0;
 
                 var fields = ClientRTPPortRange.Split('-');
 
-                if(Int32.TryParse(fields[0], out clientRTPPort))
+                if (Int32.TryParse(fields[0], out int clientRTPPort))
                 {
                     return clientRTPPort;
                 }
@@ -143,11 +141,10 @@ namespace GB28181.Net
         {
             if (ClientRTPPortRange.NotNullOrBlank())
             {
-                int clientRTCPPort = 0;
 
                 var fields = ClientRTPPortRange.Split('-');
 
-                if (fields.Length > 1 && Int32.TryParse(fields[1], out clientRTCPPort))
+                if (fields.Length > 1 && Int32.TryParse(fields[1], out int clientRTCPPort))
                 {
                     return clientRTCPPort;
                 }
@@ -165,11 +162,10 @@ namespace GB28181.Net
         {
             if (ServerRTPPortRange.NotNullOrBlank())
             {
-                int serverRTPPort = 0;
 
                 var fields = ServerRTPPortRange.Split('-');
 
-                if (Int32.TryParse(fields[0], out serverRTPPort))
+                if (Int32.TryParse(fields[0], out int serverRTPPort))
                 {
                     return serverRTPPort;
                 }
@@ -186,11 +182,10 @@ namespace GB28181.Net
         {
             if (ServerRTPPortRange.NotNullOrBlank())
             {
-                int serverRtcpPort = 0;
 
                 var fields = ServerRTPPortRange.Split('-');
 
-                if (fields.Length > 0 && Int32.TryParse(fields[1], out serverRtcpPort))
+                if (fields.Length > 0 && Int32.TryParse(fields[1], out int serverRtcpPort))
                 {
                     return serverRtcpPort;
                 }
@@ -203,7 +198,7 @@ namespace GB28181.Net
         {
             string transportHeader = TransportSpecifier + ";" + BroadcastType;
 
-            if(Destination.NotNullOrBlank())
+            if (Destination.NotNullOrBlank())
             {
                 transportHeader += String.Format(";{0}={1}", DESTINATION_FIELD_NAME, Destination);
             }
@@ -223,7 +218,7 @@ namespace GB28181.Net
                 transportHeader += String.Format(";{0}={1}", SERVER_RTP_PORT_FIELD_NAME, ServerRTPPortRange);
             }
 
-            if(Mode.NotNullOrBlank())
+            if (Mode.NotNullOrBlank())
             {
                 transportHeader += String.Format(";{0}={1}", MODE_FIELD_NAME, Mode);
             }

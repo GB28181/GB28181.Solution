@@ -105,7 +105,7 @@
                     {
                         devCata = DevCataType.VirtualGroupCata;
                     }
-                    else if (extId == 131 || extId == 132||extId==134||extId==137)  //D.1中摄像机，网络摄像机编码
+                    else if (extId == 131 || extId == 132 || extId == 134 || extId == 137)  //D.1中摄像机，网络摄像机编码
                     {
                         devCata = DevCataType.Device;
                     }

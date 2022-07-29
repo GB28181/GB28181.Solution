@@ -45,7 +45,7 @@ namespace GB28181.Config
             _configuration = configuration;
         }
 
-       public SipStorage() { }
+        public SipStorage() { }
 
         public List<SIPAccount> Accounts
         {
@@ -75,7 +75,7 @@ namespace GB28181.Config
         public SIPAssetPersistor<SIPAccount> SipAccountDataStorage { get; private set; }
 
         // here init the gb28181.xml file setting from app.config
-       static SipStorage()
+        static SipStorage()
         {
             m_storageType = (AppState.GetConfigSetting(m_storageTypeKey) != null) ? Sys.StorageTypesConverter.GetStorageType(AppState.GetConfigSetting(m_storageTypeKey)) : Sys.StorageTypes.Unknown;
 

@@ -11,11 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using GB28181.Logger4Net;
 using GB28181.Net;
 using GB28181.Sys;
-using GB28181.Logger4Net;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -397,7 +397,7 @@ namespace GB28181.App
                                             {
                                                 // If the response has arrived here on a private IP address then it must be
                                                 // for a local version install and an incoming call that needs it's response mangled.
-                                                if(!IPSocket.IsPrivateAddress(m_sipCallDescriptor.MangleIPAddress.ToString()))
+                                                if (!IPSocket.IsPrivateAddress(m_sipCallDescriptor.MangleIPAddress.ToString()))
                                                 {
                                                     publicIPAddress = m_sipCallDescriptor.MangleIPAddress.ToString();
                                                 }
@@ -438,15 +438,17 @@ namespace GB28181.App
                             }
                         }
 
-                        m_sipDialogue = new SIPDialogue(m_serverTransaction, Owner, AdminMemberId);
-                        m_sipDialogue.CallDurationLimit = m_sipCallDescriptor.CallDurationLimit;
+                        m_sipDialogue = new SIPDialogue(m_serverTransaction, Owner, AdminMemberId)
+                        {
+                            CallDurationLimit = m_sipCallDescriptor.CallDurationLimit,
 
-                        // Set switchboard dialogue values from the answered response or from dialplan set values.
-                        //m_sipDialogue.SwitchboardCallerDescription = sipResponse.Header.SwitchboardCallerDescription;
-                        m_sipDialogue.SwitchboardLineName = sipResponse.Header.SwitchboardLineName;
-                        m_sipDialogue.CRMPersonName = sipResponse.Header.CRMPersonName;
-                        m_sipDialogue.CRMCompanyName = sipResponse.Header.CRMCompanyName;
-                        m_sipDialogue.CRMPictureURL = sipResponse.Header.CRMPictureURL;
+                            // Set switchboard dialogue values from the answered response or from dialplan set values.
+                            //m_sipDialogue.SwitchboardCallerDescription = sipResponse.Header.SwitchboardCallerDescription;
+                            SwitchboardLineName = sipResponse.Header.SwitchboardLineName,
+                            CRMPersonName = sipResponse.Header.CRMPersonName,
+                            CRMCompanyName = sipResponse.Header.CRMCompanyName,
+                            CRMPictureURL = sipResponse.Header.CRMPictureURL
+                        };
 
                         if (m_sipCallDescriptor.SwitchboardHeaders != null)
                         {
@@ -506,8 +508,10 @@ namespace GB28181.App
 
         private SIPRequest GetInviteRequest(SIPCallDescriptor sipCallDescriptor, string branchId, string callId, SIPEndPoint localSIPEndPoint, SIPRouteSet routeSet, string content, string contentType)
         {
-            SIPRequest inviteRequest = new SIPRequest(SIPMethodsEnum.INVITE, sipCallDescriptor.Uri);
-            inviteRequest.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest inviteRequest = new SIPRequest(SIPMethodsEnum.INVITE, sipCallDescriptor.Uri)
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
             SIPHeader inviteHeader = new SIPHeader(sipCallDescriptor.GetFromHeader(), SIPToHeader.ParseToHeader(sipCallDescriptor.To), 1, callId);
 
@@ -582,8 +586,10 @@ namespace GB28181.App
 
         private SIPRequest GetCancelRequest(SIPRequest inviteRequest)
         {
-            SIPRequest cancelRequest = new SIPRequest(SIPMethodsEnum.CANCEL, inviteRequest.URI);
-            cancelRequest.LocalSIPEndPoint = inviteRequest.LocalSIPEndPoint;
+            SIPRequest cancelRequest = new SIPRequest(SIPMethodsEnum.CANCEL, inviteRequest.URI)
+            {
+                LocalSIPEndPoint = inviteRequest.LocalSIPEndPoint
+            };
 
             SIPHeader inviteHeader = inviteRequest.Header;
             SIPHeader cancelHeader = new SIPHeader(inviteHeader.From, inviteHeader.To, inviteHeader.CSeq, inviteHeader.CallId);
@@ -598,16 +604,20 @@ namespace GB28181.App
 
         private SIPRequest GetByeRequest(SIPResponse inviteResponse, SIPURI byeURI, SIPEndPoint localSIPEndPoint)
         {
-            SIPRequest byeRequest = new SIPRequest(SIPMethodsEnum.BYE, byeURI);
-            byeRequest.LocalSIPEndPoint = localSIPEndPoint;
+            SIPRequest byeRequest = new SIPRequest(SIPMethodsEnum.BYE, byeURI)
+            {
+                LocalSIPEndPoint = localSIPEndPoint
+            };
 
             SIPFromHeader byeFromHeader = inviteResponse.Header.From;
             SIPToHeader byeToHeader = inviteResponse.Header.To;
             int cseq = inviteResponse.Header.CSeq + 1;
 
-            SIPHeader byeHeader = new SIPHeader(byeFromHeader, byeToHeader, cseq, inviteResponse.Header.CallId);
-            byeHeader.CSeqMethod = SIPMethodsEnum.BYE;
-            byeHeader.ProxySendFrom = m_serverTransaction.TransactionRequest.Header.ProxySendFrom;
+            SIPHeader byeHeader = new SIPHeader(byeFromHeader, byeToHeader, cseq, inviteResponse.Header.CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.BYE,
+                ProxySendFrom = m_serverTransaction.TransactionRequest.Header.ProxySendFrom
+            };
             byeRequest.Header = byeHeader;
 
             byeRequest.Header.Routes = (inviteResponse.Header.RecordRoutes != null) ? inviteResponse.Header.RecordRoutes.Reversed() : null;
@@ -620,8 +630,10 @@ namespace GB28181.App
 
         private SIPRequest GetUpdateRequest(SIPRequest inviteRequest, CRMHeaders crmHeaders)
         {
-            SIPRequest updateRequest = new SIPRequest(SIPMethodsEnum.UPDATE, inviteRequest.URI);
-            updateRequest.LocalSIPEndPoint = inviteRequest.LocalSIPEndPoint;
+            SIPRequest updateRequest = new SIPRequest(SIPMethodsEnum.UPDATE, inviteRequest.URI)
+            {
+                LocalSIPEndPoint = inviteRequest.LocalSIPEndPoint
+            };
 
             SIPHeader inviteHeader = inviteRequest.Header;
             SIPHeader updateHeader = new SIPHeader(inviteHeader.From, inviteHeader.To, inviteHeader.CSeq + 1, inviteHeader.CallId);

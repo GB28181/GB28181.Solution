@@ -17,8 +17,8 @@ using System;
 using System.Threading;
 using GB28181.Logger4Net;
 using GB28181.Sys;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -38,7 +38,7 @@ namespace GB28181.App
         private string m_lastServerNonce;
 
         public event Action<SIPResponse> ResponseReceived;
-        
+
         public SIPNonInviteClientUserAgent(
             SIPTransport sipTransport,
             SIPEndPoint outboundProxy,
@@ -70,7 +70,7 @@ namespace GB28181.App
             }
             catch (Exception excp)
             {
-                
+
                 logger.Error("Exception SIPNonInviteClientUserAgent SendRequest to " + m_callDescriptor.Uri + ". " + excp.Message);
                 throw;
             }
@@ -78,7 +78,7 @@ namespace GB28181.App
 
         private void RequestTimedOut(SIPTransaction sipTransaction)
         {
-            Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Attempt to send " + sipTransaction.TransactionRequest.Method +" to " + m_callDescriptor.Uri + " timed out.", m_owner));
+            Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Attempt to send " + sipTransaction.TransactionRequest.Method + " to " + m_callDescriptor.Uri + " timed out.", m_owner));
         }
 
         private void ServerResponseReceived(SIPEndPoint localSIPEndPoint, SIPEndPoint remoteEndPoint, SIPTransaction sipTransaction, SIPResponse sipResponse)
@@ -86,7 +86,7 @@ namespace GB28181.App
             try
             {
                 string reasonPhrase = (sipResponse.ReasonPhrase.IsNullOrBlank()) ? sipResponse.Status.ToString() : sipResponse.ReasonPhrase;
-                Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Server response " + sipResponse.StatusCode + " " + reasonPhrase + " received for " + sipTransaction.TransactionRequest.Method +" to "  + m_callDescriptor.Uri + ".", m_owner));
+                Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Server response " + sipResponse.StatusCode + " " + reasonPhrase + " received for " + sipTransaction.TransactionRequest.Method + " to " + m_callDescriptor.Uri + ".", m_owner));
 
                 if (sipResponse.Status == SIPResponseStatusCodesEnum.ProxyAuthenticationRequired || sipResponse.Status == SIPResponseStatusCodesEnum.Unauthorised)
                 {
@@ -113,7 +113,7 @@ namespace GB28181.App
                     else
                     {
                         Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Send request failed with " + sipResponse.StatusCode + " but no authentication header was supplied for " + sipTransaction.TransactionRequest.Method + " to " + m_callDescriptor.Uri + ".", m_owner));
-                        
+
                         if (ResponseReceived != null)
                         {
                             ResponseReceived(sipResponse);
@@ -141,7 +141,7 @@ namespace GB28181.App
         {
             string reasonPhrase = (sipResponse.ReasonPhrase.IsNullOrBlank()) ? sipResponse.Status.ToString() : sipResponse.ReasonPhrase;
             Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Server response " + sipResponse.Status + " " + reasonPhrase + " received for authenticated " + sipTransaction.TransactionRequest.Method + " to " + m_callDescriptor.Uri + ".", m_owner));
-            
+
             if (ResponseReceived != null)
             {
                 ResponseReceived(sipResponse);
@@ -160,9 +160,11 @@ namespace GB28181.App
                 SIPToHeader toHeader = new SIPToHeader(null, uri, null);
                 int cseq = Crypto.GetRandomInt(10000, 20000);
 
-                SIPHeader header = new SIPHeader(fromHeader, toHeader, cseq, CallProperties.CreateNewCallId());
-                header.CSeqMethod = method;
-                header.UserAgent = m_userAgent;
+                SIPHeader header = new SIPHeader(fromHeader, toHeader, cseq, CallProperties.CreateNewCallId())
+                {
+                    CSeqMethod = method,
+                    UserAgent = m_userAgent
+                };
                 request.Header = header;
 
                 SIPViaHeader viaHeader = new SIPViaHeader(m_sipTransport.GetDefaultSIPEndPoint(), CallProperties.CreateBranchId());

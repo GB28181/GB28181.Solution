@@ -100,12 +100,14 @@ namespace GB28181
             XNamespace ns = m_dialogXMLNS;
             XNamespace ss = m_sipsorceryXMLNS;
 
-            SIPEventDialog eventDialog = new SIPEventDialog();
-            eventDialog.ID = dialogElement.Attribute("id").Value;
-            eventDialog.CallID = (dialogElement.Attribute("call-id") != null) ? dialogElement.Attribute("call-id").Value : null;
-            eventDialog.LocalTag = (dialogElement.Attribute("local-tag") != null) ? dialogElement.Attribute("local-tag").Value : null;
-            eventDialog.RemoteTag = (dialogElement.Attribute("remote-tag") != null) ? dialogElement.Attribute("remote-tag").Value : null;
-            eventDialog.Direction = (dialogElement.Attribute("direction") != null) ? (SIPEventDialogDirectionEnum)Enum.Parse(typeof(SIPEventDialogDirectionEnum), dialogElement.Attribute("direction").Value, true) : SIPEventDialogDirectionEnum.none;
+            SIPEventDialog eventDialog = new SIPEventDialog
+            {
+                ID = dialogElement.Attribute("id").Value,
+                CallID = (dialogElement.Attribute("call-id") != null) ? dialogElement.Attribute("call-id").Value : null,
+                LocalTag = (dialogElement.Attribute("local-tag") != null) ? dialogElement.Attribute("local-tag").Value : null,
+                RemoteTag = (dialogElement.Attribute("remote-tag") != null) ? dialogElement.Attribute("remote-tag").Value : null,
+                Direction = (dialogElement.Attribute("direction") != null) ? (SIPEventDialogDirectionEnum)Enum.Parse(typeof(SIPEventDialogDirectionEnum), dialogElement.Attribute("direction").Value, true) : SIPEventDialogDirectionEnum.none
+            };
 
             XElement stateElement = dialogElement.Element(ns + "state");
             eventDialog.State = stateElement.Value;

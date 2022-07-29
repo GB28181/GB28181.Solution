@@ -13,17 +13,13 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using GB28181.Net;
-using GB28181;
-using GB28181.App;
-using GB28181.Sys;
 using GB28181.Logger4Net;
-using SIPSorcery.Sys;
+using GB28181.Net;
+using GB28181.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -97,8 +93,7 @@ namespace GB28181.App
 
                 if (sipRequest.Body != null && bottomViaIPAddress != null)
                 {
-                    bool wasMangled = false;
-                    string mangledSDP = MangleSDP(sipRequest.Body, bottomViaIPAddress, out wasMangled);
+                    string mangledSDP = MangleSDP(sipRequest.Body, bottomViaIPAddress, out bool wasMangled);
 
                     if (wasMangled)
                     {
@@ -145,8 +140,7 @@ namespace GB28181.App
 
                 if (sipResponse.Body != null)
                 {
-                    bool wasMangled = false;
-                    string mangledSDP = MangleSDP(sipResponse.Body, remoteEndPoint.Address.ToString(), out wasMangled);
+                    string mangledSDP = MangleSDP(sipResponse.Body, remoteEndPoint.Address.ToString(), out bool wasMangled);
 
                     if (wasMangled)
                     {

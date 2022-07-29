@@ -25,8 +25,8 @@ namespace GB28181.Net
 
         public int FormatID;
         public string FormatAttribute { get; private set; }
-		public string FormatParameterAttribute {get; private set;}
-		public string Name { get; private set; }
+        public string FormatParameterAttribute { get; private set; }
+        public string Name { get; private set; }
         public int ClockRate { get; private set; }
         public bool IsStandardAttribute { get; set; }           // If true this is a standard media format and the attribute line is not required.
 
@@ -79,18 +79,17 @@ namespace GB28181.Net
             if (attributeMatch.Success)
             {
                 Name = attributeMatch.Result("${name}");
-                int clockRate;
-                if (Int32.TryParse(attributeMatch.Result("${clockrate}"), out clockRate))
+                if (Int32.TryParse(attributeMatch.Result("${clockrate}"), out int clockRate))
                 {
                     ClockRate = clockRate;
                 }
             }
         }
 
-		public void SetFormatParameterAttribute(string attribute)
-		{
-			FormatParameterAttribute = attribute;
-		}
+        public void SetFormatParameterAttribute(string attribute)
+        {
+            FormatParameterAttribute = attribute;
+        }
 
         //public static string GetDefaultFormatAttribute(int mediaFormat)
         //{

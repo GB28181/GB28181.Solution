@@ -11,10 +11,10 @@ namespace GB28181.App
 
         private SIPMonitorLogDelegate Log_External;
 
-      //  private XMPPClient m_xmppClient;
-        
+        //  private XMPPClient m_xmppClient;
+
         public string Owner { get; private set; }
-        public string AdminMemberId { get; private set; }       
+        public string AdminMemberId { get; private set; }
         public UACInviteTransaction ServerTransaction { get; private set; }
         public SIPDialogue SIPDialogue { get; private set; }
         public SIPCallDescriptor CallDescriptor { get; private set; }
@@ -25,10 +25,10 @@ namespace GB28181.App
         public event SIPCallResponseDelegate CallAnswered;
         public event SIPCallFailedDelegate CallFailed;
 
-          public JingleUserAgent(
-            string owner,
-            string adminMemberId,
-            SIPMonitorLogDelegate logDelegate)
+        public JingleUserAgent(
+          string owner,
+          string adminMemberId,
+          SIPMonitorLogDelegate logDelegate)
         {
             Owner = owner;
             AdminMemberId = adminMemberId;
@@ -61,7 +61,7 @@ namespace GB28181.App
         private void IsBound()
         {
             Console.WriteLine("XMPP client IsBound");
-         //   m_xmppClient.PlaceCall(SIPURI.ParseSIPURI(CallDescriptor.To).User + "@voice.google.com", SDP.ParseSDPDescription(CallDescriptor.Content));
+            //   m_xmppClient.PlaceCall(SIPURI.ParseSIPURI(CallDescriptor.To).User + "@voice.google.com", SDP.ParseSDPDescription(CallDescriptor.Content));
         }
 
         private void Answered(SDP sdp)
@@ -74,8 +74,10 @@ namespace GB28181.App
             okResponse.Header.ContentType = SDP.SDP_MIME_CONTENTTYPE;
             okResponse.Body = sdp.ToString();
 
-            SIPDialogue = new SIPDialogue(null, null, null, null, -1, null, null, null, Guid.NewGuid(), Owner, AdminMemberId, null, sdp.ToString());
-            SIPDialogue.CallDurationLimit = CallDescriptor.CallDurationLimit;
+            SIPDialogue = new SIPDialogue(null, null, null, null, -1, null, null, null, Guid.NewGuid(), Owner, AdminMemberId, null, sdp.ToString())
+            {
+                CallDurationLimit = CallDescriptor.CallDurationLimit
+            };
 
             CallAnswered(this, okResponse);
         }

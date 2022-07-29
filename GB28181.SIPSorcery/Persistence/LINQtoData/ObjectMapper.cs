@@ -1,23 +1,26 @@
-﻿using GB28181.App;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using GB28181.App;
 
 namespace GB28181.Persistence
 {
 
-    public class ObjectMapper<T> {
+    public class ObjectMapper<T>
+    {
 
         public string TableName;
         private Dictionary<MetaDataMember, Func<object, object>> m_getterTableMap;
         private Dictionary<MetaDataMember, Action<object, object>> m_setterTableMap;
 
-        public ObjectMapper() {
+        public ObjectMapper()
+        {
             TableName = GetTableName(typeof(T));
             m_getterTableMap = GetGetterTableMap(typeof(T));
             m_setterTableMap = GetSetterTableMap(typeof(T));
         }
 
-        public object GetValue(T instance, string propertyName) {
+        public object GetValue(T instance, string propertyName)
+        {
             //foreach (KeyValuePair<MetaDataMember, Func<object, object>> getter in m_getterTableMap) {
             //    if (getter.Key.Name.ToLower() == propertyName.ToLower()) {
             //        return getter.Value(instance);
@@ -26,15 +29,18 @@ namespace GB28181.Persistence
             return null;
         }
 
-        public Dictionary<MetaDataMember, object> GetAllValues(T instance) {
+        public Dictionary<MetaDataMember, object> GetAllValues(T instance)
+        {
             Dictionary<MetaDataMember, object> allPropertyValues = new Dictionary<MetaDataMember, object>();
-            foreach (KeyValuePair<MetaDataMember, Func<object, object>> getter in m_getterTableMap) {
+            foreach (KeyValuePair<MetaDataMember, Func<object, object>> getter in m_getterTableMap)
+            {
                 allPropertyValues.Add(getter.Key, getter.Value(instance));
             }
             return allPropertyValues;
         }
 
-        public MetaDataMember GetMember(string propertyName) {
+        public MetaDataMember GetMember(string propertyName)
+        {
             //foreach (KeyValuePair<MetaDataMember, Func<object, object>> getter in m_getterTableMap) {
             //    if (getter.Key.Name.ToLower() == propertyName.ToLower()) {
             //        return getter.Key;
@@ -43,11 +49,13 @@ namespace GB28181.Persistence
             return null;
         }
 
-        public void SetValue(object instance, string propertyName, object value) {
+        public void SetValue(object instance, string propertyName, object value)
+        {
             SetValue((T)instance, propertyName, value);
         }
 
-        public void SetValue(T instance, string propertyName, object value) {
+        public void SetValue(T instance, string propertyName, object value)
+        {
             //if (value != null) {
             //    foreach (KeyValuePair<MetaDataMember, Action<object, object>> setter in m_setterTableMap) {
             //        if (setter.Key.MappedName.ToLower() == propertyName.ToLower()) {
@@ -63,7 +71,8 @@ namespace GB28181.Persistence
             //}
         }
 
-        private string GetTableName(Type tableType) {
+        private string GetTableName(Type tableType)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(tableType);
             //MetaTable table = mapping.GetTable(tableType);
@@ -71,7 +80,8 @@ namespace GB28181.Persistence
             return null;
         }
 
-        private Dictionary<MetaDataMember, Func<object, object>> GetGetterTableMap(Type tableType) {
+        private Dictionary<MetaDataMember, Func<object, object>> GetGetterTableMap(Type tableType)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(tableType);
             //MetaTable table = mapping.GetTable(tableType);
@@ -97,7 +107,8 @@ namespace GB28181.Persistence
             return null;
         }
 
-        private Dictionary<MetaDataMember, Action<object, object>> GetSetterTableMap(Type tableType) {
+        private Dictionary<MetaDataMember, Action<object, object>> GetSetterTableMap(Type tableType)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(tableType);
             //MetaTable table = mapping.GetTable(tableType);

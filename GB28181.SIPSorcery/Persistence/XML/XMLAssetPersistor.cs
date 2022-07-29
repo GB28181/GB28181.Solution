@@ -15,8 +15,6 @@
 //
 
 
-using GB28181.App;
-using GB28181.Sys;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,6 +26,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using GB28181.App;
+using GB28181.Sys;
 
 namespace GB28181.Persistence.XML
 {
@@ -331,7 +331,7 @@ namespace GB28181.Persistence.XML
 
             if (m_sipAssets.Count == 0)
             {
-                return default(T);
+                return default;
             }
             else
             {
@@ -342,7 +342,7 @@ namespace GB28181.Persistence.XML
                 else
                 {
                     logger.Debug("Could not locate a " + typeof(T).Name + " SIP Asset for id " + id.ToString() + ".");
-                    return default(T);
+                    return default;
                 }
             }
         }
@@ -405,7 +405,7 @@ namespace GB28181.Persistence.XML
             catch (Exception excp)
             {
                 logger.Error("Exception SIPAssetXMLPersistor Get (for " + typeof(T).Name + "). " + excp.Message);
-                return default(T);
+                return default;
             }
         }
 

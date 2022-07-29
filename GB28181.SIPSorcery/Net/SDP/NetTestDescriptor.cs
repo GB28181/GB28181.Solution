@@ -22,7 +22,7 @@ using SIPSorcery.Sys;
 namespace GB28181.Net
 {
     public class NetTestDescriptor
-    {   
+    {
         public const int MAXIMUM_PAYLOAD_SIZE = 1460;			// Ethernet MTU = 1500. (12B RTP header, 8B UDP Header, 20B IP Header, TOTAL = 40B).
         public const int MAXIMUM_RATEPER_CHANNEL = 500000;      // This is in bits. Needs to be less than 1460B * 8bits * 66.667 Packets/s, so 500Kbps is a nice number.
         public const int RTP_HEADER_OVERHEAD = 12;              // 12B RTP header.

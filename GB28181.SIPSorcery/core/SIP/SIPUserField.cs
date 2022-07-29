@@ -36,7 +36,7 @@ namespace GB28181
     /// parameters, not URI parameters.
     /// </summary>
     [DataContract]
-    public class SIPUserField: SIPSorcery.SIP.SIPUserField
+    public class SIPUserField : SIPSorcery.SIP.SIPUserField
     {
         private const char PARAM_TAG_DELIMITER = ';';
 
@@ -119,14 +119,16 @@ namespace GB28181
             return userField;
         }
 
-       
+
 
         public SIPUserField CopyOf()
         {
-            SIPUserField copy = new SIPUserField();
-            copy.Name = Name;
-            copy.URI = URI.CopyOf();
-            copy.Parameters = Parameters.CopyOf();
+            SIPUserField copy = new SIPUserField
+            {
+                Name = Name,
+                URI = URI.CopyOf(),
+                Parameters = Parameters.CopyOf()
+            };
 
             return copy;
         }

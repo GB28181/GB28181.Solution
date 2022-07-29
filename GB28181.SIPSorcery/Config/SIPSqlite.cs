@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GB28181.App;
 using GB28181.Logger4Net;
 using GB28181.Persistence;
-using GB28181.App;
-using SIPSorcery.Sys;
 using GB28181.Sys;
+using SIPSorcery.Sys;
 
 
 namespace GB28181.Config
@@ -60,7 +60,7 @@ namespace GB28181.Config
             if (m_storageType == Sys.StorageTypes.Unknown || m_connStr.IsNullOrBlank())
             {
                 logger.Error($"The SIP Registrar cannot start with no persistence settings:m_storageType: {m_storageType},m_connStr :{m_connStr}.");
-              //  throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
+                //  throw new ApplicationException("The SIP Registrar cannot start with no persistence settings.");
             }
         }
 

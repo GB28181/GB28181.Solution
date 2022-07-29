@@ -10,27 +10,24 @@
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace GB28181
 {
-    public class SIPRequestAuthenticationResult {
+    public class SIPRequestAuthenticationResult
+    {
 
         public bool Authenticated;
         public bool WasAuthenticatedByIP;
         public SIPResponseStatusCodesEnum ErrorResponse;
         public SIPAuthenticationHeader AuthenticationRequiredHeader;
 
-        public SIPRequestAuthenticationResult(bool isAuthenticated, bool wasAuthenticatedByIP) {
+        public SIPRequestAuthenticationResult(bool isAuthenticated, bool wasAuthenticatedByIP)
+        {
             Authenticated = isAuthenticated;
             WasAuthenticatedByIP = wasAuthenticatedByIP;
         }
 
-        public SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum errorResponse, SIPAuthenticationHeader authenticationRequiredHeader) {
+        public SIPRequestAuthenticationResult(SIPResponseStatusCodesEnum errorResponse, SIPAuthenticationHeader authenticationRequiredHeader)
+        {
             Authenticated = false;
             ErrorResponse = errorResponse;
             AuthenticationRequiredHeader = authenticationRequiredHeader;

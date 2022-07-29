@@ -1,5 +1,4 @@
 ﻿using GB28181.Servers.SIPMonitor;
-using GB28181;
 using GB28181.Sys.XML;
 using SIPSorcery.SIP;
 
@@ -9,7 +8,7 @@ namespace GB28181.Servers
     /// <summary>
     /// 监控服务统一接口
     /// </summary>
-    public interface ISIPMonitorCore :IMediaAction
+    public interface ISIPMonitorCore : IMediaAction
     {
 
         string DeviceId { get; set; }
@@ -135,7 +134,7 @@ namespace GB28181.Servers
         /// </summary>
         /// <param name="interval">移动设备位置信息上报时间间隔</param>
         /// <param name="isStop">true订阅/false取消订阅</param>
-        void MobilePositionQueryRequest(int interval,bool isStop);
+        void MobilePositionQueryRequest(int interval, bool isStop);
 
         //强制关键帧命令请求
         void MakeKeyFrameRequest();

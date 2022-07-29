@@ -18,12 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using GB28181.App;
-using GB28181.Sys;
-using GB28181.Logger4Net;
 using System.Data;
 using System.Data.Common;
+using System.Linq.Expressions;
+using GB28181.App;
+using GB28181.Logger4Net;
+using GB28181.Sys;
 
 
 namespace GB28181.Persistence
@@ -79,7 +79,7 @@ namespace GB28181.Persistence
 
         public virtual void Delete()
         {
-      
+
             throw new NotImplementedException("Method " + System.Reflection.MethodBase.GetCurrentMethod().Name + " in " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.ToString() + " not implemented.");
         }
         public virtual void Delete(T asset)
@@ -179,16 +179,14 @@ namespace GB28181.Persistence
         {
             try
             {
-                using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
-                {
-                    connection.ConnectionString = m_dbConnectionStr;
-                    connection.Open();
+                using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+                connection.ConnectionString = m_dbConnectionStr;
+                connection.Open();
 
-                    IDbCommand command = connection.CreateCommand();
+                IDbCommand command = connection.CreateCommand();
 
-                    command.CommandText = commandText;
-                    command.ExecuteNonQuery();
-                }
+                command.CommandText = commandText;
+                command.ExecuteNonQuery();
             }
             catch (Exception excp)
             {

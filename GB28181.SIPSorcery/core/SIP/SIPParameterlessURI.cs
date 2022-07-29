@@ -21,8 +21,8 @@ using SIPSorcery.SIP;
 namespace GB28181
 {
     [DataContract]
-    public class SIPParameterlessURI 
-	{
+    public class SIPParameterlessURI
+    {
         private static ILog logger = AssemblyState.logger;
 
         private SIPURI m_uri;
@@ -56,46 +56,48 @@ namespace GB28181
             get { return m_uri.Host; }
             set { m_uri.Host = value; }
         }
-        
-        private SIPParameterlessURI()
-		{}
 
-		public SIPParameterlessURI(SIPURI sipURI)
-		{
+        private SIPParameterlessURI()
+        { }
+
+        public SIPParameterlessURI(SIPURI sipURI)
+        {
             m_uri = sipURI;
-		}
+        }
 
         public SIPParameterlessURI(SIPSchemesEnum scheme, string host, string user)
         {
-            m_uri = new SIPURI(user, host, null);
-            m_uri.Scheme = scheme;
+            m_uri = new SIPURI(user, host, null)
+            {
+                Scheme = scheme
+            };
         }
 
-		public static SIPParameterlessURI ParseSIPParamterlessURI(string uri)
-		{
-			SIPURI sipURI = SIPURI.ParseSIPURI(uri);
+        public static SIPParameterlessURI ParseSIPParamterlessURI(string uri)
+        {
+            SIPURI sipURI = SIPURI.ParseSIPURI(uri);
             sipURI.Parameters.RemoveAll();
             sipURI.Headers.RemoveAll();
 
             return new SIPParameterlessURI(sipURI);
-		}
-	
-		public new string ToString()
-		{
-			try
-			{
+        }
+
+        public new string ToString()
+        {
+            try
+            {
                 string uriStr = m_uri.Scheme.ToString() + SIPURI.SCHEME_ADDR_SEPARATOR;
 
                 uriStr = (User != null) ? uriStr + User + SIPURI.USER_HOST_SEPARATOR + Host : uriStr + Host;
 
-				return uriStr;
-			}
-			catch(Exception excp)
-			{
-				logger.Error("Exception SIPParameterlessURI ToString. " + excp.Message);
-				throw excp;
-			}
-		}
+                return uriStr;
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Exception SIPParameterlessURI ToString. " + excp.Message);
+                throw excp;
+            }
+        }
 
         public static bool AreEqual(SIPParameterlessURI uri1, SIPParameterlessURI uri2)
         {
@@ -112,5 +114,5 @@ namespace GB28181
                 return false;
             }
         }
-	}
+    }
 }

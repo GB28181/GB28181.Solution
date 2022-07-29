@@ -11,17 +11,11 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using GB28181.Sys;
-using GB28181.Logger4Net;
 using SIPSorcery.SIP;
 
 #if UNITTEST
@@ -41,7 +35,7 @@ namespace GB28181
         private const int FAILED_CONNECTION_DONTUSE_INTERVAL = 300; // If a socket cannot be connected to don't try and reconnect to it for this interval.
 
         private static int MaxSIPTCPMessageSize = SIPConstants.SIP_MAXIMUM_RECEIVE_LENGTH;
-        
+
         private TcpListener m_tcpServerListener;
         private Dictionary<string, SIPConnection> m_connectedSockets = new Dictionary<string, SIPConnection>();
         private List<string> m_connectingSockets = new List<string>();                                  // List of sockets that are in the process of being connected to. Need to avoid SIP re-transmits initiating multiple connect attempts.
@@ -175,7 +169,7 @@ namespace GB28181
 
                 lock (m_connectedSockets)
                 {
-                    if(m_connectedSockets.ContainsKey(remoteEndPoint.ToString()))
+                    if (m_connectedSockets.ContainsKey(remoteEndPoint.ToString()))
                     {
                         m_connectedSockets.Remove(remoteEndPoint.ToString());
                     }

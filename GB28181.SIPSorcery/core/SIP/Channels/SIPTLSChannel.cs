@@ -318,8 +318,8 @@ namespace GB28181
                 SslStream sslStream = new SslStream(tcpClient.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
                 //DisplayCertificateInformation(sslStream);
 
-                 SIPConnection callerConnection = new SIPConnection(this, tcpClient, sslStream, dstEndPoint, SIPProtocolsEnum.tls, SIPConnectionsEnum.Caller);
-                 sslStream.BeginAuthenticateAsClient(serverCN, EndAuthenticateAsClient, new object[] { tcpClient, dstEndPoint, buffer, callerConnection });
+                SIPConnection callerConnection = new SIPConnection(this, tcpClient, sslStream, dstEndPoint, SIPProtocolsEnum.tls, SIPConnectionsEnum.Caller);
+                sslStream.BeginAuthenticateAsClient(serverCN, EndAuthenticateAsClient, new object[] { tcpClient, dstEndPoint, buffer, callerConnection });
                 //sslStream.AuthenticateAsClient(serverCN);
 
                 //if (tcpClient != null && tcpClient.Connected)
@@ -345,13 +345,13 @@ namespace GB28181
             {
                 logger.Error("Exception SIPTLSChannel EndConnect. " + excp);
 
-                if(tcpClient != null)
+                if (tcpClient != null)
                 {
                     try
                     {
                         tcpClient.Close();
                     }
-                    catch(Exception closeExcp)
+                    catch (Exception closeExcp)
                     {
                         logger.Warn("Exception SIPTLSChannel EndConnect Close TCP Client. " + closeExcp);
                     }

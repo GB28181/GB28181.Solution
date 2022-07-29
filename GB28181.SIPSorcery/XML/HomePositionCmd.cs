@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace GB28181.Sys.XML
 {
@@ -11,7 +6,7 @@ namespace GB28181.Sys.XML
     /// 看守位控制命令
     /// </summary>
     [XmlRoot("Control")]
-   public  class HomePositionCmd : XmlHelper<HomePositionCmd>
+    public class HomePositionCmd : XmlHelper<HomePositionCmd>
     {
         private static HomePositionCmd _instance;
         /// <summary>
@@ -53,7 +48,7 @@ namespace GB28181.Sys.XML
         [XmlElement("HomePosition")]
         public HomePositionSet HomePosition { get; set; }
 
-        
+
     }
     public class HomePositionSet
     {

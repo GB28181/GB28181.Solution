@@ -15,9 +15,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
-using SIPSorcery.Sys;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -1744,7 +1744,7 @@ namespace GB28181
                     string headerValue = null;
 
                     // If the first character of a line is whitespace it's a contiuation of the previous line.
-                    if (headerLine.StartsWith(" ",StringComparison.CurrentCulture))
+                    if (headerLine.StartsWith(" ", StringComparison.CurrentCulture))
                     {
                         headerName = lastHeader;
                         headerValue = headerLine.Trim();

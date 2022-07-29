@@ -16,7 +16,6 @@
 
 
 using System;
-using System.Collections;
 using System.Runtime.Serialization;
 
 namespace GB28181.App

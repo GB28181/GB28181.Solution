@@ -12,8 +12,8 @@ namespace GB28181.Net
         private const int PES_HDR_LEN = 19;
         private const int RTP_HDR_LEN = 12;
         private const byte RTP_VERSION = 2;
-    //    private bool bHasPayload;//是否有有效数据
-                                         //后加的常量  需要考虑值是否合理
+        //    private bool bHasPayload;//是否有有效数据
+        //后加的常量  需要考虑值是否合理
         private const int PS_PES_PAYLOAD_SIZE = 5120;
         private const int RTP_MAX_PACKET_BUFF = 1400;
 
@@ -76,7 +76,7 @@ namespace GB28181.Net
 
 
                 //含有有效数据
-              //  bHasPayload = true;
+                //  bHasPayload = true;
                 while (nFrameLen > 0)
                 {
                     //每次帧的长度不要超过short类型，过了就得分片进循环行发送  
@@ -97,7 +97,7 @@ namespace GB28181.Net
                     //这里也只移动nSize,因为在while向后移动的pes头长度，正好重新填充pes头数据  
                     startIndex += nSize;
                 }
-              //  bHasPayload = false;
+                //  bHasPayload = false;
             }
             catch (Exception ex)
             {
@@ -116,7 +116,8 @@ namespace GB28181.Net
 *@return:   0 success, others failed 
 */
         private uint _timestamp = 320;
-        int Gb28181_send_rtp_pack(byte[] databuff, int index, int nDataLen, int mark_flag, Data_Info_s pPacker)
+
+        private int Gb28181_send_rtp_pack(byte[] databuff, int index, int nDataLen, int mark_flag, Data_Info_s pPacker)
         {
             try
             {
@@ -203,7 +204,7 @@ namespace GB28181.Net
             return 0;
         }
 
-        int SendDataBuff(byte[] data, int startIndex, int size, Data_Info_s pPacker)
+        private int SendDataBuff(byte[] data, int startIndex, int size, Data_Info_s pPacker)
         {
             try
             {
@@ -227,8 +228,8 @@ namespace GB28181.Net
                 return 0;
             }
         }
-       // int seqNo = 0;
-       // int timestamp = 0;
+        // int seqNo = 0;
+        // int timestamp = 0;
 
         /// <summary>
         /// 
@@ -255,7 +256,7 @@ namespace GB28181.Net
                 //bitsBuffer.Write(cseq, 0, 16);            /* rtp sequence 	 */
                 //bitsBuffer.Write(_timestamp, 0, 32);      /* rtp timestamp 	 */
                 //bitsBuffer.Write(ssrc, 0, 32);        /* rtp SSRC	 	 */
-               // Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, RTP_HDR_LEN);
+                // Array.Copy(bitsBuffer.ToByteArray(), 0, pData, startIndex, RTP_HDR_LEN);
 
                 _timestamp += 320;
             }

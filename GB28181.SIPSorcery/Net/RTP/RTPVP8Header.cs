@@ -15,13 +15,13 @@ using System;
 
 namespace GB28181.Net
 {
-     /// <summary>
+    /// <summary>
     /// Exmaples of size Payload Header size calculations:
     /// 
     /// For length of first parition 54: S0 = 4, S1 = 0x32, S2 = 0.
     /// For length of first parition 1777: S0 = 1, S1 = 0xde, S2 = 0.
     /// 
-     /// </summary>
+    /// </summary>
     public class RTPVP8Header
     {
         // Payload Descriptor Fields.
@@ -41,7 +41,7 @@ namespace GB28181.Net
         private int _length = 0;
         public int Length
         {
-            get { return _length;  }
+            get { return _length; }
         }
 
         private int _payloadDescriptorLength;
@@ -62,17 +62,17 @@ namespace GB28181.Net
             vp8Header.ExtendedControlBitsPresent = ((rtpPayload[0] >> 7) & 0x01) == 1;
             vp8Header.StartOfVP8Partition = ((rtpPayload[0] >> 4) & 0x01) == 1;
             vp8Header._length = 1;
-            
+
             // Is second byte being used.
-            if(vp8Header.ExtendedControlBitsPresent)
+            if (vp8Header.ExtendedControlBitsPresent)
             {
                 vp8Header.IsPictureIDPresent = ((rtpPayload[1] >> 7) & 0x01) == 1;
-                vp8Header._length = 2; 
+                vp8Header._length = 2;
                 payloadHeaderStartIndex = 2;
             }
 
             // Is the picture ID being used.
-            if(vp8Header.IsPictureIDPresent)
+            if (vp8Header.IsPictureIDPresent)
             {
                 if (((rtpPayload[2] >> 7) & 0x01) == 1)
                 {
@@ -125,7 +125,7 @@ namespace GB28181.Net
                     {
                         _length = 3;
                         _payloadDescriptorLength = 3;
-                        return new byte[] { 0x90, 0x80, (byte)PictureID};
+                        return new byte[] { 0x90, 0x80, (byte)PictureID };
                     }
                 }
                 else

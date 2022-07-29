@@ -12,10 +12,6 @@
 //
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GB28181
@@ -36,10 +32,12 @@ namespace GB28181
 
                 if (toTagMatch.Success && fromTagMatch.Success)
                 {
-                    SIPReplacesParameter replacesParam = new SIPReplacesParameter();
-                    replacesParam.CallID = replaces.Substring(0, replaces.IndexOf(';'));
-                    replacesParam.ToTag = toTagMatch.Result("${totag}");
-                    replacesParam.FromTag = fromTagMatch.Result("${fromtag}");
+                    SIPReplacesParameter replacesParam = new SIPReplacesParameter
+                    {
+                        CallID = replaces.Substring(0, replaces.IndexOf(';')),
+                        ToTag = toTagMatch.Result("${totag}"),
+                        FromTag = fromTagMatch.Result("${fromtag}")
+                    };
 
                     return replacesParam;
                 }

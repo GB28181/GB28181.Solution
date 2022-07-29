@@ -20,19 +20,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
 #endif
 
-namespace GB28181.Servers {
+namespace GB28181.Servers
+{
 
-    public class SIPUserAgentConfiguration {
+    public class SIPUserAgentConfiguration
+    {
 
         public const int DEFAULT_MAX_EXPIRY_SECONDS = 3600;
 
@@ -40,14 +41,16 @@ namespace GB28181.Servers {
         public bool ContactListSupported = true;    // If false means the user agent wants only the Contact header it supplied returned in the Ok response.
         public string UserAgentRegex = null;        // The regular expression string being used to match the user agent.
 
-        public SIPUserAgentConfiguration(int maxExpiry, bool listSupported, string userAgentRegex) {
+        public SIPUserAgentConfiguration(int maxExpiry, bool listSupported, string userAgentRegex)
+        {
             MaxAllowedExpiryTime = maxExpiry;
             ContactListSupported = listSupported;
             UserAgentRegex = userAgentRegex;
         }
     }
 
-    public class SIPUserAgentConfigurationManager {
+    public class SIPUserAgentConfigurationManager
+    {
 
         private static ILog logger = AppState.logger;
 
@@ -71,33 +74,40 @@ namespace GB28181.Servers {
             }
         }
 
-        public SIPUserAgentConfigurationManager(XmlNode userAgentConfigNode) {
+        public SIPUserAgentConfigurationManager(XmlNode userAgentConfigNode)
+        {
             m_userAgentConfigs = ParseSIPUserAgentConfigurations(userAgentConfigNode);
         }
 
-        private Dictionary<string, SIPUserAgentConfiguration> ParseSIPUserAgentConfigurations(XmlNode userAgentConifgNode) {
-            try {
+        private Dictionary<string, SIPUserAgentConfiguration> ParseSIPUserAgentConfigurations(XmlNode userAgentConifgNode)
+        {
+            try
+            {
                 Dictionary<string, SIPUserAgentConfiguration> userAgentConfigs = new Dictionary<string, SIPUserAgentConfiguration>();
 
-                if (userAgentConifgNode != null && userAgentConifgNode.ChildNodes.Count != 0) {
-                    foreach (XmlNode userAgentNode in userAgentConifgNode.SelectNodes("useragent")) {
+                if (userAgentConifgNode != null && userAgentConifgNode.ChildNodes.Count != 0)
+                {
+                    foreach (XmlNode userAgentNode in userAgentConifgNode.SelectNodes("useragent"))
+                    {
                         //if (userAgentNode.InnerText != null && userAgentNode.InnerText.Trim().Length > 0) {
-                            int expiry = Convert.ToInt32(userAgentNode.Attributes.GetNamedItem("expiry").Value);
-                            bool contactListSupported = (userAgentNode.Attributes.GetNamedItem("contactlists") != null) ? Convert.ToBoolean(userAgentNode.Attributes.GetNamedItem("contactlists").Value) : true;
-                            string userAgent = userAgentNode.Attributes.GetNamedItem("agent").Value;
-                            SIPUserAgentConfiguration userAgentConfig = new SIPUserAgentConfiguration(expiry, contactListSupported, userAgent);
+                        int expiry = Convert.ToInt32(userAgentNode.Attributes.GetNamedItem("expiry").Value);
+                        bool contactListSupported = userAgentNode.Attributes.GetNamedItem("contactlists") == null || Convert.ToBoolean(userAgentNode.Attributes.GetNamedItem("contactlists").Value);
+                        string userAgent = userAgentNode.Attributes.GetNamedItem("agent").Value;
+                        SIPUserAgentConfiguration userAgentConfig = new SIPUserAgentConfiguration(expiry, contactListSupported, userAgent);
 
-                            if (userAgentConfig.UserAgentRegex != null && userAgentConfig.UserAgentRegex.Trim().Length > 0 && !userAgentConfigs.ContainsKey(userAgentConfig.UserAgentRegex)) {
-                                logger.Debug("Added useragent config, useragent=" + userAgentConfig.UserAgentRegex + ", expiry=" + userAgentConfig.MaxAllowedExpiryTime + "s, contact lists=" + userAgentConfig.ContactListSupported + ".");
-                                userAgentConfigs.Add(userAgentConfig.UserAgentRegex, userAgentConfig);
-                            }
+                        if (userAgentConfig.UserAgentRegex != null && userAgentConfig.UserAgentRegex.Trim().Length > 0 && !userAgentConfigs.ContainsKey(userAgentConfig.UserAgentRegex))
+                        {
+                            logger.Debug("Added useragent config, useragent=" + userAgentConfig.UserAgentRegex + ", expiry=" + userAgentConfig.MaxAllowedExpiryTime + "s, contact lists=" + userAgentConfig.ContactListSupported + ".");
+                            userAgentConfigs.Add(userAgentConfig.UserAgentRegex, userAgentConfig);
+                        }
                         //}
                     }
                 }
 
                 return userAgentConfigs;
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 logger.Error("Exception ParseSIPUserAgentConfigurations. " + excp.Message);
                 return null;
             }
@@ -110,15 +120,21 @@ namespace GB28181.Servers {
         /// </summary>
         /// <param name="userAgent">The useragent to get the maximum expiry for.</param>
         /// <returns>The maximum expiry value that will be accepted.</returns>
-        private SIPUserAgentConfiguration GetUserAgentConfig(string userAgent) {
-            
+        private SIPUserAgentConfiguration GetUserAgentConfig(string userAgent)
+        {
+
             SIPUserAgentConfiguration matchingUAConfig = null;
 
-            try {
-                if (m_userAgentConfigs != null && m_userAgentConfigs.Count > 0) {
-                    if (userAgent != null && userAgent.Trim().Length > 0) {
-                        foreach (string userAgentPattern in m_userAgentConfigs.Keys) {
-                            if (Regex.Match(userAgent, userAgentPattern, RegexOptions.IgnoreCase).Success) {
+            try
+            {
+                if (m_userAgentConfigs != null && m_userAgentConfigs.Count > 0)
+                {
+                    if (userAgent != null && userAgent.Trim().Length > 0)
+                    {
+                        foreach (string userAgentPattern in m_userAgentConfigs.Keys)
+                        {
+                            if (Regex.Match(userAgent, userAgentPattern, RegexOptions.IgnoreCase).Success)
+                            {
                                 matchingUAConfig = m_userAgentConfigs[userAgentPattern];
                                 break;
                             }
@@ -128,25 +144,28 @@ namespace GB28181.Servers {
 
                 return matchingUAConfig;
             }
-            catch (Exception excp) {
+            catch (Exception excp)
+            {
                 logger.Error("Exception GetUserAgentConfig. " + excp);
                 return null;
             }
         }
 
-        public int GetMaxAllowedExpiry(string userAgent) {
+        public int GetMaxAllowedExpiry(string userAgent)
+        {
             SIPUserAgentConfiguration matchingConfig = GetUserAgentConfig(userAgent);
             return (matchingConfig != null) ? matchingConfig.MaxAllowedExpiryTime : m_defaultMaxExpiry;
         }
 
-        public bool GetUserAgentContactListSupport(string userAgent) {
+        public bool GetUserAgentContactListSupport(string userAgent)
+        {
             SIPUserAgentConfiguration matchingConfig = GetUserAgentConfig(userAgent);
             return (matchingConfig != null) ? matchingConfig.ContactListSupported : m_defaultContactListSupported;
         }
 
         #region Unit testing.
 
-        #if UNITTEST
+#if UNITTEST
 
         [TestFixture]
         public class SIPUserAgentConfigurationManagerUnitTest {
@@ -211,7 +230,7 @@ namespace GB28181.Servers {
             }
         }
 
-        #endif
+#endif
 
         #endregion
     }

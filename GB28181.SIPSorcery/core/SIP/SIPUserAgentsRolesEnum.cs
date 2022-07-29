@@ -15,17 +15,17 @@ using System;
 
 namespace GB28181
 {
-	public enum SIPUserAgentRolesEnum
-	{
-		Client = 1,
-		Server = 2,
-	}
+    public enum SIPUserAgentRolesEnum
+    {
+        Client = 1,
+        Server = 2,
+    }
 
-	public class SIPUserAgentRolesTypes
-	{
-		public static SIPUserAgentRolesEnum GetSIPUserAgentType(string userRoleType)
-		{
-			return (SIPUserAgentRolesEnum)Enum.Parse(typeof(SIPUserAgentRolesEnum), userRoleType, true);
-		}
-	}
+    public class SIPUserAgentRolesTypes
+    {
+        public static SIPUserAgentRolesEnum GetSIPUserAgentType(string userRoleType)
+        {
+            return (SIPUserAgentRolesEnum)Enum.Parse(typeof(SIPUserAgentRolesEnum), userRoleType, true);
+        }
+    }
 }

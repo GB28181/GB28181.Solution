@@ -15,7 +15,7 @@ namespace GB28181
         public string AvatarURL { get; set; }
 
         private SIPEventPresenceTuple()
-        {}
+        { }
 
         public SIPEventPresenceTuple(string id, SIPEventPresenceStateEnum status)
         {
@@ -42,10 +42,12 @@ namespace GB28181
         {
             XNamespace ns = m_pidfXMLNS;
 
-            SIPEventPresenceTuple tuple = new SIPEventPresenceTuple();
-            tuple.ID = tupleElement.Attribute("id").Value;
-            tuple.Status = (SIPEventPresenceStateEnum)Enum.Parse(typeof(SIPEventPresenceStateEnum), tupleElement.Element(ns + "status").Element(ns + "basic").Value, true);
-            tuple.ContactURI = (tupleElement.Element(ns + "contact") != null) ? SIPURI.ParseSIPURI(tupleElement.Element(ns + "contact").Value) : null;
+            SIPEventPresenceTuple tuple = new SIPEventPresenceTuple
+            {
+                ID = tupleElement.Attribute("id").Value,
+                Status = (SIPEventPresenceStateEnum)Enum.Parse(typeof(SIPEventPresenceStateEnum), tupleElement.Element(ns + "status").Element(ns + "basic").Value, true),
+                ContactURI = (tupleElement.Element(ns + "contact") != null) ? SIPURI.ParseSIPURI(tupleElement.Element(ns + "contact").Value) : null
+            };
             tuple.ContactPriority = (tuple.ContactURI != null && tupleElement.Element(ns + "contact").Attribute("priority") != null) ? Decimal.Parse(tupleElement.Element(ns + "contact").Attribute("priority").Value) : Decimal.Zero;
             tuple.AvatarURL = (tuple.ContactURI != null && tupleElement.Element(ns + "contact").Attribute("avatarurl") != null) ? tupleElement.Element(ns + "contact").Attribute("avatarurl").Value : null;
 
@@ -58,7 +60,7 @@ namespace GB28181
 
             XElement tupleElement = new XElement(ns + "tuple",
                 new XAttribute("id", ID),
-                new XElement(ns + "status", 
+                new XElement(ns + "status",
                     new XElement(ns + "basic", Status.ToString()))
                 );
 

@@ -1,6 +1,5 @@
-﻿using GB28181.Net;
-using GB28181;
-using System;
+﻿using System;
+using GB28181.Net;
 
 namespace GB28181.Servers
 {
@@ -37,7 +36,7 @@ namespace GB28181.Servers
         /// <summary>
         /// 视频流回调完成
         /// </summary>
-       event Action<RTPFrame> OnStreamReady;
+        event Action<RTPFrame> OnStreamReady;
 
 
         #region 录像点播

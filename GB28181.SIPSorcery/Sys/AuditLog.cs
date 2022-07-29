@@ -20,29 +20,29 @@ using NUnit.Framework;
 namespace Aza.Configuration
 {
     public class AuditLog_other
-	{	
-		private static ILog logger = AppState.logger;
+    {
+        private static ILog logger = AppState.logger;
 
-		private StorageLayer m_storageLayer = null;
-		private string m_dbConnStr = null;
-		private StorageTypes m_storageType;
+        private StorageLayer m_storageLayer = null;
+        private string m_dbConnStr = null;
+        private StorageTypes m_storageType;
 
-		public AuditLog_other(StorageTypes storageType, string dbConnStr)
-		{
-			m_storageType = storageType;
-			m_dbConnStr = dbConnStr;
+        public AuditLog_other(StorageTypes storageType, string dbConnStr)
+        {
+            m_storageType = storageType;
+            m_dbConnStr = dbConnStr;
 
-			m_storageLayer = new StorageLayer(m_storageType, m_dbConnStr);
-		}
+            m_storageLayer = new StorageLayer(m_storageType, m_dbConnStr);
+        }
 
-		public void AddEntry(string description)
-		{
+        public void AddEntry(string description)
+        {
 
-		}
+        }
 
-		#region Unit tests.
-		
-		#if UNITTEST
+        #region Unit tests.
+
+#if UNITTEST
 
 		[TestFixture]
 		public class AuditLogUnitTest
@@ -70,8 +70,8 @@ namespace Aza.Configuration
 		}
 
 		
-		#endif
+#endif
 
-		#endregion
-	}
+        #endregion
+    }
 }

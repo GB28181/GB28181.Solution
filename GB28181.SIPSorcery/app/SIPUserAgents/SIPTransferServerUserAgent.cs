@@ -12,12 +12,9 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.SIP;
 
 namespace GB28181.App
@@ -64,10 +61,10 @@ namespace GB28181.App
         {
             get { return false; }
         }
-        public bool IsInvite 
+        public bool IsInvite
         {
             get { return true; }
-        } 
+        }
         public SIPRequest CallRequest
         {
             get { return m_dummyRequest; }
@@ -85,7 +82,7 @@ namespace GB28181.App
             get { return m_owner; }
         }
 
-        private SIPMonitorLogDelegate Log_External =  (e) => { }; //SIPMonitorEvent.DefaultSIPMonitorLogger;
+        private SIPMonitorLogDelegate Log_External = (e) => { }; //SIPMonitorEvent.DefaultSIPMonitorLogger;
         private BlindTransferDelegate BlindTransfer_External;
         private SIPTransport m_sipTransport;
         private SIPEndPoint m_outboundProxy;                   // If the system needs to use an outbound proxy for every request this will be set and overrides any user supplied values.
@@ -103,7 +100,7 @@ namespace GB28181.App
         public event SIPUASStateChangedDelegate UASStateChanged;
 
 
-        public SIPTransferServerUserAgent(            
+        public SIPTransferServerUserAgent(
             SIPMonitorLogDelegate logDelegate,
             BlindTransferDelegate blindTransfer,
             SIPTransport sipTransport,
@@ -197,7 +194,7 @@ namespace GB28181.App
             NoRingTimeout.Invoke(this);
             throw new NotImplementedException("SIPTransferServerUserAgent Redirect");
         }
-        
+
         public void NoCDR()
         {
             throw new NotImplementedException("SIPTransferServerUserAgent NoCDR");
@@ -253,7 +250,7 @@ namespace GB28181.App
             {
                 CallCancelled?.Invoke(this);
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 logger.Error("Exception PendingLegHungup. " + excp);
             }

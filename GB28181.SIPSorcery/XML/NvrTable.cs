@@ -12,7 +12,7 @@ namespace GB28181.Sys.XML
     /// 设备平台配置信息
     /// </summary>
     [XmlRoot("NvrTable")]
-    public class NvrTable : XmlHelper<NvrTable>,IDisposable
+    public class NvrTable : XmlHelper<NvrTable>, IDisposable
     {
         private static NvrTable instance;
         private List<NvrItem> mVmsTables = new List<NvrItem>(500);
@@ -223,7 +223,8 @@ namespace GB28181.Sys.XML
             [XmlAttribute()]
             public string DevTypeName
             {
-                get {
+                get
+                {
                     DvsType dvsType = EnumHelper.GetDvsType(DevType);
                     return EnumHelper.GetEnumDescription<DvsType>(dvsType);
                 }
@@ -262,7 +263,7 @@ namespace GB28181.Sys.XML
                 AreaName = cityName;
                 IsBackRecord = isBackRecord;
                 RemoteEP = remoteEP;
-			}
+            }
             public ChannelItem()
             {
 
@@ -343,11 +344,11 @@ namespace GB28181.Sys.XML
             [XmlAttribute()]
             public string RemoteEP { get; set; }
 
-			/// <summary>
-			/// RTMP 直播推流Key
-			/// </summary>
-			[XmlAttribute()]
-			public string RtmpStreamKey { get; set; }
+            /// <summary>
+            /// RTMP 直播推流Key
+            /// </summary>
+            [XmlAttribute()]
+            public string RtmpStreamKey { get; set; }
             [XmlAttribute()]
             public int Cache { get; set; }
             /// <summary>

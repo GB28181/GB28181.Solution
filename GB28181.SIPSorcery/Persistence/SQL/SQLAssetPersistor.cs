@@ -15,11 +15,6 @@
 //
 
 
-using GB28181.Logger4Net;
-using GB28181.Persistence;
-using GB28181.App;
-using GB28181.Sys;
-using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,6 +22,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using GB28181.App;
+using SIPSorcery.Sys;
 
 namespace GB28181.Persistence
 {
@@ -101,107 +98,103 @@ namespace GB28181.Persistence
 
         public override T Add(T asset)
         {
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+            connection.ConnectionString = m_dbConnectionStr;
+            connection.Open();
+            using (IDbTransaction trans = connection.BeginTransaction())
             {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
+                try
                 {
-                    try
-                    {
-
-                        IDbCommand insertCommand = connection.CreateCommand();
-                        insertCommand.Transaction = trans;
-                        StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
-                        StringBuilder parametersStr = new StringBuilder("(");
-                        List<DbParameter> dbParameters = new List<DbParameter>();
-
-                        int paramNumber = 1;
-                        Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
-                        foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
-                        {
-                            DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
-                            insertCommand.Parameters.Add(dbParameter);
-
-                            insertQuery.Append(propertyValue.Key + ",");
-                            parametersStr.Append("?" + paramNumber + ",");
-                            paramNumber++;
-                        }
-
-                        string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
-
-                        //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
-
-                        insertCommand.CommandText = insertCommandText;
-                        insertCommand.ExecuteNonQuery();
-                        trans.Commit();
-                        if (Added != null)
-                        {
-                            Added(asset);
-                        }
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
-                return asset;
-            }
-        }
-
-        public override T Update(T asset)
-        {
-            try
-            {
-                using (var connection = m_dbProviderFactory.CreateConnection())
-                {
-                    connection.ConnectionString = m_dbConnectionStr;
-                    connection.Open();
 
                     IDbCommand insertCommand = connection.CreateCommand();
-
-                    IDbCommand updateCommand = connection.CreateCommand();
-
-                    StringBuilder updateQuery = new StringBuilder("update " + m_objectMapper.TableName + " set ");
+                    insertCommand.Transaction = trans;
+                    StringBuilder insertQuery = new StringBuilder("insert into " + m_objectMapper.TableName + " (");
+                    StringBuilder parametersStr = new StringBuilder("(");
                     List<DbParameter> dbParameters = new List<DbParameter>();
 
                     int paramNumber = 1;
                     Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
                     foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
                     {
-                       // if (!propertyValue.Key.IsPrimaryKey)
-                        {
-                            DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
-                            updateCommand.Parameters.Add(dbParameter);
+                        DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
+                        insertCommand.Parameters.Add(dbParameter);
 
-                            updateQuery.Append(propertyValue.Key + "= ?" + paramNumber + ",");
-                            paramNumber++;
-                        }
+                        insertQuery.Append(propertyValue.Key + ",");
+                        parametersStr.Append("?" + paramNumber + ",");
+                        paramNumber++;
                     }
 
-                    string updateCommandText = updateQuery.ToString().TrimEnd(',') + " where id = '" + asset.Id + "'";
+                    string insertCommandText = insertQuery.ToString().TrimEnd(',') + ") values " + parametersStr.ToString().TrimEnd(',') + ")";
 
-                    //logger.Debug("SQLAssetPersistor update SQL: " + updateCommandText + ".");
+                    //logger.Debug("SQLAssetPersistor insert SQL: " + insertCommandText + ".");
 
-                    updateCommand.CommandText = updateCommandText;
-                    updateCommand.ExecuteNonQuery();
-
-                    if (Updated != null)
+                    insertCommand.CommandText = insertCommandText;
+                    insertCommand.ExecuteNonQuery();
+                    trans.Commit();
+                    if (Added != null)
                     {
-                        Updated(asset);
+                        Added(asset);
                     }
-
-                    return asset;
                 }
+                catch (Exception excp)
+                {
+                    trans.Rollback();
+                    logger.Error("Exception SQLAssetPersistor Add (for " + typeof(T).Name + "). " + excp.Message);
+                    throw;
+                }
+            }
+            return asset;
+        }
+
+        public override T Update(T asset)
+        {
+            try
+            {
+                using var connection = m_dbProviderFactory.CreateConnection();
+                connection.ConnectionString = m_dbConnectionStr;
+                connection.Open();
+
+                IDbCommand insertCommand = connection.CreateCommand();
+
+                IDbCommand updateCommand = connection.CreateCommand();
+
+                StringBuilder updateQuery = new StringBuilder("update " + m_objectMapper.TableName + " set ");
+                List<DbParameter> dbParameters = new List<DbParameter>();
+
+                int paramNumber = 1;
+                Dictionary<MetaDataMember, object> allPropertyValues = m_objectMapper.GetAllValues(asset);
+                foreach (KeyValuePair<MetaDataMember, object> propertyValue in allPropertyValues)
+                {
+                    // if (!propertyValue.Key.IsPrimaryKey)
+                    {
+                        DbParameter dbParameter = base.GetParameter(m_dbProviderFactory, propertyValue.Key, propertyValue.Value, paramNumber.ToString());
+                        updateCommand.Parameters.Add(dbParameter);
+
+                        updateQuery.Append(propertyValue.Key + "= ?" + paramNumber + ",");
+                        paramNumber++;
+                    }
+                }
+
+                string updateCommandText = updateQuery.ToString().TrimEnd(',') + " where id = '" + asset.Id + "'";
+
+                //logger.Debug("SQLAssetPersistor update SQL: " + updateCommandText + ".");
+
+                updateCommand.CommandText = updateCommandText;
+                updateCommand.ExecuteNonQuery();
+
+                if (Updated != null)
+                {
+                    Updated(asset);
+                }
+
+                return asset;
             }
             catch (Exception excp)
             {
                 logger.Error("Exception SQLAssetPersistor Update (for " + typeof(T).Name + "). " + excp.Message);
                 throw;
             }
-          //  return null;
+            //  return null;
         }
 
         public override void UpdateProperty(Guid id, string propertyName, object value)
@@ -242,59 +235,51 @@ namespace GB28181.Persistence
         public override void Delete()
         {
 
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+            connection.ConnectionString = m_dbConnectionStr;
+            connection.Open();
+            using IDbTransaction trans = connection.BeginTransaction();
+            try
             {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
-                {
-                    try
-                    {
 
-                        IDbCommand deleteCommand = connection.CreateCommand();
-                        deleteCommand.Transaction = trans;
-                        deleteCommand.CommandText = "delete from " + m_objectMapper.TableName;
-                        deleteCommand.ExecuteNonQuery();
-                        trans.Commit();
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
+                IDbCommand deleteCommand = connection.CreateCommand();
+                deleteCommand.Transaction = trans;
+                deleteCommand.CommandText = "delete from " + m_objectMapper.TableName;
+                deleteCommand.ExecuteNonQuery();
+                trans.Commit();
+            }
+            catch (Exception excp)
+            {
+                trans.Rollback();
+                logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
+                throw;
             }
 
         }
 
         public override void Delete(T asset)
         {
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+            connection.ConnectionString = m_dbConnectionStr;
+            connection.Open();
+            using IDbTransaction trans = connection.BeginTransaction();
+            try
             {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
-                {
-                    try
-                    {
 
 
-                        IDbCommand deleteCommand = connection.CreateCommand();
-                        deleteCommand.Transaction = trans;
-                        deleteCommand.CommandText = "delete from " + m_objectMapper.TableName + " where id = '" + asset.Id + "'";
-                        deleteCommand.ExecuteNonQuery();
-                        trans.Commit();
-                     //   Deleted?.(asset);
+                IDbCommand deleteCommand = connection.CreateCommand();
+                deleteCommand.Transaction = trans;
+                deleteCommand.CommandText = "delete from " + m_objectMapper.TableName + " where id = '" + asset.Id + "'";
+                deleteCommand.ExecuteNonQuery();
+                trans.Commit();
+                //   Deleted?.(asset);
 
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
+            }
+            catch (Exception excp)
+            {
+                trans.Rollback();
+                logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
+                throw;
             }
 
         }
@@ -305,28 +290,24 @@ namespace GB28181.Persistence
             SQLQueryProvider sqlQueryProvider = new SQLQueryProvider(m_dbProviderFactory, m_dbConnectionStr, m_objectMapper.TableName, m_objectMapper.SetValue);
             string whereStr = sqlQueryProvider.GetQueryText(where);
 
-            using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+            using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+            connection.ConnectionString = m_dbConnectionStr;
+            connection.Open();
+            using IDbTransaction trans = connection.BeginTransaction();
+            try
             {
-                connection.ConnectionString = m_dbConnectionStr;
-                connection.Open();
-                using (IDbTransaction trans = connection.BeginTransaction())
-                {
-                    try
-                    {
 
-                        IDbCommand deleteCommand = connection.CreateCommand();
-                        deleteCommand.Transaction = trans;
-                        deleteCommand.CommandText = "delete from " + m_objectMapper.TableName + " where " + whereStr;
-                        deleteCommand.ExecuteNonQuery();
-                        trans.Commit();
-                    }
-                    catch (Exception excp)
-                    {
-                        trans.Rollback();
-                        logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
-                        throw;
-                    }
-                }
+                IDbCommand deleteCommand = connection.CreateCommand();
+                deleteCommand.Transaction = trans;
+                deleteCommand.CommandText = "delete from " + m_objectMapper.TableName + " where " + whereStr;
+                deleteCommand.ExecuteNonQuery();
+                trans.Commit();
+            }
+            catch (Exception excp)
+            {
+                trans.Rollback();
+                logger.Error("Exception SQLAssetPersistor Delete (for " + typeof(T).Name + "). " + excp.Message);
+                throw;
             }
 
         }
@@ -335,32 +316,30 @@ namespace GB28181.Persistence
         {
             try
             {
-                using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
+                using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+                connection.ConnectionString = m_dbConnectionStr;
+                connection.Open();
+
+                IDbCommand command = connection.CreateCommand();
+                command.CommandText = "select * from " + m_objectMapper.TableName + " where id = '" + id + "'";
+                IDbDataAdapter adapter = m_dbProviderFactory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+                var resultSet = new DataSet();
+                adapter.Fill(resultSet);
+
+                if (resultSet != null && resultSet.Tables[0].Rows.Count == 1)
                 {
-                    connection.ConnectionString = m_dbConnectionStr;
-                    connection.Open();
-
-                    IDbCommand command = connection.CreateCommand();
-                    command.CommandText = "select * from " + m_objectMapper.TableName + " where id = '" + id + "'";
-                    IDbDataAdapter adapter = m_dbProviderFactory.CreateDataAdapter();
-                    adapter.SelectCommand = command;
-                    var resultSet = new DataSet();
-                    adapter.Fill(resultSet);
-
-                    if (resultSet != null && resultSet.Tables[0].Rows.Count == 1)
-                    {
-                        T instance = new T();
-                        instance.Load(resultSet.Tables[0].Rows[0]);
-                        return instance;
-                    }
-                    else if (resultSet != null && resultSet.Tables[0].Rows.Count > 1)
-                    {
-                        throw new ApplicationException("Multiple rows were returned for Get with id=" + id + ".");
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    T instance = new T();
+                    instance.Load(resultSet.Tables[0].Rows[0]);
+                    return instance;
+                }
+                else if (resultSet != null && resultSet.Tables[0].Rows.Count > 1)
+                {
+                    throw new ApplicationException("Multiple rows were returned for Get with id=" + id + ".");
+                }
+                else
+                {
+                    return null;
                 }
             }
             catch (Exception excp)
@@ -374,16 +353,14 @@ namespace GB28181.Persistence
         {
             try
             {
-                using (IDbConnection connection = m_dbProviderFactory.CreateConnection())
-                {
-                    connection.ConnectionString = m_dbConnectionStr;
-                    connection.Open();
+                using IDbConnection connection = m_dbProviderFactory.CreateConnection();
+                connection.ConnectionString = m_dbConnectionStr;
+                connection.Open();
 
-                    IDbCommand command = connection.CreateCommand();
-                    command.CommandText = "select " + propertyName + " from " + m_objectMapper.TableName + " where id = '" + id + "'";
+                IDbCommand command = connection.CreateCommand();
+                command.CommandText = "select " + propertyName + " from " + m_objectMapper.TableName + " where id = '" + id + "'";
 
-                    return command.ExecuteScalar();
-                }
+                return command.ExecuteScalar();
             }
             catch (Exception excp)
             {

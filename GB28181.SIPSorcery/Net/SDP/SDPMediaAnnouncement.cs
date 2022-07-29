@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GB28181.Net
@@ -53,8 +51,7 @@ namespace GB28181.Net
                 {
                     foreach (string formatID in formatIDs)
                     {
-                        int format;
-                        if (Int32.TryParse(formatID, out format))
+                        if (Int32.TryParse(formatID, out int format))
                         {
                             MediaFormats.Add(new SDPMediaFormat(format));
                         }
@@ -145,7 +142,7 @@ namespace GB28181.Net
                     //}
                     //else
                     //{
-                        formatAttributes += SDPMediaAnnouncement.MEDIA_FORMAT_ATTRIBUE_PREFIX + mediaFormat.FormatID + " " + mediaFormat.Name + "/" + mediaFormat.ClockRate + m_CRLF;
+                    formatAttributes += SDPMediaAnnouncement.MEDIA_FORMAT_ATTRIBUE_PREFIX + mediaFormat.FormatID + " " + mediaFormat.Name + "/" + mediaFormat.ClockRate + m_CRLF;
                     //}
                     //if (mediaFormat.FormatParameterAttribute != null)
                     //{

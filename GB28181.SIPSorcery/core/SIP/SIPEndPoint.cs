@@ -1,6 +1,5 @@
-﻿using SIPSorcery.SIP;
-using System.Linq.Dynamic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using SIPSorcery.SIP;
 namespace GB28181
 {
     public static class SIPEndPointExtension

@@ -1,5 +1,5 @@
-﻿using GB28181.App;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GB28181.App;
 
 namespace GB28181.Config
 {

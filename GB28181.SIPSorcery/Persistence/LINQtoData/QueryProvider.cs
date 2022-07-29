@@ -1,35 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
-namespace GB28181.Persistence {
+namespace GB28181.Persistence
+{
 
-    public abstract class QueryProvider : IQueryProvider {
+    public abstract class QueryProvider : IQueryProvider
+    {
 
         protected QueryProvider() { }
 
-        IQueryable<S> IQueryProvider.CreateQuery<S>(Expression expression) {
+        IQueryable<S> IQueryProvider.CreateQuery<S>(Expression expression)
+        {
             return new Query<S>(this, expression);
         }
 
-        IQueryable IQueryProvider.CreateQuery(Expression expression) {
+        IQueryable IQueryProvider.CreateQuery(Expression expression)
+        {
             Type elementType = TypeSystem.GetElementType(expression.Type);
-            try {
+            try
+            {
                 return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), new object[] { this, expression });
             }
-            catch (TargetInvocationException tie) {
+            catch (TargetInvocationException tie)
+            {
                 throw tie.InnerException;
             }
         }
 
-        S IQueryProvider.Execute<S>(Expression expression) {
+        S IQueryProvider.Execute<S>(Expression expression)
+        {
             return (S)this.Execute(expression);
         }
 
-        object IQueryProvider.Execute(Expression expression) {
+        object IQueryProvider.Execute(Expression expression)
+        {
             return this.Execute(expression);
         }
 

@@ -16,11 +16,8 @@
 //
 
 
-using GB28181.Logger4Net;
-using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Diagnostics;
+using GB28181.Logger4Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -61,10 +58,10 @@ namespace GB28181.Sys
         private static ILog logger = AppState.logger;
 
         private static bool m_sipsorceryCategoryReady = false;
-        
+
         //private static Dictionary<string, PerformanceCounterType> m_counterNames = new Dictionary<string, PerformanceCounterType>()
         //{
-          
+
         //    // Proxy
         //    { PROXY_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
         //    { PROXY_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
@@ -77,7 +74,7 @@ namespace GB28181.Sys
         //    { REGISTRAR_SIP_RESPONSES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
         //    { REGISTRAR_SIP_BAD_MESSAGES_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
         //    { REGISTRAR_REGISTRATION_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
-            
+
         //    // Registration agent counters.
         //    { REGISTRATION_AGENT_STUN_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
         //    { REGISTRATION_AGENT_SIP_REQUESTS_PER_SECOND, PerformanceCounterType.RateOfCountsPerSecond32 },
@@ -92,7 +89,7 @@ namespace GB28181.Sys
         {
             ThreadPool.QueueUserWorkItem(delegate { CheckCounters(); });
         }
-        
+
         public static bool Initialise()
         {
             CheckCounters();
@@ -190,7 +187,7 @@ namespace GB28181.Sys
 
         #region Unit testing.
 
-        #if UNITTEST
+#if UNITTEST
 
 		[TestFixture]
 		public class SIPDialPlanUnitTest
@@ -224,7 +221,7 @@ namespace GB28181.Sys
             }
         }
 
-        #endif
+#endif
 
         #endregion
 

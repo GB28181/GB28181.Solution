@@ -349,8 +349,10 @@ namespace GB28181
             SIPToHeader byeToHeader = SIPToHeader.ParseToHeader(RemoteUserField.ToString());
             int cseq = CSeq + 1;
 
-            SIPHeader byeHeader = new SIPHeader(byeFromHeader, byeToHeader, cseq, CallId);
-            byeHeader.CSeqMethod = SIPMethodsEnum.BYE;
+            SIPHeader byeHeader = new SIPHeader(byeFromHeader, byeToHeader, cseq, CallId)
+            {
+                CSeqMethod = SIPMethodsEnum.BYE
+            };
             byeRequest.Header = byeHeader;
             byeRequest.Header.Routes = RouteSet;
             byeRequest.Header.ProxySendFrom = ProxySendFrom;

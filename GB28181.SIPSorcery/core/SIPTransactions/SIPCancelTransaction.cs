@@ -19,8 +19,8 @@ using NUnit.Framework;
 
 namespace GB28181
 {
-	public class SIPCancelTransaction : SIPTransaction
-	{
+    public class SIPCancelTransaction : SIPTransaction
+    {
         public event SIPTransactionResponseReceivedDelegate CancelTransactionFinalResponseReceived;
 
         private UASInviteTransaction m_originalTransaction;
@@ -93,10 +93,12 @@ namespace GB28181
                 SIPResponse cancelResponse = new SIPResponse(sipResponseCode, null, sipRequest.LocalSIPEndPoint);
 
                 SIPHeader requestHeader = sipRequest.Header;
-                cancelResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId);
-                cancelResponse.Header.CSeqMethod = SIPMethodsEnum.CANCEL;
-                cancelResponse.Header.Vias = requestHeader.Vias;
-                cancelResponse.Header.MaxForwards = Int32.MinValue;
+                cancelResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId)
+                {
+                    CSeqMethod = SIPMethodsEnum.CANCEL,
+                    Vias = requestHeader.Vias,
+                    MaxForwards = Int32.MinValue
+                };
 
                 return cancelResponse;
             }

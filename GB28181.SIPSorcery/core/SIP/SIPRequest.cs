@@ -34,7 +34,7 @@ namespace GB28181
 	/// </bnf>
 	public class SIPRequest : SIPSorcery.SIP.SIPRequest
     {
-        private new readonly static ILog logger = AssemblyState.logger;
+        private static new readonly ILog logger = AssemblyState.logger;
 
         private delegate bool IsLocalSIPSocketDelegate(string socket, SIPProtocolsEnum protocol);
 

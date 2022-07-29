@@ -176,7 +176,7 @@ namespace GB28181.Net.RTP
                         //if (_packetOutOrder)
                         //    CombineFrameOutOrder(queue.Dequeue());
                         //else
-                            CombineFrame(queue.Dequeue());
+                        CombineFrame(queue.Dequeue());
                     } while (queue.Count > 0);
                 }
             }

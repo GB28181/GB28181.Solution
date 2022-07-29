@@ -7,9 +7,6 @@
 // 23 Feb 2010	Aaron Clauson	Created.
 //
 
-
-using System.Configuration;
-
 namespace GB28181.Sys
 {
     public class WCFUtility

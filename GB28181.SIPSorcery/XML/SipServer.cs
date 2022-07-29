@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 namespace GB28181.Sys.XML
@@ -61,20 +58,20 @@ namespace GB28181.Sys.XML
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
             using var stream = new MemoryStream();
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineChars = "\r\n";
-
-            using (XmlWriter writer = XmlWriter.Create(_xml, settings))
+            XmlWriterSettings settings = new XmlWriterSettings
             {
-                var xns = new XmlSerializerNamespaces();
+                Indent = true,
+                NewLineChars = "\r\n"
+            };
 
-                xns.Add(string.Empty, string.Empty);
-                //去除默认命名空间
-                xs.Serialize(writer, t, xns);
-                writer.Close();
-                writer.Dispose();
-            }
+            using XmlWriter writer = XmlWriter.Create(_xml, settings);
+            var xns = new XmlSerializerNamespaces();
+
+            xns.Add(string.Empty, string.Empty);
+            //去除默认命名空间
+            xs.Serialize(writer, t, xns);
+            writer.Close();
+            writer.Dispose();
         }
     }
 }

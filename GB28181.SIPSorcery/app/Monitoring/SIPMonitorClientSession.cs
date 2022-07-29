@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.App
@@ -47,8 +45,10 @@ namespace GB28181.App
             }
 
             SessionType = SIPMonitorClientTypes.GetSIPMonitorClientType(subject);
-            Filter = new SIPMonitorFilter(filter);
-            Filter.BaseType = SessionType.ToString().ToLower();
+            Filter = new SIPMonitorFilter(filter)
+            {
+                BaseType = SessionType.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)
+            };
 
             if (Filter != null)
             {

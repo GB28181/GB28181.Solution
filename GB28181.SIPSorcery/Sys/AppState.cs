@@ -18,6 +18,7 @@ using System;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -25,7 +26,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using GB28181.Logger4Net;
 using SIPSorcery.Sys;
-using System.Reflection;
 
 namespace GB28181.Sys
 {

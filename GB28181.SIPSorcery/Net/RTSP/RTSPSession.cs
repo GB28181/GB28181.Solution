@@ -31,8 +31,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.Net
@@ -258,9 +258,11 @@ namespace GB28181.Net
                         try
                         {
                             // The potential ports have been found now try and use them.
-                            _rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                            _rtpSocket.ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE;
-                            _rtpSocket.SendBufferSize = RTP_SEND_BUFFER_SIZE;
+                            _rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)
+                            {
+                                ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE,
+                                SendBufferSize = RTP_SEND_BUFFER_SIZE
+                            };
 
                             _rtpSocket.Bind(new IPEndPoint(IPAddress.Any, _rtpPort));
 
@@ -273,7 +275,7 @@ namespace GB28181.Net
 
                             break;
                         }
-                        catch(System.Net.Sockets.SocketException sockExcp)
+                        catch (System.Net.Sockets.SocketException sockExcp)
                         {
                             logger.Warn("RTSP session " + _sessionID + " failed to bind to RTP port " + _rtpPort + " and/or control port of " + _controlPort + ", attempt " + bindAttempts + ". " + sockExcp);
 
@@ -283,7 +285,7 @@ namespace GB28181.Net
                         }
                     }
 
-                    if(!bindSuccess)
+                    if (!bindSuccess)
                     {
                         throw new ApplicationException("An RTSP session could not bind to the RTP and/or control ports within the range of " + MEDIA_PORT_START + " to " + MEDIA_PORT_END + ".");
                     }
@@ -378,7 +380,7 @@ namespace GB28181.Net
                 {
                     try
                     {
-                        EndPoint remoteEP = (EndPoint)new IPEndPoint(IPAddress.Any, 0);
+                        EndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
 
                         //int bytesRead = _rtpSocket.Receive(buffer);
                         int bytesRead = _rtpSocket.ReceiveFrom(buffer, ref remoteEP);
@@ -403,13 +405,13 @@ namespace GB28181.Net
                                 if ((buffer[0] >= 20) && (buffer[0] <= 64))
                                 {
                                     // DTLS.
-                                    if(OnDtlsReceive != null)
+                                    if (OnDtlsReceive != null)
                                     {
                                         try
                                         {
                                             OnDtlsReceive(buffer, bytesRead, SendRTPRaw);
                                         }
-                                        catch(Exception dtlsExcp)
+                                        catch (Exception dtlsExcp)
                                         {
                                             logger.Error("Exception RTSPSession.RTPReceive DTLS. " + dtlsExcp);
                                         }
@@ -754,7 +756,7 @@ namespace GB28181.Net
                     _senderPacketCount++;
                     _senderOctetCount += (uint)frame.Length;
 
-                    if(_rtcpRemoteEndPoint != null && DateTime.Now.Subtract(_senderLastSentAt).TotalSeconds > RTCP_SENDER_REPORT_INTERVAL_SECONDS)
+                    if (_rtcpRemoteEndPoint != null && DateTime.Now.Subtract(_senderLastSentAt).TotalSeconds > RTCP_SENDER_REPORT_INTERVAL_SECONDS)
                     {
                         Console.WriteLine(packetTimestamp.ToUniversalTime().ToString("hh:mm:ss:fff"));
                         SendRtcpSenderReport(DateTimeToNptTimestamp(packetTimestamp), _timestamp);
@@ -857,7 +859,7 @@ namespace GB28181.Net
                 }
                 else if (_remoteEndPoint == null)
                 {
-                   // logger.Warn("SendVP8Frame frame not sent as remote end point is not yet set.");
+                    // logger.Warn("SendVP8Frame frame not sent as remote end point is not yet set.");
                 }
                 else
                 {
@@ -976,7 +978,7 @@ namespace GB28181.Net
 
                 _senderLastSentAt = DateTime.Now;
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 logger.Error("Exception SendRtcpSenderReport. " + excp);
             }

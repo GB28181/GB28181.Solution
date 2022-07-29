@@ -34,7 +34,7 @@ namespace GB28181
     /// <remarks>
     /// 
     /// </remarks>
-    public class SIPEventPresence 
+    public class SIPEventPresence
     {
         private static ILog logger = AppState.logger;
 
@@ -51,7 +51,7 @@ namespace GB28181
             Entity = entity.CopyOf();
         }
 
-        public  void Load(string presenceXMLStr)
+        public void Load(string presenceXMLStr)
         {
             try
             {
@@ -75,15 +75,15 @@ namespace GB28181
 
         public static SIPEventPresence Parse(string presenceXMLStr)
         {
-           SIPEventPresence presenceEvent = new SIPEventPresence();
-           presenceEvent.Load(presenceXMLStr);
-           return presenceEvent;
+            SIPEventPresence presenceEvent = new SIPEventPresence();
+            presenceEvent.Load(presenceXMLStr);
+            return presenceEvent;
         }
 
-        public  string ToXMLText()
+        public string ToXMLText()
         {
             XNamespace ns = m_pidfXMLNS;
-            
+
             XDocument presenceDoc = new XDocument(new XElement(ns + "presence",
                 new XAttribute("entity", Entity.ToString())));
 
@@ -94,9 +94,11 @@ namespace GB28181
             });
 
             StringBuilder sb = new StringBuilder();
-            XmlWriterSettings xws = new XmlWriterSettings();
-            xws.NewLineHandling = NewLineHandling.None;
-            xws.Indent = true;
+            XmlWriterSettings xws = new XmlWriterSettings
+            {
+                NewLineHandling = NewLineHandling.None,
+                Indent = true
+            };
 
             using (XmlWriter xw = XmlWriter.Create(sb, xws))
             {
@@ -108,7 +110,7 @@ namespace GB28181
 
         #region Unit testing.
 
-        #if UNITTEST
+#if UNITTEST
 
         [TestFixture]
         public class SIPPresenceUnitTest
@@ -250,7 +252,7 @@ namespace GB28181
             }
         }
 
-        #endif
+#endif
 
         #endregion
     }

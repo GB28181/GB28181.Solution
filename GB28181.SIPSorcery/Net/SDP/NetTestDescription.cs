@@ -21,11 +21,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
-using GB28181.Logger4Net;
 
 namespace GB28181.Net
 {
@@ -74,7 +70,7 @@ namespace GB28181.Net
 
         public byte[] GetBytes()
         {
-            string netTestString = TestId.ToString() + DELIMITER_CHARACTER + ClientSocket + DELIMITER_CHARACTER + ServerSocket + DELIMITER_CHARACTER + 
+            string netTestString = TestId.ToString() + DELIMITER_CHARACTER + ClientSocket + DELIMITER_CHARACTER + ServerSocket + DELIMITER_CHARACTER +
                 ClientISP + DELIMITER_CHARACTER + ServerISP + DELIMITER_CHARACTER + Username + DELIMITER_CHARACTER + Comment;
 
             return Encoding.ASCII.GetBytes(netTestString);

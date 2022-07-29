@@ -1,14 +1,14 @@
 ﻿
+using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 using GB28181.Logger4Net;
 using GB28181.Net;
 using GB28181.Servers.SIPMessages;
 using GB28181.Sys;
 using GB28181.Sys.XML;
 using SIPSorcery.SIP;
-using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Threading.Tasks;
 
 namespace GB28181.Servers
 {
@@ -19,7 +19,7 @@ namespace GB28181.Servers
         private Dictionary<string, Catalog> _Catalogs = new Dictionary<string, Catalog>();
         public Dictionary<string, Catalog> Catalogs => _Catalogs;
         private Queue<NotifyCatalog.Item> _NotifyCatalogItem = new Queue<NotifyCatalog.Item>();
-        public Queue<NotifyCatalog.Item> NotifyCatalogItem => _NotifyCatalogItem; 
+        public Queue<NotifyCatalog.Item> NotifyCatalogItem => _NotifyCatalogItem;
         private Dictionary<string, DeviceStatus> _DeviceStatuses = new Dictionary<string, DeviceStatus>();
         public Dictionary<string, DeviceStatus> DeviceStatuses => _DeviceStatuses;
         private Dictionary<string, RecordInfo> _RecordInfoes = new Dictionary<string, RecordInfo>();
@@ -74,7 +74,7 @@ namespace GB28181.Servers
         /// <param name="mediaPort"></param>
         /// <param name="receiveIP"></param>
         /// <returns></returns>
-        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP)
+        public async Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> RealVideoReq(string gbid, int[] mediaPort, string receiveIP)
         {
             logger.Debug("Make video request started.");
             var target = GetTargetMonitorService(gbid);
@@ -102,7 +102,7 @@ namespace GB28181.Servers
         /// <param name="mediaPort"></param>
         /// <param name="receiveIP"></param>
         /// <returns></returns>
-        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime)
+        public async Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> BackVideoReq(string gbid, int[] mediaPort, string receiveIP, ulong beginTime, ulong endTime)
         {
             logger.Debug("BackVideoReq started.");
             var target = GetTargetMonitorService(gbid);
@@ -252,7 +252,7 @@ namespace GB28181.Servers
             return _sipCoreMessageService.RecordFileQuery(deviceId, startTime, endTime, type);
         }
 
-        async public Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP)
+        public async Task<Tuple<string, int, GB28181.SIPHeader, ProtocolType>> VideoDownloadReq(DateTime beginTime, DateTime endTime, string gbid, int[] mediaPort, string receiveIP)
         {
             logger.Debug("Video Download Request started.");
             var target = GetTargetMonitorService(gbid);

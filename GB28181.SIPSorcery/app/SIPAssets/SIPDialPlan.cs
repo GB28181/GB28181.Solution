@@ -40,13 +40,13 @@ namespace GB28181.App
         public const int DEFAULT_MAXIMUM_EXECUTION_COUNT = 3;       // The default value for the maximum allowed simultaneous executions of a dial plan.
         public const string ALL_APPS_AUTHORISED = "*";              // Used in the priviled application authorisation field when the dialplan is authorised for all applications.
         public const string PROPERTY_EXECUTIONCOUNT_NAME = "ExecutionCount";
-       
+
         private static string m_newLine = AppState.NewLine;
 
         private ILog logger = AppState.logger;
 
         public static int TimeZoneOffsetMinutes;
-        
+
         private Guid m_id;                  // Dial plan id used by the system. This is the database primary key and is not important for XML.
         // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
@@ -75,9 +75,11 @@ namespace GB28181.App
         private string m_dialPlanName;              // The name of the dialplan assigned by the owner, owner/name combinations must be unique
         // // [Column(Name = "dialplanname", DbType = "varchar(64)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
-        public string DialPlanName {
+        public string DialPlanName
+        {
             get { return m_dialPlanName; }
-            set {
+            set
+            {
                 m_dialPlanName = value;
                 NotifyPropertyChanged("DialPlanName");
             }
@@ -140,19 +142,22 @@ namespace GB28181.App
             }
         }
 
-        public DateTimeOffset LastUpdateLocal {
+        public DateTimeOffset LastUpdateLocal
+        {
             get { return LastUpdate.AddMinutes(TimeZoneOffsetMinutes); }
         }
 
         private DateTimeOffset m_inserted;
         // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
-        public DateTimeOffset Inserted {
+        public DateTimeOffset Inserted
+        {
             get { return m_inserted; }
             set { m_inserted = value.ToUniversalTime(); }
         }
 
-        public DateTimeOffset InsertedLocal {
+        public DateTimeOffset InsertedLocal
+        {
             get { return Inserted.AddMinutes(TimeZoneOffsetMinutes); }
         }
 
@@ -162,7 +167,7 @@ namespace GB28181.App
         public int MaxExecutionCount
         {
             get { return m_maxExecutionCount; }
-            set { m_maxExecutionCount = value;}  
+            set { m_maxExecutionCount = value; }
         }
 
         private int m_executionCount;
@@ -177,9 +182,11 @@ namespace GB28181.App
         private string m_authorisedApps;     // A semi-colon delimited list of privileged apps that this dialplan is authorised to use.
         [DataMember]
         // // [Column(Name = "authorisedapps", DbType = "varchar(2048)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
-        public string AuthorisedApps {
+        public string AuthorisedApps
+        {
             get { return m_authorisedApps; }
-            set {
+            set
+            {
                 m_authorisedApps = value;
                 NotifyPropertyChanged("AuthorisedApps");
             }
@@ -270,8 +277,8 @@ namespace GB28181.App
                 m_authorisedApps = (dialPlanRow.Table.Columns.Contains("authorisedapps") && dialPlanRow["authorisedapps"] != null) ? dialPlanRow["authorisedapps"] as string : null;
                 Inserted = (dialPlanRow.Table.Columns.Contains("inserted") && dialPlanRow["inserted"] != null && dialPlanRow["inserted"] != DBNull.Value) ? DateTimeOffset.Parse(dialPlanRow["inserted"] as string) : DateTimeOffset.UtcNow;
                 LastUpdate = (dialPlanRow.Table.Columns.Contains("lastupdate") && dialPlanRow["lastupdate"] != null && dialPlanRow["lastupdate"] != DBNull.Value) ? DateTimeOffset.Parse(dialPlanRow["lastupdate"] as string) : DateTimeOffset.UtcNow;
-                m_acceptNonInvite = (dialPlanRow.Table.Columns.Contains("acceptnoninvite") && dialPlanRow["acceptnoninvite"] != null && dialPlanRow["acceptnoninvite"] != DBNull.Value) ? Convert.ToBoolean(dialPlanRow["acceptnoninvite"]) : false;
-                m_isReadOnly = (dialPlanRow.Table.Columns.Contains("isreadonly") && dialPlanRow["isreadonly"] != DBNull.Value && dialPlanRow["isreadonly"] != null) ? Convert.ToBoolean(dialPlanRow["isreadonly"]) : false;
+                m_acceptNonInvite = (dialPlanRow.Table.Columns.Contains("acceptnoninvite") && dialPlanRow["acceptnoninvite"] != null && dialPlanRow["acceptnoninvite"] != DBNull.Value) && Convert.ToBoolean(dialPlanRow["acceptnoninvite"]);
+                m_isReadOnly = (dialPlanRow.Table.Columns.Contains("isreadonly") && dialPlanRow["isreadonly"] != DBNull.Value && dialPlanRow["isreadonly"] != null) && Convert.ToBoolean(dialPlanRow["isreadonly"]);
             }
             catch (Exception excp)
             {
@@ -328,8 +335,10 @@ namespace GB28181.App
             return XML_DOCUMENT_ELEMENT_NAME;
         }
 
-        private void NotifyPropertyChanged(string propertyName) {
-            if (PropertyChanged != null) {
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }

@@ -16,15 +16,8 @@
 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using GB28181.Sys;
-using GB28181.Logger4Net;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181
 {
@@ -173,7 +166,7 @@ namespace GB28181
             // ACK for 2xx response needs to be a new transaction and gets routed based on SIP request fields.
             var ackRequest = GetNewTransactionACKRequest(sipResponse, ackURI, LocalSIPEndPoint);
 
-            if(content.NotNullOrBlank())
+            if (content.NotNullOrBlank())
             {
                 ackRequest.Body = content;
                 ackRequest.Header.ContentLength = ackRequest.Body.Length;
@@ -246,7 +239,7 @@ namespace GB28181
             {
                 header.Routes = sipResponse.Header.RecordRoutes.Reversed();
             }
-            else if(base.TransactionRequest.Header.Routes != null)
+            else if (base.TransactionRequest.Header.Routes != null)
             {
                 header.Routes = base.TransactionRequest.Header.Routes;
             }

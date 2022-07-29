@@ -1,14 +1,4 @@
-﻿using GB28181.Logger4Net;
-using GB28181.Net;
-using GB28181.Net.RTP;
-using GB28181.Servers.SIPMonitor;
-using GB28181;
-using GB28181.App;
-using GB28181.Sys;
-using GB28181.Config;
-using GB28181.Sys.Model;
-using GB28181.Sys.XML;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +8,16 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
+using GB28181.App;
 using GB28181.Cache;
+using GB28181.Config;
+using GB28181.Logger4Net;
+using GB28181.Net;
+using GB28181.Net.RTP;
+using GB28181.Servers.SIPMonitor;
+using GB28181.Sys;
+using GB28181.Sys.Model;
+using GB28181.Sys.XML;
 using SIPSorcery.SIP;
 
 namespace GB28181.Servers.SIPMessages
@@ -210,7 +209,7 @@ namespace GB28181.Servers.SIPMessages
             {
                 var ipaddress = IPAddress.Parse(camera.IPAddress);
                 _nodeMonitorService.TryAdd(camera.DeviceID, new SIPMonitorCore(this, _transport, sipAccountStorage: _sipAccountStorage)
-                { 
+                {
                     RemoteEndPoint = new SIPEndPoint(SIPProtocolsEnum.udp, new IPEndPoint(ipaddress, camera.Port)),
                     DeviceId = camera.DeviceID
                 });

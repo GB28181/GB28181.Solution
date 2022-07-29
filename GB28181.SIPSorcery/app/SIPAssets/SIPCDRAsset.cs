@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Data;
 using System.Runtime.Serialization;
 using GB28181.Sys;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
-using System.Data;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
- //   // [Table(Name = "cdr")]
+    //   // [Table(Name = "cdr")]
     public class SIPCDRAsset : ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipcdrs";
@@ -19,7 +19,7 @@ namespace GB28181.App
 
         public static int TimeZoneOffsetMinutes;
 
-     //   // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        //   // // [Column(Name = "id", DbType = "varchar(36)", IsPrimaryKey = true, CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public Guid Id
         {
             get { return m_sipCDR.CDRId; }
@@ -27,14 +27,14 @@ namespace GB28181.App
         }
 
         [DataMember]
-      //  // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        //  // // [Column(Name = "owner", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string Owner
         {
             get { return m_sipCDR.Owner; }
             set { m_sipCDR.Owner = value; }
         }
 
-       // // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // // // [Column(Name = "adminmemberid", DbType = "varchar(32)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string AdminMemberId
         {
@@ -43,14 +43,14 @@ namespace GB28181.App
         }
 
         private DateTimeOffset m_inserted;
-      //  // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        //  // // [Column(Name = "inserted", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         public DateTimeOffset Inserted
         {
             get { return m_inserted.ToUniversalTime(); }
             set { m_inserted = value.ToUniversalTime(); }
         }
 
-       // // // [Column(Name = "direction", DbType = "varchar(3)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // // [Column(Name = "direction", DbType = "varchar(3)", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string CallDirection
         {
@@ -58,7 +58,7 @@ namespace GB28181.App
             set { m_sipCDR.CallDirection = (!value.IsNullOrBlank()) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), value, true) : SIPCallDirection.None; }
         }
 
-       // // // [Column(Name = "created", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
+        // // // [Column(Name = "created", DbType = "datetimeoffset", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public DateTimeOffset Created
         {
@@ -71,7 +71,7 @@ namespace GB28181.App
             get { return Created.AddMinutes(TimeZoneOffsetMinutes); }
         }
 
-      //  // // [Column(Name = "dst", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        //  // // [Column(Name = "dst", DbType = "varchar(128)", CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public string Dst
         {
@@ -392,10 +392,12 @@ namespace GB28181.App
 
         public void Load(DataRow cdrRow)
         {
-            m_sipCDR = new SIPCDR();
-            m_sipCDR.CDRId = new Guid(cdrRow["id"] as string);
-            m_sipCDR.Owner = cdrRow["owner"] as string;
-            m_sipCDR.AdminMemberId = cdrRow["adminmemberid"] as string;
+            m_sipCDR = new SIPCDR
+            {
+                CDRId = new Guid(cdrRow["id"] as string),
+                Owner = cdrRow["owner"] as string,
+                AdminMemberId = cdrRow["adminmemberid"] as string
+            };
             Inserted = DateTimeOffset.Parse(cdrRow["inserted"] as string);
             m_sipCDR.CallDirection = (cdrRow["direction"] as string == SIPCallDirection.In.ToString()) ? SIPCallDirection.In : SIPCallDirection.Out;
             Created = DateTimeOffset.Parse(cdrRow["created"] as string);

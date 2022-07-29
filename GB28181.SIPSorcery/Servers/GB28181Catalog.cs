@@ -1,10 +1,7 @@
-﻿using GB28181.Servers.SIPMessages;
-using GB28181.Sys.XML;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GB28181.Servers.SIPMessages;
+using GB28181.Sys.XML;
 
 namespace GB28181.Servers
 {

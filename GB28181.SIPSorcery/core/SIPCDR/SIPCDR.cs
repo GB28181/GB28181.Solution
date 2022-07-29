@@ -10,11 +10,11 @@
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
 
+using System;
+using System.Runtime.Serialization;
 using GB28181.Logger4Net;
 using GB28181.Sys;
 using SIPSorcery.SIP;
-using System;
-using System.Runtime.Serialization;
 
 #if !SILVERLIGHT
 #endif

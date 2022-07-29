@@ -19,7 +19,7 @@ using SIPSorcery.SIP;
 namespace GB28181
 {
 
-    public class SIPTransaction:SIPSorcery.SIP.SIPTransaction
+    public class SIPTransaction : SIPSorcery.SIP.SIPTransaction
     {
         protected static ILog logger = AssemblyState.logger;
 
@@ -93,23 +93,23 @@ namespace GB28181
             SIPRequest transactionRequest,
             SIPEndPoint dstEndPoint,
             SIPEndPoint localSIPEndPoint,
-            SIPEndPoint outboundProxy):base(sipTransport, transactionRequest, outboundProxy)
+            SIPEndPoint outboundProxy) : base(sipTransport, transactionRequest, outboundProxy)
         {
-          
-                TransactionsCreated++;
 
-                m_sipTransport = sipTransport;
-                m_transactionId = GetRequestTransactionId(transactionRequest.Header.Vias.TopViaHeader.Branch, transactionRequest.Header.CSeqMethod);
-                HasTimedOut = false;
+            TransactionsCreated++;
 
-                m_transactionRequest = transactionRequest;
-                m_branchId = transactionRequest.Header.Vias.TopViaHeader.Branch;
-                m_callId = transactionRequest.Header.CallId;
-                m_sentBy = transactionRequest.Header.Vias.TopViaHeader.ContactAddress;
-                RemoteEndPoint = dstEndPoint;
-                LocalSIPEndPoint = localSIPEndPoint;
-                OutboundProxy = outboundProxy;
-         
+            m_sipTransport = sipTransport;
+            m_transactionId = GetRequestTransactionId(transactionRequest.Header.Vias.TopViaHeader.Branch, transactionRequest.Header.CSeqMethod);
+            HasTimedOut = false;
+
+            m_transactionRequest = transactionRequest;
+            m_branchId = transactionRequest.Header.Vias.TopViaHeader.Branch;
+            m_callId = transactionRequest.Header.CallId;
+            m_sentBy = transactionRequest.Header.Vias.TopViaHeader.ContactAddress;
+            RemoteEndPoint = dstEndPoint;
+            LocalSIPEndPoint = localSIPEndPoint;
+            OutboundProxy = outboundProxy;
+
         }
 
         //public static string GetRequestTransactionId(string branchId, SIPMethodsEnum method)

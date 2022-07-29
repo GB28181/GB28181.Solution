@@ -11,14 +11,10 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using GB28181.Logger4Net;
 using SIPSorcery.SIP;
@@ -29,21 +25,21 @@ using NUnit.Framework;
 
 namespace GB28181
 {
-	public class IncomingMessage
-	{
-    	public SIPChannel LocalSIPChannel;
+    public class IncomingMessage
+    {
+        public SIPChannel LocalSIPChannel;
         public SIPEndPoint RemoteEndPoint;
-		public byte[] Buffer;
+        public byte[] Buffer;
         public DateTime ReceivedAt;
 
-		public IncomingMessage(SIPChannel sipChannel, SIPEndPoint remoteEndPoint, byte[] buffer)
-		{
+        public IncomingMessage(SIPChannel sipChannel, SIPEndPoint remoteEndPoint, byte[] buffer)
+        {
             LocalSIPChannel = sipChannel;
             RemoteEndPoint = remoteEndPoint;
-			Buffer = buffer;
+            Buffer = buffer;
             ReceivedAt = DateTime.Now;
-		}
-	}
+        }
+    }
 
     public abstract class SIPChannel
     {
@@ -76,7 +72,8 @@ namespace GB28181
         }
 
         protected bool m_isTLS;
-        public bool IsTLS {
+        public bool IsTLS
+        {
             get { return m_isTLS; }
         }
 

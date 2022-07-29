@@ -12,10 +12,10 @@
 
 
 using System;
-using GB28181.Sys;
 using GB28181.Logger4Net;
-using SIPSorcery.Sys;
+using GB28181.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
@@ -45,7 +45,7 @@ namespace GB28181.App
         public bool IsInvite
         {
             get { return true; }
-        } 
+        }
         public string Owner { get { return m_owner; } }
 
         public SIPCallDirection CallDirection
@@ -238,7 +238,7 @@ namespace GB28181.App
                                 Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.AppServer, SIPMonitorEventTypesEnum.DialPlan, "New call from " + remoteEndPoint.ToString() + " successfully authenticated by digest.", m_sipAccount.Owner));
                             }
 
-                            SetOwner(m_sipAccount.Owner,  m_sipAccount.AdminMemberId);
+                            SetOwner(m_sipAccount.Owner, m_sipAccount.AdminMemberId);
                             m_isAuthenticated = true;
                         }
                         else
@@ -362,8 +362,10 @@ namespace GB28181.App
 
                     m_uasTransaction.SendFinalResponse(okResponse);
 
-                    m_sipDialogue = new SIPDialogue(m_uasTransaction, m_owner, m_adminMemberId);
-                    m_sipDialogue.TransferMode = transferMode;
+                    m_sipDialogue = new SIPDialogue(m_uasTransaction, m_owner, m_adminMemberId)
+                    {
+                        TransferMode = transferMode
+                    };
 
                     return m_sipDialogue;
                 }

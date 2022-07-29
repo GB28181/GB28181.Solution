@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
+﻿using System.Configuration;
 
 namespace GB28181.Sys
 {
@@ -12,7 +8,7 @@ namespace GB28181.Sys
         public const string PERSISTENCE_STORAGECONNSTR_KEY = "DBConnStr";
 
         public StorageTypes PersistenceStorageType { get; private set; }
-        public string PersistenceConnStr { get; private set;}
+        public string PersistenceConnStr { get; private set; }
 
         public SIPSorceryConfiguration()
         {

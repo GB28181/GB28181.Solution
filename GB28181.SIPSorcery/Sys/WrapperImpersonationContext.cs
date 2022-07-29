@@ -30,7 +30,7 @@ public class WrapperImpersonationContext
     String lpszPassword, int dwLogonType, int dwLogonProvider, ref IntPtr phToken);
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-    public extern static bool CloseHandle(IntPtr handle);
+    public static extern bool CloseHandle(IntPtr handle);
 
     private const int LOGON32_PROVIDER_DEFAULT = 0;
     private const int LOGON32_LOGON_INTERACTIVE = 2;
@@ -40,7 +40,7 @@ public class WrapperImpersonationContext
     private string m_Username;
     private IntPtr m_Token;
 
- //   private WindowsImpersonationContext m_Context = null;
+    //   private WindowsImpersonationContext m_Context = null;
 
     protected bool IsInContext { get; }
     //{
@@ -75,9 +75,9 @@ public class WrapperImpersonationContext
                 throw new Win32Exception(error);
             }
             WindowsIdentity identity = new WindowsIdentity(m_Token);
-         //   m_Context = identity.Impersonate();
+            //   m_Context = identity.Impersonate();
         }
-        catch 
+        catch
         {
             throw;
         }
@@ -87,15 +87,15 @@ public class WrapperImpersonationContext
     public void Leave()
     {
         if (this.IsInContext == false) return;
-       // m_Context.Undo();
+        // m_Context.Undo();
 
         if (m_Token != IntPtr.Zero) CloseHandle(m_Token);
-      //  m_Context = null;
+        //  m_Context = null;
     }
 
     #region Unit testing.
 
-    #if UNITTEST
+#if UNITTEST
 
     [TestFixture]
     public class WrapperImpersonationContextUnitTest 
@@ -137,7 +137,7 @@ public class WrapperImpersonationContext
         }
     }
 
-    #endif
+#endif
 
     #endregion
 }

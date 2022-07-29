@@ -17,15 +17,12 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.App
@@ -101,7 +98,7 @@ namespace GB28181.App
         public const string SWITCHBOARD_CALLID_KEY = "swcid";               // Dial string option to set the Switchboard-CallID header on the call leg.
         public const string SWITCHBOARD_OWNER_KEY = "swo";                  // Dial string option to set the Switchboard-Owner header on the call leg.
 
-        private readonly static string m_defaultFromURI = SIPConstants.SIP_DEFAULT_FROMURI;
+        private static readonly string m_defaultFromURI = SIPConstants.SIP_DEFAULT_FROMURI;
         private static char m_customHeadersSeparator = '|';                 // Must match SIPProvider.CUSTOM_HEADERS_SEPARATOR.
 
         private static ILog logger = AppState.logger;
@@ -229,7 +226,7 @@ namespace GB28181.App
             //}
             //else
             //{
-                fromHeader = SIPFromHeader.ParseFromHeader(From);
+            fromHeader = SIPFromHeader.ParseFromHeader(From);
             //}
 
             if (!FromDisplayName.IsNullOrBlank())
@@ -403,7 +400,7 @@ namespace GB28181.App
                 }
 
                 // Parse the request caller details option.
-                Match callerDetailsMatch = Regex.Match(options,REQUEST_CALLER_DETAILS + @"=(?<callerdetails>\w+)");
+                Match callerDetailsMatch = Regex.Match(options, REQUEST_CALLER_DETAILS + @"=(?<callerdetails>\w+)");
                 if (callerDetailsMatch.Success)
                 {
                     Boolean.TryParse(callerDetailsMatch.Result("${callerdetails}"), out RequestCallerDetails);
@@ -497,19 +494,20 @@ namespace GB28181.App
                 CallDirection,
                 ContentType,
                 Content,
-                (MangleIPAddress != null) ? new IPAddress(MangleIPAddress.GetAddressBytes()) : null);
+                (MangleIPAddress != null) ? new IPAddress(MangleIPAddress.GetAddressBytes()) : null)
+            {
+                // Options.
+                DelaySeconds = DelaySeconds,
+                RedirectMode = RedirectMode,
+                CallDurationLimit = CallDurationLimit,
+                MangleResponseSDP = MangleResponseSDP,
+                FromDisplayName = FromDisplayName,
+                FromURIUsername = FromURIUsername,
+                FromURIHost = FromURIHost,
+                TransferMode = TransferMode,
 
-            // Options.
-            copy.DelaySeconds = DelaySeconds;
-            copy.RedirectMode = RedirectMode;
-            copy.CallDurationLimit = CallDurationLimit;
-            copy.MangleResponseSDP = MangleResponseSDP;
-            copy.FromDisplayName = FromDisplayName;
-            copy.FromURIUsername = FromURIUsername;
-            copy.FromURIHost = FromURIHost;
-            copy.TransferMode = TransferMode;
-
-            copy.ToSIPAccount = ToSIPAccount;
+                ToSIPAccount = ToSIPAccount
+            };
 
             return copy;
         }

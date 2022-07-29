@@ -14,13 +14,12 @@
 
 
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 
 namespace GB28181.App
 {
@@ -85,12 +84,12 @@ namespace GB28181.App
                 PolicyConnection pc = new PolicyConnection(clientSocket, Encoding.UTF8.GetBytes(m_policy));
             }
         }
-    } 
+    }
 
     /// <summary>
     ///  Encapsulate and manage state for a single connection from a client 
     /// </summary>
-    class PolicyConnection
+    internal class PolicyConnection
     {
         private Socket m_connection;
         private byte[] m_buffer;    // buffer to receive the request from the client 

@@ -27,12 +27,12 @@ namespace GB28181.Net
 
         private static string m_CRLF = RTSPConstants.CRLF;
         private static int m_minFirstLineLength = 7;
-        
+
         public string RawMessage { get; set; }
         public RTSPMessageTypesEnum RTSPMessageType { get; set; } = RTSPMessageTypesEnum.Unknown;
-		public string FirstLine { get; set; }
+        public string FirstLine { get; set; }
         public string[] RTSPHeaders;
-		public string Body { get; set; }
+        public string Body { get; set; }
         public byte[] RawBuffer;
 
         public DateTime ReceivedAt { get; set; } = DateTime.MinValue;
@@ -82,12 +82,14 @@ namespace GB28181.Net
         {
             try
             {
-                RTSPMessage rtspMessage = new RTSPMessage();
-                rtspMessage.ReceivedAt = DateTime.Now;
-                rtspMessage.ReceivedFrom = receivedFrom;
-                rtspMessage.ReceivedOn = receivedOn;
+                RTSPMessage rtspMessage = new RTSPMessage
+                {
+                    ReceivedAt = DateTime.Now,
+                    ReceivedFrom = receivedFrom,
+                    ReceivedOn = receivedOn,
 
-                rtspMessage.RawMessage = message;
+                    RawMessage = message
+                };
                 int endFistLinePosn = message.IndexOf(m_CRLF);
 
                 if (endFistLinePosn != -1)
@@ -108,12 +110,12 @@ namespace GB28181.Net
                     {
                         // Assume flakey implementation if message does not contain the required CRLFCRLF sequence and treat the message as having no body.
                         string headerString = message.Substring(endFistLinePosn + 2, message.Length - endFistLinePosn - 2);
-                        rtspMessage.RTSPHeaders = RTSPHeader.SplitHeaders(headerString); 
+                        rtspMessage.RTSPHeaders = RTSPHeader.SplitHeaders(headerString);
                     }
                     else if (endHeaderPosn > endFistLinePosn + 2)
                     {
                         string headerString = message.Substring(endFistLinePosn + 2, endHeaderPosn - endFistLinePosn - 2);
-                        rtspMessage.RTSPHeaders = RTSPHeader.SplitHeaders(headerString); 
+                        rtspMessage.RTSPHeaders = RTSPHeader.SplitHeaders(headerString);
 
                         if (message.Length > endHeaderPosn + 4)
                         {

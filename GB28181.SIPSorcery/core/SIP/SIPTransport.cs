@@ -25,7 +25,7 @@ using SIPSorcery.Sys;
 
 namespace GB28181
 {
-   
+
     public class SIPTransport : SIPSorcery.SIP.SIPTransport, ISIPTransport
     {
         private const string RECEIVE_THREAD_NAME = "siptransport-receive";
@@ -60,7 +60,7 @@ namespace GB28181
         public event SIPTransportRequestDelegate SIPTransportRequestReceived;
         public event SIPTransportResponseDelegate SIPTransportResponseReceived;
         public event STUNRequestReceivedDelegate STUNRequestReceived;
-      //  private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = App.SIPDNSManager.ResolveSIPService;
+        //  private ResolveSIPEndPointDelegate ResolveSIPEndPoint_External = App.SIPDNSManager.ResolveSIPService;
 
         public event SIPTransportRequestDelegate SIPRequestInTraceEvent;
         public event SIPTransportRequestDelegate SIPRequestOutTraceEvent;
@@ -639,7 +639,7 @@ namespace GB28181
 
                 if (sipChannel != null)
                 {
-                  var callURI  = SIPURI.ParseSIPURI(sipResponse.Header.Vias.TopViaHeader.ReceivedFromAddress);
+                    var callURI = SIPURI.ParseSIPURI(sipResponse.Header.Vias.TopViaHeader.ReceivedFromAddress);
                     SIPEndPoint lookupResult = ResolveSIPUriAsync(callURI).GetAwaiter().GetResult();
                     SendResponse(sipChannel, lookupResult, sipResponse);
                 }
@@ -650,7 +650,7 @@ namespace GB28181
             }
         }
 
-    
+
         private void SendResponse(SIPChannel sipChannel, SIPEndPoint dstEndPoint, SIPResponse sipResponse)
         {
             try
@@ -716,7 +716,7 @@ namespace GB28181
             }
         }
 
- 
+
         private void ProcessPendingReliableTransactions()
         {
             try
@@ -1032,7 +1032,7 @@ namespace GB28181
                                                 //logger.Warn("SIPTransport responding with TooManyHops due to 0 MaxForwards.");
                                                 FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, "Zero MaxForwards on " + sipRequest.Method + " " + sipRequest.URI.ToString() + " from " + sipRequest.Header.From.FromURI.User + " " + remoteEndPoint.ToString(), SIPValidationFieldsEnum.Request, sipRequest.ToString());
                                                 SIPResponse tooManyHops = GetResponse(sipRequest, SIPResponseStatusCodesEnum.TooManyHops, null);
-                                                SendResponse(sipChannel,remoteEndPoint, tooManyHops);
+                                                SendResponse(sipChannel, remoteEndPoint, tooManyHops);
                                                 return;
                                             }
                                             /*else if (sipRequest.IsLoop(sipChannel.SIPChannelEndPoint.SocketEndPoint.Address.ToString(), sipChannel.SIPChannelEndPoint.SocketEndPoint.Port, sipRequest.CreateBranchId()))
@@ -1067,7 +1067,7 @@ namespace GB28181
                                     {
                                         FireSIPBadRequestInTraceEvent(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipRequestExcp.Message, sipRequestExcp.SIPErrorField, sipMessage.RawMessage);
                                         SIPResponse errorResponse = GetResponse(sipChannel.SIPChannelEndPoint, remoteEndPoint, sipRequestExcp.SIPResponseErrorCode, sipRequestExcp.Message);
-                                        SendResponse(sipChannel,remoteEndPoint, errorResponse);
+                                        SendResponse(sipChannel, remoteEndPoint, errorResponse);
                                     }
 
                                     #endregion

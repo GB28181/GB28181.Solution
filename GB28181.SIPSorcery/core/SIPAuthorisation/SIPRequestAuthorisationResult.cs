@@ -10,12 +10,6 @@
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace GB28181
 {
     public class SIPRequestAuthorisationResult

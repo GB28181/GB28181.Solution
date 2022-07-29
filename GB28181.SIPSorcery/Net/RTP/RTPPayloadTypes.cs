@@ -9,22 +9,20 @@
 // License: 
 // Aaron Clauson
 
-using System;
-
 namespace GB28181.Net
 {
-	public enum RTPPayloadTypesEnum
-	{
-		PCMU = 0,
-		GSM = 3,
+    public enum RTPPayloadTypesEnum
+    {
+        PCMU = 0,
+        GSM = 3,
         Dynamic = 96,
-	}
+    }
 
-	public class RTPPayloadTypes
-	{
-		public RTPPayloadTypes()
-		{
+    public class RTPPayloadTypes
+    {
+        public RTPPayloadTypes()
+        {
 
-		}
-	}
+        }
+    }
 }

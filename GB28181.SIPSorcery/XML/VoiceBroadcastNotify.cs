@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace GB28181.Sys.XML
 {
@@ -55,6 +50,6 @@ namespace GB28181.Sys.XML
         [XmlElement("TargetID")]
         public string TargetID { get; set; }
 
-      
+
     }
 }

@@ -49,11 +49,8 @@
 // License: 
 // Aaron Clauson
 
-using GB28181.Sys;
-using SIPSorcery.Sys;
 using System;
-using System.Collections;
-using System.Net;
+using SIPSorcery.Sys;
 
 namespace GB28181.Net
 {
@@ -143,7 +140,7 @@ namespace GB28181.Net
             }
             catch (Exception)
             {
-                
+
             }
         }
 

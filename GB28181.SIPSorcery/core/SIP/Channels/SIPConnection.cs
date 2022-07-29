@@ -86,10 +86,9 @@ namespace GB28181
                 if (bytesRead > 0)
                 {
                     SocketBufferEndPosition += bytesRead;
-                    int bytesSkipped = 0;
 
                     // Attempt to extract a SIP message from the receive buffer.
-                    byte[] sipMsgBuffer = SIPConnection.ProcessReceive(SocketBuffer, 0, SocketBufferEndPosition, out bytesSkipped);
+                    byte[] sipMsgBuffer = SIPConnection.ProcessReceive(SocketBuffer, 0, SocketBufferEndPosition, out int bytesSkipped);
 
                     while (sipMsgBuffer != null)
                     {
@@ -166,7 +165,7 @@ namespace GB28181
             bool letterCharFound = false;
             while (!letterCharFound && start < length)
             {
-                if ((int)receiveBuffer[start] >= 65)
+                if (receiveBuffer[start] >= 65)
                 {
                     break;
                 }

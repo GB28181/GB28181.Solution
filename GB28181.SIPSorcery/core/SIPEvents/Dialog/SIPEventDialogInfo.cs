@@ -105,12 +105,12 @@ namespace GB28181
 
         public static SIPEventDialogInfo Parse(string dialogInfoXMLStr)
         {
-           SIPEventDialogInfo eventDialogInfo = new SIPEventDialogInfo();
-           eventDialogInfo.Load(dialogInfoXMLStr);
-           return eventDialogInfo;
+            SIPEventDialogInfo eventDialogInfo = new SIPEventDialogInfo();
+            eventDialogInfo.Load(dialogInfoXMLStr);
+            return eventDialogInfo;
         }
 
-        public  string ToXMLText()
+        public string ToXMLText()
         {
             XNamespace ns = m_dialogXMLNS;
             //XNamespace ss = m_sipsorceryXMLNS;
@@ -129,9 +129,11 @@ namespace GB28181
             });
 
             StringBuilder sb = new StringBuilder();
-            XmlWriterSettings xws = new XmlWriterSettings();
-            xws.NewLineHandling = NewLineHandling.None;
-            xws.Indent = true;
+            XmlWriterSettings xws = new XmlWriterSettings
+            {
+                NewLineHandling = NewLineHandling.None,
+                Indent = true
+            };
 
             using (XmlWriter xw = XmlWriter.Create(sb, xws))
             {
@@ -143,7 +145,7 @@ namespace GB28181
 
         #region Unit testing.
 
-        #if UNITTEST
+#if UNITTEST
 
         [TestFixture]
         public class SIPDialogEventInfoUnitTest
@@ -430,7 +432,7 @@ namespace GB28181
             }*/
         }
 
-        #endif
+#endif
 
         #endregion
     }

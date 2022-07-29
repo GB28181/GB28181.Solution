@@ -15,8 +15,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.Sys;
 
 namespace GB28181.Net
@@ -74,10 +74,9 @@ namespace GB28181.Net
                 if (bytesRead > 0)
                 {
                     SocketBufferEndPosition += bytesRead;
-                    int bytesSkipped = 0;
 
                     // Attempt to extract an RTSP message from the receive buffer.
-                    byte[] rtspMsgBuffer = ProcessReceive(SocketBuffer, 0, SocketBufferEndPosition, out bytesSkipped);
+                    byte[] rtspMsgBuffer = ProcessReceive(SocketBuffer, 0, SocketBufferEndPosition, out int bytesSkipped);
 
                     while (rtspMsgBuffer != null)
                     {
@@ -150,7 +149,7 @@ namespace GB28181.Net
             bool letterCharFound = false;
             while (!letterCharFound && start < length)
             {
-                if ((int)receiveBuffer[start] >= 65)
+                if (receiveBuffer[start] >= 65)
                 {
                     break;
                 }

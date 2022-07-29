@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace GB28181.Sys.XML
 {
@@ -12,7 +7,7 @@ namespace GB28181.Sys.XML
     /// <see cref="GB/T 28181-2016 附录A.2.5通知命令(d,e节点)"/>
     /// </summary>
     [XmlRoot("Notify")]
-    class PositionInfoSubNotify : XmlHelper<VoiceBroadcastNotify>
+    internal class PositionInfoSubNotify : XmlHelper<VoiceBroadcastNotify>
     {
         private static VoiceBroadcastNotify _instance;
 
@@ -58,6 +53,6 @@ namespace GB28181.Sys.XML
 
     }
 
-       
+
 
 }

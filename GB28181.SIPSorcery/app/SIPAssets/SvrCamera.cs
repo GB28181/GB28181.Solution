@@ -12,7 +12,7 @@ namespace GB28181.App
     [DataContract]
     public class SvrCamera : INotifyPropertyChanged, ISIPAsset
     {
-       // public event PropertyChangedEventHandler PropertyChanged;
+        // public event PropertyChangedEventHandler PropertyChanged;
 
         private Guid _id;
         /// <summary>
@@ -58,9 +58,11 @@ namespace GB28181.App
         public string GBID
         {
             get { return _gbID; }
-            set { _gbID = value;
-                PropertyChanged?.Invoke(this,new PropertyChangedEventArgs(GBID));
-                    }
+            set
+            {
+                _gbID = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(GBID));
+            }
         }
 
         private string _name;

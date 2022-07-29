@@ -43,7 +43,7 @@ namespace GB28181.App
         Gizmo = 7,
     }
 
-   // // [Table(Name = "sipproviders")]
+    // // [Table(Name = "sipproviders")]
     [DataContractAttribute]
     public class SIPProvider : INotifyPropertyChanged, ISIPAsset
     {
@@ -361,7 +361,7 @@ namespace GB28181.App
             set { m_inserted = value.ToUniversalTime(); }
         }
 
-        private bool m_isReadOnly;                     
+        private bool m_isReadOnly;
         // // [Column(Name = "isreadonly", DbType = "bit", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
         [DataMember]
         public bool IsReadOnly
@@ -586,22 +586,22 @@ namespace GB28181.App
                 m_registerExpiry = (providerRow.Table.Columns.Contains("registerexpiry") && providerRow["registerexpiry"] != DBNull.Value && providerRow["registerexpiry"] != null) ? Convert.ToInt32(providerRow["registerexpiry"]) : REGISTER_DEFAULT_EXPIRY;
                 m_registerServer = (providerRow.Table.Columns.Contains("registerserver") && providerRow["registerserver"] != null) ? SIPURI.ParseSIPURIRelaxed(providerRow["registerserver"] as string) : null;
                 m_registerRealm = (providerRow.Table.Columns.Contains("registerrealm") && providerRow["registerrealm"] != null) ? providerRow["registerrealm"] as string : null;
-                m_registerEnabled = (providerRow.Table.Columns.Contains("registerenabled") && providerRow["registerenabled"] != DBNull.Value && providerRow["registerenabled"] != null) ? Convert.ToBoolean(providerRow["registerenabled"]) : false;
-                m_registerAdminEnabled = (providerRow.Table.Columns.Contains("registeradminenabled") && providerRow["registeradminenabled"] != DBNull.Value && providerRow["registeradminenabled"] != null) ? Convert.ToBoolean(providerRow["registeradminenabled"]) : true;
+                m_registerEnabled = (providerRow.Table.Columns.Contains("registerenabled") && providerRow["registerenabled"] != DBNull.Value && providerRow["registerenabled"] != null) && Convert.ToBoolean(providerRow["registerenabled"]);
+                m_registerAdminEnabled = !providerRow.Table.Columns.Contains("registeradminenabled") || providerRow["registeradminenabled"] == DBNull.Value || providerRow["registeradminenabled"] == null || Convert.ToBoolean(providerRow["registeradminenabled"]);
                 m_registerDisabledReason = (providerRow.Table.Columns.Contains("registerdisabledreason") && providerRow["registerdisabledreason"] != DBNull.Value && providerRow["registerdisabledreason"] != null) ? providerRow["registerdisabledreason"] as string : null;
                 m_gvCallbackNumber = (providerRow.Table.Columns.Contains("gvcallbacknumber") && providerRow["gvcallbacknumber"] != null) ? providerRow["gvcallbacknumber"] as string : null;
                 m_gvCallbackPattern = (providerRow.Table.Columns.Contains("gvcallbackpattern") && providerRow["gvcallbackpattern"] != null) ? providerRow["gvcallbackpattern"] as string : null;
                 m_gvCallbackType = (providerRow.Table.Columns.Contains("gvcallbacktype") && providerRow["gvcallbacktype"] != DBNull.Value && providerRow["gvcallbacktype"] != null && (providerRow["gvcallbacktype"] as string).NotNullOrBlank()) ? (GoogleVoiceCallbackTypes)Enum.Parse(typeof(GoogleVoiceCallbackTypes), providerRow["gvcallbacktype"] as string, true) : (GoogleVoiceCallbackTypes?)null;
                 LastUpdate = (providerRow.Table.Columns.Contains("lastupdate") && providerRow["lastupdate"] != DBNull.Value && providerRow["lastupdate"] != null) ? DateTimeOffset.Parse(providerRow["lastupdate"] as string) : DateTimeOffset.UtcNow;
                 Inserted = (providerRow.Table.Columns.Contains("inserted") && providerRow["inserted"] != DBNull.Value && providerRow["inserted"] != null) ? DateTimeOffset.Parse(providerRow["inserted"] as string) : DateTimeOffset.UtcNow;
-                m_isReadOnly = (providerRow.Table.Columns.Contains("isreadonly") && providerRow["isreadonly"] != DBNull.Value && providerRow["isreadonly"] != null) ? Convert.ToBoolean(providerRow["isreadonly"]) : false;
-                m_sendMWISubscribe = (providerRow.Table.Columns.Contains("sendmwisubscribe") && providerRow["sendmwisubscribe"] != DBNull.Value && providerRow["sendmwisubscribe"] != null) ? Convert.ToBoolean(providerRow["sendmwisubscribe"]) : false;
+                m_isReadOnly = (providerRow.Table.Columns.Contains("isreadonly") && providerRow["isreadonly"] != DBNull.Value && providerRow["isreadonly"] != null) && Convert.ToBoolean(providerRow["isreadonly"]);
+                m_sendMWISubscribe = (providerRow.Table.Columns.Contains("sendmwisubscribe") && providerRow["sendmwisubscribe"] != DBNull.Value && providerRow["sendmwisubscribe"] != null) && Convert.ToBoolean(providerRow["sendmwisubscribe"]);
 
                 if (m_registerContact == null && m_registerEnabled)
                 {
                     m_registerEnabled = false;
                     m_registerDisabledReason = "No Contact URI was specified for the registration.";
-                     logger.Warn("Registrations for provider " + m_providerName + " owned by " + m_owner + " have been disabled due to an empty or invalid Contact URI.");
+                    logger.Warn("Registrations for provider " + m_providerName + " owned by " + m_owner + " have been disabled due to an empty or invalid Contact URI.");
                 }
             }
             catch (Exception excp)

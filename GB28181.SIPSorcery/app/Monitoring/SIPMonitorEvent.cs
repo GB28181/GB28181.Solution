@@ -16,14 +16,8 @@
 //
 
 using System;
-using System.Collections;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 using SIPSorcery.SIP;
 
 #if UNITTEST
@@ -52,13 +46,13 @@ namespace GB28181.App
     }
 
     public enum SIPMonitorServerTypesEnum
-	{
-		Unknown = 0,
-		SIPProxy = 1,
-		Registrar = 2,
-		NATKeepAlive = 3,
-		NotifierAgent = 4,
-		Monitor = 5,
+    {
+        Unknown = 0,
+        SIPProxy = 1,
+        Registrar = 2,
+        NATKeepAlive = 3,
+        NotifierAgent = 4,
+        Monitor = 5,
         RegisterAgent = 8,
         SIPTransactionLayer = 9,
         UserAgentClient = 10,
@@ -68,30 +62,30 @@ namespace GB28181.App
         Notifier = 13,
         NotifierClient = 14,
         RTCC = 15,
-	}
-	
-	public enum SIPMonitorEventTypesEnum
-	{
-		NewCall = 1,
-		Registrar = 2,
-		NATKeepAlive = 3,
-		Error = 4,
-		NATConnection = 5,
-		RegisterSuccess = 6,
-		Redirect = 7,
-		ProxyForward = 8,
-		FullSIPTrace = 9,
-		OptionsBounce = 10,
-		Timing = 11,
-		SIPInvalid = 13,
-		Monitor = 24,
-		RegisterFail = 25,
-		RegistrarTiming = 26,
-		ParseSIPMessage = 27,
-		SIPMessageArrivalStats = 28,
-		HealthCheck = 29,
-		RegisterDuplicate = 35,
-		PINGResponse = 37,
+    }
+
+    public enum SIPMonitorEventTypesEnum
+    {
+        NewCall = 1,
+        Registrar = 2,
+        NATKeepAlive = 3,
+        Error = 4,
+        NATConnection = 5,
+        RegisterSuccess = 6,
+        Redirect = 7,
+        ProxyForward = 8,
+        FullSIPTrace = 9,
+        OptionsBounce = 10,
+        Timing = 11,
+        SIPInvalid = 13,
+        Monitor = 24,
+        RegisterFail = 25,
+        RegistrarTiming = 26,
+        ParseSIPMessage = 27,
+        SIPMessageArrivalStats = 28,
+        HealthCheck = 29,
+        RegisterDuplicate = 35,
+        PINGResponse = 37,
         ContactRegistered = 38,
         ContactRegisterInProgress = 39,
         ContactRegisterFailed = 40,
@@ -124,33 +118,33 @@ namespace GB28181.App
         SubscribeFailed = 68,
         SubscribeRenew = 69,
         NotifySent = 70,
-	}
+    }
 
-	public class SIPMonitorEventTypes
-	{
-		public static SIPMonitorEventTypesEnum GetProxyEventType(string eventTypeName)
-		{
-			return (SIPMonitorEventTypesEnum)Enum.Parse(typeof(SIPMonitorEventTypesEnum), eventTypeName, true);
-		}
+    public class SIPMonitorEventTypes
+    {
+        public static SIPMonitorEventTypesEnum GetProxyEventType(string eventTypeName)
+        {
+            return (SIPMonitorEventTypesEnum)Enum.Parse(typeof(SIPMonitorEventTypesEnum), eventTypeName, true);
+        }
 
         public static SIPMonitorEventTypesEnum GetProxyEventTypeForId(int eventTypeId)
         {
             return (SIPMonitorEventTypesEnum)Enum.Parse(typeof(SIPMonitorEventTypesEnum), eventTypeId.ToString(), true);
         }
-	}
+    }
 
-	public class SIPMonitorServerTypes
-	{
-		public static SIPMonitorServerTypesEnum GetProxyServerType(string serverTypeName)
-		{
-			return (SIPMonitorServerTypesEnum)Enum.Parse(typeof(SIPMonitorServerTypesEnum), serverTypeName, true);
-		}
+    public class SIPMonitorServerTypes
+    {
+        public static SIPMonitorServerTypesEnum GetProxyServerType(string serverTypeName)
+        {
+            return (SIPMonitorServerTypesEnum)Enum.Parse(typeof(SIPMonitorServerTypesEnum), serverTypeName, true);
+        }
 
         public static SIPMonitorServerTypesEnum GetProxyServerTypeForId(int serverTypeId)
         {
             return (SIPMonitorServerTypesEnum)Enum.Parse(typeof(SIPMonitorServerTypesEnum), serverTypeId.ToString(), true);
         }
-	}
+    }
 
     public enum SIPMonitorMachineEventTypesEnum
     {
@@ -179,15 +173,15 @@ namespace GB28181.App
             return (SIPMonitorMachineEventTypesEnum)Enum.Parse(typeof(SIPMonitorMachineEventTypesEnum), eventTypeId.ToString(), true);
         }
     }
-	
+
     /// <summary>
     /// Describes the types of events that can be sent by the different SIP Servers to SIP
     /// Monitor clients.
     /// </summary>
-	public class SIPMonitorEvent 
-	{
+    public class SIPMonitorEvent
+    {
         public const string SERIALISATION_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss.ffffff zzz";
-		public const string END_MESSAGE_DELIMITER = "##";
+        public const string END_MESSAGE_DELIMITER = "##";
 
         protected static ILog logger = AppState.logger;
 
@@ -209,12 +203,12 @@ namespace GB28181.App
         //public double Longitude;
 
         protected SIPMonitorEvent()
-		{
+        {
             Created = DateTimeOffset.UtcNow;
         }
 
-		public static SIPMonitorEvent ParseEventCSV(string eventCSV)
-		{
+        public static SIPMonitorEvent ParseEventCSV(string eventCSV)
+        {
             if (eventCSV == null || eventCSV.Trim().Length == 0)
             {
                 return null;
@@ -232,21 +226,21 @@ namespace GB28181.App
                 logger.Warn("The monitor event prefix of " + eventCSV.Trim().Substring(0, 1) + " was not recognised. " + eventCSV);
                 return null;
             }
-		}
+        }
 
         //public static void DefaultSIPMonitorLogger(SIPMonitorEvent sipMonitorEvent)
         //{
         //    logger.Debug(sipMonitorEvent.Message);
         //}
-        
-		public virtual string ToCSV()
-		{
+
+        public virtual string ToCSV()
+        {
             throw new NotImplementedException("SIPMonitorEvent ToCSV (this is a virtual method only, you should be using a sub-class).");
-		}
+        }
 
-		#region Unit testing.
+        #region Unit testing.
 
-		#if UNITTEST
+#if UNITTEST
 	
 		[TestFixture]
 		public class ProxyMonitorEventUnitTest
@@ -286,8 +280,8 @@ namespace GB28181.App
 			*/
 		}
 
-		#endif
+#endif
 
-		#endregion
-	}
+        #endregion
+    }
 }

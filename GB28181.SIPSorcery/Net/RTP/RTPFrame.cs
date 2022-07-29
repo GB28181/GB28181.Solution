@@ -10,11 +10,9 @@
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
 
-using GB28181.Net.RTP;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using GB28181.Net.RTP;
 
 namespace GB28181.Net
 {
@@ -161,7 +159,7 @@ namespace GB28181.Net
 
         public byte[] GetFramePayload()
         {
-           var buffer = new System.IO.MemoryStream();
+            var buffer = new System.IO.MemoryStream();
             foreach (var packet in FramePackets.OrderBy(x => x.Header.SequenceNumber))
             {
                 buffer.Write(packet.Payload, 0, packet.Payload.Length);

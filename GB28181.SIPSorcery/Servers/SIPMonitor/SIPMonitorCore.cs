@@ -1,18 +1,17 @@
-﻿using GB28181.Logger4Net;
-using GB28181.Net;
-using GB28181.Servers.SIPMessages;
-using GB28181;
-using GB28181.App;
-using GB28181.Sys;
-using GB28181.Config;
-using GB28181.Sys.XML;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
-using System.Linq;
+using GB28181.App;
+using GB28181.Config;
+using GB28181.Logger4Net;
+using GB28181.Net;
+using GB28181.Servers.SIPMessages;
+using GB28181.Sys;
+using GB28181.Sys.XML;
 using SIPSorcery.SIP;
 
 namespace GB28181.Servers.SIPMonitor
@@ -2009,8 +2008,8 @@ namespace GB28181.Servers.SIPMonitor
 
 
         private string _fromTag = string.Empty;
-        int cSeq = CallHelpers.CreateNewCSeq();
-        SIPViaSet _vvia;
+        private int cSeq = CallHelpers.CreateNewCSeq();
+        private SIPViaSet _vvia;
         //  private int sn = 1;
         /// <summary>
         /// 移动设备位置订阅

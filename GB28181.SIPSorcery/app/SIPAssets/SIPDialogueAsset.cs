@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Linq;
 using GB28181.Sys;
-using System.Data;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
-   // // [Table(Name = "sipdialogues")]
-    public class SIPDialogueAsset: ISIPAsset
+    // // [Table(Name = "sipdialogues")]
+    public class SIPDialogueAsset : ISIPAsset
     {
         public const string XML_DOCUMENT_ELEMENT_NAME = "sipdialogues";
         public const string XML_ELEMENT_NAME = "sipdialogue";
@@ -181,7 +181,7 @@ namespace GB28181.App
         public string Direction
         {
             get { return SIPDialogue.Direction.ToString(); }
-            set 
+            set
             {
                 if (!value.IsNullOrBlank())
                 {
@@ -306,23 +306,25 @@ namespace GB28181.App
 
         public void Load(DataRow row)
         {
-            SIPDialogue = new SIPDialogue();
-            SIPDialogue.Id = new Guid(row["id"] as string);
-            SIPDialogue.Owner = row["owner"] as string;
-            SIPDialogue.AdminMemberId = row["adminmemberid"] as string;
-            SIPDialogue.LocalTag = row["localtag"] as string;
-            SIPDialogue.RemoteTag = row["remotetag"] as string;
-            SIPDialogue.LocalUserField = SIPUserField.ParseSIPUserField(row["localuserfield"] as string);
-            SIPDialogue.RemoteUserField = SIPUserField.ParseSIPUserField(row["remoteuserfield"] as string);
-            SIPDialogue.CallId = row["callid"] as string;
-            SIPDialogue.CSeq = Convert.ToInt32(row["cseq"]);
-            SIPDialogue.BridgeId = new Guid(row["bridgeid"] as string);
-            SIPDialogue.RemoteTarget = SIPURI.ParseSIPURI(row["remotetarget"] as string);
-            SIPDialogue.RouteSet = (row["routeset"] != null && row["routeset"] != DBNull.Value && !(row["routeset"] as string).IsNullOrBlank()) ? SIPRouteSet.ParseSIPRouteSet(row["routeset"] as string) : null;
-            SIPDialogue.ProxySendFrom = (row["proxysipsocket"] != null && row["proxysipsocket"] != DBNull.Value) ? row["proxysipsocket"] as string : null;
-            SIPDialogue.CDRId = new Guid(row["cdrid"] as string);
-            SIPDialogue.CallDurationLimit = (row["calldurationlimit"] != null && row["calldurationlimit"] != DBNull.Value) ? Convert.ToInt32(row["calldurationlimit"]) : 0;
-            SIPDialogue.Direction = (row["direction"] != null) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), row["direction"] as string, true) : SIPCallDirection.None;
+            SIPDialogue = new SIPDialogue
+            {
+                Id = new Guid(row["id"] as string),
+                Owner = row["owner"] as string,
+                AdminMemberId = row["adminmemberid"] as string,
+                LocalTag = row["localtag"] as string,
+                RemoteTag = row["remotetag"] as string,
+                LocalUserField = SIPUserField.ParseSIPUserField(row["localuserfield"] as string),
+                RemoteUserField = SIPUserField.ParseSIPUserField(row["remoteuserfield"] as string),
+                CallId = row["callid"] as string,
+                CSeq = Convert.ToInt32(row["cseq"]),
+                BridgeId = new Guid(row["bridgeid"] as string),
+                RemoteTarget = SIPURI.ParseSIPURI(row["remotetarget"] as string),
+                RouteSet = (row["routeset"] != null && row["routeset"] != DBNull.Value && !(row["routeset"] as string).IsNullOrBlank()) ? SIPRouteSet.ParseSIPRouteSet(row["routeset"] as string) : null,
+                ProxySendFrom = (row["proxysipsocket"] != null && row["proxysipsocket"] != DBNull.Value) ? row["proxysipsocket"] as string : null,
+                CDRId = new Guid(row["cdrid"] as string),
+                CallDurationLimit = (row["calldurationlimit"] != null && row["calldurationlimit"] != DBNull.Value) ? Convert.ToInt32(row["calldurationlimit"]) : 0,
+                Direction = (row["direction"] != null) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), row["direction"] as string, true) : SIPCallDirection.None
+            };
             Inserted = DateTimeOffset.Parse(row["inserted"] as string);
             TransferMode = row["transfermode"] as string;
             SDP = row["sdp"] as string;
@@ -345,23 +347,25 @@ namespace GB28181.App
 
         public void Load(XElement dialogueElement)
         {
-            SIPDialogue = new SIPDialogue();
-            SIPDialogue.Id = new Guid(dialogueElement.Element("id").Value);
-            SIPDialogue.Owner = dialogueElement.Element("owner").Value;
-            SIPDialogue.AdminMemberId = dialogueElement.Element("adminmemberid").Value;
-            SIPDialogue.LocalTag = dialogueElement.Element("localtag").Value;
-            SIPDialogue.RemoteTag = dialogueElement.Element("remotetag").Value;
-            SIPDialogue.LocalUserField = SIPUserField.ParseSIPUserField(dialogueElement.Element("localuserfield").Value);
-            SIPDialogue.RemoteUserField = SIPUserField.ParseSIPUserField(dialogueElement.Element("remoteuserfield").Value);
-            SIPDialogue.CallId = dialogueElement.Element("callid").Value;
-            SIPDialogue.CSeq = Convert.ToInt32(dialogueElement.Element("cseq").Value);
-            SIPDialogue.BridgeId = new Guid(dialogueElement.Element("bridgeid").Value);
-            SIPDialogue.RemoteTarget = SIPURI.ParseSIPURI(dialogueElement.Element("remotetarget").Value);
-            SIPDialogue.RouteSet = (dialogueElement.Element("routeset") != null && !dialogueElement.Element("routeset").Value.IsNullOrBlank()) ? SIPRouteSet.ParseSIPRouteSet(dialogueElement.Element("routeset").Value) : null;
-            SIPDialogue.ProxySendFrom = (dialogueElement.Element("proxysipsocket") != null) ? dialogueElement.Element("proxysipsocket").Value : null;
-            SIPDialogue.CDRId = new Guid(dialogueElement.Element("cdrid").Value);
-            SIPDialogue.CallDurationLimit = (dialogueElement.Element("calldurationlimit") != null) ? Convert.ToInt32(dialogueElement.Element("calldurationlimit").Value) : 0;
-            SIPDialogue.Direction = (dialogueElement.Element("direction") != null) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), dialogueElement.Element("direction").Value, true) : SIPCallDirection.None;
+            SIPDialogue = new SIPDialogue
+            {
+                Id = new Guid(dialogueElement.Element("id").Value),
+                Owner = dialogueElement.Element("owner").Value,
+                AdminMemberId = dialogueElement.Element("adminmemberid").Value,
+                LocalTag = dialogueElement.Element("localtag").Value,
+                RemoteTag = dialogueElement.Element("remotetag").Value,
+                LocalUserField = SIPUserField.ParseSIPUserField(dialogueElement.Element("localuserfield").Value),
+                RemoteUserField = SIPUserField.ParseSIPUserField(dialogueElement.Element("remoteuserfield").Value),
+                CallId = dialogueElement.Element("callid").Value,
+                CSeq = Convert.ToInt32(dialogueElement.Element("cseq").Value),
+                BridgeId = new Guid(dialogueElement.Element("bridgeid").Value),
+                RemoteTarget = SIPURI.ParseSIPURI(dialogueElement.Element("remotetarget").Value),
+                RouteSet = (dialogueElement.Element("routeset") != null && !dialogueElement.Element("routeset").Value.IsNullOrBlank()) ? SIPRouteSet.ParseSIPRouteSet(dialogueElement.Element("routeset").Value) : null,
+                ProxySendFrom = (dialogueElement.Element("proxysipsocket") != null) ? dialogueElement.Element("proxysipsocket").Value : null,
+                CDRId = new Guid(dialogueElement.Element("cdrid").Value),
+                CallDurationLimit = (dialogueElement.Element("calldurationlimit") != null) ? Convert.ToInt32(dialogueElement.Element("calldurationlimit").Value) : 0,
+                Direction = (dialogueElement.Element("direction") != null) ? (SIPCallDirection)Enum.Parse(typeof(SIPCallDirection), dialogueElement.Element("direction").Value, true) : SIPCallDirection.None
+            };
             Inserted = DateTimeOffset.Parse(dialogueElement.Element("inserted").Value);
             TransferMode = dialogueElement.Element("transfermode").Value;
             SDP = dialogueElement.Element("sdp").Value;

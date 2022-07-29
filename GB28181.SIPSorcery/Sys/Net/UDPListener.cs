@@ -47,8 +47,10 @@ namespace GB28181.Sys
             {
                 m_udpClient = new UdpClient(m_localEndPoint);
 
-                Thread listenThread = new Thread(new ThreadStart(Listen));
-                listenThread.Name = THREAD_NAME + Crypto.GetRandomString(4);
+                Thread listenThread = new Thread(new ThreadStart(Listen))
+                {
+                    Name = THREAD_NAME + Crypto.GetRandomString(4)
+                };
                 listenThread.Start();
 
                 logger.Debug("UDPListener listener created " + m_localEndPoint + ".");

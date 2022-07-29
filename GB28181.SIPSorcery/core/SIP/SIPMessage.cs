@@ -32,7 +32,7 @@ namespace GB28181
         public SIPMessage(Encoding sipEncoding, Encoding sipBodyEncoding) : base(sipEncoding, sipBodyEncoding) { }
 
 
-        public new static SIPMessageBuffer ParseSIPMessage(
+        public static new SIPMessageBuffer ParseSIPMessage(
             string message,
             SIPEndPoint localSIPEndPoint,
             SIPEndPoint remoteSIPEndPoint)

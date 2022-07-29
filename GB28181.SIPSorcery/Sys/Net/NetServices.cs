@@ -31,7 +31,7 @@ namespace GB28181.Sys.Net
 
     public static class NetServices
     {
-        public const int UDP_PORT_START  = 1025;
+        public const int UDP_PORT_START = 1025;
         public const int UDP_PORT_END = 65535;
         private const int RTP_RECEIVE_BUFFER_SIZE = 100000000;
         private const int RTP_SEND_BUFFER_SIZE = 100000000;
@@ -46,7 +46,7 @@ namespace GB28181.Sys.Net
         public static UdpClient CreateRandomUDPListener(IPAddress localAddress, out IPEndPoint localEndPoint)
         {
             //return SIPSorcery.Sys.NetServices.CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
-          return  CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
+            return CreateRandomUDPListener(localAddress, UDP_PORT_START, UDP_PORT_END, null, out localEndPoint);
         }
 
         public static UdpClient CreateRandomUDPListener(IPAddress localAddress, int start, int end, ArrayList inUsePorts, out IPEndPoint localEndPoint)
@@ -69,7 +69,7 @@ namespace GB28181.Sys.Net
                             randomClient = new UdpClient(localEndPoint);
                             break;
                         }
-                        catch(Exception excp)
+                        catch (Exception excp)
                         {
                             logger.Warn("Warning couldn't create UDP end point for " + localAddress + ":" + port + "." + excp.Message);
                         }
@@ -78,7 +78,7 @@ namespace GB28181.Sys.Net
                     }
                 }
 
-               logger.Debug("Attempts to create UDP end point for " + localAddress  + " by randam port was " + attempts);
+                logger.Debug("Attempts to create UDP end point for " + localAddress + " by randam port was " + attempts);
 
                 return randomClient;
             }
@@ -152,9 +152,11 @@ namespace GB28181.Sys.Net
                         try
                         {
                             // The potential ports have been found now try and use them.
-                            rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                            rtpSocket.ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE;
-                            rtpSocket.SendBufferSize = RTP_SEND_BUFFER_SIZE;
+                            rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)
+                            {
+                                ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE,
+                                SendBufferSize = RTP_SEND_BUFFER_SIZE
+                            };
 
                             rtpSocket.Bind(new IPEndPoint(localAddress, rtpPort));
 
@@ -203,7 +205,7 @@ namespace GB28181.Sys.Net
             }
         }
 
- 
+
         /// <summary>
         /// Extracts the default gateway from the route print command
         /// </summary>

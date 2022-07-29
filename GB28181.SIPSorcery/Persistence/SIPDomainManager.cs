@@ -17,15 +17,15 @@
 //
 
 
-using GB28181.Logger4Net;
-using GB28181.Persistence;
-using GB28181.Sys;
-using SIPSorcery.Sys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
+using GB28181.Logger4Net;
+using GB28181.Persistence;
+using GB28181.Sys;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -179,9 +179,9 @@ namespace GB28181.App
 
                     var targetDomain = allAliases?.FirstOrDefault(domainItem => domainItem.Aliases.Exists(aliasItem => aliasItem.ToLower() == host.ToLower()));
 
-                    if (targetDomain  == null && wildcardOk)
+                    if (targetDomain == null && wildcardOk)
                     {
-                         targetDomain = m_wildCardDomain;
+                        targetDomain = m_wildCardDomain;
                     }
                     else
                     {

@@ -13,15 +13,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using GB28181.Sys;
-using GB28181.Logger4Net;
-using System.IO;
 using GB28181.Net.RTP;
 using SIPSorcery.Sys;
 
@@ -105,10 +100,12 @@ namespace GB28181.Net
             // The potential ports have been found now try and use them.
             if (_protocolType == ProtocolType.Udp)
             {
-                _rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, _protocolType);
-                _rtpSocket.ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE;
-                _rtpSocket.SendBufferSize = RTP_SEND_BUFFER_SIZE;
-                
+                _rtpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, _protocolType)
+                {
+                    ReceiveBufferSize = RTP_RECEIVE_BUFFER_SIZE,
+                    SendBufferSize = RTP_SEND_BUFFER_SIZE
+                };
+
                 _rtpSocket.Bind(new IPEndPoint(IPAddress.Any, _rtpPort));
                 _controlSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, _protocolType);
                 _controlSocket.Bind(new IPEndPoint(IPAddress.Any, _controlPort));

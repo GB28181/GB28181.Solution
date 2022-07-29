@@ -6,7 +6,8 @@ using System.Text;
 namespace GB28181.Persistence
 {
 
-    internal class SQLExpressionVisitor : ExpressionVisitor {
+    internal class SQLExpressionVisitor : ExpressionVisitor
+    {
 
         private StringBuilder sb;
         private bool m_isLeaf;
@@ -14,27 +15,34 @@ namespace GB28181.Persistence
 
         internal SQLExpressionVisitor() { }
 
-        internal string Translate(Expression expression) {
+        internal string Translate(Expression expression)
+        {
             this.sb = new StringBuilder();
             this.Visit(expression);
             string query = this.sb.ToString().Trim();
             return query;
         }
 
-        private static Expression StripQuotes(Expression e) {
-            while (e.NodeType == ExpressionType.Quote) {
+        private static Expression StripQuotes(Expression e)
+        {
+            while (e.NodeType == ExpressionType.Quote)
+            {
                 e = ((UnaryExpression)e).Operand;
             }
             return e;
         }
 
-        protected override Expression VisitMethodCall(MethodCallExpression m) {
+        protected override Expression VisitMethodCall(MethodCallExpression m)
+        {
             if (m.Method.DeclaringType == typeof(Queryable) &&
                 (m.Method.Name == "Where" || m.Method.Name == "Select" || m.Method.Name == "Count" ||
-                    m.Method.Name == "FirstOrDefault")) {
+                    m.Method.Name == "FirstOrDefault"))
+            {
 
-                if (m_isLeaf) {
-                    if (m.Method.Name == "Where" && !m_whereAdded) {
+                if (m_isLeaf)
+                {
+                    if (m.Method.Name == "Where" && !m_whereAdded)
+                    {
                         sb.Append(" where ");
                         m_whereAdded = true;
                     }
@@ -44,8 +52,10 @@ namespace GB28181.Persistence
                     this.Visit(lambda.Body);
                     return m;
                 }
-                else {
-                    if (m.Method.Name == "Select") {
+                else
+                {
+                    if (m.Method.Name == "Select")
+                    {
                         m_isLeaf = true;
                         sb.Append("select * from {0}");
                         this.Visit(m.Arguments[0]);
@@ -53,7 +63,8 @@ namespace GB28181.Persistence
                         this.Visit(lambda.Body);
                         return m;
                     }
-                    else if (m.Method.Name == "Where") {
+                    else if (m.Method.Name == "Where")
+                    {
                         m_isLeaf = true;
                         m_whereAdded = true;
                         sb.Append("select * from {0} where ");
@@ -62,13 +73,15 @@ namespace GB28181.Persistence
                         this.Visit(lambda.Body);
                         return m;
                     }
-                    else if (m.Method.Name == "Count") {
+                    else if (m.Method.Name == "Count")
+                    {
                         m_isLeaf = true;
                         sb.Append("select count(*) from {0}");
                         this.Visit(m.Arguments[0]);
                         return m;
                     }
-                    else if (m.Method.Name == "FirstOrDefault") {
+                    else if (m.Method.Name == "FirstOrDefault")
+                    {
                         m_isLeaf = true;
                         sb.Append("select * from {0}");
                         this.Visit(m.Arguments[0]);
@@ -81,8 +94,10 @@ namespace GB28181.Persistence
             throw new NotSupportedException(string.Format("The method '{0}' is not supported by SQL.", m.Method.Name));
         }
 
-        protected override Expression VisitUnary(UnaryExpression u) {
-            switch (u.NodeType) {
+        protected override Expression VisitUnary(UnaryExpression u)
+        {
+            switch (u.NodeType)
+            {
                 case ExpressionType.Not:
                     sb.Append("not (");
                     this.Visit(u.Operand);
@@ -94,9 +109,11 @@ namespace GB28181.Persistence
             return u;
         }
 
-        protected override Expression VisitBinary(BinaryExpression b) {
+        protected override Expression VisitBinary(BinaryExpression b)
+        {
             this.Visit(b.Left);
-            switch (b.NodeType) {
+            switch (b.NodeType)
+            {
                 case ExpressionType.And | ExpressionType.AndAlso:
                     sb.Append(" and ");
                     break;
@@ -129,22 +146,29 @@ namespace GB28181.Persistence
             return b;
         }
 
-        protected override Expression VisitConstant(ConstantExpression c) {
+        protected override Expression VisitConstant(ConstantExpression c)
+        {
             IQueryable q = c.Value as IQueryable;
-            if (q != null) {
+            if (q != null)
+            {
                 //throw new ApplicationException("Nested expressions not supported.");
             }
-            else if (c.Value == null) {
+            else if (c.Value == null)
+            {
                 sb.Append("null");
             }
-            else {
-                if (c.Value.GetType() == typeof(Guid)) {
+            else
+            {
+                if (c.Value.GetType() == typeof(Guid))
+                {
                     sb.Append("'");
                     sb.Append(c.Value);
                     sb.Append("'");
                 }
-                else {
-                    switch (Type.GetTypeCode(c.Value.GetType())) {
+                else
+                {
+                    switch (Type.GetTypeCode(c.Value.GetType()))
+                    {
                         case TypeCode.DateTime:
                             sb.Append("'");
                             sb.Append(((DateTime)c.Value).ToString("o"));
@@ -173,12 +197,16 @@ namespace GB28181.Persistence
             return c;
         }
 
-        protected override Expression VisitMemberAccess(MemberExpression m) {
-            if (m.Expression != null && m.Expression.NodeType == ExpressionType.Parameter) {
-                if (GetMemberType(m) == typeof(Boolean)) {
+        protected override Expression VisitMemberAccess(MemberExpression m)
+        {
+            if (m.Expression != null && m.Expression.NodeType == ExpressionType.Parameter)
+            {
+                if (GetMemberType(m) == typeof(Boolean))
+                {
                     sb.Append(m.Member.Name.ToLower() + " = '1'");
                 }
-                else {
+                else
+                {
                     sb.Append(m.Member.Name.ToLower());
                 }
                 return m;
@@ -186,20 +214,23 @@ namespace GB28181.Persistence
             throw new NotSupportedException(string.Format("The member '{0}' is not supported by SQL.", m.Member.Name));
         }
 
-        private string GetTableName(MethodCallExpression m) {
+        private string GetTableName(MethodCallExpression m)
+        {
             IQueryable q = ((ConstantExpression)m.Arguments[0]).Value as IQueryable;
             return GetTableName(q.ElementType);
         }
 
-        private string GetTableName(Type tableType) {
+        private string GetTableName(Type tableType)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(tableType);
             //MetaTable table = mapping.GetTable(tableType);
             //return table.TableName;
-            return null; 
+            return null;
         }
 
-        private bool IsPrimaryKey(MemberExpression m) {
+        private bool IsPrimaryKey(MemberExpression m)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
             //MetaTable table = mapping.GetTable(m.Member.DeclaringType);
@@ -211,7 +242,8 @@ namespace GB28181.Persistence
             return false;
         }
 
-        private Type GetMemberType(MemberExpression m) {
+        private Type GetMemberType(MemberExpression m)
+        {
             //AttributeMappingSource mappingSource = new AttributeMappingSource();
             //MetaModel mapping = mappingSource.GetModel(m.Member.DeclaringType);
             //MetaTable table = mapping.GetTable(m.Member.DeclaringType);

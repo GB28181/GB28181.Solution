@@ -11,12 +11,6 @@
 //
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Data;
-using System.Net;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using GB28181.Logger4Net;
 
 #if UNITTEST
@@ -40,7 +34,7 @@ namespace GB28181.Net
     ///
     /// </summary>
     public class RTSPURL
-	{
+    {
         public const int DNS_RESOLUTION_TIMEOUT = 2000;    // Timeout for resolving DNS hosts in milliseconds.
 
         public const string TRANSPORT_ADDR_SEPARATOR = "://";
@@ -49,27 +43,26 @@ namespace GB28181.Net
         public const char HEADER_START_DELIMITER = '?';
         private const char HEADER_TAG_DELIMITER = '&';
         private const char TAG_NAME_VALUE_SEPERATOR = '=';
-        
+
         //private static int m_defaultRTSPPort = RTSPConstants.DEFAULT_RTSP_PORT;
         private static string m_rtspTransport = RTSPConstants.RTSP_RELIABLE_TRANSPORTID;
-		
-		private static ILog logger = AssemblyStreamState.logger;
+
+        private static ILog logger = AssemblyStreamState.logger;
 
         public string URLTransport = m_rtspTransport;
         public string Host;
         public string Path;
 
-		private RTSPURL()
-		{}
+        private RTSPURL()
+        { }
 
-		public static RTSPURL ParseRTSPURL(string url)
-		{
-			RTSPHeaderParserError notConcerned;
-			return ParseRTSPURL(url, out notConcerned);
-		}
-	
-		public static RTSPURL ParseRTSPURL(string url, out RTSPHeaderParserError parserError)
-		{
+        public static RTSPURL ParseRTSPURL(string url)
+        {
+            return ParseRTSPURL(url, out RTSPHeaderParserError notConcerned);
+        }
+
+        public static RTSPURL ParseRTSPURL(string url, out RTSPHeaderParserError parserError)
+        {
             try
             {
                 parserError = RTSPHeaderParserError.None;
@@ -82,29 +75,29 @@ namespace GB28181.Net
                 }
                 else
                 {
-                     int transAddrPosn = url.IndexOf(TRANSPORT_ADDR_SEPARATOR);
+                    int transAddrPosn = url.IndexOf(TRANSPORT_ADDR_SEPARATOR);
 
-                     if (transAddrPosn == -1)
-                     {
-                         parserError = RTSPHeaderParserError.MandatoryColonMissing;
-                         return null;
-                     }
-                     else
-                     {
-                         rtspURL.URLTransport = url.Substring(0, transAddrPosn);
-                         string urlHostPortion = url.Substring(transAddrPosn + TRANSPORT_ADDR_SEPARATOR.Length);
+                    if (transAddrPosn == -1)
+                    {
+                        parserError = RTSPHeaderParserError.MandatoryColonMissing;
+                        return null;
+                    }
+                    else
+                    {
+                        rtspURL.URLTransport = url.Substring(0, transAddrPosn);
+                        string urlHostPortion = url.Substring(transAddrPosn + TRANSPORT_ADDR_SEPARATOR.Length);
 
-                         int hostDelimIndex = urlHostPortion.IndexOf(HOST_ADDR_DELIMITER);
-                         if (hostDelimIndex != -1)
-                         {
-                             rtspURL.Host = urlHostPortion.Substring(0, hostDelimIndex);
-                             rtspURL.Path = urlHostPortion.Substring(hostDelimIndex);
-                         }
-                         else
-                         {
-                             rtspURL.Host = urlHostPortion;
-                         }
-                     }
+                        int hostDelimIndex = urlHostPortion.IndexOf(HOST_ADDR_DELIMITER);
+                        if (hostDelimIndex != -1)
+                        {
+                            rtspURL.Host = urlHostPortion.Substring(0, hostDelimIndex);
+                            rtspURL.Path = urlHostPortion.Substring(hostDelimIndex);
+                        }
+                        else
+                        {
+                            rtspURL.Host = urlHostPortion;
+                        }
+                    }
 
                     return rtspURL;
                 }
@@ -117,22 +110,22 @@ namespace GB28181.Net
             {
                 throw new ApplicationException("There was an exception parsing an RTSP URL. " + excp.Message + " url=" + url);
             }
-		}
+        }
 
-		public new string ToString()
-		{
-			try
-			{
+        public new string ToString()
+        {
+            try
+            {
                 string urlStr = URLTransport + TRANSPORT_ADDR_SEPARATOR + Host;
                 urlStr += (Path != null) ? Path : null;
-               
-				return urlStr;
-			}
-			catch(Exception excp)
-			{
-				logger.Error("Exception RTSPURL ToString. " + excp.Message);
-				throw excp;
-			}
-		}
-	}
+
+                return urlStr;
+            }
+            catch (Exception excp)
+            {
+                logger.Error("Exception RTSPURL ToString. " + excp.Message);
+                throw excp;
+            }
+        }
+    }
 }

@@ -14,11 +14,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Text.RegularExpressions;
-using GB28181.Sys;
 using GB28181.Logger4Net;
 
 #if UNITTEST
@@ -47,8 +44,8 @@ namespace GB28181
     /// gen-value      =  token / host / quoted-string
     /// </bnf>
     [DataContract]
-	public class SIPParameters
-	{
+    public class SIPParameters
+    {
         private const char TAG_NAME_VALUE_SEPERATOR = '=';
         private const char QUOTE = '"';
         private const char BACK_SLASH = '\\';
@@ -66,9 +63,9 @@ namespace GB28181
         [IgnoreDataMember]
         public int Count
         {
-            get { return (m_dictionary != null) ? m_dictionary.Count : 0;  }
+            get { return (m_dictionary != null) ? m_dictionary.Count : 0; }
         }
-        
+
         /// <summary>
         /// Parses the name value pairs from a SIP parameter or header string.
         /// </summary>
@@ -89,7 +86,7 @@ namespace GB28181
                 {
                     AddKeyValuePair(keyValuePair, m_dictionary);
                 }
-            }   
+            }
         }
 
         public static string[] GetKeyValuePairsFromQuoted(string quotedString, char delimiter)
@@ -102,10 +99,10 @@ namespace GB28181
                 {
                     return null;
                 }
-                else if(quotedString.IndexOf(delimiter) == -1)
+                else if (quotedString.IndexOf(delimiter) == -1)
                 {
                     //return quotedString.Split(delimiter);
-                    return new string[] {quotedString};
+                    return new string[] { quotedString };
                 }
                 else
                 {
@@ -278,22 +275,27 @@ namespace GB28181
                 int index = 0;
                 foreach (KeyValuePair<string, string> entry in m_dictionary)
                 {
-                    keys[index++] = entry.Key as string;
+                    keys[index++] = entry.Key;
                 }
 
                 return keys;
             }
         }
 
-        public new string ToString() {
+        public new string ToString()
+        {
             string paramStr = null;
 
-            if (m_dictionary != null) {
-                foreach (KeyValuePair<string, string> param in m_dictionary) {
-                    if (param.Value != null && param.Value.Trim().Length > 0) {
+            if (m_dictionary != null)
+            {
+                foreach (KeyValuePair<string, string> param in m_dictionary)
+                {
+                    if (param.Value != null && param.Value.Trim().Length > 0)
+                    {
                         paramStr += TagDelimiter + param.Key + TAG_NAME_VALUE_SEPERATOR + SIPEscape.SIPURIParameterEscape(param.Value);
                     }
-                    else {
+                    else
+                    {
                         paramStr += TagDelimiter + param.Key;
                     }
                 }
@@ -309,7 +311,7 @@ namespace GB28181
                 SortedList sortedParams = new SortedList();
                 foreach (KeyValuePair<string, string> param in m_dictionary)
                 {
-                    sortedParams.Add(param.Key.ToLower(), (string)param.Value);
+                    sortedParams.Add(param.Key.ToLower(), param.Value);
                 }
 
                 StringBuilder sortedParamBuilder = new StringBuilder();
@@ -331,10 +333,10 @@ namespace GB28181
             SIPParameters copy = new SIPParameters(ToString(), TagDelimiter);
             return copy;
         }
-						
-		#region Unit testing.
 
-		#if UNITTEST
+        #region Unit testing.
+
+#if UNITTEST
 	
 		[TestFixture]
 		public class SIPParamsUnitTest
@@ -507,8 +509,8 @@ namespace GB28181
             }
 		}
 
-		#endif
+#endif
 
-		#endregion
-	}
+        #endregion
+    }
 }

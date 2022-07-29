@@ -31,7 +31,7 @@ using System.Data;
 
 namespace GB28181.App
 {
-   // // [Table(Name = "sipproviderbindings")]
+    // // [Table(Name = "sipproviderbindings")]
     [DataContract]
     public class SIPProviderBinding : INotifyPropertyChanged, ISIPAsset
     {
@@ -303,7 +303,7 @@ namespace GB28181.App
                 ProviderName = bindingRow["providername"] as string;
                 m_owner = bindingRow["owner"] as string;
                 AdminMemberId = bindingRow["adminmemberid"] as string;
-                m_isRegistered = (bindingRow.Table.Columns.Contains("isregistered") && bindingRow["isregistered"] != DBNull.Value && bindingRow["isregistered"] != null) ? Convert.ToBoolean(bindingRow["isregistered"]) : false;
+                m_isRegistered = (bindingRow.Table.Columns.Contains("isregistered") && bindingRow["isregistered"] != DBNull.Value && bindingRow["isregistered"] != null) && Convert.ToBoolean(bindingRow["isregistered"]);
 
                 if (bindingRow.Table.Columns.Contains("bindinguri") && bindingRow["bindinguri"] != DBNull.Value && bindingRow["bindinguri"] != null && !bindingRow["bindinguri"].ToString().IsNullOrBlank())
                 {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 namespace GB28181.Sys.XML
@@ -28,9 +24,11 @@ namespace GB28181.Sys.XML
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
             MemoryStream stream = new MemoryStream();
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineChars = "\r\n";
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                NewLineChars = "\r\n"
+            };
             //settings.Encoding = Encoding.GetEncoding("GB2312");
             //settings.Encoding = new UTF8Encoding(false);
             //settings.NewLineOnAttributes = true;

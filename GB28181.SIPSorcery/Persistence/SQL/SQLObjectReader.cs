@@ -3,31 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using GB28181.App;
-using GB28181.Sys;
 using GB28181.Logger4Net;
+using GB28181.Sys;
 
-namespace GB28181.Persistence {
+namespace GB28181.Persistence
+{
 
     public class SQLObjectReader<T> : IEnumerable<T>, IEnumerable where T : class, ISIPAsset, new()
     {
 
         private static ILog logger = AppState.logger;
-
-        Enumerator enumerator;
+        private Enumerator enumerator;
         private DataSet m_selectResult;
         private SetterDelegate m_setter;
 
-        public SQLObjectReader(DataSet selectResult) {
+        public SQLObjectReader(DataSet selectResult)
+        {
             m_selectResult = selectResult;
         }
 
-        public SQLObjectReader(DataSet selectResult, SetterDelegate setter) {
+        public SQLObjectReader(DataSet selectResult, SetterDelegate setter)
+        {
             m_selectResult = selectResult;
             m_setter = setter;
             this.enumerator = new Enumerator(selectResult, setter);
         }
 
-        public IEnumerator<T> GetEnumerator() {
+        public IEnumerator<T> GetEnumerator()
+        {
             Enumerator e = this.enumerator;
 
             if (e == null)
@@ -38,39 +41,47 @@ namespace GB28181.Persistence {
             return e;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return this.GetEnumerator();
         }
 
-        public T First() {
+        public T First()
+        {
             T instance = new T();
             instance.Load(m_selectResult.Tables[0].Rows[0]);
             return instance;
         }
 
-        class Enumerator : IEnumerator<T>, IEnumerator, IDisposable {
+        private class Enumerator : IEnumerator<T>, IEnumerator, IDisposable
+        {
 
             private DataSet m_selectResult;
             private SetterDelegate m_setter;
-            int m_selectIndex;
-            T current;
+            private int m_selectIndex;
+            private T current;
 
-            internal Enumerator(DataSet selectResult, SetterDelegate setter) {
+            internal Enumerator(DataSet selectResult, SetterDelegate setter)
+            {
                 m_selectResult = selectResult;
                 m_setter = setter;
             }
 
-            public T Current {
+            public T Current
+            {
                 get { return this.current; }
             }
 
-            object IEnumerator.Current {
+            object IEnumerator.Current
+            {
                 get { return this.current; }
             }
 
-            public bool MoveNext() {
+            public bool MoveNext()
+            {
 
-                if (m_selectIndex < m_selectResult.Tables[0].Rows.Count) {
+                if (m_selectIndex < m_selectResult.Tables[0].Rows.Count)
+                {
                     T instance = new T();
                     instance.Load(m_selectResult.Tables[0].Rows[m_selectIndex]);
                     this.current = instance;
@@ -80,9 +91,9 @@ namespace GB28181.Persistence {
                 return false;
             }
 
-            public void Reset() {  }
+            public void Reset() { }
 
-            public void Dispose() {  }
+            public void Dispose() { }
         }
     }
 }

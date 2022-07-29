@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace GB28181.Net
+﻿namespace GB28181.Net
 {
     public class SDPConnectionInformation
     {

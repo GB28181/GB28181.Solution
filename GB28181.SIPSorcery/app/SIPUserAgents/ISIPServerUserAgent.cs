@@ -15,16 +15,13 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SIPSorcery.SIP;
 
-namespace GB28181.App 
+namespace GB28181.App
 {
     public delegate void SIPUASDelegate(ISIPServerUserAgent uas);
 
-    public interface ISIPServerUserAgent 
+    public interface ISIPServerUserAgent
     {
         SIPCallDirection CallDirection { get; }
         SIPDialogue SIPDialogue { get; }

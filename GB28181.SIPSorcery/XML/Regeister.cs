@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace GB28181.Sys.XML
@@ -50,7 +46,8 @@ namespace GB28181.Sys.XML
             public int Num { get; set; }
 
             [XmlElement("Item")]
-            public List<Items> Item { 
+            public List<Items> Item
+            {
                 get { return _item; }
             }
 

@@ -9,8 +9,6 @@
 // License: 
 // Aaron Clauson
 
-using System;
-using System.Net;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -22,7 +20,7 @@ namespace GB28181.Net
     //{
     //    public RTPSink RTPDestSink = null;
     //    public IPEndPoint RTPDestEndPoint = null;
-		
+
     //    public RTPReceiver(RTPSink rtpSink, IPEndPoint dstEndPoint)
     //    {
     //        RTPDestSink = rtpSink;

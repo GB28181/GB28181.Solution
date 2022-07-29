@@ -1,14 +1,7 @@
-﻿using GB28181.Logger4Net;
-using GB28181.Sys;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace GB28181.Net.RTP
 {
@@ -297,7 +290,7 @@ namespace GB28181.Net.RTP
         //            //    tempBuffer = new byte[0];
         //            //}
 
-                   
+
         //            // continue listening for tcp datagram packets
         //            _stream.BeginRead(
         //              internalClient.Buffer,
@@ -312,7 +305,7 @@ namespace GB28181.Net.RTP
         //        }
         //    }
         //}
-     //   FileStream m_fs;
+        //   FileStream m_fs;
         protected void TcpDatagramToEnqueue(byte[] buffer)
         {
             if (buffer.Length > RTPHeader.MIN_HEADER_LEN)

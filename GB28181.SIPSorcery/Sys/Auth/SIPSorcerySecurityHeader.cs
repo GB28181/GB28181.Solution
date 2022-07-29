@@ -4,7 +4,7 @@ using SIPSorcery.Sys;
 
 namespace GB28181.Sys.Auth
 {
-    public class SIPSorcerySecurityHeader 
+    public class SIPSorcerySecurityHeader
     {
         private const string SECURITY_NAMESPACE = "http://www.sipsorcery.com/security";
         private const string SECURITY_HEADER_NAME = "Security";
@@ -17,9 +17,9 @@ namespace GB28181.Sys.Auth
         public string AuthID;
         public string APIKey;
 
-        public  bool MustUnderstand { get { return true; } }
-        public  string Name { get { return SECURITY_HEADER_NAME; } }
-        public  string Namespace { get { return SECURITY_NAMESPACE; } }
+        public bool MustUnderstand { get { return true; } }
+        public string Name { get { return SECURITY_HEADER_NAME; } }
+        public string Namespace { get { return SECURITY_NAMESPACE; } }
 
         public SIPSorcerySecurityHeader(string authID, string apiKey)
         {
@@ -27,7 +27,7 @@ namespace GB28181.Sys.Auth
             APIKey = apiKey;
         }
 
-        protected  void OnWriteHeaderContents(XmlDictionaryWriter writer, string messageVersion)
+        protected void OnWriteHeaderContents(XmlDictionaryWriter writer, string messageVersion)
         {
             if (!AuthID.IsNullOrBlank())
             {
@@ -44,7 +44,7 @@ namespace GB28181.Sys.Auth
             }
         }
 
-        protected  void OnWriteStartHeader(XmlDictionaryWriter writer, string messageVersion)
+        protected void OnWriteStartHeader(XmlDictionaryWriter writer, string messageVersion)
         {
             writer.WriteStartElement(SECURITY_PREFIX, this.Name, this.Namespace);
         }

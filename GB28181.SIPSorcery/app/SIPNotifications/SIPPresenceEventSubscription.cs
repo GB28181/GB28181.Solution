@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SIPSorcery.SIP;
 
 namespace GB28181.App
@@ -149,7 +147,7 @@ namespace GB28181.App
                     Guid sipAccountID = new Guid(machineEvent.ResourceID);
                     //sendNotificationForEvent = Convert.ToBoolean(m_sipAccountPersistor.GetProperty(sipAccountID, "IsSwitchboardEnabled"));
                     sendNotificationForEvent = Convert.ToBoolean(GetSipAccountProperty_External(sipAccountID, "IsSwitchboardEnabled"));
-                    
+
                     if (sendNotificationForEvent)
                     {
                         //avatarURL = m_sipAccountPersistor.GetProperty(sipAccountID, "AvatarURL") as string;

@@ -1,4 +1,4 @@
- // ============================================================================
+// ============================================================================
 // FileName: SIPMonitorConsoleEvent.cs
 //
 // Description:
@@ -19,20 +19,10 @@
 //
 
 using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml;
-using GB28181.Sys;
-using GB28181.Logger4Net;
-using SIPSorcery.Sys;
 using SIPSorcery.SIP;
+using SIPSorcery.Sys;
 
 #if UNITTEST
 using NUnit.Framework;
@@ -206,7 +196,7 @@ namespace GB28181.App
                 string csvEvent =
                     SERIALISATION_PREFIX + "|" +
                     SessionID + "|" +
-                    MonitorServerID + "|" + 
+                    MonitorServerID + "|" +
                     ServerType + "|" +
                     EventType + "|" +
                     Created.ToString(SERIALISATION_DATETIME_FORMAT) + "|" +
