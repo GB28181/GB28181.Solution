@@ -22,7 +22,7 @@ git remote add origin https://github.com/GB28181/GB28181.Solution.git
 ~~~ bash
 running in docker
 running on Linux
-running on aspnetcore 3.1+ （PS：哪位大佬有空，升级一下net6）
+running on net6.0+ 
 ~~~
 
 + [GB28181.Solution的模块说明](./SolutionModules.md)
