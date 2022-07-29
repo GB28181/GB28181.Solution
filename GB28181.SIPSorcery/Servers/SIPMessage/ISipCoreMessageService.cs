@@ -6,7 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using SIPSorcery.SIP;
 
-namespace GB28181.Servers.SIPMessage
+namespace GB28181.Servers.SIPMessages
 {
     public interface ISipMessageCore
     {

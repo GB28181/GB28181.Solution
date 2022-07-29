@@ -6,7 +6,7 @@ using GB28181.Server.Main;
 using GB28181.Server.Message;
 using GB28181.Server.Settings;
 using GB28181.Servers;
-using GB28181.Servers.SIPMessage;
+using GB28181.Servers.SIPMessages;
 using GB28181.Servers.SIPMonitor;
 using GB28181.Service.Protos.DeviceCatalog;
 using GB28181.Service.Protos.DeviceFeature;

@@ -21,7 +21,7 @@ using System.Threading;
 using GB28181.Cache;
 using SIPSorcery.SIP;
 
-namespace GB28181.Servers.SIPMessage
+namespace GB28181.Servers.SIPMessages
 {
 
     public struct MonitorKey
