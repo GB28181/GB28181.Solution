@@ -239,7 +239,7 @@ namespace GB28181.App
                         {
                             // Send authorisation failure or required response
                             SIPResponse authReqdResponse = SIPTransport.GetResponse(sipRequest, authenticationResult.ErrorResponse, null);
-                            authReqdResponse.Header.AuthenticationHeader = authenticationResult.AuthenticationRequiredHeader;
+                            authReqdResponse.Header.AuthenticationHeaders[0] = authenticationResult.AuthenticationRequiredHeader;
                             Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.AppServer, SIPMonitorEventTypesEnum.DialPlan, m_transaction.TransactionRequest.Method + " request not authenticated for " + m_sipUsername + "@" + m_sipDomain + ", responding with " + authenticationResult.ErrorResponse + ".", null));
                             m_transaction.SendFinalResponse(authReqdResponse);
                         }

@@ -10,6 +10,8 @@
 // BSD 3-Clause "New" or "Revised" License, see included LICENSE.md file.
 //
 
+using SIPSorcery.SIP;
+
 namespace GB28181
 {
     public class SIPRequestAuthenticationResult

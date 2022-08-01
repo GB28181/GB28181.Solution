@@ -33,7 +33,7 @@ namespace GB28181.App
 
         private static ILog logger = AppState.logger;
 
-        private static readonly string m_userAgent = SIPConstants.SIP_USERAGENT_STRING;
+        private static readonly string m_userAgent = GBSIPConstants.SIP_USERAGENT_STRING;
 
         private SIPMonitorLogDelegate Log_External;
 
@@ -255,7 +255,7 @@ namespace GB28181.App
 
                 if (sipResponse.Status == SIPResponseStatusCodesEnum.ProxyAuthenticationRequired || sipResponse.Status == SIPResponseStatusCodesEnum.Unauthorised)
                 {
-                    if (sipResponse.Header.AuthenticationHeader != null)
+                    if (sipResponse.Header.AuthenticationHeaders != null)
                     {
                         if (m_attempts >= MAX_REGISTER_ATTEMPTS)
                         {
@@ -463,7 +463,7 @@ namespace GB28181.App
             {
                 if (sipResponse.Header.Contact.Count == 1)
                 {
-                    contactExpires = sipResponse.Header.Contact[0].Expires;
+                    contactExpires = (int)sipResponse.Header.Contact[0].Expires;
                 }
                 else
                 {
@@ -471,7 +471,7 @@ namespace GB28181.App
                     {
                         if (contactHeader.ContactURI == m_sipAccountAOR)
                         {
-                            contactExpires = contactHeader.Expires;
+                            contactExpires = (int)contactHeader.Expires;
                             break;
                         }
                     }
@@ -538,7 +538,7 @@ namespace GB28181.App
         {
             try
             {
-                SIPAuthorisationDigest authRequest = sipResponse.Header.AuthenticationHeader.SIPDigest;
+                SIPAuthorisationDigest authRequest = sipResponse.Header.AuthenticationHeaders[0].SIPDigest;
                 m_lastServerNonce = authRequest.Nonce;
                 string username = (m_authUsername != null) ? m_authUsername : m_sipAccountAOR.User;
                 authRequest.SetCredentials(username, m_password, registerRequest.URI.ToString(), SIPMethodsEnum.REGISTER.ToString());
@@ -551,7 +551,7 @@ namespace GB28181.App
                 regRequest.Header.CSeq = ++m_cseq;
 
                 regRequest.Header.AuthenticationHeader = new SIPAuthenticationHeader(authRequest);
-                regRequest.Header.AuthenticationHeader.SIPDigest.Response = authRequest.Digest;
+                regRequest.Header.AuthenticationHeader.SIPDigest.Response = authRequest.ToString();
 
                 //if (RequestSwitchboardToken)
                 //{

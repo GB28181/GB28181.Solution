@@ -204,21 +204,21 @@ namespace GB28181.App
             set { SIPDialogue.RemoteSDP = value; }
         }
 
-        //// // [Column(Name = "switchboarddescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
-        //public string SwitchboardDescription
-        //{
-        //    get { return SIPDialogue.SwitchboardDescription; }
-        //    set { SIPDialogue.SwitchboardDescription = value; }
-        //}
+        // // [Column(Name = "switchboarddescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string SwitchboardDescription
+        {
+            get { return SIPDialogue.SwitchboardDescription; }
+            set { SIPDialogue.SwitchboardDescription = value; }
+        }
 
-        //// // [Column(Name = "switchboardcallerdescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
-        //public string SwitchboardCallerDescription 
-        //{
-        //    get { return SIPDialogue.SwitchboardCallerDescription; }
-        //    set { SIPDialogue.SwitchboardCallerDescription = value; } 
-        //}
+        // // [Column(Name = "switchboardcallerdescription", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        public string SwitchboardCallerDescription
+        {
+            get { return SIPDialogue.SwitchboardCallerDescription; }
+            set { SIPDialogue.SwitchboardCallerDescription = value; }
+        }
 
-        // // [Column(Name = "switchboardowner", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
+        // [Column(Name = "switchboardowner", DbType = "varchar(1024)", IsPrimaryKey = false, CanBeNull = true, UpdateCheck = UpdateCheck.Never)]
         public string SwitchboardOwner
         {
             get { return SIPDialogue.SwitchboardOwner; }

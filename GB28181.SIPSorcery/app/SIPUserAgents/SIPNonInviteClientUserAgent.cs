@@ -26,7 +26,7 @@ namespace GB28181.App
     {
         private static ILog logger = AppState.logger;
 
-        private static readonly string m_userAgent = SIPConstants.SIP_USERAGENT_STRING;
+        private static readonly string m_userAgent = GBSIPConstants.SIP_USERAGENT_STRING;
 
         private SIPMonitorLogDelegate Log_External;
 
@@ -90,7 +90,7 @@ namespace GB28181.App
 
                 if (sipResponse.Status == SIPResponseStatusCodesEnum.ProxyAuthenticationRequired || sipResponse.Status == SIPResponseStatusCodesEnum.Unauthorised)
                 {
-                    if (sipResponse.Header.AuthenticationHeader != null)
+                    if (sipResponse.Header.AuthenticationHeaders != null)
                     {
                         if ((m_callDescriptor.Username != null || m_callDescriptor.AuthUsername != null) && m_callDescriptor.Password != null)
                         {
@@ -216,7 +216,7 @@ namespace GB28181.App
         {
             try
             {
-                SIPAuthorisationDigest digest = sipResponse.Header.AuthenticationHeader.SIPDigest;
+                SIPAuthorisationDigest digest = sipResponse.Header.AuthenticationHeaders[0].SIPDigest;
                 m_lastServerNonce = digest.Nonce;
                 string username = (m_callDescriptor.AuthUsername != null) ? m_callDescriptor.AuthUsername : m_callDescriptor.Username;
                 digest.SetCredentials(username, m_callDescriptor.Password, originalRequest.URI.ToString(), originalRequest.Method.ToString());
@@ -230,7 +230,7 @@ namespace GB28181.App
                 authRequest.Header.CSeq = originalRequest.Header.CSeq + 1;
 
                 authRequest.Header.AuthenticationHeader = new SIPAuthenticationHeader(digest);
-                authRequest.Header.AuthenticationHeader.SIPDigest.Response = digest.Digest;
+                authRequest.Header.AuthenticationHeader.SIPDigest.Response = digest.GetDigest();
 
                 return authRequest;
             }

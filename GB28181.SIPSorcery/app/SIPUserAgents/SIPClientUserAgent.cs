@@ -19,7 +19,7 @@ using SIPSorcery.Sys;
 
 namespace GB28181.App
 {
-    public class SIPClientUserAgent : ISIPClientUserAgent
+    public class SIPClientUserAgent :ISIPClientUserAgent
     {
         private const int DNS_LOOKUP_TIMEOUT = 5000;
         private const char OUTBOUNDPROXY_AS_ROUTESET_CHAR = '<';    // If this character exists in the call descriptor OutboundProxy setting it gets treated as a Route set.
@@ -27,7 +27,7 @@ namespace GB28181.App
         private static ILog logger = AppState.logger;
         private static ILog rtccLogger = AppState.GetLogger("rtcc");
 
-        private static string m_userAgent = SIPConstants.SIP_USERAGENT_STRING;
+        private static string m_userAgent = GBSIPConstants.SIP_USERAGENT_STRING;
         private static readonly int m_defaultSIPPort = SIPConstants.DEFAULT_SIP_PORT;
         private static readonly string m_sdpContentType = SDP.SDP_MIME_CONTENTTYPE;
         //private static readonly int m_rtccInitialReservationSeconds = SIPSorcery.Entities.CustomerAccountDataLayer.INITIAL_RESERVATION_SECONDS;
@@ -195,10 +195,6 @@ namespace GB28181.App
         {
             try
             {
-                //if (Thread.CurrentThread.Name.IsNullOrBlank())
-                //{
-                //    Thread.CurrentThread.Name = THREAD_NAME + DateTime.Now.ToString("HHmmss") + "-" + Crypto.GetRandomString(3);
-                //}
 
                 Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Response " + sipResponse.StatusCode + " " + sipResponse.ReasonPhrase + " for " + m_serverTransaction.TransactionRequest.URI.ToString() + ".", Owner));
                 //m_sipTrace += "Received " + DateTime.Now.ToString("dd MMM yyyy HH:mm:ss") + " " + localEndPoint + "<-" + remoteEndPoint + "\r\n" + sipResponse.ToString();
@@ -229,18 +225,8 @@ namespace GB28181.App
                         {
                             SIPURI byeURI = sipResponse.Header.Contact[0].ContactURI;
                             SIPRequest byeRequest = GetByeRequest(sipResponse, byeURI, localSIPEndPoint);
-
-                            //SIPEndPoint byeEndPoint = m_sipTransport.GetRequestEndPoint(byeRequest, m_outboundProxy, true);
-
-                            // if (byeEndPoint != null)
-                            // {
                             SIPNonInviteTransaction byeTransaction = m_sipTransport.CreateNonInviteTransaction(byeRequest, null, localSIPEndPoint, m_outboundProxy);
-                            byeTransaction.SendReliableRequest();
-                            // }
-                            // else
-                            // {
-                            //     Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.UserAgentClient, SIPMonitorEventTypesEnum.DialPlan, "Could not end BYE on cancelled call as request end point could not be determined " + byeRequest.URI.ToString(), Owner));
-                            //}
+                            byeTransaction.SendReliableRequest();    
                         }
                         else
                         {
@@ -270,20 +256,11 @@ namespace GB28181.App
 
                             // Resend INVITE with credentials.
                             string username = (m_sipCallDescriptor.AuthUsername != null && m_sipCallDescriptor.AuthUsername.Trim().Length > 0) ? m_sipCallDescriptor.AuthUsername : m_sipCallDescriptor.Username;
-                            SIPAuthorisationDigest authRequest = sipResponse.Header.AuthenticationHeader.SIPDigest;
+                            SIPAuthorisationDigest authRequest = sipResponse.Header.AuthenticationHeaders[0].SIPDigest;
                             authRequest.SetCredentials(username, m_sipCallDescriptor.Password, m_sipCallDescriptor.Uri, SIPMethodsEnum.INVITE.ToString());
-
                             SIPRequest authInviteRequest = m_serverTransaction.TransactionRequest;
-
-                            //if (SIPProviderMagicJack.IsMagicJackRequest(sipResponse))
-                            //{
-                            //    authInviteRequest.Header.AuthenticationHeader = SIPProviderMagicJack.GetAuthenticationHeader(sipResponse);
-                            //}
-                            //else
-                            //{
                             authInviteRequest.Header.AuthenticationHeader = new SIPAuthenticationHeader(authRequest);
-                            authInviteRequest.Header.AuthenticationHeader.SIPDigest.Response = authRequest.Digest;
-                            //}
+                            authInviteRequest.Header.AuthenticationHeader.SIPDigest.Response = authRequest.GetDigest();
 
                             authInviteRequest.Header.Vias.TopViaHeader.Branch = CallProperties.CreateBranchId();
                             authInviteRequest.Header.CSeq = authInviteRequest.Header.CSeq + 1;
@@ -301,38 +278,7 @@ namespace GB28181.App
 
                                 if (AccountCode != null)
                                 {
-                                    //var rtccCDR = new SIPSorcery.Entities.CDR()
-                                    //{
-                                    //    ID = m_serverTransaction.CDR.CDRId.ToString(),
-                                    //    Owner = m_serverTransaction.CDR.Owner,
-                                    //    AdminMemberID = m_serverTransaction.CDR.AdminMemberId,
-                                    //    Inserted = DateTimeOffset.UtcNow.ToString("o"),
-                                    //    Created = DateTimeOffset.UtcNow.ToString("o"),
-                                    //    DstHost = "",
-                                    //    DstURI = m_sipCallDescriptor.Uri,
-                                    //    CallID = "",
-                                    //    FromHeader = m_sipCallDescriptor.From,
-                                    //    LocalSocket = "udp:0.0.0.0:5060",
-                                    //    RemoteSocket = "udp:0.0.0.0:5060",
-                                    //    Direction = m_serverTransaction.CDR.CallDirection.ToString(),
-                                    //    DialPlanContextID = m_sipCallDescriptor.DialPlanContextID.ToString()
-                                    //};
-#if !SILVERLIGHT
-                                    //m_customerAccountDataLayer.UpdateRealTimeCallControlCDRID(originalCallTransaction.CDR.CDRId.ToString(), m_serverTransaction.CDR);
-                                    RtccUpdateCdr_External(originalCallTransaction.CDR.CDRId.ToString(), m_serverTransaction.CDR);
-#endif
 
-                                    //m_serverTransaction.CDR.AccountCode = AccountCode;
-                                    //m_serverTransaction.CDR.Rate = Rate;
-
-                                    // Transfer any credit reservations from the original call to the new call.
-                                    //m_serverTransaction.CDR.SecondsReserved = originalCallTransaction.CDR.SecondsReserved;
-                                    //m_serverTransaction.CDR.Cost = originalCallTransaction.CDR.Cost;
-                                    //m_serverTransaction.CDR.IncrementSeconds = originalCallTransaction.CDR.IncrementSeconds;
-                                    //originalCallTransaction.CDR.SecondsReserved = 0;
-                                    //originalCallTransaction.CDR.Cost = 0;
-                                    //originalCallTransaction.CDR.ReconciliationResult = "reallocated";
-                                    //originalCallTransaction.CDR.IsHangingUp = true;
                                 }
 
                                 logger.Debug("RTCC reservation was reallocated from CDR " + originalCallTransaction.CDR.CDRId + " to " + m_serverTransaction.CDR.CDRId + " for owner " + Owner + ".");
@@ -372,11 +318,7 @@ namespace GB28181.App
                                 Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.AppServer, SIPMonitorEventTypesEnum.DialPlan, "SDP on UAC response was set to NOT mangle, RTP socket " + sdpEndPoint.ToString() + ".", Owner));
                             }
                             else
-                            {
-                                //m_callInProgress = false; // the call is now established
-                                //logger.Debug("Final response " + sipResponse.StatusCode + " " + sipResponse.ReasonPhrase + " for " + ForwardedTransaction.TransactionRequest.URI.ToString() + ".");
-                                // Determine of response SDP should be mangled.
-
+                            {                
                                 IPEndPoint sdpEndPoint = SDP.GetSDPRTPEndPoint(sipResponse.Body);
                                 //Log_External(new SIPMonitorConsoleEvent(SIPMonitorServerTypesEnum.AppServer, SIPMonitorEventTypesEnum.DialPlan, "UAC response SDP was mangled from sdp=" + sdpEndPoint.Address.ToString() + ", proxyfrom=" + sipResponse.Header.ProxyReceivedFrom + ", mangle=" + m_sipCallDescriptor.MangleResponseSDP + ".", null));
                                 if (sdpEndPoint != null)
@@ -444,22 +386,18 @@ namespace GB28181.App
 
                             // Set switchboard dialogue values from the answered response or from dialplan set values.
                             //m_sipDialogue.SwitchboardCallerDescription = sipResponse.Header.SwitchboardCallerDescription;
-                            SwitchboardLineName = sipResponse.Header.SwitchboardLineName,
-                            CRMPersonName = sipResponse.Header.CRMPersonName,
-                            CRMCompanyName = sipResponse.Header.CRMCompanyName,
-                            CRMPictureURL = sipResponse.Header.CRMPictureURL
+                            //SwitchboardLineName = sipResponse.Header.SwitchboardLineName,
+                            //CRMPersonName = sipResponse.Header.CRMPersonName,
+                            //CRMCompanyName = sipResponse.Header.CRMCompanyName,
+                            //CRMPictureURL = sipResponse.Header.CRMPictureURL
                         };
 
-                        if (m_sipCallDescriptor.SwitchboardHeaders != null)
-                        {
-                            //if (!m_sipCallDescriptor.SwitchboardHeaders.SwitchboardDialogueDescription.IsNullOrBlank())
-                            //{
-                            //    m_sipDialogue.SwitchboardDescription = m_sipCallDescriptor.SwitchboardHeaders.SwitchboardDialogueDescription;
-                            //}
+                        //if (m_sipCallDescriptor.SwitchboardHeaders != null)
+                        //{
 
-                            m_sipDialogue.SwitchboardLineName = m_sipCallDescriptor.SwitchboardHeaders.SwitchboardLineName;
-                            m_sipDialogue.SwitchboardOwner = m_sipCallDescriptor.SwitchboardHeaders.SwitchboardOwner;
-                        }
+                        //    m_sipDialogue.SwitchboardLineName = m_sipCallDescriptor.SwitchboardHeaders.SwitchboardLineName;
+                        //    m_sipDialogue.SwitchboardOwner = m_sipCallDescriptor.SwitchboardHeaders.SwitchboardOwner;
+                        //}
                     }
 
                     FireCallAnswered(this, sipResponse);
@@ -680,10 +618,7 @@ namespace GB28181.App
 
         private void FireCallAnswered(SIPClientUserAgent uac, SIPResponse answeredResponse)
         {
-            if (CallAnswered != null)
-            {
-                CallAnswered(uac, answeredResponse);
-            }
+                CallAnswered?.Invoke(uac, answeredResponse);    
         }
 
         private void FireCallFailed(SIPClientUserAgent uac, string errorMessage)

@@ -70,7 +70,8 @@ namespace GB28181.App
 
             IsUACAnswered = true;
 
-            SIPResponse okResponse = new SIPResponse(SIPResponseStatusCodesEnum.Ok, "Ok", new SIPEndPoint(new IPEndPoint(IPAddress.Loopback, 0)));
+            //SIPResponse okResponse = new SIPResponse(SIPResponseStatusCodesEnum.Ok, "Ok", new SIPEndPoint(new IPEndPoint(IPAddress.Loopback, 0)));
+            var okResponse = new SIPResponse(SIPResponseStatusCodesEnum.Ok, "Ok");
             okResponse.Header.ContentType = SDP.SDP_MIME_CONTENTTYPE;
             okResponse.Body = sdp.ToString();
 
