@@ -1,7 +1,6 @@
 ﻿using System;
 using GB28181.Logger4Net;
 using GB28181.Servers;
-using GB28181;
 using GB28181.Sys;
 using Grpc.Net.Client;
 
@@ -35,7 +34,7 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
                 _device.ShapeType = ShapeType.Dome;
                 //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
                 //  var channel = new Channel(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080", ChannelCredentials.Insecure);
-                 var channel =  GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080");
+                var channel = GrpcChannel.ForAddress(EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080");
 
                 logger.Debug("Device Management Service Address: " + (EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080"));
                 var client = new DevicesManager.DevicesManagerClient(channel);
@@ -47,7 +46,8 @@ namespace GB28181.Service.Protos.AsClient.DeviceManagement
                 {
                     logger.Debug("Device[" + sipTransaction.TransactionRequest.RemoteSIPEndPoint + "] have completed registering DMS service.");
                 }
-                else {
+                else
+                {
                     logger.Error("_sipRegistrarCore_RPCDmsRegisterReceived: " + reply.Status.ToString());
                 }
             }

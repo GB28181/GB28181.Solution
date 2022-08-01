@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using Grpc.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GB28181.Logger4Net;
 using GB28181.Servers;
 using GB28181.Sys.XML;
+using Grpc.Core;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using GB28181.Logger4Net;
 
 namespace GB28181.Service.Protos.DeviceCatalog
 {
@@ -44,7 +44,7 @@ namespace GB28181.Service.Protos.DeviceCatalog
                         break;
                     }
                 }
-                
+
                 List<Catalog.Item> lstCatalogItems = _Catalog.DeviceList.Items;
                 string jsonCatalog = JsonConvert.SerializeObject(_Catalog)
                     .Replace("\"Certifiable\":null", "\"Certifiable\":0")

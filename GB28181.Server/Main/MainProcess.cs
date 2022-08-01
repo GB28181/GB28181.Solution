@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GB28181.Logger4Net;
 using GB28181.Config;
+using GB28181.Logger4Net;
 using GB28181.Servers;
 using GB28181.Servers.SIPMessages;
 using GB28181.Sys;
@@ -20,7 +20,7 @@ namespace GB28181.Server.Main
     public partial class MainProcess : IMainProcess
     {
         private static readonly ILog logger = AppState.GetLogger("Process");
-     
+
         private readonly CancellationTokenSource _processingServiceToken = new CancellationTokenSource();
 
         private readonly CancellationTokenSource _registryServiceToken = new CancellationTokenSource();
@@ -41,7 +41,7 @@ namespace GB28181.Server.Main
             _mainSipService = sipMessageCore;
             messageCenter = messageHub;
             registry = sipRegistrarCore;
-           // _serviceProvider = services.BuildServiceProvider();
+            // _serviceProvider = services.BuildServiceProvider();
         }
 
         public void Stop()
@@ -80,9 +80,9 @@ namespace GB28181.Server.Main
             //  _keepaliveTime = DateTime.Now;
             try
             {
-               // var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
+                // var _mainSipService = _serviceProvider.GetRequiredService<ISipMessageCore>();
                 //Get meassage Handler
-              //  var messageCenter = _serviceProvider.GetRequiredService<MessageHub>();
+                //  var messageCenter = _serviceProvider.GetRequiredService<MessageHub>();
                 // start the Listening SipService in main Service
                 Task.Run(() =>
                 {
@@ -103,7 +103,7 @@ namespace GB28181.Server.Main
                 });
 
                 // run the register service
-              //  var registry = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
+                //  var registry = _serviceProvider.GetRequiredService<ISIPRegistrarCore>();
 
                 Task.Factory.StartNew(() => registry.ProcessRegisterRequest(), _registryServiceToken.Token);
 

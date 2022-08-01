@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GB28181.Server.Message
+﻿namespace GB28181.Server.Message
 {
     public class DeviceEventsProc
     {

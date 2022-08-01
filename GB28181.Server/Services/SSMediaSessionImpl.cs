@@ -1,9 +1,9 @@
-﻿using Grpc.Core;
-using System.Threading.Tasks;
-using GB28181.Servers;
-using System;
-using GB28181.Logger4Net;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using GB28181.Logger4Net;
+using GB28181.Servers;
+using Grpc.Core;
 
 namespace GB28181.Service.Protos.Video
 {
@@ -62,8 +62,10 @@ namespace GB28181.Service.Protos.Video
                     }
                 };
                 //add Video Session Alive
-                Dictionary<string, DateTime> _Dictionary = new Dictionary<string, DateTime>();
-                _Dictionary.Add(request.Gbid + ',' + resReply.Hdr.Sessionid, DateTime.Now);
+                Dictionary<string, DateTime> _Dictionary = new Dictionary<string, DateTime>
+                {
+                    { request.Gbid + ',' + resReply.Hdr.Sessionid, DateTime.Now }
+                };
                 _sipServiceDirector.VideoSessionAlive.Add(_Dictionary);
                 logger.Debug("StartLive: resReply=" + resReply.ToString());
                 return Task.FromResult(resReply);
@@ -104,8 +106,10 @@ namespace GB28181.Service.Protos.Video
                     }
                 };
                 //add Video Session Alive
-                Dictionary<string, DateTime> _Dictionary = new Dictionary<string, DateTime>();
-                _Dictionary.Add(request.Gbid + ',' + resReply.Hdr.Sessionid, DateTime.Now);
+                Dictionary<string, DateTime> _Dictionary = new Dictionary<string, DateTime>
+                {
+                    { request.Gbid + ',' + resReply.Hdr.Sessionid, DateTime.Now }
+                };
                 _sipServiceDirector.VideoSessionAlive.Add(_Dictionary);
                 logger.Debug("StartPlayback: resReply=" + resReply.ToString());
                 return Task.FromResult(resReply);
@@ -211,9 +215,11 @@ namespace GB28181.Service.Protos.Video
 
         private Header GetHeaderBySipHeader(GB28181.SIPHeader sipHeader)
         {
-            Header header = new Header();
-            header.Sequence = sipHeader.CSeq;
-            header.Sessionid = sipHeader.CallId;
+            Header header = new Header
+            {
+                Sequence = sipHeader.CSeq,
+                Sessionid = sipHeader.CallId
+            };
             //header.Version = sipHeader.CSeq + sipHeader.CallId;
             return header;
         }

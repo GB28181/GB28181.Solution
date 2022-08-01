@@ -1,17 +1,17 @@
-﻿using Google.Protobuf;
-using GB28181.Logger4Net;
-using NATS.Client;
-using Newtonsoft.Json;
-using GB28181.Servers;
-using GB28181.Servers.SIPMessages;
-using GB28181.Sys;
-using GB28181.Sys.XML;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GB28181.Service.Protos.AsClient.DeviceManagement;
-using Grpc.Net.Client;
 using GB28181.App;
+using GB28181.Logger4Net;
+using GB28181.Servers;
+using GB28181.Servers.SIPMessages;
+using GB28181.Service.Protos.AsClient.DeviceManagement;
+using GB28181.Sys;
+using GB28181.Sys.XML;
+using Google.Protobuf;
+using Grpc.Net.Client;
+using NATS.Client;
+using Newtonsoft.Json;
 using SIPSorcery.SIP;
 namespace GB28181.Server.Main
 {
@@ -30,8 +30,8 @@ namespace GB28181.Server.Main
 
         public Dictionary<string, Catalog> Catalogs { get; } = new Dictionary<string, Catalog>();
         public Dictionary<string, SIPTransaction> GBSIPTransactions { get; } = new Dictionary<string, SIPTransaction>();
-       
-        SIPAccount _SIPAccount;
+
+        private SIPAccount _SIPAccount;
 
         public MessageHub(ISipMessageCore sipCoreMessageService, ISIPMonitorCore sIPMonitorCore, ISIPRegistrarCore sipRegistrarCore)
         {
@@ -237,8 +237,10 @@ namespace GB28181.Server.Main
                 alm.StartTime = timeStamp;
 
                 Message message = new Message();
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                dic.Add("Content-Type", "application/octet-stream");
+                Dictionary<string, string> dic = new Dictionary<string, string>
+                {
+                    { "Content-Type", "application/octet-stream" }
+                };
                 message.Header = dic;
                 message.Body = alm.ToByteArray();
 
@@ -287,9 +289,11 @@ namespace GB28181.Server.Main
                         //if not device then skip
                         if (!DevType.GetCataType(deviceid).Equals(DevCataType.Device)) continue;
 
-                        Event.Status stat = new Event.Status();
-                        stat.Status_ = false;
-                        stat.OccurredTime = (UInt64)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
+                        Event.Status stat = new Event.Status
+                        {
+                            Status_ = false,
+                            OccurredTime = (UInt64)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds
+                        };
                         #region waiting DeviceStatuses add in for 500 Milliseconds
                         _sipCoreMessageService.DeviceStateQuery(deviceid);
                         TimeSpan t1 = new TimeSpan(DateTime.Now.Ticks);
@@ -300,7 +304,7 @@ namespace GB28181.Server.Main
                             if (DeviceStatuses.ContainsKey(deviceid))
                             {
                                 //on line
-                                stat.Status_ = DeviceStatuses[deviceid].Status.Equals("ON") ? true : false;
+                                stat.Status_ = DeviceStatuses[deviceid].Status.Equals("ON");
                                 //logger.Debug("Device status of [" + deviceid + "]: " + DeviceStatuses[deviceid].Status);
                                 DeviceStatuses.Remove(deviceid);
                                 break;
@@ -329,8 +333,10 @@ namespace GB28181.Server.Main
                             stat.DeviceName = rep.Devices[0].Name;
 
                             Message message = new Message();
-                            Dictionary<string, string> dic = new Dictionary<string, string>();
-                            dic.Add("Content-Type", "application/octet-stream");
+                            Dictionary<string, string> dic = new Dictionary<string, string>
+                            {
+                                { "Content-Type", "application/octet-stream" }
+                            };
                             message.Header = dic;
                             message.Body = stat.ToByteArray();
                             byte[] payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
@@ -408,7 +414,7 @@ namespace GB28181.Server.Main
                 _device.ProtocolType = 0;
                 _device.ShapeType = ShapeType.Dome;
                 //var options = new List<ChannelOption> { new ChannelOption(ChannelOptions.MaxMessageLength, int.MaxValue) };
-                
+
                 //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
                 //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
                 //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
@@ -497,14 +503,16 @@ namespace GB28181.Server.Main
         {
             try
             {
-                Event.Event evt = new Event.Event();
-                evt.EventType = Event.Event.Types.EventType.MediaConfigurationChanged;
-                evt.Detail = "DeviceEditEvent: " + edittype + " " + DeviceID;
-                evt.OccurredTime = (UInt64)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
+                Event.Event evt = new Event.Event
+                {
+                    EventType = Event.Event.Types.EventType.MediaConfigurationChanged,
+                    Detail = "DeviceEditEvent: " + edittype + " " + DeviceID,
+                    OccurredTime = (UInt64)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds
+                };
 
                 string GBServerChannelAddress = EnvironmentVariables.DeviceManagementServiceAddress ?? "devicemanagementservice:8080";
                 // Channel channel = new Channel(GBServerChannelAddress, ChannelCredentials.Insecure);
-                
+
                 //devicemanagementservice 是预留的服务标识(暂命名为设备管理服务).目前没有这个服务.
                 //需要你的微服务架构中实现一个设备资产以及一个配置管理服务(或者二合一的资源管服务)
                 //以达到两个目的：1、用来为当前GB服务提供启动配置，2、为GB收到注册的设备/平台信息，提供全平台的统一的存储服务.
@@ -527,8 +535,10 @@ namespace GB28181.Server.Main
                 }
 
                 Message message = new Message();
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                dic.Add("Content-Type", "application/octet-stream");
+                Dictionary<string, string> dic = new Dictionary<string, string>
+                {
+                    { "Content-Type", "application/octet-stream" }
+                };
                 message.Header = dic;
                 message.Body = evt.ToByteArray();
                 byte[] payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
@@ -536,12 +546,10 @@ namespace GB28181.Server.Main
                 #region
                 Options opts = ConnectionFactory.GetDefaultOptions();
                 opts.Url = EnvironmentVariables.GBNatsChannelAddress ?? Defaults.Url;
-                using (IConnection c = new ConnectionFactory().CreateConnection(opts))
-                {
-                    c.Publish(subject, payload);
-                    c.Flush();
-                    logger.Debug("Device add/update event published.");
-                }
+                using IConnection c = new ConnectionFactory().CreateConnection(opts);
+                c.Publish(subject, payload);
+                c.Flush();
+                logger.Debug("Device add/update event published.");
                 #endregion
             }
             catch (Exception ex)

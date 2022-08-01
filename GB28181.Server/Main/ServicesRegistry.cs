@@ -1,9 +1,8 @@
-﻿using Consul;
+﻿using System;
+using Consul;
 using GB28181.Logger4Net;
-using GB28181.Sys;
-using System;
-using System.Net;
 using GB28181.Server.Utils;
+using GB28181.Sys;
 
 namespace GB28181.Server.Main
 {

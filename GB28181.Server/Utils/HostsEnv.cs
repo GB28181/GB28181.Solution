@@ -1,9 +1,5 @@
-﻿using GB28181.Sys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using GB28181.Sys;
 
 namespace GB28181.Server.Utils
 {
@@ -24,8 +20,8 @@ namespace GB28181.Server.Utils
             return localip;
         }
 
-        public static IPAddress GetRawIP() =>  IPAddress.Parse(GetIPAddress());
-        
+        public static IPAddress GetRawIP() => IPAddress.Parse(GetIPAddress());
+
 
     }
 }
