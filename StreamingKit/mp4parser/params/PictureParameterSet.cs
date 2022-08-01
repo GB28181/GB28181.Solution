@@ -150,8 +150,10 @@ namespace mp4parser.h264.model
             pps.redundant_pic_cnt_present_flag = reader.ReadBool("PPS: redundant_pic_cnt_present_flag");
             if (reader.moreRBSPData())
             {
-                pps.extended = new PictureParameterSet.PPSExt();
-                pps.extended.transform_8x8_mode_flag = reader.ReadBool("PPS: transform_8x8_mode_flag");
+                pps.extended = new PictureParameterSet.PPSExt
+                {
+                    transform_8x8_mode_flag = reader.ReadBool("PPS: transform_8x8_mode_flag")
+                };
                 bool pic_scaling_matrix_present_flag = reader.ReadBool("PPS: pic_scaling_matrix_present_flag");
                 if (pic_scaling_matrix_present_flag)
                 {

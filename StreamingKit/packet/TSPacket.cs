@@ -1,7 +1,7 @@
-﻿using Common.Streams;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using Common.Streams;
 
 
 namespace StreamingKit.Media.TS
@@ -17,7 +17,8 @@ namespace StreamingKit.Media.TS
 
     //http://blog.163.com/benben_168/blog/static/185277057201152125757560/
 
-    public partial class TSPacket {
+    public partial class TSPacket
+    {
         private TS_PAT _pat = null;
         private TS_PMT _pmt = null;
         public TSProgramManage ProgramManage { get; set; }
@@ -32,56 +33,69 @@ namespace StreamingKit.Media.TS
         public AdaptationInfo AdaptationField;
         public byte[] data;
         public byte[] SrcBuffer;
- 
+
         //只有调用Decode后才能解析出来
         public TSPacketType PacketType { get; private set; }
- 
-        public static byte[] MediaFrame2TSData(MediaFrame frame,TSProgramManage pm) {
+
+        public static byte[] MediaFrame2TSData(MediaFrame frame, TSProgramManage pm)
+        {
             var msOutput = new MemoryStream();
             var pes = PESPacket.MediaFrame2PES(frame);
             var pes_buffer = pes.GetBytes();
             var msInput = new MemoryStream(pes_buffer);
             int PID = frame.IsAudio == 1 ? 257 : 258;
             bool isFirstPack = true;
-            do {
+            do
+            {
                 var payload_unit_start_indicator = 0;
                 var size = (int)(msInput.Length - msInput.Position);
                 var max_data_len = 188 - 4;//4B为包头长度
                 var data_len = 0;
                 AdaptationInfo ai = null;
-                if ((isFirstPack || size < max_data_len)) {
-                    if (isFirstPack && (frame.IsAudio == 0 || true)) {
+                if ((isFirstPack || size < max_data_len))
+                {
+                    if (isFirstPack && (frame.IsAudio == 0 || true))
+                    {
                         max_data_len = 188 - 4 - 8;//5B为包头长度 8B为adaptation长度
                         data_len = Math.Min(max_data_len, size);
                         var adaptation_field_length = 188 - 4 - data_len - 1;//1B为adaptation的头，这1B不算在adaptation_field_length中
                         var pcr_bas = (frame.NTimetick - pm.FirstFrameTimeTick) * 90;//这里为什么是*45我也不知道，
-                        ai = new AdaptationInfo() {
+                        ai = new AdaptationInfo()
+                        {
                             adaptation_field_length = (byte)adaptation_field_length,
                             random_access_indicator = 1,
                             PCR_flag = 1,
                             PCR_base = pcr_bas,
                         };
                         payload_unit_start_indicator = 1;
-                    } else {
+                    }
+                    else
+                    {
                         max_data_len = 188 - 4 - 1;//4B为包头长度 8B为adaptation长度
-                        if (size < max_data_len) {
+                        if (size < max_data_len)
+                        {
                             data_len = Math.Min(max_data_len, size);
                             var adaptation_field_length = 188 - 4 - data_len - 1;
                             ai = new AdaptationInfo
                             {
                                 adaptation_field_length = (byte)adaptation_field_length
                             };
-                        } else {
+                        }
+                        else
+                        {
                             payload_unit_start_indicator = 0;
                             data_len = size;
                         }
                     }
-                } else {
+                }
+                else
+                {
                     data_len = max_data_len;
                 }
                 byte[] data = new byte[data_len];
                 msInput.Read(data, 0, data.Length);
-                TSPacket pack_pat = new TSPacket() {
+                TSPacket pack_pat = new TSPacket()
+                {
                     sync_byte = 0x47,
                     transport_error_indicator = 0,
                     payload_unit_start_indicator = (byte)payload_unit_start_indicator,//一帧第一个packet或者这个packet需要fill字节时
@@ -101,7 +115,8 @@ namespace StreamingKit.Media.TS
             return result;
         }
 
-        public byte[] GetBytes() {
+        public byte[] GetBytes()
+        {
             byte[] result = new byte[188];
             var ms = new MemoryStream(result)
             {
@@ -116,17 +131,20 @@ namespace StreamingKit.Media.TS
             if (payload_unit_start_indicator == 1 && adaptation_field_control != 3)
                 ms.WriteByte(0x00);//1个字节的占位
 
-            if (AdaptationField != null) {
+            if (AdaptationField != null)
+            {
                 var adapBuffer = AdaptationField.GetBytes();
                 ms.Write(adapBuffer, 0, adapBuffer.Length);
             }
-            if (data != null) {
+            if (data != null)
+            {
                 ms.Write(data, 0, data.Length);
             }
             return result;
         }
 
-        public void SetBytes(byte[] buffer) {
+        public void SetBytes(byte[] buffer)
+        {
             SrcBuffer = buffer;
             sync_byte = buffer[0];
             transport_error_indicator = (byte)(buffer[1] >> 7);
@@ -137,9 +155,11 @@ namespace StreamingKit.Media.TS
             adaptation_field_control = (byte)((buffer[3] >> 4) & 0x3);
             continuity_counter = (byte)(buffer[3] & 0x0F);
         }
-        public bool TryDecode() {
+        public bool TryDecode()
+        {
             int skip = 4;
-            switch (adaptation_field_control) {
+            switch (adaptation_field_control)
+            {
                 case 0x0:                                    // reserved for future use by ISO/IEC
                     return false;
                 case 0x1:                                    // 无调整字段，仅含有效负载       
@@ -158,11 +178,13 @@ namespace StreamingKit.Media.TS
             }
             return true;
         }
-        public void Decode() {
+        public void Decode()
+        {
             //以下是整个程序的逻辑主要是以解析为主，实际应用可能要优化下方式以提高性能
             var buffer = SrcBuffer;
             int skip = 4;
-            switch (adaptation_field_control) {
+            switch (adaptation_field_control)
+            {
                 case 0x0:                                    // reserved for future use by ISO/IEC
                     throw new Exception();
                 case 0x1:                                    // 无调整字段，仅含有效负载       
@@ -182,18 +204,23 @@ namespace StreamingKit.Media.TS
             }
 
             data = new byte[SrcBuffer.Length - skip];
-            if (data.Length > 0) {
+            if (data.Length > 0)
+            {
                 Array.Copy(SrcBuffer, skip, data, 0, data.Length);
             }
-            if (PID == 0x00) {
+            if (PID == 0x00)
+            {
                 PacketType = TSPacketType.PAT;
                 var pat = new TS_PAT();
                 pat.SetBytes(data);
                 foreach (var p in pat.PATProgramList)
                     ProgramManage.AddProgram(p);
                 _pat = pat;
-            } else {
-                if (ProgramManage.IsPMT_PID(PID)) {
+            }
+            else
+            {
+                if (ProgramManage.IsPMT_PID(PID))
+                {
                     //PMT
                     PacketType = TSPacketType.PMT;
                     var pmt = new TS_PMT();
@@ -201,18 +228,23 @@ namespace StreamingKit.Media.TS
                     foreach (var p in pmt.PMTStreamList)
                         ProgramManage.AddStream(p);
                     _pmt = pmt;
-                } else if (ProgramManage.IsTSTable(PID)) {
+                }
+                else if (ProgramManage.IsTSTable(PID))
+                {
                     PacketType = TSPacketType.OTHER;
                     //其他表示，这里先不作处理
 
-                } else if (ProgramManage.IsData(PID)) {
+                }
+                else if (ProgramManage.IsData(PID))
+                {
                     //这里一般为 媒体数据
                     PacketType = TSPacketType.DATA;
                 }
             }
         }
- 
-        public override String ToString() {
+
+        public override String ToString()
+        {
             var sb = new StringBuilder();
             sb.AppendFormat("sync_byte:{0}\r\n", sync_byte);
             sb.AppendFormat("transport_error_indicator:{0}\r\n", transport_error_indicator);
@@ -228,19 +260,22 @@ namespace StreamingKit.Media.TS
                 sb.AppendFormat("PMT:\r\n{0}", _pmt.ToString());
             return sb.ToString();
         }
- 
+
         private static byte[] _pmt_pat_tsdata = null;
 
-        public static byte[] GetPMTPATData(bool isOnlyVideo=false) {
+        public static byte[] GetPMTPATData(bool isOnlyVideo = false)
+        {
 
-            if (_pmt_pat_tsdata == null) {
+            if (_pmt_pat_tsdata == null)
+            {
                 var msOutput = new MemoryStream();
                 TSProgramManage ts_pm = new TSProgramManage();
 
                 TS_PAT pat = new TS_PAT();
                 var pat_data = pat.GetBytes();
 
-                TSPacket pack_pat = new TSPacket() {
+                TSPacket pack_pat = new TSPacket()
+                {
                     sync_byte = 0x47,
                     transport_error_indicator = 0,
                     payload_unit_start_indicator = 1,
@@ -252,7 +287,8 @@ namespace StreamingKit.Media.TS
                     data = pat_data,
                 };
                 var pack_pat_data = pack_pat.GetBytes();
-                var pack_pat_tmp = new TSPacket() {
+                var pack_pat_tmp = new TSPacket()
+                {
                     ProgramManage = ts_pm,
                 };
                 msOutput.Write(pack_pat_data, 0, pack_pat_data.Length);
@@ -263,7 +299,8 @@ namespace StreamingKit.Media.TS
 
                 TS_PMT pmt = new TS_PMT();
                 var pmt_data = isOnlyVideo ? pmt.GetVideoBytes() : pmt.GetBytes();
-                TSPacket pack_pmt = new TSPacket() {
+                TSPacket pack_pmt = new TSPacket()
+                {
                     sync_byte = 0x47,
                     transport_error_indicator = 0,
                     payload_unit_start_indicator = 1,
@@ -275,7 +312,8 @@ namespace StreamingKit.Media.TS
                     data = pmt_data,
                 };
                 var pack_pmt_data = pack_pmt.GetBytes();
-                var pack_pmt_tmp = new TSPacket() {
+                var pack_pmt_tmp = new TSPacket()
+                {
                     ProgramManage = ts_pm,
                 };
                 msOutput.Write(pack_pmt_data, 0, pack_pmt_data.Length);
@@ -288,12 +326,13 @@ namespace StreamingKit.Media.TS
             }
             return _pmt_pat_tsdata;
         }
-       
+
     }
 
 
     #region AdaptationInfo
-    public class AdaptationInfo {
+    public class AdaptationInfo
+    {
         public byte adaptation_field_length;                    //8
 
         public byte discontinuity_indicator;                     //1
@@ -316,11 +355,14 @@ namespace StreamingKit.Media.TS
         public byte splice_countdown;                       //8
         public byte transport_private_data_length;      //8
 
-        public void SetBytes(byte[] buffer) {
+        public void SetBytes(byte[] buffer)
+        {
             adaptation_field_length = buffer[4];
             var ms = new MemoryStream(buffer, 4, adaptation_field_length + 1);
-            var bs = new BitStream(ms);
-            bs.Position = 0;
+            var bs = new BitStream(ms)
+            {
+                Position = 0
+            };
             bs.Read(out adaptation_field_length, 0, 8);
 
             bs.Read(out discontinuity_indicator, 0, 1);
@@ -332,24 +374,29 @@ namespace StreamingKit.Media.TS
             bs.Read(out transport_private_data_flag, 0, 1);
             bs.Read(out adaptation_field_extension_flag, 0, 1);
 
-            if (PCR_flag == 1) {
+            if (PCR_flag == 1)
+            {
                 bs.Read(out PCR_base, 0, 33);
                 bs.Read(out PCR_reserved, 0, 6);
                 bs.Read(out PCR_ext, 0, 9);
             }
-            if (OPCR_flag == 1) {//未测试
+            if (OPCR_flag == 1)
+            {//未测试
                 bs.Read(out OPCR_base, 0, 33);
                 bs.Read(out OPCR_reserved, 0, 6);
                 bs.Read(out OPCR_ext, 0, 9);
             }
-            if (adaptation_field_length > 7) {
+            if (adaptation_field_length > 7)
+            {
                 bs.Read(out splice_countdown, 0, 8);
                 bs.Read(out transport_private_data_length, 0, 8);
             }
         }
 
-        public byte[] GetBytes() {
-            if (adaptation_field_length == 0) {
+        public byte[] GetBytes()
+        {
+            if (adaptation_field_length == 0)
+            {
                 throw new Exception();
             }
             var len = adaptation_field_length;
@@ -368,14 +415,16 @@ namespace StreamingKit.Media.TS
             bs.Write(adaptation_field_extension_flag, 0, 1);
             len -= 1;
 
-            if (PCR_flag == 1) {
+            if (PCR_flag == 1)
+            {
                 bs.Write(PCR_base, 0, 33);
                 bs.Write(PCR_reserved, 0, 6);
                 bs.Write(PCR_ext, 0, 9);
                 len -= 6;
             }
 
-            if (OPCR_flag == 1) {//未测试
+            if (OPCR_flag == 1)
+            {//未测试
                 bs.Write(OPCR_base, 0, 33);
                 bs.Write(OPCR_reserved, 0, 6);
                 bs.Write(OPCR_ext, 0, 9);

@@ -1,7 +1,7 @@
-﻿using StreamingKit.Interface;
-using Common.Streams;
-using System;
+﻿using System;
 using System.IO;
+using Common.Streams;
+using StreamingKit.Interface;
 
 namespace StreamingKit.Media.TS
 {

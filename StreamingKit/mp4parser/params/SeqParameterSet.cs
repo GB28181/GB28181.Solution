@@ -201,8 +201,10 @@ namespace mp4parser.h264.model
         }
         private static VUIParameters ReadVUIParameters(CAVLCReader reader)
         {
-            VUIParameters vuip = new VUIParameters();
-            vuip.aspect_ratio_info_present_flag = reader.ReadBool("VUI: aspect_ratio_info_present_flag");
+            VUIParameters vuip = new VUIParameters
+            {
+                aspect_ratio_info_present_flag = reader.ReadBool("VUI: aspect_ratio_info_present_flag")
+            };
             if (vuip.aspect_ratio_info_present_flag)
             {
                 vuip.aspect_ratio = AspectRatio.fromValue((int)reader.ReadNBit(8, "VUI: aspect_ratio"));
@@ -261,14 +263,16 @@ namespace mp4parser.h264.model
             bool bitstream_restriction_flag = reader.ReadBool("VUI: bitstream_restriction_flag");
             if (bitstream_restriction_flag)
             {
-                vuip.bitstreamRestriction = new VUIParameters.BitstreamRestriction();
-                vuip.bitstreamRestriction.Motion_vectors_over_pic_boundaries_flag = reader.ReadBool("VUI: motion_vectors_over_pic_boundaries_flag");
-                vuip.bitstreamRestriction.Max_bytes_per_pic_denom = reader.ReadUE("VUI max_bytes_per_pic_denom");
-                vuip.bitstreamRestriction.Max_bits_per_mb_denom = reader.ReadUE("VUI max_bits_per_mb_denom");
-                vuip.bitstreamRestriction.Log2_max_mv_length_horizontal = reader.ReadUE("VUI log2_max_mv_length_horizontal");
-                vuip.bitstreamRestriction.Log2_max_mv_length_vertical = reader.ReadUE("VUI log2_max_mv_length_vertical");
-                vuip.bitstreamRestriction.Num_reorder_frames = reader.ReadUE("VUI num_reorder_frames");
-                vuip.bitstreamRestriction.Max_dec_frame_buffering = reader.ReadUE("VUI max_dec_frame_buffering");
+                vuip.bitstreamRestriction = new VUIParameters.BitstreamRestriction
+                {
+                    Motion_vectors_over_pic_boundaries_flag = reader.ReadBool("VUI: motion_vectors_over_pic_boundaries_flag"),
+                    Max_bytes_per_pic_denom = reader.ReadUE("VUI max_bytes_per_pic_denom"),
+                    Max_bits_per_mb_denom = reader.ReadUE("VUI max_bits_per_mb_denom"),
+                    Log2_max_mv_length_horizontal = reader.ReadUE("VUI log2_max_mv_length_horizontal"),
+                    Log2_max_mv_length_vertical = reader.ReadUE("VUI log2_max_mv_length_vertical"),
+                    Num_reorder_frames = reader.ReadUE("VUI num_reorder_frames"),
+                    Max_dec_frame_buffering = reader.ReadUE("VUI max_dec_frame_buffering")
+                };
             }
 
             return vuip;

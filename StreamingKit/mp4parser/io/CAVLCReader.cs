@@ -89,7 +89,7 @@ namespace mp4parser.h264.read
         public virtual bool ReadBool(string message)
         {
 
-            bool res = read1Bit() == 0 ? false : true;
+            bool res = read1Bit() != 0;
 
             Trace(message, res ? "1" : "0");
 

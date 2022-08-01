@@ -24,47 +24,47 @@ namespace mp4parser.h264
 {
 
     public class CharCache
-	{
-		private char[] cache;
-		private int pos;
+    {
+        private char[] cache;
+        private int pos;
 
-		public CharCache(int capacity)
-		{
-			cache = new char[capacity];
-		}
+        public CharCache(int capacity)
+        {
+            cache = new char[capacity];
+        }
 
-		public virtual void append(string str)
-		{
-			char[] chars = str.ToCharArray();
-			int available = cache.Length - pos;
-			int toWrite = chars.Length < available ? chars.Length : available;
-			Array.Copy(chars, 0, cache, pos, toWrite);
-			pos += toWrite;
-		}
+        public virtual void append(string str)
+        {
+            char[] chars = str.ToCharArray();
+            int available = cache.Length - pos;
+            int toWrite = chars.Length < available ? chars.Length : available;
+            Array.Copy(chars, 0, cache, pos, toWrite);
+            pos += toWrite;
+        }
 
-		public override string ToString()
-		{
-			return new string(cache, 0, pos);
-		}
+        public override string ToString()
+        {
+            return new string(cache, 0, pos);
+        }
 
-		public virtual void clear()
-		{
-			pos = 0;
-		}
+        public virtual void clear()
+        {
+            pos = 0;
+        }
 
-		public virtual void append(char c)
-		{
-			if (pos < cache.Length - 1)
-			{
-				cache[pos] = c;
-				pos++;
-			}
-		}
+        public virtual void append(char c)
+        {
+            if (pos < cache.Length - 1)
+            {
+                cache[pos] = c;
+                pos++;
+            }
+        }
 
-		public virtual int length()
-		{
-			return pos;
-		}
-	}
+        public virtual int length()
+        {
+            return pos;
+        }
+    }
 
 }

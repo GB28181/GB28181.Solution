@@ -1,9 +1,9 @@
 namespace StreamingKit.Interface
 {
-	public interface IBufferBytes
-	{
-		byte[] GetBytes();
+    public interface IBufferBytes
+    {
+        byte[] GetBytes();
 
-		void SetBytes(byte[] buf);
-	}
+        void SetBytes(byte[] buf);
+    }
 }

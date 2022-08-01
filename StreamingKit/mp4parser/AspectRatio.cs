@@ -31,41 +31,41 @@ namespace mp4parser.h264.model
     /// @author Stanislav Vitvitskiy
     /// </summary>
     public class AspectRatio
-	{
+    {
 
-		public static readonly AspectRatio Extended_SAR = new AspectRatio(255);
+        public static readonly AspectRatio Extended_SAR = new AspectRatio(255);
 
-		private int value;
+        private int value;
 
-		private AspectRatio(int value)
-		{
-			this.value = value;
-		}
+        private AspectRatio(int value)
+        {
+            this.value = value;
+        }
 
-		public static AspectRatio fromValue(int value)
-		{
-			if (value == Extended_SAR.value)
-			{
-				return Extended_SAR;
-			}
-			return new AspectRatio(value);
-		}
+        public static AspectRatio fromValue(int value)
+        {
+            if (value == Extended_SAR.value)
+            {
+                return Extended_SAR;
+            }
+            return new AspectRatio(value);
+        }
 
-		public virtual int Value
-		{
-			get
-			{
-				return value;
-			}
-		}
+        public virtual int Value
+        {
+            get
+            {
+                return value;
+            }
+        }
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder("AspectRatio{");
-			sb.Append("value=").Append(value);
-			sb.Append('}');
-			return sb.ToString();
-		}
-	}
+        public override string ToString()
+        {
+            var sb = new StringBuilder("AspectRatio{");
+            sb.Append("value=").Append(value);
+            sb.Append('}');
+            return sb.ToString();
+        }
+    }
 
 }

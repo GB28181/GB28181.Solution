@@ -28,58 +28,58 @@ namespace mp4parser.h264
     /// @author Stanislav Vitvitskiy
     /// </summary>
     public class BTree
-	{
-		private BTree zero;
-		private BTree one;
-		private object value;
+    {
+        private BTree zero;
+        private BTree one;
+        private object value;
 
 
-		public virtual void addString(string path, object value)
-		{
-			if (path.Length == 0)
-			{
-				this.value = value;
-				return;
-			}
-			char charAt = path[0];
-			BTree branch;
-			if (charAt == '0')
-			{
-				if (zero == null)
-				{
-					zero = new BTree();
-				}
-				branch = zero;
-			}
-			else
-			{
-				if (one == null)
-				{
-					one = new BTree();
-				}
-				branch = one;
-			}
-			branch.addString(path.Substring(1), value);
-		}
+        public virtual void addString(string path, object value)
+        {
+            if (path.Length == 0)
+            {
+                this.value = value;
+                return;
+            }
+            char charAt = path[0];
+            BTree branch;
+            if (charAt == '0')
+            {
+                if (zero == null)
+                {
+                    zero = new BTree();
+                }
+                branch = zero;
+            }
+            else
+            {
+                if (one == null)
+                {
+                    one = new BTree();
+                }
+                branch = one;
+            }
+            branch.addString(path.Substring(1), value);
+        }
 
-		public virtual BTree down(int b)
-		{
-			if (b == 0)
-			{
-				return zero;
-			}
-			else
-			{
-				return one;
-			}
-		}
+        public virtual BTree down(int b)
+        {
+            if (b == 0)
+            {
+                return zero;
+            }
+            else
+            {
+                return one;
+            }
+        }
 
-		public virtual object Value
-		{
-			get
-			{
-				return value;
-			}
-		}
-	}
+        public virtual object Value
+        {
+            get
+            {
+                return value;
+            }
+        }
+    }
 }

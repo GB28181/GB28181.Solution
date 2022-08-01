@@ -61,8 +61,10 @@ namespace mp4parser.h264.model
         public static ScalingList read(CAVLCReader @is, int sizeOfScalingList)
         {
 
-            var sl = new ScalingList();
-            sl.scalingList = new int[sizeOfScalingList];
+            var sl = new ScalingList
+            {
+                scalingList = new int[sizeOfScalingList]
+            };
             int lastScale = 8;
             int nextScale = 8;
             for (int j = 0; j < sizeOfScalingList; j++)

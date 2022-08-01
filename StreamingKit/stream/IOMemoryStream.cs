@@ -1,6 +1,6 @@
-﻿using Helpers;
-using System;
+﻿using System;
 using System.IO;
+using Helpers;
 
 namespace StreamingKit.Media.TS
 {

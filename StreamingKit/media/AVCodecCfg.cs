@@ -99,7 +99,7 @@ namespace StreamingKit.Codec
 
     public class AudioEncodeCfg : CodecCfgBase
     {
-        public int MicId { get; set; }  = 0;
+        public int MicId { get; set; } = 0;
         public int Frequency { get; set; } = 8000;// 采样
         public int Format { get; set; } = 16;// 位元
         public int Channel { get; set; } = 2;// 通道模式

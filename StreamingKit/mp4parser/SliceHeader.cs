@@ -1,6 +1,6 @@
+using System.IO;
 using mp4parser.h264.model;
 using mp4parser.h264.read;
-using System.IO;
 public class SliceHeader
 {
 

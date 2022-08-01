@@ -1,11 +1,11 @@
-﻿using Common.Generic;
-using Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Common.Generic;
+using Helpers;
 
 namespace StreamingKit.Media.TS
 {
@@ -148,7 +148,7 @@ namespace StreamingKit.Media.TS
                                 byte[] lenbuf = new byte[2];
                                 ms.Read(lenbuf, 0, 2);
                                 var len = BitConverter.ToInt16(lenbuf, 0);
-                                len = IPAddress.HostToNetworkOrder((short)len);
+                                len = IPAddress.HostToNetworkOrder(len);
                                 lenbuf = new byte[len];
                                 ms.Read(lenbuf, 0, len);
                                 break;

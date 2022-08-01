@@ -23,15 +23,15 @@ namespace mp4parser.h264.model
 {
 
     public class ScalingMatrix
-	{
+    {
 
-		public ScalingList[] ScalingList4x4;
-		public ScalingList[] ScalingList8x8;
+        public ScalingList[] ScalingList4x4;
+        public ScalingList[] ScalingList8x8;
 
-		public override string ToString()
-		{
+        public override string ToString()
+        {
 
             return "ScalingMatrix{" + "ScalingList4x4=" + (ScalingList4x4 == null ? null : ScalingList4x4.ToList()) + "\n" + ", ScalingList8x8=" + (ScalingList8x8 == null ? null : ScalingList8x8.ToList()) + "\n" + '}';
-		}
-	}
+        }
+    }
 }

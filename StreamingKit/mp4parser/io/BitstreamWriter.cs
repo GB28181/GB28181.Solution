@@ -24,62 +24,62 @@ namespace mp4parser.h264.write
 
     /// </summary>
     public class BitstreamWriter
-	{
+    {
 
-		private readonly Stream os;
-		private int[] curByte = new int[8];
-		private int curBit;
+        private readonly Stream os;
+        private int[] curByte = new int[8];
+        private int curBit;
 
         public BitstreamWriter(Stream @out)
-		{
-			this.os = @out;
-		}
+        {
+            this.os = @out;
+        }
 
-		public virtual void flush()
-		{
-			for (int i = curBit; i < 8; i++)
-			{
-				curByte[i] = 0;
-			}
-			curBit = 0;
-			writeCurByte();
-		}
+        public virtual void flush()
+        {
+            for (int i = curBit; i < 8; i++)
+            {
+                curByte[i] = 0;
+            }
+            curBit = 0;
+            writeCurByte();
+        }
 
-		private void writeCurByte()
-		{
-			int toWrite = (curByte[0] << 7) | (curByte[1] << 6) | (curByte[2] << 5) | (curByte[3] << 4) | (curByte[4] << 3) | (curByte[5] << 2) | (curByte[6] << 1) | curByte[7];
-			os.WriteByte((byte)toWrite);
-		}
-
-
-		public virtual void write1Bit(int value)
-		{
-		 
-			if (curBit == 8)
-			{
-				curBit = 0;
-				writeCurByte();
-			}
-			curByte[curBit++] = value;
-		}
-		public virtual void writeNBit(long value, int n)
-		{
-			for (int i = 0; i < n; i++)
-			{
-				write1Bit((int)(value >> (n - i - 1)) & 0x1);
-			}
-		}
-
-		public virtual void writeRemainingZero()
-		{
-			writeNBit(0, 8 - curBit);
-		}
+        private void writeCurByte()
+        {
+            int toWrite = (curByte[0] << 7) | (curByte[1] << 6) | (curByte[2] << 5) | (curByte[3] << 4) | (curByte[4] << 3) | (curByte[5] << 2) | (curByte[6] << 1) | curByte[7];
+            os.WriteByte((byte)toWrite);
+        }
 
 
-		public virtual void writeByte(int b)
-		{
-			os.WriteByte((byte)b);
+        public virtual void write1Bit(int value)
+        {
 
-		}
-	}
+            if (curBit == 8)
+            {
+                curBit = 0;
+                writeCurByte();
+            }
+            curByte[curBit++] = value;
+        }
+        public virtual void writeNBit(long value, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                write1Bit((int)(value >> (n - i - 1)) & 0x1);
+            }
+        }
+
+        public virtual void writeRemainingZero()
+        {
+            writeNBit(0, 8 - curBit);
+        }
+
+
+        public virtual void writeByte(int b)
+        {
+            os.WriteByte((byte)b);
+
+        }
+    }
 }

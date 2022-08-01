@@ -225,7 +225,7 @@ namespace StreamingKit.Media.TS
             return str;
         }
 
-        class MediaInfo
+        private class MediaInfo
         {
             private Boolean _firstAudioFrame = true;
             public int PID;
@@ -306,8 +306,10 @@ namespace StreamingKit.Media.TS
                         long tick = PESPackets.FirstOrDefault().GetVideoTimetick();
                         esdata = stream.ToArray();
                         var frame = CreateVideoMediaFrame(esdata, tick); ;
-                        PESPackets = new List<PESPacket>();
-                        PESPackets.Add(pes);
+                        PESPackets = new List<PESPacket>
+                        {
+                            pes
+                        };
                         return frame;
                     }
                     else
@@ -328,8 +330,10 @@ namespace StreamingKit.Media.TS
                             stream.Write(item.PES_Packet_Data, 0, item.PES_Packet_Data.Length);
                         }
                         long tick = PESPackets.FirstOrDefault().GetAudioTimetick();
-                        PESPackets = new List<PESPacket>();
-                        PESPackets.Add(pes);
+                        PESPackets = new List<PESPacket>
+                        {
+                            pes
+                        };
                         esdata = stream.ToArray();
                         return CreateAudioMediaFrame(esdata, tick);
                     }

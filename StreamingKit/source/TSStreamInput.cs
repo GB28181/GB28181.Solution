@@ -1,11 +1,11 @@
-﻿using Common.Generic;
-using Common.Streams;
-using GB28181.Logger4Net.DebugEx;
-using Helpers;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Common.Generic;
+using Common.Streams;
+using GB28181.Logger4Net.DebugEx;
+using Helpers;
 
 namespace StreamingKit.Media.TS
 {

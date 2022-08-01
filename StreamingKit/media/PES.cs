@@ -1,8 +1,8 @@
-﻿using StreamingKit.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using StreamingKit.Interface;
 
 namespace StreamingKit.Media.TS
 {
