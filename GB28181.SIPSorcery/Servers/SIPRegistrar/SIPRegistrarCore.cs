@@ -47,9 +47,7 @@ using GB28181.Sys.Model;
 using SIPSorcery.SIP;
 using SIPSorcery.Sys;
 
-#if UNITTEST
-using NUnit.Framework;
-#endif
+
 
 namespace GB28181.Servers
 {
@@ -109,7 +107,7 @@ namespace GB28181.Servers
 
         private SIPAuthenticateRequestDelegate _sipRequestAuthenticator_External = SIPRequestAuthenticator.AuthenticateSIPRequest;
         //private SIPAssetPersistor<Customer> CustomerPersistor_External;
-        private string m_serverAgent = SIPConstants.SIP_USERAGENT_STRING;
+        private string m_serverAgent = GBSIPConstants.SIP_USERAGENT_STRING;
         private bool m_mangleUACContact = false;            // Whether or not to adjust contact URIs that contain private hosts to the value of the bottom via received socket.
         private bool m_strictRealmHandling = false;         // If true the registrar will only accept registration requests for domains it is configured for, otherwise any realm is accepted.
                                                             //private event SIPMonitorLogDelegate m_registrarLogEvent;
@@ -269,7 +267,7 @@ namespace GB28181.Servers
 
         private static int GetRequestedExpiry(SIPRequest registerRequest)
         {
-            int contactHeaderExpiry = (registerRequest.Header.Contact != null && registerRequest.Header.Contact.Count > 0) ? registerRequest.Header.Contact[0].Expires : -1;
+            int contactHeaderExpiry = (int)((registerRequest.Header.Contact != null && registerRequest.Header.Contact.Count > 0) ? registerRequest.Header.Contact[0].Expires : -1);
             return (contactHeaderExpiry == -1) ? (int)registerRequest.Header.Expires : contactHeaderExpiry;
         }
 
@@ -333,7 +331,7 @@ namespace GB28181.Servers
                 {
                     // 401 Response with a fresh nonce needs to be sent.
                     SIPResponse authReqdResponse = SIPTransport.GetResponse(sipRequest, authenticationResult.ErrorResponse, null);
-                    authReqdResponse.Header.AuthenticationHeader = authenticationResult.AuthenticationRequiredHeader;
+                    authReqdResponse.Header.AuthenticationHeaders[0] = authenticationResult.AuthenticationRequiredHeader;
                     registerTransaction.SendFinalResponse(authReqdResponse);
 
                     if (authenticationResult.ErrorResponse == SIPResponseStatusCodesEnum.Forbidden)

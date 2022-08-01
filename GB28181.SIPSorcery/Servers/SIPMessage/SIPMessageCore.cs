@@ -48,7 +48,7 @@ namespace GB28181.Servers.SIPMessages
     {
         #region 私有字段
         private static ILog logger = AppState.logger;
-        private static string _sipServerAgent = SIPConstants.SIP_SERVER_STRING;
+        private static string _sipServerAgent = GBSIPConstants.SIP_SERVER_STRING;
         //  private bool _subscribe = false;
         private int MEDIA_PORT_START = 10000;
         private int MEDIA_PORT_END = 12000;
@@ -502,7 +502,7 @@ namespace GB28181.Servers.SIPMessages
             viaSet.Via.Add(viaHeader);
             header.Vias = viaSet;
 
-            header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             header.Contact = _ackRequest.Header.Contact;
             byeReq.Header = header;
             SendRequest(_byeRemoteEP, byeReq);
@@ -1058,7 +1058,8 @@ namespace GB28181.Servers.SIPMessages
         {
             try
             {
-                SIPResponse response = new SIPResponse(responseCode, reasonPhrase, localSIPEndPoint);
+                //SIPResponse response = new SIPResponse(responseCode, reasonPhrase, localSIPEndPoint);
+                var response = new SIPResponse(responseCode, reasonPhrase);
                 SIPSchemesEnum sipScheme = (localSIPEndPoint.Protocol == SIPProtocolsEnum.tls) ? SIPSchemesEnum.sips : SIPSchemesEnum.sip;
                 SIPFromHeader from = request.Header.From;
                 from.FromTag = request.Header.From.FromTag;
@@ -1067,7 +1068,7 @@ namespace GB28181.Servers.SIPMessages
                 {
                     CSeqMethod = request.Header.CSeqMethod,
                     Vias = request.Header.Vias,
-                    UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                    UserAgent = GBSIPConstants.SIP_USERAGENT_STRING,
                     CSeq = request.Header.CSeq
                 };
 
@@ -1160,7 +1161,7 @@ namespace GB28181.Servers.SIPMessages
             catalogReq.Header.Contact = null;
             catalogReq.Header.Allow = null;
             catalogReq.Header.To = to;
-            catalogReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            catalogReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             catalogReq.Header.CSeq = cSeq;
             catalogReq.Header.CallId = callId;
             catalogReq.Header.ContentType = "application/MANSCDP+xml";
@@ -1231,7 +1232,7 @@ namespace GB28181.Servers.SIPMessages
             };
             catalogReq.Header.Allow = null;
             catalogReq.Header.To = to;
-            catalogReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            catalogReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             catalogReq.Header.Event = "Catalog";//"presence";//"Catalog;id=1894";
             catalogReq.Header.Expires = 60000;
             catalogReq.Header.CSeq = cSeq;

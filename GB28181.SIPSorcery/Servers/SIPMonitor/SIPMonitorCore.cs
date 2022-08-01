@@ -97,7 +97,7 @@ namespace GB28181.Servers.SIPMonitor
             //realReq.Header.Allow = null;
             //realReq.Header.From = from;
             //realReq.Header.To = to;
-            //realReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            //realReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             //realReq.Header.CSeq = cSeq;
             //realReq.Header.CallId = callId;
             //realReq.Header.Subject = SetSubject();
@@ -135,7 +135,7 @@ namespace GB28181.Servers.SIPMonitor
             sipRequest.Header.Allow = null;
             sipRequest.Header.From = from;
             sipRequest.Header.To = to;
-            sipRequest.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            sipRequest.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             sipRequest.Header.CSeq = cSeq;
             sipRequest.Header.CallId = callId;
             sipRequest.Header.Subject = SetSubject();
@@ -171,7 +171,7 @@ namespace GB28181.Servers.SIPMonitor
                 CSeqMethod = SIPMethodsEnum.ACK,
                 Contact = _reqSession.Header.Contact,
                 Vias = _reqSession.Header.Vias,
-                UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                UserAgent = GBSIPConstants.SIP_USERAGENT_STRING,
                 Allow = null
             };
             ackReq.Header = header;
@@ -232,7 +232,7 @@ namespace GB28181.Servers.SIPMonitor
             {
                 CSeqMethod = SIPMethodsEnum.BYE,
                 Vias = _reqSession.Header.Vias,
-                UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                UserAgent = GBSIPConstants.SIP_USERAGENT_STRING,
                 Contact = _reqSession.Header.Contact
             };
             byeReq.Header = header;
@@ -258,7 +258,7 @@ namespace GB28181.Servers.SIPMonitor
                 {
                     CSeqMethod = SIPMethodsEnum.BYE,
                     Vias = reqSession.Header.Vias,
-                    UserAgent = SIPConstants.SIP_USERAGENT_STRING,
+                    UserAgent = GBSIPConstants.SIP_USERAGENT_STRING,
                     Contact = reqSession.Header.Contact
                 };
                 byeReq.Header = header;
@@ -395,7 +395,7 @@ namespace GB28181.Servers.SIPMonitor
             recordFileReq.Header.Allow = null;
             recordFileReq.Header.From = from;
             recordFileReq.Header.To = to;
-            recordFileReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            recordFileReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             recordFileReq.Header.CSeq = CallHelpers.CreateNewCSeq();
             recordFileReq.Header.CallId = CallProperties.CreateNewCallId();
             recordFileReq.Header.ContentType = "application/MANSCDP+xml";
@@ -460,7 +460,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = cSeq;
             backReq.Header.CallId = callId;
             backReq.Header.Subject = SetSubject();
@@ -494,7 +494,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = cSeq;
             backReq.Header.CallId = callId;
             backReq.Header.Subject = SetSubject();
@@ -541,7 +541,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = cSeq;
             backReq.Header.CallId = callId;
             backReq.Header.Subject = SetSubject();
@@ -584,7 +584,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = cSeq;
             backReq.Header.CallId = callId;
             backReq.Header.Subject = SetSubject();
@@ -751,7 +751,7 @@ namespace GB28181.Servers.SIPMonitor
                 CSeqMethod = byeReq.Header.CSeqMethod,
                 Vias = byeReq.Header.Vias,
                 MaxForwards = byeReq.Header.MaxForwards,
-                UserAgent = SIPConstants.SIP_USERAGENT_STRING
+                UserAgent = GBSIPConstants.SIP_USERAGENT_STRING
             };
             byeReq.Header.From = from;
             byeReq.Header = header;
@@ -778,7 +778,7 @@ namespace GB28181.Servers.SIPMonitor
                     CSeqMethod = byeReq.Header.CSeqMethod,
                     Vias = byeReq.Header.Vias,
                     MaxForwards = byeReq.Header.MaxForwards,
-                    UserAgent = SIPConstants.SIP_USERAGENT_STRING
+                    UserAgent = GBSIPConstants.SIP_USERAGENT_STRING
                 };
                 byeReq.Header.From = from;
                 byeReq.Header = header;
@@ -859,7 +859,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
             backReq.Header.Subject = SetSubject();
@@ -888,7 +888,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = cSeq;
             backReq.Header.CallId = callId;
             backReq.Header.Subject = SetSubject();
@@ -1011,7 +1011,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
             //backReq.Header.Subject = SetSubject();
@@ -1040,7 +1040,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = reqSession.Header.CSeq + 1;
             backReq.Header.CallId = reqSession.Header.CallId;
             //backReq.Header.Subject = SetSubject();
@@ -1126,7 +1126,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             //backReq.Header.Vias = _reqSession.Header.Vias;
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
@@ -1156,7 +1156,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             //backReq.Header.Vias = _reqSession.Header.Vias;
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
@@ -1265,7 +1265,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = _reqSession.Header.CSeq + 1;
             backReq.Header.CallId = _reqSession.Header.CallId;
             backReq.Header.Subject = SetSubject();
@@ -1294,7 +1294,7 @@ namespace GB28181.Servers.SIPMonitor
             backReq.Header.Allow = null;
             backReq.Header.From = from;
             backReq.Header.To = to;
-            backReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            backReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             backReq.Header.CSeq = reqSession.Header.CSeq + 1;
             backReq.Header.CallId = reqSession.Header.CallId;
             backReq.Header.Subject = SetSubject();
@@ -1376,7 +1376,7 @@ namespace GB28181.Servers.SIPMonitor
             ptzReq.Header.Contact = null;
             ptzReq.Header.Allow = null;
             ptzReq.Header.To = to;
-            ptzReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            ptzReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             ptzReq.Header.CSeq = cSeq;
             ptzReq.Header.CallId = callId;
             ptzReq.Header.ContentType = "application/MANSCDP+xml";
@@ -1587,7 +1587,7 @@ namespace GB28181.Servers.SIPMonitor
             catalogReq.Header.Contact = null;
             catalogReq.Header.Allow = null;
             catalogReq.Header.To = to;
-            catalogReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            catalogReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             catalogReq.Header.CSeq = cSeq;
             catalogReq.Header.CallId = callId;
             catalogReq.Header.ContentType = "application/MANSCDP+xml";
@@ -1614,7 +1614,7 @@ namespace GB28181.Servers.SIPMonitor
             //presetReq.Header.Contact = null;
             presetReq.Header.Allow = null;
             presetReq.Header.To = to;
-            presetReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            presetReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             presetReq.Header.CSeq = cSeq;
             presetReq.Header.CallId = callId;
             presetReq.Header.ContentType = "Application/MANSCDP+xml";
@@ -1905,7 +1905,7 @@ namespace GB28181.Servers.SIPMonitor
             //queryReq.Header.Contact = null;
             queryReq.Header.Allow = null;
             queryReq.Header.To = to;
-            queryReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            queryReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             queryReq.Header.CSeq = cSeq;
             queryReq.Header.CallId = callId;//_reqSession.Header.CallId; //
             queryReq.Header.ContentType = "Application/MANSCDP+xml";
@@ -1937,7 +1937,7 @@ namespace GB28181.Servers.SIPMonitor
             };
             queryReq.Header.Allow = null;
             queryReq.Header.To = to;
-            queryReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            queryReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             queryReq.Header.CSeq = cSeq;
             queryReq.Header.Expires = 90;
             queryReq.Header.Event = "presence";
@@ -1971,7 +1971,7 @@ namespace GB28181.Servers.SIPMonitor
             //realReq.Header.Allow = null;
             //realReq.Header.From = from;
             //realReq.Header.To = to;
-            //realReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            //realReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             //realReq.Header.CSeq = cSeq;
             //realReq.Header.CallId = callId;
             //realReq.Header.Subject = SetSubject();
@@ -2042,7 +2042,7 @@ namespace GB28181.Servers.SIPMonitor
             //realReq.Header.Allow = null;
             //realReq.Header.From = from;
             //realReq.Header.To = to;
-            //realReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            //realReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             //realReq.Header.CSeq = cSeq;
             //realReq.Header.CallId = callId;
             //realReq.Header.Subject = SetSubject();
@@ -2132,7 +2132,7 @@ namespace GB28181.Servers.SIPMonitor
             presetReq.Header.Contact = null;
             presetReq.Header.Allow = null;
             presetReq.Header.To = to;
-            presetReq.Header.UserAgent = SIPConstants.SIP_USERAGENT_STRING;
+            presetReq.Header.UserAgent = GBSIPConstants.SIP_USERAGENT_STRING;
             presetReq.Header.CSeq = cSeq;
             presetReq.Header.CallId = callId;
             presetReq.Header.ContentType = "application/MANSCDP+xml";

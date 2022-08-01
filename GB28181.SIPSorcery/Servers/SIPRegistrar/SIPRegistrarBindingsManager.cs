@@ -229,7 +229,7 @@ namespace GB28181.Servers
                 foreach (SIPContactHeader contactHeader in contactHeaders)
                 {
                     SIPURI bindingURI = contactHeader.ContactURI.CopyOf();
-                    int contactHeaderExpiresValue = contactHeader.Expires;
+                    int contactHeaderExpiresValue = (int)contactHeader.Expires;
                     int bindingExpiry = 0;
 
                     if (bindingURI.Host == m_sipRegisterRemoveAll)
