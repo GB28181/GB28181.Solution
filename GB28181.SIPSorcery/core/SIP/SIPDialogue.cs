@@ -19,22 +19,6 @@ using SIPSorcery.Sys;
 
 namespace GB28181
 {
-    public enum SIPDialogueStateEnum
-    {
-        Unknown = 0,
-        Early = 1,
-        Confirmed = 2,
-        Terminated = 3
-    }
-
-    public enum SIPDialogueTransferModesEnum
-    {
-        Default = 0,
-        PassThru = 1,           // REFER requests will be treated as an in-dialogue request and passed through to user agents.
-        NotAllowed = 2,         // REFER requests will be blocked.
-        BlindPlaceCall = 3,     // REFER requests without a replaces parameter will initiate a new call.
-    }
-
     /// <summary>
     /// See "Chapter 12 Dialogs" in RFC3261.
     /// </summary>
@@ -77,8 +61,9 @@ namespace GB28181
         public SIPCallDirection Direction { get; set; }              // Indicates whether the dialogue was created by a ingress or egress call.
 
         // User informational fields. They don't affect the operation of the dialogue but allow the user to optionally attach descriptive fields to it.
-        //public string SwitchboardCallerDescription { get; set; }
-        //public string SwitchboardDescription { get; set; }
+        public string SwitchboardCallerDescription { get; set; }
+        public string SwitchboardDescription { get; set; }
+
         public string SwitchboardOwner { get; set; }
         public string SwitchboardLineName { get; set; }
         public string CRMPersonName { get; set; }

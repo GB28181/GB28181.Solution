@@ -1276,8 +1276,8 @@ namespace GB28181
         {
             try
             {
-                SIPResponse response = new SIPResponse(responseCode, reasonPhrase, sipRequest.LocalSIPEndPoint);
-
+               // SIPResponse response = new SIPResponse(responseCode, reasonPhrase, sipRequest.LocalSIPEndPoint);
+                var response = new SIPResponse(responseCode, reasonPhrase);
                 if (reasonPhrase != null)
                 {
                     response.ReasonPhrase = reasonPhrase;
@@ -1327,7 +1327,7 @@ namespace GB28181
                     localSIPEndPoint = GetDefaultSIPEndPoint();
                 }
 
-                SIPResponse response = new SIPResponse(responseCode, reasonPhrase, localSIPEndPoint);
+                SIPResponse response = new SIPResponse(responseCode, reasonPhrase);
                 SIPSchemesEnum sipScheme = (localSIPEndPoint.Protocol == SIPProtocolsEnum.tls) ? SIPSchemesEnum.sips : SIPSchemesEnum.sip;
                 SIPFromHeader from = new SIPFromHeader(null, new SIPURI(sipScheme, localSIPEndPoint), null);
                 SIPToHeader to = new SIPToHeader(null, new SIPURI(sipScheme, localSIPEndPoint), null);

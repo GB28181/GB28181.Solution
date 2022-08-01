@@ -30,10 +30,10 @@ namespace GB28181
         public event SIPTransactionResponseReceivedDelegate UACInviteTransactionFinalResponseReceived;
         public event SIPTransactionTimedOutDelegate UACInviteTransactionTimedOut;
 
-        private bool _sendOkAckManually = false;
+        private bool _sendOkAckManually;
 
         /// <param name="sendOkAckManually">If set an ACK request for the 2xx response will NOT be sent and it will be up to the application to explicitly call the SendACK request.</param>
-        internal UACInviteTransaction(SIPTransport sipTransport, SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy, bool sendOkAckManually = false)
+        public UACInviteTransaction(SIPTransport sipTransport, SIPRequest sipRequest, SIPEndPoint dstEndPoint, SIPEndPoint localSIPEndPoint, SIPEndPoint outboundProxy, bool sendOkAckManually = false)
             : base(sipTransport, sipRequest, dstEndPoint, localSIPEndPoint, outboundProxy)
         {
             TransactionType = SIPTransactionTypesEnum.InviteServer;

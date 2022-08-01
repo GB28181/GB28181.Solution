@@ -90,7 +90,7 @@ namespace GB28181
         {
             try
             {
-                SIPResponse cancelResponse = new SIPResponse(sipResponseCode, null, sipRequest.LocalSIPEndPoint);
+                SIPResponse cancelResponse = new SIPResponse(sipResponseCode, null);
 
                 SIPHeader requestHeader = sipRequest.Header;
                 cancelResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId)

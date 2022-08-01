@@ -18,9 +18,6 @@ using System.Net;
 using SIPSorcery.SIP;
 using SIPSorcery.Sys;
 
-#if UNITTEST
-using NUnit.Framework;
-#endif
 
 namespace GB28181
 {
@@ -29,7 +26,7 @@ namespace GB28181
     /// </summary>
     public class UASInviteTransaction : SIPTransaction
     {
-        private static string m_sipServerAgent = SIPConstants.SIP_SERVER_STRING;
+        private static string m_sipServerAgent = GBSIPConstants.SIP_SERVER_STRING;
 
         private IPAddress m_contactIPAddress;   // If set this IP address should be used in the Contact header of the Ok response so that ACK requests can be delivered correctly.
         /// <summary>
@@ -229,7 +226,7 @@ namespace GB28181
         {
             try
             {
-                SIPResponse okResponse = new SIPResponse(SIPResponseStatusCodesEnum.Ok, null, sipRequest.LocalSIPEndPoint);
+                SIPResponse okResponse = new SIPResponse(SIPResponseStatusCodesEnum.Ok, null);
 
                 SIPHeader requestHeader = sipRequest.Header;
                 okResponse.Header = new SIPHeader(new SIPContactHeader(null, new SIPURI(sipRequest.URI.Scheme, localSIPEndPoint)), requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId);

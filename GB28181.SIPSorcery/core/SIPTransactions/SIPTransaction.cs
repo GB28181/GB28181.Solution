@@ -287,8 +287,8 @@ namespace GB28181
         {
             try
             {
-                SIPResponse informationalResponse = new SIPResponse(sipResponseCode, null, sipRequest.LocalSIPEndPoint);
-
+                // SIPResponse informationalResponse = new SIPResponse(sipResponseCode, null, sipRequest.LocalSIPEndPoint);
+                var informationalResponse = new SIPResponse(sipResponseCode, null);
                 SIPHeader requestHeader = sipRequest.Header;
                 informationalResponse.Header = new SIPHeader(requestHeader.From, requestHeader.To, requestHeader.CSeq, requestHeader.CallId)
                 {
