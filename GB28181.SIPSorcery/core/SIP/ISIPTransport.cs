@@ -6,8 +6,8 @@ namespace GB28181
 {
     public interface ISIPTransport
     {
-        event SIPTransportRequestDelegate SIPTransportRequestReceived;
-        event SIPTransportResponseDelegate SIPTransportResponseReceived;
+      //  event SIPTransportRequestDelegate SIPTransportRequestReceived;
+      //  event SIPTransportResponseDelegate SIPTransportResponseReceived;
 
         string PerformanceMonitorPrefix { get; set; }                              // Allows an application to set the prefix for the performance monitor counter it wants to use for tracking the SIP transport metrics.
         string MsgEncode { get; set; }
