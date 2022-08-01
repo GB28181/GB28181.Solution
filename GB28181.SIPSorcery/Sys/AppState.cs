@@ -151,7 +151,7 @@ namespace GB28181.Sys
 
                     if (!setting.IsNullOrBlank())
                     {
-                        if (setting.StartsWith(ENCRYPTED_SETTING_PREFIX))
+                        if (setting.StartsWith(ENCRYPTED_SETTING_PREFIX,StringComparison.CurrentCulture))
                         {
                             logger.Debug("Decrypting appSetting " + key + ".");
 
