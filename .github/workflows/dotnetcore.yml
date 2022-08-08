@@ -17,25 +17,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
-        dotnet-version: [ 6.0 ]
-        include:
-          - dotnet-version: 6.0
-            dotnet-sdk-version: 6.0.302
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XML_DOC_MODE: skip
-      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-    runs-on: ${{ matrix.os }}
-
+        framework: [ 'net6.0' ]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Setup .NET Core on ${{ matrix.os }} platform, dotnet version ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ matrix.dotnet-sdk-version }}
+        dotnet-version: '6.0.x'
     - name: Build Debug
-      run: dotnet build -c Debug GB28181.Server/GB28181.Server.csproj
+      run: dotnet build GB28181.Server/GB28181.Server.csproj --framework  ${{ matrix.framework }} -c Debug
     - name: Build Release
-      run: dotnet build -c Release GB28181.Server/GB28181.Server.csproj
+      run: dotnet build GB28181.Server/GB28181.Server.csproj --framework  ${{ matrix.framework }} -c Release 

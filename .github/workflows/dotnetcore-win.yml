@@ -15,27 +15,13 @@ on:
       - '!**.md'
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ windows-latest ]
-        dotnet-version: [ 6.0 ]
-        include:
-          - dotnet-version: 6.0
-            dotnet-sdk-version: 6.0.302
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XML_DOC_MODE: skip
-      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-    runs-on: ${{ matrix.os }}
-
+    runs-on: windows-2022
+    name: dotnet windows GB28181
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core on ${{ matrix.os }} platform, dotnet version ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ matrix.dotnet-sdk-version }}
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: dotnet restore GB28181.Solution.sln
     - name: Build Release Debug
-      run: dotnet build -c Debug GB28181.Solution.sln
+      run: dotnet build -c Debug GB28181.Solution.sln --no-restore
     - name: Build Solution Release
-      run: dotnet build -c Release GB28181.Solution.sln
+      run: dotnet build -c Release GB28181.Solution.sln --no-restore
