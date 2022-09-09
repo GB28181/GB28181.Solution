@@ -22,9 +22,7 @@ using GB28181;
 using GB28181.App;
 using GB28181.Sys;
 using GB28181.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SIPSorcery.SIP;
 
 namespace GB28181.WinTool.Message
 {
@@ -65,7 +63,7 @@ namespace GB28181.WinTool.Message
                 m_sipTransport.AddSIPChannel(sipChannels);
 
 
-                MessageCore = new SIPMessageCore(m_sipTransport, SIPConstants.SIP_SERVER_STRING);
+                MessageCore = new SIPMessageCore(m_sipTransport, "SIP_SERVER_STRING"); //SIPConstants.SIP_SERVER_STRING
                 MessageCore.Initialize(SIPAuthenticateRequest_External, _platformList, _account);
                 GB28181Catalog.Instance.MessageCore = MessageCore;
                 m_sipTransport.SIPTransportRequestReceived += MessageCore.AddMessageRequest;

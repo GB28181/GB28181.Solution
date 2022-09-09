@@ -18,7 +18,7 @@ using GB28181.Logger4Net;
 using GB28181.Sys;
 
 
-[assembly: AssemblyCulture("0")]
+[assembly: AssemblyCulture("")]
 
 namespace GB28181
 {

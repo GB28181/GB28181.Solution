@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1700.7
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.SIPSorcery", "GB28181.SIPSorcery\GB28181.SIPSorcery.csproj", "{42050B07-B393-4292-A89F-7ECE14989E0F}"
 EndProject

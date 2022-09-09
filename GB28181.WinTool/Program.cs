@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace GB28181.WinTool
+﻿namespace GB28181.WinTool
 {
     static class Program
     {
