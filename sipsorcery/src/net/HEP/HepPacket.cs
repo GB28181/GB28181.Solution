@@ -75,7 +75,7 @@ namespace SIPSorcery.Net
 
         /// <summary>
         /// Creates the initial buffer for the HEP packet and sets the vendor, chunk type ID and length fields.
-        /// Note: Vendor ID could change and make endianess relevant.
+        /// Note: Vendor ID could change and make endianness relevant.
         /// </summary>
         /// <param name="chunkType">The chunk type to set in the serialised chunk.</param>
         /// <param name="length">The value to set in the length field of the serialised chunk.</param>
