@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GB28181.WinTool", "GB28181.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{8FB617A6-C3FB-4751-9639-0CA47BF0ACA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIPSorcery.UnitTests", "sipsorcery\test\SIPSorcery.UnitTests.csproj", "{74B09950-0B8E-4D29-80DB-3F4A246BED82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIPSorcery.UnitTests", "sipsorcery\test\unit\SIPSorcery.UnitTests.csproj", "{74B09950-0B8E-4D29-80DB-3F4A246BED82}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GrpcHttpApi", "GrpcHttpApi", "{311E5E57-D515-4DCA-8DBF-B571C4C421DC}"
 EndProject
